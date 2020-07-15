@@ -1,0 +1,171 @@
+﻿@model SEA_Application.Models.LedgerGroup
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<style>
+    .color:hover {
+        background-color: #0e72af !important;
+    }
+
+    .color2:hover {
+        background-color: #dc0000 !important;
+    }
+</style>
+
+<div class="col-md-4 col-sm-4 col-lg-4 tab-pane pull-right" style="margin-left:30px;margin-top:30px" id="changediv">
+
+    <div class="form-three widget-shadow">
+        @using (Html.BeginForm("LedgerGroupFromFile", "LedgerGroups", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @*<div class="form-group">
+                    <div class="control-label col-md-3"><b>Excel File</b></div>
+                    <div class="col-md-4">
+                        <input id="teachers" required="required" name="Ledger_Groups" type="file" />
+                    </div>
+                </div>
+
+                    <input class="col-md-4 pull-right color" type="submit" value="Submit" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />*@
+
+        }
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body p-5">
+
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "Registerform" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+                        @*<hr />*@
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div>
+
+
+                            @*<div class="form-group">
+                                    <div class="col-md-3">
+                                        <span>Ledger Group</span>
+                                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+                                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>*@
+
+                            <div class="col-md-6">
+                                <div class="form-group bmd-form-group my-3">
+                                    <label class="bmd-label-floating">Ledger Group</label>
+
+                                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+                                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+
+                            @*<div class="form-group">
+                                    <div class="col-md-3">
+                                        <span>Created By</span>
+                                        @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control",@required="required" } })
+                                        @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>*@
+                        </div>
+
+
+                        <div>
+
+
+
+                            <div class="form-group">
+
+
+                                @*<div class="col-md-3">
+                                        <span>Accounting Head</span>
+                                        @Html.DropDownList("LedgerHeadID", null, htmlAttributes: new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.LedgerHeadID, "", new { @class = "text-danger" })
+                                    </div>*@
+
+                                <div class="col-md-6">
+                                    <div class="form-row mt-4">
+                                        <div class="form-group col-md-12 bmd-form-group">
+                                            <label for="" class="bmd-label-static pl-2">Accounting Head</label>
+
+                                            @*<select class="form-control" id="LedgerGroupId" name="LedgerGroupId" required></select>*@
+                                            @Html.DropDownList("LedgerHeadID", null, htmlAttributes: new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.LedgerHeadID, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                @*<div class="col-md-3">
+                                        <span>Session</span>
+                                        @Html.DropDownList("SessionId", null, htmlAttributes: new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.SessionId, "", new { @class = "text-danger" })
+                                    </div>*@
+
+
+                                <div class="col-md-6">
+                                    <div class="form-row mt-4">
+                                        <div class="form-group col-md-12 bmd-form-group">
+                                            <label for="" class="bmd-label-static pl-2">Session</label>
+
+                                            @*<select class="form-control" id="LedgerGroupId" name="LedgerGroupId" required></select>*@
+                                            @Html.DropDownList("SessionId", null, htmlAttributes: new { @class = "form-control" })
+                                            @Html.ValidationMessageFor(model => model.SessionId, "", new { @class = "text-danger" })
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="col-md-5">
+                                <br />
+
+                                @*<button class="col-md-2 form-control color2" onclick="window.location.href = '/ChartOfAccounts/ChartsOf_Accounts'" style="border-radius:35px;border:hidden;margin-right:10px;background-color:rgb(255, 0, 0);color:white;font-size:11px;width:98px;height:38px;font-family:Montserrat" id="return"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Return</button>
+                                    <input class="col-md-2 form-control color" id="submit" form="Registerform" type="submit" value="Save" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />*@
+
+
+
+
+                                <button type="button" onclick="window.location.href = '/ChartOfAccounts/ChartsOf_Accounts'" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                                    <i class="material-icons mr-2">cached</i>  Return
+                                </button>
+
+                                <button type="submit" form="Registerform" id="SaveButton" class="btn btn-primary rounded rounded-lg"> Save </button>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+            <script>
+
+                $(document).ready(function () {
+
+
+                    $("#PageHeader").html("New Group");
+
+                    $("#BreadCrumbs").append(' <li> <a href="/FinanceSummary/Index"> Home </a> <span>&gt;</span></li>');
+                    $("#BreadCrumbs").append(' <li class=""><a id="BreadCrumps1" href="/ChartOfAccounts/ChartsOf_Accounts">Chart of Accounts</a> <span>&gt;</span></li>');
+                    $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#"> New Group  </a></li>');
+
+
+
+                })
+            </script>

@@ -1,0 +1,67 @@
+﻿@using SEA_Application.Models
+@model AspNetTeacher_Enrollments
+
+@{
+    var branchClassSection = (AspNetBranchClass_Sections)ViewBag.BranchClassSection;
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+
+    <div class="box box-primary">
+        <div class="box-title"></div>
+        <h3>Edit Class</h3>
+        <hr />
+        <div class="box-body">
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                @Html.HiddenFor(model => model.Id)
+                @Html.HiddenFor(model => model.TeacherId)
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.TeacherId, new { @class = "col-md-2 control-label" })<span class="red-mark">*</span>
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.AspNetTeacher.AspNetEmployee.Name, new { htmlAttributes = new { @class = "form-control", required = "required", disabled = "disabled" } })
+                        @Html.ValidationMessageFor(model => model.AspNetTeacher.AspNetEmployee.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="CourseId">Course</label>
+                    <div class="col-md-6">
+                        @Html.DropDownList("CourseId", null, new { @class = "form-control", required = "required" })
+                        @Html.ValidationMessageFor(model => model.CourseId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="SectionId">Section</label>
+                    <div class="col-md-6">
+                        @Html.DropDownList("SectionId", null, new { @class = "form-control", required = "required" })
+                        @Html.ValidationMessageFor(model => model.SectionId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-md-2" for="SessionId">Session</label>
+                    <div class="col-md-6">
+                        @Html.DropDownList("SessionId", null, new { @class = "form-control", required = "required" })
+                        @Html.ValidationMessageFor(model => model.CourseId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-2">&nbsp;</div>
+                    <div class="col-md-6">
+                        <input id="FormSubmit" type="submit" value="Save" class="btn btn-primary" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+}

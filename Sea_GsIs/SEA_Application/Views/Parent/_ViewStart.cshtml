@@ -1,0 +1,7 @@
+﻿@if (this.User.IsInRole("Parent"))
+{
+    Layout = "~/Views/Shared/_ParentDashboardLayout.cshtml";
+}
+else{
+    Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
+}

@@ -1,0 +1,524 @@
+﻿@model SEA_Application.Models.AspNetEmployee
+
+@{
+    ViewBag.Title = "Edit";
+}
+<style>
+    .container{
+     min-height: 150px;
+    }
+       textarea{
+       height:100px;
+       width:718px;
+
+   }
+    .content{
+        padding:0px !important;
+        background: #ffffff !important;
+    }
+    .content-wrapper{
+            background: #ffffff !important;
+
+    }
+   .sea-background {
+    background: #ffffff !important;
+}
+   
+</style>
+<script>
+    $(document).ready(function () {
+        $('#userid').hide();
+        $('#VRID').hide();
+        var fname = $("#fullname").val().split(" ");
+        var fn = fname[0];
+        var mn = fname[1];
+        var ln = fname[2];
+        $("#first").val(fn);
+        $("#middle").val(mn);
+        $("#last").val(ln);
+
+        var jd = $("#joiningdate").val().split('-');
+        debugger;
+        var yy = jd[0];
+        var mm = parseInt(jd[1]);
+        var dd = parseInt(jd[2]);
+        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        var sss = months[mm - 1] +' '+ dd+', '  + yy;
+        $("#JoiningDATE").html(sss);
+       
+
+        $("#editbutton").click(function () {
+            var input = $(document.getElementById("FileUpload1"));
+            input.trigger("click");
+
+        });
+ 
+
+        var na = $('#STATUS').val();
+        if (na == "InActive")
+        {
+            $('#statusid option[value="' + 'False' + '"]').prop('selected', true);
+        }
+        else {
+            $('#statusid option[value="' + 'True' + '"]').prop('selected', true);
+
+        }
+        
+        $("#User_Name").bind('blur', function () {
+            var userName = $("#User_Name").val();
+            $.ajax({
+                type: "POST",
+                url: "/AspNetEmployees/GetUserName",
+                data: { userName: userName },
+                success: function (data) {
+                    if (data.count==1) {
+                        $('#UserName-Error').html("UserName Already taken by User");
+                        $('#FormSubmit').removeAttr('disabled',true);
+                    }
+                    else {
+                        
+                        $('#FormSubmit').prop('disabled', false);
+                    }
+                }
+            });
+        });
+    })
+    function DISABLE() {
+        var status = $("#statusid").val();
+        if (status == "True") {
+            var id = $("#ID").val();
+            window.location.href = "/AspNetEmployees/EnableEmployee?id=" + id ;
+        }
+        else {
+            $("#myModal2").modal('show');
+
+        }
+    }
+    function cnfmDisable() {
+        var id = $("#ID").val();
+        window.location.href = "/AspNetEmployees/Disable_Employee?id=" + id;;
+    }
+    function Enable() {
+        var id = $("#ID").val();
+        window.location.href = "/AspNetEmployees/Enable?id=" + id + "&type=Teacher";
+    }
+</script>
+@if(ViewBag.Error!=null)
+{
+    <span style="color:red">@ViewBag.Error</span>
+}
+
+<input type="hidden" value="@Model.Id" id="ID" />
+<div class="col-md-12" id="cover">
+    <div class="col-md-12 col-lg-12 col-sm-12 container" style="background-color:#002938;">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="dropdown" data-target=".navbar-collapse"></button>
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-2">
+                <h4 style="font-family:Montserrat;color:white !important"><b>Employee Details</b></h4>
+            </div>
+        </div>
+        <div class="col-md-4 col-lg-4 col-sm-4 col-md-offset-4 split-layout-right" style="background-color:#002938">
+            <span class="col-md-12 col-lg-12 col-sm-12" style="color:white;font-family:Montserrat;font-size:20px"><b>@Model.Name</b></span><br /><br />
+            <div class="col-md-12 col-sm-12 col-lg-12">
+
+                <span id="DESIGNATION" style="color:white;font-family:Montserrat;background-color:#002938;font-size:15px">@ViewBag.PositionName,</span>
+                <span id="DESIGNATION" style="color:white;font-family:Montserrat;background-color:#002938;font-size:15px">@ViewBag.BranchName</span>
+
+            </div>
+
+        </div>
+
+    </div>
+    <div class="col-md-4 split-layout-lefts" style="margin-top:-70px;z-index:2000;position:inherit;">
+        <div class="col-md-12 pull-left" style="margin:auto">
+
+            <img style="margin-bottom:-20px;width:285px;height:285px;border-radius:50%;border:3px solid #ffffff" id="image" src=@ViewBag.Image /> <br />
+
+            <a id="editbutton" href="#"><i style="border:3px solid white;border-radius:80%;padding:12px;z-index:5000;background-color:#128edb;font-size:15px;margin-left:40%;margin-top:-180px;color:white;" class="fa fa-pencil"></i></a>
+            <br /><br />
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-6">
+                <div class="col-md-12">
+                    <span style="color:#128edb"><b>Phone#</b></span>
+                </div>
+                <div class="col-md-12">
+                    <span><i class="fa fa-mobile"></i>&nbsp;&nbsp;@Model.CellNo</span>
+                    <hr />
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-6">
+                <div class="col-md-12">
+                    <span style="color:#128edb"><b>Designation</b></span>
+                </div>
+                <div class="col-md-12">
+                    <span><i class="fa fa-male"></i>&nbsp;&nbsp;@ViewBag.PositionName</span>
+                    <hr />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-6">
+                <div class="col-md-12">
+                    <span style="color:#128edb"><b>Joining Date</b></span>
+                </div>
+                <div class="col-md-12">
+                    <i class="fa fa-calendar"></i>&nbsp;&nbsp;<span id="JoiningDATE"></span>
+                    <hr />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8 split-layout-right">
+        <div>
+            <br />
+            <i class="fa fa-male"></i><span style="color:#002938 !important;font-family:Montserrat;font-size:18px"><b> Personal</b></span>
+            <hr />
+        </div>
+        <div>
+
+            <div class="col-md-12 col-lg-12 col-sm-12"><span style="font-size:15px;color:#128edb"><b>Basic Information</b></span></div>
+            <br />
+            <hr />
+        </div>
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "Registerform" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.Id)
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <span>Status</span><br />
+                        <input type="hidden" value="@ViewBag.Status" id="STATUS" />
+                        <select name="status" class="form-control" onchange="DISABLE()" id="statusid">
+                            <option value="True">Active</option>
+                            <option value="False">In Active</option>
+                        </select>
+                    </div>
+                </div>
+
+
+
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <span>Name</span>
+                        <input type="text" name="FName" id="first" class="form-control" required />
+                    </div>
+
+                    <div class="col-md-2">
+                        <br />
+                        <input type="text" name="MName" id="middle" class="form-control" />
+                    </div>
+
+                    <div class="col-md-2">
+                        <br />
+                        <input type="text" name="LName" id="last" class="form-control" />
+                    </div>
+
+                    <div class="col-md-2">
+                        <span>User Name</span>
+                        <input type="text" name="UserName" id="User_Name" value="@ViewBag.UserName" class="form-control" required />
+                        <span class="text-danger" id="UserName-Error"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <span>Position</span>
+                        @Html.DropDownList("Position", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Position, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-2">
+                        <span>Branch</span>
+                        @Html.DropDownList("BranchId", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                    </div>
+
+                </div>
+                <hr />
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <span>Date Available</span>
+                        @Html.EditorFor(model => model.DateAvailable, new { htmlAttributes = new { @class = "form-control",@type="Date" } })
+                        @Html.ValidationMessageFor(model => model.DateAvailable, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="col-md-2">
+                        <span>Joining Date</span>
+                        @Html.EditorFor(model => model.JoiningDate, new { htmlAttributes = new { @class = "form-control", @type = "date", @id = "joiningdate" } } )
+                        @Html.ValidationMessageFor(model => model.JoiningDate, "", new { @class = "text-danger" })
+                    </div>
+
+
+                    <div class="col-md-2">
+                        <span>Birth Date</span>
+                        @Html.EditorFor(model => model.BirthDate, new { htmlAttributes = new { @class = "form-control", @type = "Date" } })
+                        @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-12 col-sm-12" style="padding:0px">
+                    <hr />
+                    <span style="font-size:15px;color:#128edb"><b>Personal Information</b></span>
+                    <hr />
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-2">
+                        <span>Nationality</span>
+                        @Html.DropDownList("NationalityId", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.NationalityId, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-md-2">
+                        <span>Religion</span>
+                        @Html.DropDownList("ReligionId", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ReligionId, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-md-2">
+                        <span>Gender</span>
+
+                        @Html.DropDownList("GenderId", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.GenderId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-12 col-lg-12 col-sm-12" style="padding:0px">
+                    <hr />
+                    <span style="font-size:15px;color:#128edb"><b>Contact Information</b></span>
+                    <hr />
+                </div>
+                <div class="form-group">
+                    <div class="col-md-3">
+                        <span>Email</span>
+                        <input type="text" name="Email" id="E_mail" value="@ViewBag.Email" class="form-control" required />
+                        <span id="Email-Error" style="color:red"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <span>Cell Number</span>
+                        @Html.EditorFor(model => model.CellNo, new { htmlAttributes = new { @class = "form-control",@required="required" } })
+                        @Html.ValidationMessageFor(model => model.CellNo, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-md-3">
+                        <span>Landline</span>
+                        @Html.EditorFor(model => model.Landline, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Landline, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.EditorFor(model => model.UserId, new { htmlAttributes = new { @class = "form-control",@id="userid" } })
+                    @Html.EditorFor(model => model.VirtualRoleId, new { htmlAttributes = new { @class = "form-control", @id = "VRID" } })
+                </div>
+                <div class="form-group">
+                    <div class="col-md-2"><label>Address</label></div>
+                    <div class="col-md-12">
+                        @Html.TextAreaFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                    </div>
+
+                </div>
+                <div class="col-md-12 col-lg-12 col-sm-12 hidden" style="padding:0px">
+                    <hr />
+                    <span style="font-size:15px;color:#128edb"><b>Spouse Information</b></span>
+                    <hr />
+                </div>
+
+                <div class="form-group hidden">
+                    <div class="col-md-3">
+                        <span>Spouse Name</span>
+                        @Html.EditorFor(model => model.SpouseName, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.SpouseName, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-md-3">
+                        <span>Highest Degree</span>
+                        @Html.EditorFor(model => model.SpouseHighestDegree, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.SpouseHighestDegree, "", new { @class = "text-danger" })
+                    </div>
+
+                    <div class="col-md-3">
+                        <span>Spouse Occupation</span>
+                        @Html.EditorFor(model => model.SpouseOccupation, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.SpouseOccupation, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group hidden">
+                    <div class="col-md-2">
+                        <span>Spouse Address</span>
+                        @Html.TextAreaFor(model => model.Spouse_Address, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Spouse_Address, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="col-md-2">
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @type = "hidden", @id = "fullname" } })
+                </div>
+
+
+
+
+
+                @*<div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Save" class="btn btn-default" />
+                        </div>
+                    </div>*@
+            </div>
+        }
+
+        <div class="col-md-12 col-sm-12 col-lg-12">
+            <hr />
+            <br />
+
+            <button class="col-md-2 form-control" onclick="window.location.href='/AspNetEmployees/TeacherIndex'" style="border-radius:35px;border:hidden;margin-right:10px;background-color:#ff0000;color:#ffffff;font-size:11px;width:98px;height:38px;font-family:Montserrat" id="return"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Return</button>
+
+            <input class="col-md-2 form-control" id="submit" type="submit" form="Registerform" value="Save" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />
+
+            <br /><br /><br />
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Do you really want to Delete this Employee ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="cnfmDisable()">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modalcrop" tabindex="-1" aria-hidden="true">
+
+    <form action="/SuperAdmin/Savefile" method="post" enctype="multipart/form-data">
+        <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+        <script type="text/javascript" src="http://cdn.rawgit.com/tapmodo/Jcrop/master/js/jquery.Jcrop.min.js"></script>
+        <script type="text/javascript">
+           $(function () {
+            var counter = 0;
+            $('#FileUpload1').change(function () {
+                $("#modalcrop").show();
+                $('#cover').hide();
+
+                $('#Image1').hide();
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    debugger;
+                    $('#Image1').show();
+                    $('#Image1').attr("src", e.target.result);
+
+                    $('#Image1').Jcrop({
+                      
+                        onChange: SetCoordinates,
+                        onSelect: SetCoordinates
+                    });
+                }
+                reader.readAsDataURL($(this)[0].files[0]);
+
+
+            });
+            $("#cnfmcrop").click(function () {
+                debugger;
+                var xx = $(document.getElementById("btnCrop"));
+                counter = counter + 1;
+                xx.trigger("click");
+            })
+            $('#btnCrop').click(function () {
+                var x1 = $('#imgX1').val();
+
+                var y1 = $('#imgY1').val();
+                var width = $('#imgWidth').val();
+                var height = $('#imgHeight').val();
+                var canvas = $("#canvas")[0];
+                var context = canvas.getContext('2d');
+                var img = new Image();
+                img.onload = function () {
+                    debugger;
+                    canvas.height = height;
+                    canvas.width = width;
+                    context.drawImage(img, x1, y1, width, height, 0, 0, width, height);
+                    var base64 = canvas.toDataURL()
+                   $('#imgCropped').val(canvas.toDataURL());
+                   // $('#btnUpload').show();
+                };
+                img.src = $('#Image1').attr("src");
+
+
+                var data = canvas.toDataURL().toString();
+                var userid = $("#ID").val();
+                $('.eeniart0017').css("display", "block");
+                debugger;
+                $.ajax({
+                    type: "POST",
+                    url: "/AspNetEmployees/SaveImage",
+                    data: {
+                        base64: data,ID:userid
+                    },
+                    success: function () {
+                        if (counter == 1)
+                        {
+                            window.location.href = "";
+                        }
+                        $("#cnfmcrop").click();
+
+                    }
+                });
+
+
+                });
+            });
+
+        function SetCoordinates(c) {
+            $('#imgX1').val(c.x);
+            $('#imgY1').val(c.y);
+            $('#imgWidth').val(c.w);
+            $('#imgHeight').val(c.h);
+            $('#btnCrop').show();
+        };
+        </script>
+        <input type="file" id="FileUpload1" accept=".jpg,.png,.gif" style="display:none" />
+        <br />
+        <input type="button" id="btnCrop" class="btn btn-primary" value="Crop" style="border-radius:35px;border:hidden;font-size:11px;font-family:Montserrat;background-color:#128edb;height:38px;width:98px;display:none;margin:5px" />
+        <input type="button" id="cnfmcrop" class="btn btn-primary" value="Confirm Crop" style="display: none" />
+        <br /><br />
+        <div>
+            <table border="0" cellpadding="0" cellspacing="5">
+                <tr>
+                    <td>
+                        <img id="Image1" name="SRCImage" src="" alt="" />
+
+                    </td>
+                    <td>
+                        <canvas id="canvas" name="CANVAS" height="5" width="5" style="display:none"></canvas>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <br />
+        <Button ID="btnUpload" Text="Upload" OnClick="Upload" Style="display: none" />
+        <input type="hidden" name="imgX1" id="imgX1" />
+        <input type="hidden" name="imgY1" id="imgY1" />
+        <input type="hidden" name="imgWidth" id="imgWidth" />
+        <input type="hidden" name="imgHeight" id="imgHeight" />
+        <input type="hidden" name="imgCropped" id="imgCropped" />
+    </form>
+
+
+</div>

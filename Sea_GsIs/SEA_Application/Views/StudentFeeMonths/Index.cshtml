@@ -1,0 +1,534 @@
+﻿@model IEnumerable<SEA_Application.Models.StudentFeeMonth>
+
+@{
+    ViewBag.Title = "Index";
+}
+<style>
+    .inc-btn {
+        text-align: right;
+        padding-bottom: 15px;
+    }
+
+    #cre:hover {
+        background-color: #128edb !important;
+        color: #ffffff !important;
+    }
+
+    #updatestatus:hover {
+        background-color: #21cd54 !important;
+        color: #ffffff !important;
+    }
+
+    #example tr > :nth-child(1) {
+        display: none;
+    }
+
+
+    input[type='checkbox'] {
+        -webkit-appearance: none;
+        width: 30px;
+        height: 30px;
+        background: white;
+        border-radius: 5px;
+        border: 2px solid #555;
+    }
+    /* Base for label styling */
+    [type="checkbox"]:not(:checked),
+    [type="checkbox"]:checked {
+        position: absolute;
+        left: -9999px;
+    }
+
+        [type="checkbox"]:not(:checked) + label,
+        [type="checkbox"]:checked + label {
+            position: relative;
+            padding-left: 1.95em;
+            cursor: pointer;
+        }
+
+            /* checkbox aspect */
+            [type="checkbox"]:not(:checked) + label:before,
+            [type="checkbox"]:checked + label:before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 1.25em;
+                height: 1.25em;
+                border: 2px solid #ccc;
+                background: #fff;
+                border-radius: 4px;
+                box-shadow: inset 0 1px 3px rgba(0,0,0,.1);
+            }
+            /* checked mark aspect */
+            [type="checkbox"]:not(:checked) + label:after,
+            [type="checkbox"]:checked + label:after {
+                content: '\2713\0020';
+                position: absolute;
+                top: .15em;
+                left: .22em;
+                font-size: 1.3em;
+                line-height: 0.8;
+                color: #09ad7e;
+                transition: all .2s;
+                font-family: 'Lucida Sans Unicode', 'Arial Unicode MS', Arial;
+            }
+            /* checked mark aspect changes */
+            [type="checkbox"]:not(:checked) + label:after {
+                opacity: 0;
+                transform: scale(0);
+            }
+
+            [type="checkbox"]:checked + label:after {
+                opacity: 1;
+                transform: scale(1);
+            }
+    /* disabled checkbox */
+    [type="checkbox"]:disabled:not(:checked) + label:before,
+    [type="checkbox"]:disabled:checked + label:before {
+        box-shadow: none;
+        border-color: #bbb;
+        background-color: #ddd;
+    }
+
+    [type="checkbox"]:disabled:checked + label:after {
+        color: #999;
+    }
+
+    [type="checkbox"]:disabled + label {
+        color: #aaa;
+    }
+    /* accessibility */
+    [type="checkbox"]:checked:focus + label:before,
+    [type="checkbox"]:not(:checked):focus + label:before {
+        border: 2px dotted blue;
+    }
+
+    label.col-md-3.col-sm-12.col-lg-2.col-md-2 {
+        width: 13.066667%;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+
+        $("#PageHeader").html("Student Fee Months");
+
+        $("#BreadCrumbs").append(' <li> <a href="/Account/Dashboard"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Student Fee Months</a></li>');
+
+        $(document).on('change', '#MonthID', function () {
+            $('.eeniart0017').css("display", "block");
+            debugger;
+            var Month = $(this).val();
+            SelectedMonths.length = 0;
+            //  if (Month == "All") {
+            //     LoadRecord();
+            // }
+            //   else {
+            var html = '';
+            $('#StatusID').prop('selectedIndex', 0);
+
+            $.ajax({
+                type: "POST",
+                url: "/StudentFeeMonths/GetStudentDetailDDL?Month=" + Month,
+                success: function (data) {
+                    $('.eeniart0017').css("display", "none");
+
+                    table.fnClearTable();
+                    $.each(data, function (i, item) {
+                        debugger;
+                        var d = "";
+                        if (item.IssueDate != null) {
+                            var starttime = item.IssueDate;
+                            var starttimesplit = starttime.split('(')[1];
+                            var endtimesplit = starttimesplit.split(')')[0];
+                            var etsplit = parseInt(endtimesplit);
+                            var e = new Date(etsplit);
+                            var ds = e.toLocaleDateString();
+                            var ts = e.toLocaleTimeString();
+                            var d = ds + " " + ts;
+                        }
+                        //   var checkbox = '<input type="checkbox" class="check_class"  value="' + item.Id + '" name="printcheck">';
+                        var checkbox = '<input type="checkbox"   value="' + item.Id + '"class="check_class"  name="printcheck" id="test' + item.Id + '" /><label for="test' + item.Id + '"></label>';
+                        table.fnAddData([item.Id, item.Name, d, item.Months, item.Status, item.FeePayable.toFixed(), item.InstalmentAmount.toFixed(), item.Multiplier, checkbox]);
+                        //  table.fnAddData([item.Id, item.Name, item.Date, item.Month, item.Status, item.PayableFee, item.MonthlyFee, item.Multiplier, checkbox]);
+                    })
+                }
+            })
+            //  }
+
+        });
+
+        $(document).on('change', '#StatusID', function () {
+            //debugger;
+            var Month = $("#MonthID").val();
+            SelectedMonths.length = 0;
+            $('.eeniart0017').css("display", "block");
+            var Status = $(this).val();
+            $.ajax({
+                type: "POST",
+                url: "/StudentFeeMonths/GetStudentDetailDDL?Status=" + Status + "&&Month=" + Month,
+                success: function (data) {
+                    $('.eeniart0017').css("display", "none");
+                    table.fnClearTable();
+                    $.each(data, function (i, item) {
+                        var d = "";
+                        if (item.IssueDate != null) {
+                            var starttime = item.IssueDate;
+                            var starttimesplit = starttime.split('(')[1];
+                            var endtimesplit = starttimesplit.split(')')[0];
+                            var etsplit = parseInt(endtimesplit);
+                            var e = new Date(etsplit);
+                            var ds = e.toLocaleDateString();
+                            var ts = e.toLocaleTimeString();
+                            var d = ds + " " + ts;
+                        }
+                        //    var checkbox = '<input type="checkbox" class="check_class"  value="' + item.Id + '" name="printcheck">';
+                        var checkbox = '<input type="checkbox"   value="' + item.Id + '"class="check_class"  name="printcheck" id="test' + item.Id + '" /><label for="test' + item.Id + '"></label>';
+                        // table.fnAddData([item.Id, item.Name, item.Date, item.Month, item.Status, item.PayableFee, item.MonthlyFee, item.Multiplier, checkbox]);
+                        table.fnAddData([item.Id, item.Name, d, item.Months, item.Status, item.FeePayable, item.InstalmentAmount, item.Multiplier, checkbox]);
+                    })
+                }
+            })
+        });
+
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        var table = $('#example').dataTable({
+            buttons: [
+                {
+                    text: '<button value="Challan Date" class="btn btn-default" id="challan-date" data-toggle="modal" data-target="#myModal1" ><i class="fa fa-calendar"> </i>  Challan Date</button>'
+                },
+                {
+                    text: '<span class="datatableButtonsEdit"> <img src="/Content/assets/assets/icons/Icon-edit.png" alt=""> Create</span>',
+                    action: function (e, dt, button, config) {
+                        window.location.href = "/NonRecurringFeeMultipliers/Create";
+                    }
+                },
+                {
+                    text: '<span class="datatableButtonsDownload"> <img src="/Content/assets/assets/icons/Icon-download.png" alt=""> Download</span>'
+                }
+            ],
+            "language": {
+                "lengthMenu": "<div class=\"d-flex showEntriesCon\">\n" +
+                    "  <div class=\"p-2\">Show </div> <div class=\"showEntries\"> _MENU_\n" +
+                    "  </div>\n" +
+                    "  </div>",
+                "info": "<div class='showingEntriesOfTotal'>Showing <span class=\"text-info\">_START_ to _END_</span> of _TOTAL_ entries</div>",
+                "paginate": {
+                    "first": "Firstt",
+                    "last": "Lastt",
+                    "next": ' <img src="~/Content/assets/assets/icons/Arrow2.png" alt=""> ',
+                    "previous": ' <img src="~/Content/assets/assets/icons/Arrow1.png" alt=""> '
+                }
+            },
+            "searching": true,
+            // dom: '<"class">Blfrtip',
+            dom: "<'row mb-3'<'col-sm-12 col-md-2 col-lg-2'l><'col-sm-12 col-md-10 col-lg-10 datatableButtonsCon text-right'Bf>>" +
+                "<'row'<'col-sm-12 datatablesData'tr>>" +
+                "<'row mt-4'<'col-sm-12 col-md-4 col-lg-6 infoCon'i><'col-sm-12 col-md-8 col-lg-6 pagCon'p>>",
+        });
+
+        $('.table').on('click', 'tbody tr', function () {
+            debugger;
+            var td = $(this).children("td");
+
+            if ($(td).html() != "No data available in table");
+            //   window.location.href = "/StudentFeeMonths/Edit?id=" + $(td[0]).html();
+        });
+        //drawTable();
+    })
+    function drawTable() {
+
+        $('#example_length').addClass("col-lg-9 col-md-8 col-sm-12 col-xs-12");
+        $('#example_length label').addClass("col-md-3 col-sm-12 col-lg-2");
+        $("#example_length label").css("text-align", "left");
+        $('#example_length label').addClass("col-md-2 col-lg-2 col-sm-12");
+        var list = $("#Position").html();
+        $('#example_length').append(
+
+            '<div class="col-md-1 col-lg-1" style="width:0%; padding-left:1px;">' +
+            '<div class="d-bar" style="margin-top:0px;"></div>' +
+            '</div>'
+            +
+            '<div class="col-md-3 col-lg-3">' +
+            '<div class="col-md-6" style="padding:0px; margin-top:0px">' +
+            '<lable class="control-label"  style="margin-top:0px">Select Month</lable>' +
+            '</div>' +
+            '<div class="col-md-6">' +
+            '<select class="form-control  input-sm" id="MonthID" style="margin-top:0px" name="Month">' +
+            '<option value="All">All</option>'
+            + '<option value="January">January</option>' +
+            '<option value="February">February</option>' +
+            '<option value="March">March</option>' +
+            '<option value="April">April</option>' +
+            '<option value="May">May</option>' +
+            '<option value="June">June</option>' +
+            '<option value="July">July</option>' +
+            '<option value="August">August</option>' +
+            '<option value="September">September</option>' +
+            '<option value="October">October</option>' +
+            '<option value="November">November</option>' +
+            '<option value="December">December</option>' +
+            '</select>' +
+            '</div>' +
+            '</div>' +
+            '<div class="col-md-1 col-lg-1" style="width:0%; padding-left:1px;">' +
+            '<div class="d-bar" style="margin-top:0px;"></div>' +
+            '</div>'
+            +
+            '<div class="col-md-3 col-lg-3">' +
+            '<div class="col-md-6" style="padding:0px; margin-top:0px">' +
+            '<lable class="control-label"  style="margin-top:0px">Select Status</lable>' +
+            '</div>' +
+            '<div class="col-md-6">' +
+            '<select class="form-control  input-sm" id="StatusID" style="margin-top:0px" name="Status">' + list +
+            '<option value="All">All</option>' +
+            '<option value="Pending">Pending</option>' +
+            '<option value="Clear">Clear</option>' +
+            '<option value="Printed">Printed</option>' +
+            '</select>' +
+            '</div>' +
+            '</div>' +
+            '<div class="col-md-2 pull-right">' +
+            '<input type="button" value="Update Status"  class="form-control updatebtn" id="updatestatus" onclick="updatestatus()" style="border-radius:45px;border-color:#21cd54;color:#21cd54;background-color:#ffffff" />' +
+            '</div>'
+            +
+            '<div class="col-md-2 pull-right !important">' +
+            '<input type="button" class="form-control" id="cre" onclick="GetChallanForm()" value="Print Challan" style="border-radius:45px;border-color:#128edb;color:#128edb;background-color:#ffffff" />' +
+            '</div>'
+        );
+        $("#Class").prepend("<option value='0' selected>All</option>");
+    }
+
+    var Counter = 0;
+
+    var SelectedMonths = [];
+
+    function GetChallanForm() {
+        debugger;
+        var Month = $("#MonthID").val();
+        var StdId = SelectedMonths.toString();
+        if (StdId == "") {
+            $("#Error_Text").html("! Please select Student to Print Challan");
+        }
+        else if (Month == "" || Month == "All") {
+            $("#Error_Text").html("! Please select Month to Print Challan");
+
+        }
+        else {
+            window.location.href = "/StudentFeeMonths/ChallanFormView?month=" + Month + "&&idlist= " + StdId;
+        }
+    }
+
+
+    $(document).on("click", ".check_class", function () {
+        debugger;
+        var ischecked = $(this).is(':checked');
+        if (!ischecked) {
+            var selectedvalue = $(this).val();
+            var index = SelectedMonths.indexOf(selectedvalue);
+            SelectedMonths.splice(index, 1);
+        }
+        else {
+            var selectedvalue = $(this).val();
+            SelectedMonths.push(selectedvalue);
+            Counter++;
+            $("#counter").val(SelectedMonths);
+        }
+
+    });
+
+    function updatestatus() {
+        debugger;
+        $('.eeniart0017').css("display", "none");
+        var _Mnh = $("#counter").val();
+        if (_Mnh == "" || _Mnh == undefined)
+            return false;
+        $.ajax({
+            type: "POST",
+            url: "/StudentFeeMonths/GetStatusRecord?StatusRecord=" + _Mnh,
+            success: function (data) {
+                $('.eeniart0017').css("display", "none");
+                if (data != "error") {
+                    debugger;
+                    toastr.success('Success ! Status changed.')
+                    window.location.href = "/StudentFeeMonths/Index";
+                }
+                else {
+                    toastr.warning('Warning ! Pending Status cannot be changed.')
+                    return false;
+                }
+            }
+        })
+    }
+
+
+    $(document).on('click', '#SubmitDate', function () {
+        var formData = $(".dateform").serialize();
+        $('.eeniart0017').css("display", "block");
+        $.post(
+            "/StudentFeeMonths/AddChallanDate",
+            $(".dateform").serialize(),
+            function (value) {
+                debugger;
+                if (value != 'error') {
+
+                    $('.eeniart0017').css("display", "none");
+                    //   $('#myModal1').modal('hide');
+                    toastr.success('Success! Date Created.');
+                }
+                else {
+                    $('.eeniart0017').css("display", "none");
+                    toastr.error('Error! Date not Created.');
+                }
+            },
+            "text"
+        );
+    });
+    function ChallandDate() {
+        $("#myModal1").modal('show');
+    }
+    function Print() {
+        window.location.href = "/StudentFeeMonths/ChallanForm";
+    }
+    function Refresh() {
+        window.location.href = "";
+    }
+</script>
+
+<div class="inc-btn hidden">
+    <span id="Error_Text" style="margin-right:40%" class="text-danger"></span>
+    <button value="Challan Date" class="btn btn-default" id="challan-date" data-toggle="modal" data-target="#myModal1"><i class="fa fa-calendar"> </i>  Challan Date</button>
+</div>
+<input type="hidden" name="counter" id="counter" />
+
+<div class="card">
+    <div class="card-body p-4">
+
+        <div class="box box-primary">
+            <div class="box-title"></div>
+
+            <div class="box-body">
+
+                <div class="table-responsive">
+                    <table class="table table-bordered" id="example">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Id)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.AspNetStudent.Name)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.IssueDate)
+                                </th>
+                                <th>
+                                    Month
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                                <th>
+                                    Payable Fee
+                                </th>
+                                <th>
+                                    Monthly Fee
+                                </th>
+                                <th>
+
+                                    @Html.DisplayNameFor(model => model.Multiplier)
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Id)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.AspNetStudent.Name)
+
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.IssueDate)
+
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Months)
+
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Status)
+
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.FeePayable)
+
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.InstalmentAmount)
+
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Multiplier)
+                                    </td>
+
+                                    <td>
+                                        <input type="checkbox" value=@item.Id class="check_class" name="printcheck" id="test'@item.Id'" /><label for="test'@item.Id'"></label>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Challan Date</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="dateform">
+                    <div class="form-group">
+                        <label class="control-label visible-ie8 visible-ie9">Validity Date</label>
+                        <div class="input-icon">
+                            <input class="form-control placeholder-no-fix" type="date" placeholder="Validity Date" name="ValidityDate" id="vpicker" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label visible-ie8 visible-ie9">Due Date</label>
+                        <div class="input-icon">
+                            <input class="form-control placeholder-no-fix" type="date" placeholder="Due Date" name="DueDate" id="epicker" required>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="SubmitDate" data-dismiss="modal">Save</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,201 @@
+﻿@model SEA_Application.Models.AspNetAttendance
+
+
+<script src="~/AdminLTE/selectone.js"></script>
+
+<script type="text/javascript">
+
+
+
+    $(document).ready(function () {
+
+        var classcookieval = null;
+        var allcookies = document.cookie;
+
+
+        $('#Comment_Save').prop('disabled', true);
+
+        // Get all the cookies pairs in an array
+        cookiearray = allcookies.split(';');
+
+        // Now take key value pair out of this array
+        for (var i = 0; i < cookiearray.length; i++) {
+            name = cookiearray[i].split('=')[0];
+            value = cookiearray[i].split('=')[1];
+
+            console.log(cookiearray[i]);
+
+            if (cookiearray[i].split('=')[0] == " ClassCookieassessment" || cookiearray[i].split('=')[0] == "ClassCookieattendance") {
+                classcookieval = cookiearray[i].split('=')[1];
+
+            }
+
+
+        }
+
+
+        $("#ClassID").click(function () {
+            var selectedClass = $("#ClassID").val();
+             $.get('@Url.Action("StudentsByClass_Principal", "TermAssessment")',
+                { id: selectedClass }, function (data) {
+                    //console.log(data);
+                    $('#StudentTable').html(' ');
+                    if (data == "") {
+                        $('#StudentTable').append("<tr><td>No Term Found</td><td></td><td></td></tr>");
+                    }
+                    $.each(data, function (i, item) {
+
+                        var Status ;
+                        if (item.Status == "pending") {
+                            Status = "<span class='glyphicon glyphicon-question-sign text-danger'></span>";
+                        } else if (item.Status == "ok") {
+                            Status = "<span class='glyphicon glyphicon-ok-circle text-success'></span>";
+                        } else if (item.Status == "not submitted") {
+                            Status = "<span style='color:moccasin' class='glyphicon glyphicon-exclamation-sign'></span>";
+                        }
+                        if(Status == null){Status = "-" }
+                        $('#StudentTable').append("<tr id=" + item.Id + "><td><div>" + item.Name + "</div> </td><td><a id='" + item.Id + "' href='#' + onclick ='Student_Evaluation(this)' >Evaluate Student</a></td><td>" + Status + "</td></tr>");
+                    });
+
+                });
+        });
+
+
+
+    });
+
+    function Student_Evaluation(item) {
+
+        $('#hidden').val(item.id);
+
+        var name = item.closest("tr");
+        name = $(name).find("td div");
+        name = $(name).html();
+        $("#StudentName").html(name);
+
+        name = item.closest("tr");
+        $("#trId").val(name.id);
+
+        $.ajax({
+            type: "POST",
+            url: "/TermAssessment/ClassEvaluation",
+            data: { 'StudentId': item.id , "type":"Principle"},
+            success: function (data) {
+
+                $('#Evaluation_data').html(data);
+                $('Comment_Evaluation').prop('disabled', false);
+                $("#Principle_Comment").val("");
+                $('Principle_Comment').prop('disabled', false);
+            }
+        });
+    }
+
+
+        function submit_Evaluation(){
+            var classID = $("#ClassID").val();
+            var studentId = $("#hidden").val();
+            var comment = $("#Principle_Comment").val();
+
+            $.get('@Url.Action("submit_Evaluation_Teacher","TermAssessment")',
+               { StudentId: studentId, ClassID: classID, Comment: comment }, function () {
+                   $("#Evaluation_Question_Table").find("select,input,textarea").attr("disabled", true);
+                   $('#Comment_Save').prop('disabled', true);
+                   $('#Principle_Comment').prop('disabled', true);
+
+
+               });
+
+            var id = $("#trId").val();
+            id = "#" + id;
+            $(id).find("td span").removeClass();
+            $(id).find("td span").addClass("glyphicon glyphicon-ok-circle text-success");
+            $(id).find("td span").css({ "color": "#3c763d" })
+        }
+
+</script>
+
+<label>Home > User > <span class="text-primary">Assessment</span></label>
+<h4>Students</h4>
+<label id="View">Class Assessment</label>
+
+<div class="row">
+    <div class="col-md-12">
+    <div class="box box-primary">
+        <div class="box-body">
+            <div class="form-horizontal">
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <lable class="col-md-3 control-label"><b>Select Class</b></lable>
+                        <div class="col-md-8">
+                            @Html.DropDownList("ClassID", null, htmlAttributes: new { @class = "form-control" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div></div>
+    </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12">
+            <div class="box box-primary">
+                <div class="box-title"></div>
+                <hr />
+                <div class="box-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Evaluation</th>
+                                <th>Status<input id="hidden" value="empty" type="hidden" /></th>
+                            </tr>
+                        </thead>
+                        <tbody id="StudentTable"></tbody>
+                    </table>
+                </div>
+            </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="box box-primary">
+                    <span id="StudentName" class="text-success evaluate"></span>
+                    <input type="hidden" id="trId" />
+                    <div id="Evaluation_data">
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <label class="col-md-2 control-label">Principle Comment</label>
+                        <textarea class="col-md-6 margin-bottom" id="Principle_Comment"></textarea>
+                    </div>
+                    <div class="box-footer">
+                        <button type="button" id="Comment_Save" class="col-md-offset-5 btn btn-primary" data-toggle="modal" data-target="#myModal">Submit</button>
+                    </div>
+                    <div id="partial">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!----------------------------------------------------------------------------------->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        After submitting you won't be able to change data
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" onclick="submit_Evaluation()" data-dismiss="modal">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+

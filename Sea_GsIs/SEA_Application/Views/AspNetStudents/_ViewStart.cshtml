@@ -1,0 +1,15 @@
+﻿
+
+
+@if (this.User.IsInRole("Branch_Admin"))
+{
+    Layout = "~/Views/Shared/_BranchAdminDashboardLayout.cshtml";
+}
+else if (this.User.IsInRole("Accountant"))
+{
+   Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+}
+else
+{
+
+}

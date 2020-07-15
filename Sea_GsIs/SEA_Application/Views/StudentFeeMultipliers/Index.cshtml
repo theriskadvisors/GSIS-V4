@@ -1,0 +1,175 @@
+﻿@model IEnumerable<SEA_Application.Models.StudentFeeMultiplier>
+
+@{
+    ViewBag.Title = "Index";
+}
+<style>
+    #cre:hover {
+        background-color: #128edb !important;
+        color: #ffffff !important;
+    }
+
+    #refresh:hover {
+        background-color: #21cd54 !important;
+        color: #ffffff !important;
+    }
+
+    #example tr > :nth-child(1) {
+        display: none;
+    }
+</style>
+<h2></h2>
+<script>
+    $(document).ready(function () {
+        $("#PageHeader").html("Student Fee Multiplier");
+
+        $("#BreadCrumbs").append('<li> <a href="/FinanceSummary/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append('<li class="active"> <a id="BreadCrumps1" href="#">Student Fee Multiplier</a></li>');
+
+
+        var table = $('#datatable').dataTable({
+            buttons: [
+                {
+                    //text: '<span class="datatableButtonsReset"> <img src="/Content/assets/assets/icons/Icon-Reset2.png" alt=""> Increment</span>',
+                    //action: function (e, dt, button, config) {
+                    //    window.location.href = "/EmployeeSalaries/IncrementHistory";
+                    //}
+                },
+                {
+                    text: '<span class="datatableButtonsEdit"> <img src="/Content/assets/assets/icons/Icon-edit.png" alt=""> Create</span>',
+                    action: function (e, dt, button, config) {
+                        window.location.href = "/StudentFeeMultipliers/Create";
+                    }
+                },
+                {
+                    // text: '<span class="datatableButtonsDownload"> <img src="/Content/assets/assets/icons/Icon-download.png" alt=""> Download</span>'
+                }
+            ],
+            "language": {
+                "lengthMenu": "<div class=\"d-flex showEntriesCon\">\n" +
+                    "  <div class=\"p-2\">Show </div> <div class=\"showEntries\"> _MENU_\n" +
+                    "  </div>\n" +
+                    "  </div>",
+                "info": "<div class='showingEntriesOfTotal'>Showing <span class=\"text-info\">_START_ to _END_</span> of _TOTAL_ entries</div>",
+                "paginate": {
+                    "first": "Firstt",
+                    "last": "Lastt",
+                    "next": ' <img src="~/Content/assets/assets/icons/Arrow2.png" alt=""> ',
+                    "previous": ' <img src="~/Content/assets/assets/icons/Arrow1.png" alt=""> '
+                }
+            },
+            "searching": true,
+            // dom: '<"class">Blfrtip',
+            dom: "<'row mb-3'<'col-sm-12 col-md-2 col-lg-2'l><'col-sm-12 col-md-10 col-lg-10 datatableButtonsCon text-right'Bf>>" +
+                "<'row'<'col-sm-12 datatablesData'tr>>" +
+                "<'row mt-4'<'col-sm-12 col-md-4 col-lg-6 infoCon'i><'col-sm-12 col-md-8 col-lg-6 pagCon'p>>",
+        });
+
+        //$('.table').on('click', 'tbody tr', function () {
+        //    debugger;
+        //    var td = $(this).children("td");
+
+        //    if ($(td).html() != "No data available in table");
+        //    window.location.href = "/StudentFeeMultipliers/Edit?id=" + $(td[0]).html();
+        //});
+        //drawTable();
+    })
+    function Create() {
+        window.location.href = "/StudentFeeMultipliers/Create";
+    }
+    function Refresh() {
+        window.location.href = "";
+    }
+
+
+</script>
+
+<div class="card">
+    <div class="card-body p-4">
+        <div class="box box-primary">
+            <div class="box-body">
+                <div class="table-responsive">
+                    <table class="table" id="datatable">
+                        <thead>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Id)
+                                </th>
+                                <th>
+                                    <span>Student Name</span>
+                                </th>
+                                <th>
+                                    <span>Total Fee</span>
+                                </th>
+                                <th>
+                                    <span>Paid Amount</span>
+                                </th>
+                                <th>
+                                    <span>Remaining Amount</span>
+                                </th>
+                                <th>
+                                    <span>Share Per Instalment</span>
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Instalments)
+                                </th>
+                                <th>
+                                    <span>Paid Instalment</span>
+                                </th>
+                                <th>
+                                    <span>Remaining Instalment</span>
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Multiplier)
+                                </th>
+                            </tr>
+                        </thead>
+
+
+                        @foreach (var item in Model)
+                        {
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Id)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.AspNetStudent.Name)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.TutionFee)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.PaidAmount)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.RemainingAmount)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.SharePerInstalment)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Instalments)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.PaidInstalments)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.RemainingInstalments)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Multiplier)
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+
+                        }
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

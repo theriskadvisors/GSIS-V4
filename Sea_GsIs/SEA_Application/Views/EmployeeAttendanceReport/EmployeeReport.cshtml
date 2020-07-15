@@ -1,0 +1,307 @@
+﻿
+@{
+    ViewBag.Title = "EmployeeReport";
+}
+
+<h2>EmployeeReport</h2>
+
+<script>
+    $(document).ready(function () {
+
+        $("input[type='radio']").on("change", function () {
+            RadioResult();
+
+        })
+       var value= $("#username").val();
+        $.ajax({
+            type: "POST",
+            url: "/EmployeeAttendanceReport/GetAttendanceDetail",
+            data:{Id:value},
+            success: function (data) {
+                debugger;
+                $('.eeniart0017').css("display", "none");
+                $('#submission_table').html('');
+              //  table.fnClearTable();
+                $("#submitiontable").html('');
+                $.each(data, function (i, item) {
+                    debugger;
+                    var ab = item.Date;
+                    if (item.Date != null) {
+                        var time = item.Date;
+                        var startsplit = time.split('(')[1];
+                        var endsplit = startsplit.split(')')[0];
+                        var endsp = parseInt(endsplit);
+                        var d = new Date(endsp);
+                        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                        var mm = months[new Date(endsp).getMonth()];
+                        var dd = new Date(endsp).getDate();
+                        var yy = new Date(endsp).getFullYear();
+                        ab = dd + ' ' + mm + ' ' + yy;
+                    }
+                    var timein = "";
+                    if (item.TimeIn != null) {
+                        var tin = item.TimeIn;
+                        var h = tin.Hours;
+                        var m = tin.Minutes;
+                        var s = tin.Seconds;
+                        timein = h + ':' + m + ':' + s;
+                    }
+                    var timeout = "";
+                    if (item.TimeOut != null) {
+                        var tout = item.TimeOut;
+                        var hh = tout.Hours;
+                        var mm = tout.Minutes;
+                        var ss = tout.Seconds;
+                        timeout = hh + ':' + mm + ':' + ss;
+                    }
+                    var Shiftlength = "";
+                    if (item.ShiftLength != null) {
+                        var tout = item.ShiftLength;
+                        var hh = tout.Hours;
+                        var mm = tout.Minutes;
+                        var ss = tout.Seconds;
+                        Shiftlength = hh + ':' + mm + ':' + ss;
+                    }
+                    $("#submitiontable").append('<tr><td>' + item.Name + '</td><td>' + item.Status + '</td><td>' + ab + '</td><td>' + item.Day + '</td><td>' + timein + '</td><td>' + timeout + '</td><td>' + Shiftlength + '</td><td>' + item.IP_Address + '</td></tr>');
+                   // table.fnAddData([item.Name,item.UserName, ab,item.Day, timein, timeout, item.IP_Address]);
+                })
+
+            }
+        })
+    })
+    function RangeDateFilter() {
+        $("#message").html("");
+
+        var start = $("#start").val();
+        var end = $("#end").val();
+        var cellnumber = $("#username").val();
+        if (start == "" || end == "") {
+            $("#message").append("Please select a Start and End date");
+
+        }
+
+
+        $.ajax({
+            type: "POST",
+            url: "/EmployeeAttendanceReport/RangeDateFilter",
+            data: { Id: cellnumber, start: start, end: end },
+            success: function (data) {
+                $("#submitiontable").html('');
+                $.each(data, function (i, item) {
+
+                var ab = item.Date;
+                if (item.Date != null) {
+                    var time = item.Date;
+                    var startsplit = time.split('(')[1];
+                    var endsplit = startsplit.split(')')[0];
+                    var endsp = parseInt(endsplit);
+                    var d = new Date(endsp);
+                    var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                    var mm = months[new Date(endsp).getMonth()];
+                    var dd = new Date(endsp).getDate();
+                    var yy = new Date(endsp).getFullYear();
+                    ab = dd + ' ' + mm + ' ' + yy;
+                }
+                var timein = "";
+                if (item.TimeIn != null) {
+                    var tin = item.TimeIn;
+                    var h = tin.Hours;
+                    var m = tin.Minutes;
+                    var s = tin.Seconds;
+                    timein = h + ':' + m + ':' + s;
+                }
+                var timeout = "";
+                if (item.TimeOut != null) {
+                    var tout = item.TimeOut;
+                    var hh = tout.Hours;
+                    var mm = tout.Minutes;
+                    var ss = tout.Seconds;
+                    timeout = hh + ':' + mm + ':' + ss;
+                }
+                var Shiftlength = "";
+                if (item.ShiftLength != null) {
+                    var tout = item.ShiftLength;
+                    var hh = tout.Hours;
+                    var mm = tout.Minutes;
+                    var ss = tout.Seconds;
+                    Shiftlength = hh + ':' + mm + ':' + ss;
+                }
+                $("#submitiontable").append('<tr><td>' + item.Name + '</td><td>' + item.Status + '</td><td>' + ab + '</td><td>' + item.Day + '</td><td>' + timein + '</td><td>' + timeout + '</td><td>' + Shiftlength + '</td><td>' + item.IP_Address + '</td></tr>');
+                })
+            }
+        });
+
+    }
+
+    function RadioResult() {
+        var radioValue = $("input[name='options']:checked").val();
+        var username = $("#username").val();
+        debugger;
+        $.ajax({
+            type: "POST",
+            url: "/EmployeeAttendanceReport/RadioResult",
+            data: { radioValue: radioValue ,Id:username},
+            success: function (data) {
+                $("#submitiontable").html('');
+
+                $.each(data, function (i, item) {
+
+                    var ab = item.Date;
+                    if (item.Date != null) {
+                        var time = item.Date;
+                        var startsplit = time.split('(')[1];
+                        var endsplit = startsplit.split(')')[0];
+                        var endsp = parseInt(endsplit);
+                        var d = new Date(endsp);
+                        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                        var mm = months[new Date(endsp).getMonth()];
+                        var dd = new Date(endsp).getDate();
+                        var yy = new Date(endsp).getFullYear();
+                        ab = dd + ' ' + mm + ' ' + yy;
+                    }
+                    var timein = "";
+                    if (item.TimeIn != null) {
+                        var tin = item.TimeIn;
+                        var h = tin.Hours;
+                        var m = tin.Minutes;
+                        var s = tin.Seconds;
+                        timein = h + ':' + m + ':' + s;
+                    }
+                    var timeout = "";
+                    if (item.TimeOut != null) {
+                        var tout = item.TimeOut;
+                        var hh = tout.Hours;
+                        var mm = tout.Minutes;
+                        var ss = tout.Seconds;
+                        timeout = hh + ':' + mm + ':' + ss;
+                    }
+                    var Shiftlength = "";
+                    if (item.ShiftLength != null) {
+                        var tout = item.ShiftLength;
+                        var hh = tout.Hours;
+                        var mm = tout.Minutes;
+                        var ss = tout.Seconds;
+                        Shiftlength = hh + ':' + mm + ':' + ss;
+                    }
+                    $("#submitiontable").append('<tr><td>' + item.Name + '</td><td>' + item.Status + '</td><td>' + ab + '</td><td>' + item.Day + '</td><td>' + timein + '</td><td>' + timeout + '</td><td>' + Shiftlength + '</td><td>' + item.IP_Address + '</td></tr>');
+                })
+            }
+        });
+    }
+
+    function Status() {
+
+        var username = $("#username").val();
+        var value = $("#status").val();
+        debugger;
+        $.ajax({
+            type: "POST",
+            url: "/EmployeeAttendanceReport/EmployeeReportStatus",
+            data: { Id: username, status: value },
+            success: function (data) {
+                debugger;
+                $("#submitiontable").html('');
+
+                $.each(data, function (i, item) {
+                    debugger;
+                    var ab = item.Date;
+                    if (item.Date != null) {
+                        var time = item.Date;
+                        var startsplit = time.split('(')[1];
+                        var endsplit = startsplit.split(')')[0];
+                        var endsp = parseInt(endsplit);
+                        var d = new Date(endsp);
+                        var months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+                        var mm = months[new Date(endsp).getMonth()];
+                        var dd = new Date(endsp).getDate();
+                        var yy = new Date(endsp).getFullYear();
+                        ab = dd + ' ' + mm + ' ' + yy;
+                    }
+                    var timein = "";
+                    if (item.TimeIn != null) {
+                        var tin = item.TimeIn;
+                        var h = tin.Hours;
+                        var m = tin.Minutes;
+                        var s = tin.Seconds;
+                        timein = h + ':' + m + ':' + s;
+                    }
+                    var timeout = "";
+                    if (item.TimeOut != null) {
+                        var tout = item.TimeOut;
+                        var hh = tout.Hours;
+                        var mm = tout.Minutes;
+                        var ss = tout.Seconds;
+                        timeout = hh + ':' + mm + ':' + ss;
+                    }
+                    var Shiftlength = "";
+                    if (item.ShiftLength != null) {
+                        var tout = item.ShiftLength;
+                        var hh = tout.Hours;
+                        var mm = tout.Minutes;
+                        var ss = tout.Seconds;
+                        Shiftlength = hh + ':' + mm + ':' + ss;
+                    }
+                    $("#submitiontable").append('<tr><td>' + item.Name + '</td><td>' + item.Status + '</td><td>' + ab + '</td><td>' + item.Day + '</td><td>' + timein + '</td><td>' + timeout + '</td><td>' + Shiftlength + '</td><td>' + item.IP_Address + '</td></tr>');
+                })
+            }
+        });
+    }
+</script>
+<div class="box box-primary">
+    <div class="box-body">
+        <div class="col-md-2">
+            <select class="form-control round-border" onchange="Status()" id="status">
+                <option value="Present">Present</option>
+                <option value="Absent">Absent</option>
+            </select>
+        </div>
+        <div class="col-md-6">
+            <div class="col-md-5">
+                <div class="col-md-3 pull-left !Important"><span style="font-family:Montserrat">From: </span> </div>
+                <div class="col-md-9 pull-right !Important">
+                    <input type="date" id="start" class="form-control round-border" />
+                </div>
+            </div>
+            <div class="col-md-5">
+                <div class="col-md-3 pull-left !Important"><span style="font-family:Montserrat">To: </span> </div>
+                <div class="col-md-9 pull-right">
+                    <input type="date" id="end" class="form-control round-border" />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <input type="submit" onclick="RangeDateFilter()" class="btn btn-default" id="range" value="Go" />
+            </div>
+            <span class="col-md-8 col-md-offset-2" style="font-family:Montserrat;color:red;" id="message"></span>
+        </div>
+        <div class="col-md-2 pull-right">
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-default">
+                    <input type="radio" name="options" value="Day" id="1st"><span style="color:black">Day</span>
+                </label>
+                <label class="btn btn-default">
+                    <input type="radio" name="options" value="Week" id="1st"><span style="color:black">Week</span>
+                </label>
+                <label class="btn btn-default">
+                    <input type="radio" name="options" value="Month" id="1st"><span style="color:black">Month</span>
+                </label>
+
+            </div>
+        </div>
+        <input type="hidden" value="@ViewBag.User" id="username" />
+        <table class="table table-bordered table-striped" id="example">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                    <th>Day</th>
+                    <th>Time In</th>
+                    <th>Time Out</th>
+                    <th>Shift Length</th>
+                    <th>IP Address</th>
+                </tr>
+            </thead>
+            <tbody id="submitiontable"></tbody>
+        </table>
+    </div>
+</div>

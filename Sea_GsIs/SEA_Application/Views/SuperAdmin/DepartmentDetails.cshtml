@@ -1,0 +1,163 @@
+﻿@model SEA_Application.Models.AspNetDepartment
+@{
+    ViewBag.Title = "Edit";
+}
+<script>
+    function onCancel() {
+        $('#cancel').click();
+    }
+    function onSave() {
+        $('#FormSubmit').click();
+
+    }
+
+
+    $(document).ready(function () {
+        $('input').prop('disabled', true)
+        $('select').prop('disabled', true)
+    });
+
+
+
+</script>
+<h4 class="orange">Employee Detail</h4>
+<div class="row" style="padding-bottom: 10px; padding-top: 10px; padding-left: 20px; padding-right: 20px;">
+    @*<button class="btn btn-danger pull-left btn-sm" onclick="onCancel()">
+            Cancel
+        </button>
+        <button class="pull-right" style="background-color: transparent; border: none; outline: none; font-size: 20px; color: rgb(89, 89, 89) !important" onclick="onSave()">
+            <i class="fa fa-floppy-o"></i>
+        </button>*@
+</div>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @*<h4>AspNetEmployee</h4>*@
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.HeadId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @Html.EditorFor(model => model.AspNetUser.Email, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-lg-offset-2 col-md-2">
+                <button type="button" id="cancel" class="btn btn-default" onclick="window.history.back()">Back</button>
+                @Html.ActionLink("Edit", "EditDepartment", new { id = Model.Id }, new { @class = "btn btn-danger" })
+                <button type="button" class="btn btn-danger" data-command-remove>Disable</button>
+            </div>
+        </div>
+        
+    </div>
+}
+
+<div id="modal-confirm-delete" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h3>Do you really want to delete this term?</h3>
+                </div>
+                <div class="modal-body text-danger">
+                    This action is <em>irreversible</em> and will result in the following:
+                    <ul>
+                        <li>Delete the courses in the department from the classes in which the courses are enrolled.</li>
+                        <li>Delete the courses in the department.</li>
+                        <li>Delete the department from the school.</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-button-delete-confirm data-item-id>Delete</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-delete-success" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h3>Successfully deleted the department</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-delete-error" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h3>Could not delete the department</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#modal-delete-success').on('hidden.bs.modal', function () {
+            location.href = '@Url.Action("ViewDepartments")';
+        });
+    });
+
+    (function handleCommandRemove() {
+        $('[data-command-remove]').click(function () {
+            $('#modal-confirm-delete button[data-button-delete-confirm]').attr('data-item-id', getParameterByName('id'));
+            $('#modal-confirm-delete').modal({
+                'show': true,
+                'keyboard': false,
+                'backdrop': false
+            });
+            return false;
+        });
+
+        $('#modal-confirm-delete button[data-button-delete-confirm]').click(function () {
+            var id = $(this).attr('data-item-id');
+            $(this).attr('data-item-id', '');
+            $('#progress-table-update').css('visibility', 'visible');
+            $('#modal-confirm-delete').modal('hide');
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("DeleteDepartment")',
+                data: {
+                    'id': id
+                },
+                success: function (result) {
+                    if (result) {
+                        $('#modal-delete-success').modal('show');
+                    } else {
+                        $('#modal-delete-error').modal('show');
+                    }
+                    $('#progress-table-update').css('visibility', 'hidden');
+                },
+                error: function (xhr) {
+                    $('#modal-delete-error').modal('show');
+                    $('#progress-table-update').css('visibility', 'hidden');
+                    console.log(xhr.responseText);
+                }
+            })
+        });
+    })();
+</script>

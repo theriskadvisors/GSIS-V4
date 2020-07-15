@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Add Class Subjects</h2>
+
+<div class="tab-pane active" id="tab_1">
+    <div class="card">
+        <div class="card-body p-4">
+
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div class="box-body">
+                        <div class="box-header with-border"><h3 class="orange">Upload Excel File &nbsp; <i class="fa fa-file-excel-o" aria-hidden="true"></i></h3></div>
+                        <div class="col-md-6 col-sm-6 col-lg-6 tab-pane" style="margin-left:30px;border-radius:8px;margin-top:30px" id="changediv">
+
+                            <div class="form-three widget-shadow">
+                                @using (Html.BeginForm("ClassCoursefromFile", "BranchAdmin", FormMethod.Post, new { enctype = "multipart/form-data", @id = "RegisterForm" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                    <input id="teachers" required="required" name="Class_Course" type="file" />
+                                    @*<div class="form-group">
+                                            <div class="control-label col-md-3"><b>Excel File</b></div>
+                                            <div class="col-md-4">
+                                                <input id="teachers" required="required" name="Class_Course" type="file" />
+
+                                            </div>
+                                        </div>*@
+                                    <br />
+                                    <br />
+
+                                }
+                                @*<div class="col-md-12 col-sm-12 col-lg-12">
+                                        <hr />
+                                        <br />
+
+                                        <button class="col-md-2 form-control" onclick="window.location.href='/SubjectGroups/Class_CourseIndex'" style="border-radius:35px;border:hidden;margin-right:10px;background-color:red;color:white;font-size:11px;width:98px;height:38px;font-family:Montserrat" id="return"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Return</button>
+
+                                        <input class="col-md-2 form-control" id="submit" type="submit" form="RegisterForm" value="Save" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />
+
+                                        <br /><br /><br />
+                                    </div>*@
+                                <div class="col-md-8 pl-5 pr-5 ">
+                                    <button type="submit" id="submit" form="RegisterForm" value="Save" class="btn btn-primary rounded rounded-lg"> Save </button>
+
+
+
+                                    <button type="button" id="btnCancel" onclick="window.location.href='/SubjectGroups/Class_CourseIndex'" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                                        <i class="material-icons mr-2">cached</i>  Cancel
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,480 @@
+﻿@model SEA_Application.Models.AspnetSubjectTopic
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
+}
+
+<style>
+
+    .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        height: 1000px !important;
+    }
+
+    .form-horizontal {
+        background-color: #fff;
+        /* margin: 10px; */
+        margin-left: 5px;
+    }
+
+    textarea {
+        width: 557px;
+        height: 126px;
+    }
+</style>
+
+
+
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+
+        var DropDown = $("#DropdownHiddenValue").val();
+        if (DropDown != "") {
+
+            $('#OrderBy').val(DropDown);
+        }
+
+        $("#btnCancel").click(function () {
+
+            window.location.href = "/AspnetSubjectTopics/Index";
+        })
+
+        $("#PageHeader").html("Edit Topic");
+
+        $("#BreadCrumbs").append(' <li> <a  href="/Teacher/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li> <a href="/AspnetSubjectTopics/ViewTopicsAndLessons"> Topic </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Edit</a></li>');
+
+
+        $("#btnCancel").click(function () {
+
+            window.location.href = "/AspnetSubjectTopics/ViewTopicsAndLessons";
+        })
+
+        var TopicId = $("#Id").val();
+
+        $("#CreateLesson").click(function () {
+
+            window.location.href = "/AspnetLessons/Create?id=" + TopicId;
+
+        });
+        $("#CreateQuestion").click(function () {
+
+            window.location.href = "/AspnetQuestions/Create?id=" + TopicId;
+
+        });
+
+
+
+        $('#BranchId').change(function () {
+
+            var BranchId = $(this).val();
+
+            if (BranchId != "") {
+
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/AspNetProject/ClassesByBranch?BranchId=" + BranchId,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#ClassId");
+                        $el.empty();
+                        var $e2 = $("#SubjectId");
+                        $e2.empty();
+
+                        var $e3 = $("#SectionId");
+                        $e3.empty();
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Class'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Class'));
+                        }
+                    }
+                });
+            }
+            else {
+                var $el = $("#ClassId");
+                $el.empty();
+                var $e2 = $("#SubjectId");
+                $e2.empty();
+
+                var $e3 = $("#SectionId");
+                $e3.empty();
+
+            }
+
+        });
+
+        $('#ClassId').change(function () {
+
+            var ClassId = $(this).val();
+            //Class = UserName;
+
+            if (ClassId != "") {
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#SectionId");
+                        $el.empty();
+                        var $e2 = $("#SubjectId");
+                        $e2.empty();
+                        debugger
+
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Section'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Section'));
+                        }
+                    }
+                });
+            }
+
+            else {
+
+                var $el = $("#SectionId");
+                $el.empty();
+
+                var $e2 = $("#SubjectId");
+                $e2.empty();
+
+            }
+
+        });
+
+
+
+        $('#SectionId').change(function () {
+
+            var SectionId = $(this).val();
+            //Class = UserName;
+
+            if (SectionId != "") {
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/AspNetProject/SubjectsByClass?SectionId=" + SectionId,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#SubjectId");
+                        $el.empty();
+
+
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Section'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Section'));
+                        }
+                    }
+                });
+            }
+
+            else {
+
+                var $el = $("#SubjectId");
+                $el.empty();
+
+
+
+            }
+
+        });
+
+
+
+        $("#DeleteButton").click(function () {
+
+            var Id = $("#Id").val();
+
+            // window.location.href = "/AspnetSubjectTopics/Delete";
+
+            window.location.href = "/AspnetSubjectTopics/DeleteTopic?id=" + Id;
+
+        })
+
+
+
+        $("#OrderBy").change(function () {
+
+
+            OrderBy();
+
+
+        })
+
+        $("#SubjectId").change(function () {
+
+            OrderBy();
+        })
+
+
+    })
+
+
+
+
+    function OrderBy() {
+
+        var SubjectId = $("#SubjectId").val();
+        var OrderBy = $("#OrderBy").val();
+
+
+
+        if (SubjectId != null && SubjectId != "" && OrderBy != "" && OrderBy != null) {
+
+
+
+            $.ajax({
+
+                type: "POST",
+                url: '/AspnetSubjectTopics/CheckTopicOrderBy',
+                data: { "SubjectId": SubjectId, "OrderBy": OrderBy },
+                success: function (data) {
+
+                    if (data == "Yes") {
+
+
+                        $("#SaveButton").attr("disabled", true);
+
+                        $("#ErrorOrderBy").html("Selected order is already assigned to a topic of same subject.");
+                    }
+                    else {
+
+                        $("#SaveButton").attr("disabled", false);
+                        $("#ErrorOrderBy").html("");
+
+                    }
+
+
+
+                }
+            })
+
+        }
+
+        else {
+            $("#SaveButton").attr("disabled", false);
+            $("#ErrorOrderBy").html("");
+
+        }
+
+
+    }
+</script>
+
+@*<div class="box-header with-border"><h3 class="orange">Edit Topic<span class="red-mark">*</span></h3></div>*@
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body p-5">
+
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="col-md-8 pl-5 pr-5 ">
+
+
+
+
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.Id)
+                        <div class="form-group bmd-form-group is-filled">
+                            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "bmd-label-floating" })
+
+                            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @required = true } })
+                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+
+                        </div>
+
+                        <div class="form-group bmd-form-group is-filled">
+                            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "bmd-label-floating" })
+
+                            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+
+                        </div>
+
+                        @*<div class="form-group">
+                                <label class="col-md-2 col-lg-2 control-label"> Section:<span class="red-mark">*</span></label>
+                                <div class="col-md-6">
+                                    @Html.DropDownList("ClassID", null, htmlAttributes: new { @class = "form-control text_box_style", @required = true })
+
+                                    <span style="color:red"> @ViewBag.SubjectsErrorMsg</span>
+                                </div>
+
+                            </div>*@
+
+
+                        <div class="form-row mt-4">
+                            <div class="form-group col-md-12 bmd-form-group">
+
+                                <label for="" class="bmd-label-static pl-2">Select Branch*</label>
+
+                                @Html.DropDownList("BranchId", null, htmlAttributes: new { @class = "form-control", @required = true })
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-row mt-4">
+                            <div class="form-group col-md-12 bmd-form-group">
+
+                                <label for="" class="bmd-label-static pl-2">Select Class *</label>
+
+                                @Html.DropDownList("ClassId", null, htmlAttributes: new { @class = "form-control", @required = true })
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-row mt-4">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <label for="" class="bmd-label-static pl-2">Select Section *</label>
+
+                                @Html.DropDownList("SectionId", null, htmlAttributes: new { @class = "form-control", @required = true })
+
+                            </div>
+                        </div>
+
+                        <div class="form-row mt-4">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <label for="" class="bmd-label-static pl-2">Select Subject *</label>
+
+                                @Html.DropDownList("SubjectId", null, htmlAttributes: new { @class = "form-control", @required = true })
+
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-row mt-4">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <label for="" class="bmd-label-static pl-2">Order By </label>
+                                <input type="hidden" name="name" id="DropdownHiddenValue" value="@ViewBag.OrderBy" />
+
+                                <select class="form-control" id="OrderBy" name="OrderBy" required>
+
+                                    <option value="">Select One</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+
+                                </select>
+                                <br />
+
+
+                                <span id="ErrorOrderBy" style="color:red"></span>
+
+                            </div>
+                        </div>
+
+
+
+
+
+                        @*<div class="form-group">
+                                @Html.LabelFor(model => model.FAQ, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-6">
+                                    @Html.TextAreaFor(model => model.FAQ, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.FAQ, "", new { @class = "text-danger" })
+                                </div>
+                            </div>*@
+
+                        @*<div class="form-group">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <input type="submit" value="Save" class="btn btn-default" />
+                                </div>
+                            </div>*@
+
+
+
+
+                    </div> <!--end column-->
+                    <br>
+                    <br>
+
+
+                    <div class="col-md-8 pl-5 pr-5 ">
+
+
+                        @if (ViewBag.LessonCount == 0)
+                        {
+                            <button type="button" id="DeleteButton" class="btn btn-danger  rounded rounded-lg"> Delete </button>
+                        }
+                        <button id="CreateQuestion" type="button" class="btn btn-success rounded rounded-lg"> Create Question </button>
+
+
+                        <button id="CreateLesson" type="button" class="btn btn-primary rounded rounded-lg"> Create Lesson </button>
+
+                        <button type="submit" id="SaveButton" class="btn btn-primary rounded rounded-lg"> Update </button>
+
+                        <button type="button" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                            <i class="material-icons mr-2">cached</i>  Cancel
+                        </button>
+
+
+
+
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>

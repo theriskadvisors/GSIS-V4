@@ -1,0 +1,182 @@
+﻿@model SEA_Application.Models.AspNetSession
+<h2>Details</h2>
+
+<div class="box box-primary">
+    <div class="box-body">
+        
+        @{
+            ViewBag.Title = "Edit";
+        }
+        
+        @using (Html.BeginForm("EditSession", "SuperAdmin"))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <h4>Session</h4>
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.Id)
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Year, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.Year, new { htmlAttributes = new { @class = "form-control dual" } })
+                        @Html.ValidationMessageFor(model => model.Year, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control dual" } })
+                        @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control dual" } })
+                        @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AspNetStatu.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.AspNetStatu.Name, new { htmlAttributes = new { @class = "form-control dual" } })
+                        @Html.ValidationMessageFor(model => model.AspNetStatu.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Next, new { @class = "col-md-2 control-label" }) 
+                    <div class="col-md-6">
+                        @*@Html.EditorFor(model => model.Next, new { htmlAttributes = new { @class = "form-control dual" } })*@
+                        @Html.DropDownList("Next", null, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Next, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                @*<div class="form-group">
+                    <div class="col-md-offset-2 col-md-2">
+                        <button type="button" id="cancel" class="btn btn-default" onclick="window.history.back()">Back</button>
+                        @Html.ActionLink("Edit", "EditSession", new { id = Model.Id }, new { @class = "btn btn-danger" })
+                        <button type="button" class="btn btn-danger" data-command-remove>Disable</button>
+                    </div>
+                </div>*@
+            </div>
+        }
+        <div class="col-md-offset-2 col-md-6">
+            <br />
+            <button class="col-md-2 form-control" onclick="redirect()" style="border-radius:35px;border:hidden;background-color:red;margin-right:10px;color:white;font-size:11px;width:98px;height:38px;font-family:Montserrat"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Return</button>
+            <button class="col-md-2 form-control" onclick="window.location.href = '/SuperAdmin/EditSession?id=@Model.Id'" type="submit" value="Edit" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat">Edit</button>
+            <button type="button" class="col-md-2 form-control" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;margin-left:12px;font-size:11px;width:98px;height:38px;font-family:Montserrat" data-command-remove>Disable</button>
+
+            <br />
+            <br /><br />
+        </div>
+    </div>
+</div>
+<script>
+    function redirect() {
+        debugger;
+        window.location.href = "/SuperAdmin/SessionList";
+    }
+</script>
+
+<script>
+    $('.dual').attr('disabled', 'disabled');
+</script>
+
+<div id="modal-confirm-delete" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h3>Do you really want to delete this class?</h3>
+                </div>
+                <div class="modal-body text-danger">
+                    This action is <em>irreversible</em> and will result in the following:
+                    <ul>
+                        <li>Delete the session.</li>
+                        <li>Delete the terms registered under this session.</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-button-delete-confirm data-item-id>Delete</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-delete-success" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h3>Successfully deleted the session</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-delete-error" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h3>Could not delete the session</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#modal-delete-success').on('hidden.bs.modal', function () {
+            location.href = '@Url.Action("SessionList")';
+        });
+    });
+
+    (function handleCommandRemove() {
+        $('[data-command-remove]').click(function () {
+            $('#modal-confirm-delete button[data-button-delete-confirm]').attr('data-item-id', getParameterByName('id'));
+            $('#modal-confirm-delete').modal({
+                'show': true,
+                'keyboard': false,
+                'backdrop': false
+            });
+            return false;
+        });
+
+        $('#modal-confirm-delete button[data-button-delete-confirm]').click(function () {
+            var id = $(this).attr('data-item-id');
+            $(this).attr('data-item-id', '');
+            $('#progress-table-update').css('visibility', 'visible');
+            $('#modal-confirm-delete').modal('hide');
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("DeleteSession")',
+                data: {
+                    'id': id
+                },
+                success: function (result) {
+                    if (result) {
+                        $('#modal-delete-success').modal('show');
+                    } else {
+                        $('#modal-delete-error').modal('show');
+                    }
+                    $('#progress-table-update').css('visibility', 'hidden');
+                },
+                error: function (xhr) {
+                    $('#modal-delete-error').modal('show');
+                    $('#progress-table-update').css('visibility', 'hidden');
+                    console.log(xhr.responseText);
+                }
+            })
+        });
+    })();
+</script>

@@ -1,0 +1,228 @@
+﻿
+@{
+    ViewBag.Title = "StudentSubmitTest";
+    Layout = "~/Views/Shared/_StudentDashboardLayout.cshtml";
+
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body p-5">
+
+                <input type="hidden" id="ID" name="name" value="@ViewBag.id" />
+                <input type="hidden" id="TestStudentSubjectId" name="name" value="@ViewBag.TestStudentSubjectId" />
+                <div class="form-group" id="">
+
+                    <span class=""> Teacher Comments  </span>
+
+                    <div id="" class="">
+
+                        <textarea readonly class="form-control" rows="5" id="TeacherComments">
+
+                        @if(ViewBag.TeacherComment !=null)
+                        {
+                            @ViewBag.TeacherComment
+                        }
+
+                        </textarea>
+
+
+
+                    </div>
+
+                </div>
+                <br />
+
+
+                <div>
+
+                    @if (@ViewBag.TeacherSubmittedFile != null)
+                    {
+                        <span class=""><b>Download Teacher Submitted File</b></span>
+                        <span style="color:blue;cursor:pointer" class=""> <a href="/StudentCourses/DownloadTeacherSubmittedFile/?id=@ViewBag.TestStudentSubjectId ">@ViewBag.TeacherSubmittedFile </a>  </span>
+                        <br>
+
+                    }
+                </div>
+
+
+                <div class="">
+
+                    <div class="">
+
+                        @if (ViewBag.ObtainedMarks != null)
+                        {
+                            <br />
+                            <div class="">
+
+                               
+                                    @*<label class="bmd-label-floating">Total Marks*</label>*@
+
+                                    @*<input type="text" readonly class="TotalMarks form-control" name="TotalMarks" value="@ViewBag.TotalMarks" id="TotalMarks" />*@
+
+                                    <span>Total Marks</span> : <span>@ViewBag.TotalMarks</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <span>Obtained Marks</span> : <span>@ViewBag.ObtainedMarks</span>
+
+                               
+
+                            <br />
+
+
+                            <div class="form-group bmd-form-group">
+                                @*<label class="bmd-label-floating"> Obtained Marks*</label>*@
+
+
+                            </div>
+                            </div>
+
+                        }
+
+                        <hr />
+                        <span class="" style="font-weight:bold">Submit your Test </span>
+
+                        @*<i class="fa fa-paperclip" style="padding-left:80px"></i> Choose File
+            <input type="file" style="padding-left:80px" id="SubmitAssignment" name="SubmitAssignment">
+        </div>
+        <div class="col-md-offset-2 col-lg-offset-2" style="padding-left:80px">
+            <p class="help-block">Max. 32MB</p>
+        </div>*@
+
+
+
+
+
+                        <div class="form-row ">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <div class="file-field d-flex">
+                                    <div class="btn btn-primary btn-md mb-0">
+                                        <span style="color:white" onclick='event.stopPropagation(); document.getElementById("SubmitAssignment").click();'>Choose file</span>
+                                        <input id="SubmitAssignment" name="SubmitAssignment" type="file">
+                                    </div>
+                                    <div class="file-path-wrapper d-flex align-items-end ml-3 w-100">
+                                        <input id="FilePath" class="file-path validate form-control" type="text" readonly disabled placeholder="No file Chosen">
+                                    </div>
+                                </div>
+                                <div style="color: #afbccc;font-size: 14px;font-weight: 500;" class="my-3">Max: 32 MB (Filename should be unique)</div>
+                            </div>
+                        </div>
+
+                        <span style="color:blue">@ViewBag.StudentSubmittedFile</span>
+
+
+                        <span id="AssingmentFileToShow">   </span>
+                        <span style="color:blue" id="AssignmentMessage"></span>
+
+
+                        <div>
+
+                            <br />
+
+                            @if (ViewBag.StudentSubmittedFile == null)
+                            {
+                                <input class="btn btn-default" type="button" id="AssignmentSubmitButton" name="" value="Submit" />
+
+                            }
+
+
+                        </div>
+
+                        <input type="hidden" id="AssignmentSubmittedId" name="name" value="" />
+
+                        <div class="form-group" id="TeacherAssignment">
+
+                            <span class="col-md-6" id="TeacherAssignmentFile"></span>
+
+                        </div>
+
+                    </div>
+
+                        </div>
+
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+           $("#PageHeader").html("Submit Test");
+        var src = "";
+        var MeetingLinkSrc = "";
+        $("#BreadCrumbs").append(' <li> <a href="/Student/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li> <a href="/StudentCourses/StudentTests">Test </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Submit Test</a></li>');
+
+
+        $('input[type="file"]').change(function (e) {
+            var fileName = e.target.files[0].name;
+            //  alert('The file "' + fileName + '" has been selected.');
+
+            //  $("#FilePath").attr('')
+
+            document.getElementById("FilePath").placeholder = fileName;
+        });
+
+
+
+
+        $("#AssignmentSubmitButton").click(function (evt) {
+
+
+            var Id = $("#ID").val();
+            //debugger
+            var fileUpload = $("#SubmitAssignment").get(0).files;
+
+            var data = new FormData();
+            data.append('Id', Id);
+
+            if (fileUpload.length > 0) {
+
+
+                data.append("file", fileUpload[0]);
+                $.ajax({
+                    type: "POST",
+                    url: "/StudentCourses/StudentTestSubmission",
+                    contentType: false,
+                    processData: false,
+                    data: data,
+                    success: function (data) {
+
+
+                        $("#AssignmentMessage").html(data);
+
+                        if (data == "Submit Test Successfully") {
+                            // toastr.success('Test Submitted successfully');	
+                            var type = 'success';
+                            var msg = "Test Submitted successfully";
+                            showNotification('top', 'center', msg, type);
+                        } else{
+                            //toastr.error('Submit Test failed, you have already Submited Test');
+                            var type = 'danger';
+                            var msg = "Submit Test failed, you have already Submited Test";
+                            showNotification('top', 'center', msg, type);
+                        }
+                    },
+                    error: function () {
+                        alert("There was error uploading files!");
+                    }
+                });
+            }
+            else {
+                $("#AssignmentMessage").css('color', 'red');
+
+
+                $("#AssignmentMessage").html("Please Select Attachment");
+
+
+            }
+        })
+
+    })
+
+</script>

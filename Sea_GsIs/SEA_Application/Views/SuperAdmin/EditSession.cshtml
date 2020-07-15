@@ -1,0 +1,72 @@
+﻿@model SEA_Application.Models.AspNetSession
+<h2>Edit</h2>
+
+<div class="box box-primary">
+    <div class="box-body">
+
+        @{
+            ViewBag.Title = "Edit";
+        }
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "Registerform" }))
+{
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <h4>Session</h4>
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.Id)
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Year, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.Year, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Year, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control  " } })
+                        @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control  " } })
+                        @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AspNetStatu.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.DropDownList("Status", null, "No status selected", new { @class = "form-control", required = "required" })
+                        @Html.ValidationMessageFor(model => model.AspNetStatu.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Next, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @*@Html.EditorFor(model => model.Next, new { htmlAttributes = new { @class = "form-control  " } })*@
+                        @Html.DropDownList("Next", null, new { @class = "form-control", required = "required" })
+                        @Html.ValidationMessageFor(model => model.Next, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                @*<div class="form-group">
+                    <div class="col-md-offset-2 col-md-2">
+                        <button type="button" id="cancel" class="btn btn-default" onclick="window.history.back()">Back</button>
+                        <input type="submit" class="btn btn-primary" value="Save" />
+                    </div>
+                </div>*@
+            </div>
+        }
+        <div class="col-md-offset-2 col-md-5">
+            <br />
+            <button class="col-md-2 form-control" onclick="window.location.href = '/SuperAdmin/SessionList'" style="border-radius:35px;border:hidden;background-color:red;margin-right:10px;color:white;font-size:11px;width:98px;height:38px;font-family:Montserrat" id="return"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Return</button>
+            <input class="col-md-2 form-control" id="submit" form="Registerform" type="submit" value="Save" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />
+            <br />
+            <br /><br />
+        </div>
+    </div>
+</div>

@@ -1,0 +1,160 @@
+﻿@model SEA_Application.Models.EmployeeSalary
+
+@{
+    ViewBag.Title = "Create";
+}
+<style>
+    .color:hover {
+        background-color: #0e72af !important;
+    }
+
+    .color2:hover {
+        background-color: #dc0000 !important;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+
+        @*$.ajax({
+            type: "POST",
+            url: "/EmployeeSalaries/GetEmployeeSalary?id=" + '@ViewBag.EmployeeId',
+            success: function (data) {
+                debugger;
+                $("#advance").val(data);
+
+            }
+        })*@
+
+        $("#PageHeader").html("Add Salary");
+        $("#BreadCrumbs").append(' <li> <a href="/BranchAdmin/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li> <a href="/EmployeeSalaries/Index"> Advance Salary </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Add Salary</a></li>');
+
+        $("#empid").on("click", function () {
+
+            $('.eeniart0017').css("display", "block");
+            var empid = $("#empid").val();
+            //debugger;
+            $.ajax({
+                type: "POST",
+                url: "/EmployeeSalaries/GetEmployeeSalary",
+                data: { empid: empid },
+                success: function (data) {
+
+                    $('.eeniart0017').css("display", "none");
+                    $("#salary").val(data.salary);
+                    $("#advance").val(data.advance);
+                    $("#fine").val(data.fine);
+
+                }
+            })
+        });
+    })
+</script>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body p-5">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "Registerform" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+                        @*<h4>Employee Salary</h4>*@
+                        @*<hr />*@
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            <span class="col-md-2">Name</span>
+                            <div class="col-md-6">
+                                @Html.DropDownList("EmployeeId", null, htmlAttributes: new { @class = "form-control", @id = "empid" })
+                                @Html.ValidationMessageFor(model => model.EmployeeId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <span class="col-md-2">Advance</span>
+                            <div class="col-md-6">
+                                <input class="form-control" type="text" id="advance" readonly />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <span class="col-md-2">Salary</span>
+                            <div class="col-md-6">
+                                <input class="form-control" type="text" id="salary" name="salary" readonly />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <span class="col-md-2">Fine</span>
+                            <div class="col-md-6">
+                                <input class="form-control" type="text" id="fine" readonly />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <span class="col-md-2">
+                                Month
+                            </span>
+                            <div class="col-md-4">
+                                <select class="form-control" name="MonthName">
+                                    <option name="Months" value="January">January</option>
+                                    <option name="Months" value="February">February</option>
+                                    <option name="Months" value="March">March</option>
+                                    <option name="Months" value="April">April</option>
+                                    <option name="Months" value="May">May</option>
+                                    <option name="Months" value="June">June</option>
+                                    <option name="Months" value="July">July</option>
+                                    <option name="Months" value="August">August</option>
+                                    <option name="Months" value="September">September</option>
+                                    <option name="Months" value="October">October</option>
+                                    <option name="Months" value="November">November</option>
+                                    <option name="Months" value="December">December</option>
+                                </select>
+                            </div>
+
+                        </div>
+
+                        @*<div class="form-group">
+                    @Html.LabelFor(model => model.Months, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Months, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Months, "", new { @class = "text-danger" })
+                    </div>
+                </div>*@
+
+                        <div class="form-group">
+                            <span class="col-md-2">Date</span>
+                            <div class="col-md-4">
+                                @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control", @type = "Date" } })
+                                @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        @*<div class="form-group">
+                    @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Status, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
+                    </div>
+                </div>*@
+
+                        @*<div class="form-group">
+                    <span class="col-md-2">Session</span>
+                    <div class="col-md-6">
+                        @Html.DropDownList("SessionId", null, htmlAttributes: new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.SessionId, "", new { @class = "text-danger" })
+                    </div>
+                </div>*@
+
+
+                    </div>
+                    @*<button class="col-md-2 form-control color2" onclick="window.location.href = '/EmployeeSalaries/Index'" style="border-radius:35px;border:hidden;background-color:red;margin-right:10px;color:white;font-size:11px;width:98px;height:38px;font-family:Montserrat" id="return"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Return</button>*@
+                    <input class="btn btn-primary pull-right rounded rounded-lg shadow-none mr-3" id="submit" form="Registerform" type="submit" value="Save" />
+
+                    <button onclick="/*showTab(0); currentTab = 0;*/" class="btn btn-primary pull-right rounded rounded-lg bg-transparent text-muted shadow-none mr-3" type="reset">
+                        <i class="material-icons mr-2">cached</i>  Reset &nbsp; &nbsp;
+                        <div class="ripple-container"></div>
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,118 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+}
+<h2></h2>
+<style>
+    .color:hover {
+        background-color: #0e72af !important;
+    }
+
+    .color2:hover {
+        background-color: #dc0000 !important;
+    }
+</style>
+
+<script>
+
+    $(document).on('click', '#btn-save', function () {
+        var x = $(".frmEmployer").serialize();
+        $.post("/EmployeeSalaries/AddIncrementDetails",
+            $(".frmEmployer").serialize(),
+            function (value) {
+                if (value == 'success') {
+                    debugger;
+                    // toastr.success('Success ! Salary Added.')
+                    window.location.href = "/EmployeeSalaries/IncrementHistory";
+                }
+                else if (value == 'error') {
+
+                    toastr.error('Error ! data not saved.')
+                }
+            },
+            "text"
+        );
+    });
+
+    $(document).ready(function () {
+
+        $("#PageHeader").html("Increment");
+        $("#BreadCrumbs").append(' <li> <a href="/FinanceSummary/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li> <a id="BreadCrumps1" href="/EmployeeSalaries/IncrementHistory">Employee Salary Increment</a><span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Add Increment</a></li>');
+
+        $("#EmpSalaryRecordId").on("click", function () {
+
+            var empid = $("#EmpSalaryRecordId").val();
+            $('.eeniart0017').css("display", "block");
+            $.ajax({
+                type: "POST",
+                url: "/EmployeeSalaries/GetEmployeeSalary",
+                data: { empid: empid },
+                success: function (data) {
+                    $("#PreviousSalary").val(data.salary);
+                    $("#IncrementAmount").val(0);
+                    $("#AfterSalary").val(0);
+                    $('.eeniart0017').css("display", "none");
+                }
+            })
+        });
+
+
+        $("#IncrementAmount").change(function () {
+            var IncAmount = $("#IncrementAmount").val();
+            $("#AfterSalary").val(parseFloat(IncAmount) + parseFloat(PreviousSalary.value));
+        });
+    });
+</script>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body p-5">
+                <form class="frmEmployer">
+                    <div class="form-horizontal">
+                        @*<h4>Employee Salary</h4>
+                        <hr />*@
+                        <div class="form-group">
+                            <span class="col-md-2">Name</span>
+
+                            <div class="col-md-6">
+                                @Html.DropDownList("EmpSalaryRecordId", null, htmlAttributes: new { @class = "form-control", @id = "EmpSalaryRecordId", @name = "EmpSalaryRecordId" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+
+                            <span class="col-md-2">Previous Salary</span>
+                            <div class="col-md-6">
+                                <input class="form-control" type="text" name="PreviousSalary" id="PreviousSalary" readonly />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <span class="col-md-2">Enter Increment Amount</span>
+                            <div class="col-md-6">
+                                <input class="form-control" type="text" name="IncrementAmount" id="IncrementAmount" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <span class="col-md-2">New Salary</span>
+                            <div class="col-md-6">
+                                <input class="form-control" type="text" name="AfterSalary" id="AfterSalary" readonly />
+                            </div>
+                        </div>
+                    </div>
+
+                    <input class="btn btn-primary pull-right rounded rounded-lg shadow-none mr-3" id="btn-save" form="Registerform" type="submit" value="Save" />
+
+                    <button onclick="/*showTab(0); currentTab = 0;*/" class="btn btn-primary pull-right rounded rounded-lg bg-transparent text-muted shadow-none mr-3" type="reset">
+                        <i class="material-icons mr-2">cached</i>  Reset &nbsp; &nbsp;
+                        <div class="ripple-container"></div>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,16 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Branch Principal Index</h2>
+
+<h3>You are the principal of the following branches</h3>
+
+<ul>
+    @foreach (var branch in (List<SEA_Application.Models.AspNetBranch>)ViewBag.Branches)
+    {
+        <li>@branch.Name</li>
+    }
+</ul>
+

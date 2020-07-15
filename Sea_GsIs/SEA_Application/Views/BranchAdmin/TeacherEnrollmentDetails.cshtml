@@ -1,0 +1,167 @@
+﻿@model SEA_Application.Models.AspNetTeacher_Enrollments
+
+<h2>Student Details</h2>
+
+<div class="box box-primary">
+    <div class="box-body">
+        <div class="form-horizontal">
+            @Html.HiddenFor(model => model.Id)
+
+            <div class="box-title"><h3>Basic Information</h3></div>
+
+            <div id="data-container">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AspNetTeacher.AspNetEmployee.Name, new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.AspNetTeacher.AspNetEmployee.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetClass.Name, new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetClass.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AspNetBranchClass_Sections.AspNetSection.Name, new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.AspNetBranchClass_Sections.AspNetSection.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AspNetCours.Name, new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.AspNetCours.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetBranch.Name, new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetBranch.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetSession.Year, new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetSession.Year, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-lg-offset-2 col-md-2">
+                    <button type="button" id="cancel" class="btn btn-default" onclick="window.history.back()">Back</button>
+                    @Html.ActionLink("Edit", "EditStudentEnrollment", new { id = Model.Id }, new { @class = "btn btn-danger" })
+                    <button type="button" class="btn btn-danger" data-command-remove>Disable</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div id="modal-confirm-delete" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h3>Do you really want to delete this term?</h3>
+                </div>
+                <div class="modal-body text-danger">
+                    This action is <em>irreversible</em> and will result in the following:
+                    <ul>
+                        <li>Delete the enrollment</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-button-delete-confirm data-item-id>Delete</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-delete-success" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h3>Successfully deleted the enrollment</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-delete-error" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h3>Could not delete the enrollment</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#modal-delete-success').on('hidden.bs.modal', function () {
+            location.href = '@Url.Action("StudentEnrollmentList")';
+        });
+    });
+
+    (function handleCommandRemove() {
+        $('[data-command-remove]').click(function () {
+            $('#modal-confirm-delete button[data-button-delete-confirm]').attr('data-item-id', getParameterByName('id'));
+            $('#modal-confirm-delete').modal({
+                'show': true,
+                'keyboard': false,
+                'backdrop': false
+            });
+            return false;
+        });
+
+        $('#modal-confirm-delete button[data-button-delete-confirm]').click(function () {
+            var id = $(this).attr('data-item-id');
+            $(this).attr('data-item-id', '');
+            $('#progress-table-update').css('visibility', 'visible');
+            $('#modal-confirm-delete').modal('hide');
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("DeleteStudentEnrollment")',
+                data: {
+                    'id': id
+                },
+                success: function (result) {
+                    if (result) {
+                        $('#modal-delete-success').modal('show');
+                    } else {
+                        $('#modal-delete-error').modal('show');
+                    }
+                    $('#progress-table-update').css('visibility', 'hidden');
+                },
+                error: function (xhr) {
+                    $('#modal-delete-error').modal('show');
+                    $('#progress-table-update').css('visibility', 'hidden');
+                    console.log(xhr.responseText);
+                }
+            })
+        });
+    })();
+</script>
+
+
+<script>
+    $('#data-container :input').attr('disabled', 'disabled');
+</script>

@@ -1,0 +1,280 @@
+﻿@{
+    ViewBag.Title = "ViewAttendance";
+    if (User.IsInRole("Teacher"))
+    {
+        Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_BranchAdminDashboardLayout.cshtml";
+    }
+}
+
+
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<title></title>
+<meta name="created" content="00:00:00" />
+<meta name="changed" content="00:00:00" />
+<meta name="AppVersion" content="12.0000" />
+<meta name="DocSecurity" content="0" />
+<meta name="HyperlinksChanged" content="false" />
+<meta name="LinksUpToDate" content="false" />
+<meta name="ScaleCrop" content="false" />
+<meta name="ShareDoc" content="false" />
+
+<style type="text/css">
+    span#DD {
+        padding-top: 7px;
+        padding-right: 20px;
+        padding-left: 27px;
+        color: #000;
+    }
+
+    input#Submit {
+        margin-top: -2px;
+        margin-left: 17px;
+    }
+
+    a.comment-indicator:hover + comment {
+        background: #ffd;
+        position: absolute;
+        display: block;
+        border: 1px solid black;
+        padding: 0.5em;
+    }
+
+    a.comment-indicator {
+        background: red;
+        display: inline-block;
+        border: 1px solid black;
+        width: 0.5em;
+        height: 0.5em;
+    }
+
+    comment {
+        display: none;
+    }
+
+    #TeacherAttendanceTable td {
+    }
+</style>
+
+
+
+
+
+<div class="row">
+
+    <input type="hidden" name="LessonID" id="LessonID" value="@ViewBag.LessonID" />
+
+    <div class="col-md-12">
+        <button onclick="printDiv()" type="button" class="btn btn-primary  pull-left rounded rounded-lg createBtn coursesBtn mr-3">
+            Download Report
+        </button>
+
+        @*<button class="btn btn-primary  pull-right  rounded rounded-lg createBtn coursesBtn" onclick="window.print()">Download Report</button>*@
+
+        <br />
+        <br />
+        <div class="card" id="PrintPage" style="font-family:'Poppins', sans-serif">
+
+            <style>
+
+                table tr td {
+                    font-family: 'Poppins', sans-serif !important;
+                }
+            </style>
+
+            <div class="card-body p-4">
+
+                <table id="TeacherAttendanceTable" align="left" cellspacing="0" border="0">
+                    <colgroup width="177"></colgroup>
+                    <colgroup width="44"></colgroup>
+                    <colgroup width="88"></colgroup>
+                    <colgroup width="14"></colgroup>
+                    <colgroup width="50"></colgroup>
+                    <colgroup width="7"></colgroup>
+                    <colgroup width="59"></colgroup>
+                    <colgroup width="279"></colgroup>
+                    <colgroup width="338"></colgroup>
+                    <tr>
+                        <td colspan=8 rowspan=2 height="84" align="left" valign=top><b><font size=4 color="#444444">Class  Attendance for <span id="S_Date"></span> @ViewBag.LessonName <br> @ViewBag.BranchName <span id="E_Date"> , @ViewBag.ClassName</span> - @ViewBag.SectionName - @ViewBag.SubjectName<br><br><span style="font-size:20px;">Attendance Summary</span></font></b></td>
+                        <td colspan=10 height="35" align="right" valign=top>
+                            <font color="#000000">
+                                <br><img src="http://www.sea-gsis.com//Content/Images/gsis%20logo.png" width=75 height=75 hspace=0 vspace=0>
+                            </font>
+                        </td>
+                    </tr>
+                    <br>
+
+                    @*<tr>
+                        <td colspan=8 rowspan=2 height="84" align="left" valign=top><b><font size=4 color="#444444">Class  Attendance for <span id="S_Date"></span> @ViewBag.LessonName <br> @ViewBag.BranchName <span id="E_Date"> , @ViewBag.ClassName</span> - @ViewBag.SectionName - @ViewBag.SubjectName<br><br><span style="font-size:20px;">Attendance Summary</span></font></b></td>
+                        <td colspan=2 align="left" valign=top><b><font size=4 color="#444444"></font></b></td>
+                    </tr>*@
+                    @*<tr>
+                        <td colspan=2 align="left" valign=top><font color="#000000"><br></font></td>
+                    </tr>*@
+                    <tr>
+                        <td colspan=10 height="1" align="left" valign=top><font color="#000000"><br></font></td>
+                    </tr>
+                    <tr>
+                        <td rowspan=2 height="56" align="left"><b><font size=3 color="#444444">&nbsp;&nbsp; Students</font></b></td>
+
+                        <td colspan=2 align="center" valign=top><b><font color="#535353"><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Present</font></b></td>
+                        <td colspan=2 align="left" valign=top><b><font color="#535353"><br>&nbsp;&nbsp;Absent</font></b></td>
+                        <td colspan=2 align="left" valign=top><b><font color="#535353"><br>&nbsp;&nbsp;&nbsp;&nbsp;Late</font></b></td>
+
+                    </tr>
+                    <tr>
+                        <td colspan=3 align="left" valign=top><font color="#000000"><br></font></td>
+                        <td colspan=2 align="left" valign=top><font color="#000000"><br></font></td>
+                        <td colspan=4 align="left" valign=top><font color="#000000"><br></font></td>
+                    </tr>
+                    @*<tr>
+                            <td style="border-right: 1px solid #dedede" colspan=2 height="50" align="left" valign=top bgcolor="#F5F5F5"><b><font  color="#4A4A4A"><br>Ali</font></b></td>
+                            <td style="border-left: 1px solid #dedede; border-right: 1px solid #dedede" align="center" valign=top bgcolor="#F5F5F5"><font color="#000000"><br>12</font></td>
+                            <td style="border-left: 1px solid #dedede; border-right: 1px solid #dedede" colspan=2 align="center" valign=top bgcolor="#F5F5F5"><font color="#000000"><br>34</font></td>
+                            <td style="border-left: 1px solid #dedede; border-right: 1px solid #dedede" colspan=2 align="center" valign=top bgcolor="#F5F5F5"><font color="#000000"><br>45</font></td>
+                            <td style="border-left: 1px solid #dedede" colspan=2 align="center" valign=top bgcolor="#F5F5F5"><font color="#000000"><br></font></td>
+                        </tr>*@
+
+                    <!-- <tr> -->
+                    <!-- <td colspan=10 height="18" align="left" valign=top><font color="#000000"><br><img src="result_htm_924b8fba548650fb.png" width=64 height=18 hspace=56 vspace=0> -->
+                    <!-- </font></td> -->
+                    <!-- </tr> -->
+                    <!-- <tr> -->
+                    <!-- <td colspan=10 height="20" align="left" valign=top><font  size=3 color="#444444">Tawha Ahmed                                                                                                                                                                             Page 1 of 1</font></td> -->
+                    <!-- </tr> -->
+                </table>
+                <img src="result_htm_3f788f85f36f2f8b.png" width=961 height=1>
+                <br clear=left>
+
+                <!-- ************************************************************************** -->
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@*<button >Print this page</button>*@
+
+
+<script>
+
+    $(document).ready(function () {
+        $("#PageHeader").html("Lesson Attendance");
+
+        var LessonID = $("#LessonID").val();
+        var URL = '/AspnetLessons/Edit?id=' + LessonID;
+        $("#BreadCrumbs").append(' <li> <a  href="/Teacher/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li> <a href="/AspnetSubjectTopics/ViewTopicsAndLessons"> Topics & Lessons </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li><a id="BreadCrumps1" href="' + URL + '">Lesson</a><span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Report</a></li>');
+    });
+
+    function printDiv() {
+
+        var divToPrint = document.getElementById('PrintPage');
+
+        var newWin = window.open('', 'Print-Window');
+
+        newWin.document.open();
+
+        newWin.document.write('<html><body onload="window.print()">' + divToPrint.innerHTML + '</body></html>');
+
+        newWin.document.close();
+
+        setTimeout(function () { newWin.close(); }, 10);
+
+    }
+
+    //function PrintElem(elem) {
+    //    var mywindow = window.open('', 'PRINT', 'height=400,width=600');
+
+    //    mywindow.document.write('<html><head><title>' + document.title + '</title>');
+    //    mywindow.document.write('</head><body >');
+    //    mywindow.document.write('<h1>' + document.title + '</h1>');
+    //    mywindow.document.write(document.getElementById(elem).innerHTML);
+    //    mywindow.document.write('</body></html>');
+
+    //    mywindow.document.close(); // necessary for IE >= 10
+    //    mywindow.focus(); // necessary for IE >= 10*/
+
+    //    mywindow.print();
+    //    mywindow.close();
+
+    //    return true;
+    //}
+
+    function printFunc() {
+        var divToPrint = document.getElementById('PrintPage');
+        var htmlToPrint = '' +
+            '<style type="text/css">' +
+            'table th, table td {' +
+            'border:1px solid #000;' +
+            'padding;0.5em;' +
+            '}' +
+            '</style>';
+        htmlToPrint += divToPrint.outerHTML;
+        newWin = window.open("");
+        newWin.document.write("<h3 align='center'>Print Page</h3>");
+        newWin.document.write(htmlToPrint);
+        newWin.print();
+        newWin.close();
+    }
+
+    var LessonID = $("#LessonID").val();
+    $.ajax({
+
+        type: "POST",
+        url: "/AspNetLessons/GetLessonAttendance",
+        data: { "LessonID": LessonID },
+        success: function (data) {
+
+            for (var i = 0; i <= data.length; i++) {
+
+
+                if (i % 2 == 0) {
+                    if (data[i].LessonStatus == "Present") {
+                        $("#TeacherAttendanceTable").append("<tr> <td style='border-right: 1px solid #dedede font-family:Poppins' colspan=2 height='50' align='left' valign=top bgcolor='#F5F5F5' ><b><font  color='#4A4A4A'><br>&nbsp;&nbsp;&nbsp;&nbsp;" + data[i].StudentName + "<br><br>" + "</font></b></td><td style='border-left: 1px solid #dedede; border-right: 1px solid #dedede' align='center' valign=top bgcolor='#F5F5F5'><font color='#000000'><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + 1 + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></td><td style='border-left: 1px solid #dedede; border-right: 1px solid #dedede' colspan=2 align='center' valign=top bgcolor='#F5F5F5'><font color='#000000'><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + 0 + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></td><td style='border-left: 1px solid #dedede; border-right: 1px solid #dedede' colspan=2 align='center' valign=top bgcolor='#F5F5F5'><font color='#000000'><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + 0 + "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br></font></td> <td style='border-left: 1px solid #dedede' colspan=2 align='center' valign=top bgcolor='#F5F5F5'><font color='#000000'><br></font></td></tr>");
+                    }
+                    else if (data[i].LessonStatus == "Absent") {
+                        $("#TeacherAttendanceTable").append("<tr> <td style='border-right: 1px solid #dedede font-family:Poppins' colspan=2 height='50' align='left' valign=top bgcolor='#F5F5F5'><b><font  color='#4A4A4A'><br>&nbsp;&nbsp;&nbsp;&nbsp;" + data[i].StudentName + "<br><br>" + "</font></b></td><td style='border-left: 1px solid #dedede; border-right: 1px solid #dedede' align='center' valign=top bgcolor='#F5F5F5'><font color='#000000'><br>" + 0 + "</font></td><td style='border-left: 1px solid #dedede; border-right: 1px solid #dedede' colspan=2 align='center' valign=top bgcolor='#F5F5F5'><font color='#000000'><br>" + 1 + "</font></td><td style='border-left: 1px solid #dedede; border-right: 1px solid #dedede' colspan=2 align='center' valign=top bgcolor='#F5F5F5'><font color='#000000'><br>0<br></font></td> <td style='border-left: 1px solid #dedede' colspan=2 align='center' valign=top bgcolor='#F5F5F5'><font color='#000000'><br></font></td></tr>");
+
+                    }
+                    else {
+                        $("#TeacherAttendanceTable").append("<tr> <td style='border-right: 1px solid #dedede font-family:Poppins' colspan=2 height='50' align='left' valign=top bgcolor='#F5F5F5'><b><font  color='#4A4A4A'><br>&nbsp;&nbsp;&nbsp;&nbsp;" + data[i].StudentName + "<br><br>" + "</font></b></td><td style='border-left: 1px solid #dedede; border-right: 1px solid #dedede' align='center' valign=top bgcolor='#F5F5F5'><font color='#000000'><br>" + 0 + "</font></td><td style='border-left: 1px solid #dedede; border-right: 1px solid #dedede' colspan=2 align='center' valign=top bgcolor='#F5F5F5'><font color='#000000'><br>" + 0 + "</font></td><td style='border-left: 1px solid #dedede; border-right: 1px solid #dedede' colspan=2 align='center' valign=top bgcolor='#F5F5F5'><font color='#000000'><br>1<br></font></td> <td style='border-left: 1px solid #dedede' colspan=2 align='center' valign=top bgcolor='#F5F5F5'><font color='#000000'><br></font></td></tr>");
+
+                    }
+
+                }
+                else {
+
+
+                    if (data[i].LessonStatus == "Present") {
+                        $("#TeacherAttendanceTable").append("<tr> <td style='border-right: 1px solid #dedede font-family:Poppins' colspan=2 height='50' align='left' valign=top ><b><font  color='#4A4A4A'><br>&nbsp;&nbsp;&nbsp;&nbsp;" + data[i].StudentName + "<br><br></font></b></td><td style='border-left: 1px solid #dedede; border-right: 1px solid #dedede' align='center' valign=top ><font color='#000000'><br>" + 1 + "</font></td><td style='border-left: 1px solid #dedede; border-right: 1px solid #dedede' colspan=2 align='center' valign=top ><font color='#000000'><br>" + 0 + "</font></td><td style='border-left: 1px solid #dedede; border-right: 1px solid #dedede' colspan=2 align='center' valign=top ><font color='#000000'><br>0<br></font></td> <td style='border-left: 1px solid #dedede' colspan=2 align='center' valign=top ><font color='#000000'><br></font></td></tr>");
+                    }
+                    else if (data[i].LessonStatus == "Absent") {
+                        $("#TeacherAttendanceTable").append("<tr> <td style='border-right: 1px solid #dedede font-family:Poppins' colspan=2 height='50' align='left' valign=top ><b><font  color='#4A4A4A'><br>&nbsp;&nbsp;&nbsp;&nbsp;" + data[i].StudentName + "<br><br></font></b></td><td style='border-left: 1px solid #dedede; border-right: 1px solid #dedede' align='center' valign=top ><font color='#000000'><br>" + 0 + "</font></td><td style='border-left: 1px solid #dedede; border-right: 1px solid #dedede' colspan=2 align='center' valign=top ><font color='#000000'><br>" + 1 + "</font></td><td style='border-left: 1px solid #dedede; border-right: 1px solid #dedede' colspan=2 align='center' valign=top ><font color='#000000'><br>0<br></font></td> <td style='border-left: 1px solid #dedede' colspan=2 align='center' valign=top'><font color='#000000'><br></font></td></tr>");
+
+                    }
+                    else {
+                        $("#TeacherAttendanceTable").append("<tr> <td style='border-right: 1px solid #dedede font-family:Poppins' colspan=2 height='50' align='left' valign=top ><b><font  color='#4A4A4A'><br>&nbsp;&nbsp;&nbsp;&nbsp;" + data[i].StudentName + "<br><br></font></b></td><td style='border-left: 1px solid #dedede; border-right: 1px solid #dedede' align='center' valign=top ><font color='#000000'><br>" + 0 + "</font></td><td style='border-left: 1px solid #dedede; border-right: 1px solid #dedede' colspan=2 align='center' valign=top ><font color='#000000'><br>" + 0 + "</font></td><td style='border-left: 1px solid #dedede; border-right: 1px solid #dedede' colspan=2 align='center' valign=top ><font color='#000000'><br>1<br></font></td> <td style='border-left: 1px solid #dedede' colspan=2 align='center' valign=top'><font color='#000000'><br></font></td></tr>");
+
+                    }
+
+                }
+            }
+
+
+        }
+
+    })
+
+
+
+
+
+</script>

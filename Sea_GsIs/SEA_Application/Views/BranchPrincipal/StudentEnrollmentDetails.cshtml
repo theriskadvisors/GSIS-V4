@@ -1,0 +1,68 @@
+﻿@model SEA_Application.Models.AspNetStudent_Enrollments
+
+<h2>Student Details</h2>
+
+<div class="box box-primary">
+    <div class="box-body">
+        <div class="form-horizontal">
+            @Html.HiddenFor(model => model.Id)
+
+            <div class="box-title"><h3>Basic Information</h3></div>
+
+            <div id="data-container">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AspNetStudent.Name, new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.AspNetStudent.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetClass.Name, new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetClass.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AspNetBranchClass_Sections.AspNetSection.Name, new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.AspNetBranchClass_Sections.AspNetSection.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AspNetCours.Name, new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.AspNetCours.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetBranch.Name, new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetBranch.Name, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetSession.Year, new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetSession.Year, new { htmlAttributes = new { @class = "form-control" } })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-lg-offset-2 col-md-2">
+                    <button type="button" id="cancel" class="btn btn-default" onclick="window.history.back()">Back</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#data-container :input').attr('disabled', 'disabled');
+</script>

@@ -1,0 +1,456 @@
+﻿@model IEnumerable<SEA_Application.Models.AspnetSubjectTopic>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
+
+}
+
+<style>
+    .pageHeading h1 {
+        font-size: 26px;
+        font-weight: 600;
+        color: #00b8ec;
+    }
+
+    .table-responsive {
+        display: block;
+        width: 100%;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+    }
+
+    .pageHeading h1 {
+        font-size: 26px;
+        font-weight: 600;
+        color: #00b8ec;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+
+        $("#PageHeader").html("Topics And Lessons");
+
+        $("#BreadCrumbs").append(' <li> <a href="/Teacher/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Topics And Lessons</a></li>');
+
+        $('#datatable tfoot th').each(function () {
+            var title = $(this).text();
+            $(this).html('<input type="text" class="round-border" style="border-color:#00b8ec; border-radius:5px;width:100%" placeholder="Search ' + title + '" />');
+        });
+
+        $('#datatable1 tfoot th').each(function () {
+            var title = $(this).text();
+            $(this).html('<input type="text" class="round-border" style="border-color:#00b8ec; border-radius:5px;width:100%" placeholder="Search ' + title + '" />');
+        });
+
+        var table = $('#datatable').dataTable({
+            initComplete: function () {
+                // Apply the search
+                this.api().columns().every(function () {
+                    var that = this;
+
+                    $('input', this.footer()).on('keyup change clear', function () {
+                        if (that.search() !== this.value) {
+                            that.search(this.value).draw();
+                        }
+                    });
+                });
+            },
+            buttons: [
+                {
+                    text: '<span class="datatableButtonsReset"> <img src="/Content/assets/assets/icons/Icon-Reset2.png" alt=""> Reset</span>'
+                },
+                {
+                    text: '<span class="datatableButtonsEdit"> <img src="/Content/assets/assets/icons/Icon-edit.png" alt=""> Create</span>',
+                    action: function (e, dt, button, config) {
+                        window.location.href = '/AspnetSubjectTopics/Create';
+                    }
+                },
+                {
+                    text: '<span class="datatableButtonsDownload"> <img src="/Content/assets/assets/icons/Icon-download.png" alt=""> Download</span>'
+                }
+            ],
+            "language": {
+                "lengthMenu": "<div class=\"d-flex showEntriesCon\">\n" +
+                    "  <div class=\"p-2\">Show </div> <div class=\"showEntries\"> _MENU_\n" +
+                    "  </div>\n" +
+                    "  </div>",
+                "info": "<div class='showingEntriesOfTotal'>Showing <span class=\"text-info\">_START_ to _END_</span> of _TOTAL_ entries</div>",
+                "paginate": {
+                    "first": "Firstt",
+                    "last": "Lastt",
+                    "next": ' <img src="/Content/assets/assets/icons/Arrow2.png" alt=""> ',
+                    "previous": ' <img src="/Content/assets/assets/icons/Arrow1.png" alt=""> '
+                }
+            },
+            "searching": true,
+            // dom: '<"class">Blfrtip',
+            dom: "<'row mb-3'<'col-sm-12 col-md-2 col-lg-2'l><'col-sm-12 col-md-10 col-lg-10 datatableButtonsCon text-right'Bf>>" +
+                "<'row'<'col-sm-12 datatablesData'tr>>" +
+                "<'row mt-4'<'col-sm-12 col-md-4 col-lg-6 infoCon'i><'col-sm-12 col-md-8 col-lg-6 pagCon'p>>",
+        });
+
+        var table1 = $('#datatable1').dataTable({
+            initComplete: function () {
+                // Apply the search
+                this.api().columns().every(function () {
+                    var that = this;
+
+                    $('input', this.footer()).on('keyup change clear', function () {
+                        if (that.search() !== this.value) {
+                            that
+                                .search(this.value)
+                                .draw();
+                        }
+                    });
+                });
+            },buttons: [
+                {
+                    text: '<span class="datatableButtonsReset"> <img src="/Content/assets/assets/icons/Icon-Reset2.png" alt=""> Reset</span>'
+                },
+                {
+                    text: '<span class="datatableButtonsEdit"> <img src="/Content/assets/assets/icons/Icon-edit.png" alt=""> Create</span>',
+                    action: function (e, dt, button, config) {
+                        window.location.href = '/AspnetLessons/Create?id=' + 0;
+                    }
+                },
+                {
+                    text: '<span class="datatableButtonsDownload"> <img src="/Content/assets/assets/icons/Icon-download.png" alt=""> Download</span>'
+                }
+            ],
+            order: [[0, 'desc']],
+            "language": {
+                "lengthMenu": "<div class=\"d-flex showEntriesCon\">\n" +
+                    "  <div class=\"p-2\">Show </div> <div class=\"showEntries\"> _MENU_\n" +
+                    "  </div>\n" +
+                    "  </div>",
+                "info": "<div class='showingEntriesOfTotal'>Showing <span class=\"text-info\">_START_ to _END_</span> of _TOTAL_ entries</div>",
+                "paginate": {
+                    "first": "Firstt",
+                    "last": "Lastt",
+                    "next": ' <img src="/Content/assets/assets/icons/Arrow2.png" alt=""> ',
+                    "previous": ' <img src="/Content/assets/assets/icons/Arrow1.png" alt=""> '
+                }
+            },
+            "searching": true,
+            // dom: '<"class">Blfrtip',
+            dom: "<'row mb-3'<'col-sm-12 col-md-2 col-lg-2'l><'col-sm-12 col-md-10 col-lg-10 datatableButtonsCon text-right'Bf>>" +
+                "<'row'<'col-sm-12 datatablesData'tr>>" +
+                "<'row mt-4'<'col-sm-12 col-md-4 col-lg-6 infoCon'i><'col-sm-12 col-md-8 col-lg-6 pagCon'p>>",
+        });
+
+        $("#datatable1_filter").hide();
+        $('#datatable1 tfoot tr').appendTo('#datatable1 thead');
+
+        $("#datatable_filter").hide();
+        $('#datatable tfoot tr').appendTo('#datatable thead');
+
+        $('#datatable').on('click', 'tbody tr', function () {
+            var td = $(this).children("td");
+            var userName = $(td[0]).children("input").val();
+
+            window.location.href = "/AspnetSubjectTopics/Edit?id=" + userName;
+        });
+
+        $('#datatable1').on('click', 'tbody tr', function () {
+            var td = $(this).children("td");
+            var LessonId = $(td[0]).children("input").val();
+
+            window.location.href = "/AspnetLessons/Edit?id=" + LessonId;
+        });
+
+
+        $.ajax({
+            type: "POST",
+            url: "/AspnetSubjectTopics/AllLessonsList",
+            data: {},
+
+            success: function (data) {
+                table1.fnClearTable();
+                var status;
+                $.each(data, function (index) {
+
+                    console.log(data[index].LessonStatus);
+                    if (data[index].LessonStatus == false || data[index].LessonStatus == null) {
+                        status = "Created";
+                    } else {
+                        status = 'Published';
+                    }
+
+                    //  var date = data[index].LessonStartDate.split(' ');
+
+
+                    //   var LessonDate = new Date(data[index].LessonDate);
+
+
+                    var value = new Date(parseInt(data[index].LessonDate.replace(/(^.*\()|([+-].*$)/g, '')));
+                    var dat = value.getMonth() +
+                        1 +
+                        "/" +
+                        value.getDate() +
+                        "/" +
+                        value.getFullYear();// + " " +
+                    // value.getTime().toString();
+
+
+                    if (data[index].LessonStartDate != null) {
+
+                        var value1 = new Date(parseInt(data[index].LessonStartDate.replace(/(^.*\()|([+-].*$)/g, '')));
+                       var dat1 = value1.getMonth() +
+                            1 +
+                            "/" +
+                            value1.getDate() +
+                            "/" +
+                            value1.getFullYear();// + " " +
+                        // value.getTime().toString();
+                        table1.fnAddData([dat + "<input  type=hidden value=" + data[index].LessonId + ">", dat1, data[index].LessonClass, data[index].LessonSection, data[index].LessonSubject, data[index].LessonSubjectTopicName, data[index].LessonName, status]);
+
+                    }
+                    else {
+                        table1.fnAddData([dat + "<input  type=hidden value=" + data[index].LessonId + ">", "", data[index].LessonClass, data[index].LessonSection, data[index].LessonSubject, data[index].LessonSubjectTopicName, data[index].LessonName, status]);
+
+                    }
+
+
+
+                    //  table1.fnAddData([data[index].LessonName + "<input  type=hidden value=" + data[index].LessonId + ">", data[index].LessonDuration, data[index].LessonSubjectTopicName, data[index].LessonSubject, data[index].LessonClass, data[index].LessonSection, status, data[index].LessonDate ]);
+
+                })
+                table1.fnDraw();
+
+            }
+        })
+
+        $.ajax({
+            type: "POST",
+            url: "/AspnetSubjectTopics/AllSubjectTopicList",
+            data: {},
+
+            success: function (data) {
+                table.fnClearTable();
+                $.each(data, function (index) {
+                    table.fnAddData([data[index].TopicName + "<input  type=hidden value=" + data[index].Id + ">", data[index].Description, data[index].ClassName, data[index].SubjectName ,data[index].SectionName, data[index].BranchName]);
+                })
+                table.fnDraw();
+            }
+        })
+
+        $("#datatable1_paginate").addClass("pull-right");
+
+        var NavigateTo = $("#NavigateTo").val();
+        if (NavigateTo == "Topic") {
+            $("#Topics-tab-attr").click();
+        }
+        else {
+            // toastr.success('Lesson created successfully');	
+            $("#Lessons-tab-attr").click();
+        }
+        if ($("#LessonCreateMsg").val() != "") {
+            var type = 'success';
+            var msg = "Lesson Created Successfully";
+            showNotification('top', 'center', msg, type);
+            //toastr.success('Lesson created successfully');
+        }
+        if ($("#LessonUpdationMsg").val() != "") {
+            var type = 'info';
+            var msg = "Lesson updated Successfully";
+            showNotification('top', 'center', msg, type);
+            //toastr.info('Lesson updated successfully');
+        }
+        if ($("#TopicCreationMsg").val() != "") {
+            var type = 'success';
+            var msg = "Topic created successfully";
+            showNotification('top', 'center', msg, type);
+            //toastr.success('Topic created successfully');
+        }
+        if ($("#TopicUpdationMsg").val() != "") {
+            var type = 'info';
+            var msg = "Topic updated successfully";
+            showNotification('top', 'center', msg, type);
+           // toastr.info('Topic updated successfully');
+        }
+        if ($("#LessonDeletionMsg").val() != "") {
+            var type = 'warning';
+            var msg = "Lesson deleted successfully";
+            showNotification('top', 'center', msg, type);
+            //toastr.warning('Lesson deleted successfully');
+        }
+        if ($("#TopicDeletionMsg").val() != "") {
+            var type = 'warning';
+            var msg = "Topic deleted successfully";
+            showNotification('top', 'center', msg, type);
+            //toastr.warning('Topic deleted successfully');
+        }
+    })
+</script>
+
+
+<div class="tabsCon">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" id="myTabAttr" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="Topics-tab-attr" data-toggle="tab" href="#Topics-attr" role="tab" aria-controls="Topics-attr"
+               aria-selected="true">Topics</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="Lessons-tab-attr" data-toggle="tab" href="#Lessons-attr" role="tab" aria-controls="Lessons-attr"
+               aria-selected="false">Lessons</a>
+        </li>
+    </ul>
+
+    <input type="hidden" name="" value="@ViewBag.NavigateTo" id="NavigateTo" />
+    <input type="hidden" name="name" id="LessonCreateMsg" value="@TempData["LessonCreated"]" />
+    <input type="hidden" id="LessonUpdationMsg" name="name" value="@TempData["LessonUpdate"]" />
+    <input type="hidden" name="name" id="TopicCreationMsg" value="@TempData["TopicCreated"]" />
+    <input type="hidden" id="TopicUpdationMsg" name="name" value="@TempData["TopicUpdated"]" />
+    <input type="hidden" id="LessonDeletionMsg" name="name" value="@TempData["LessonDeleted"]" />
+    <input type="hidden" id="TopicDeletionMsg" name="name" value="@TempData["TopicDeleted"]" />
+
+    <div class="card">
+        <div class="card-body p-4">
+            <div class="tab-content" style="padding: 10px 0px 0px 0px;">
+
+                <div class="tab-pane active show" id="Topics-attr" role="tabpanel" aria-labelledby="Topics-tab-attr">
+                    <div class="box box-primary">
+                        <div class="box-body">
+                            <div class="box-title"></div>
+                            <div class="table-responsive">
+                                <table class="table hover  table-striped table-bordered" id="datatable">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Topic Name
+                                            </th>
+                                            <th>
+                                                Description
+                                            </th>
+                                            <th>
+                                                Class Name
+                                            </th>
+                                            <th>
+                                                Subject Name
+                                            </th>
+                                            <th>
+                                                Section Name
+                                            </th>
+                                            <th>
+                                                Branch Name
+                                            </th>
+
+                                        </tr>
+
+                                    </thead>
+                                    <tbody id="TopicList"></tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>
+                                                Topic Name
+                                            </th>
+                                            <th>
+                                                Description
+                                            </th>
+                                            <th>
+                                                Class Name
+                                            </th>
+                                            <th>
+                                                Subject Name
+                                            </th>
+                                            <th>
+                                                Section Name
+                                            </th>
+                                            <th>
+                                                Branch Name
+                                            </th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="tab-pane" id="Lessons-attr" role="tabpanel" aria-labelledby="Lessons-tab-attr">
+
+                    <div class="box box-primary">
+                        <div class="box-body">
+                            <div class="box-title"></div>
+                            <div class="table-responsive">
+
+                                <table class="table hover  table-bordered" id="datatable1">
+                                    <thead>
+                                        <tr>
+                                            <th>
+                                                Date Created
+                                            </th>
+                                            <th>
+                                                Start Date
+                                            </th>
+                                            <th>
+                                                Class Name
+                                            </th>
+                                            <th>
+                                                Section Name
+                                            </th>
+                                            <th>
+                                                Subject Name
+                                            </th>
+                                            <th>
+                                                Topic Name
+                                            </th>
+
+                                            <th>
+                                                Lesson Name
+                                            </th>
+                                            <th>
+                                                Status
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="LessonsList"></tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th>
+                                                Date Created
+                                            </th>
+                                            <th>
+                                                Start Date
+                                            </th>
+                                            <th>
+                                                Class Name
+                                            </th>
+                                            <th>
+                                                Section Name
+                                            </th>
+                                            <th>
+                                                Subject Name
+                                            </th>
+                                            <th>
+                                                Topic Name
+                                            </th>
+
+                                            <th>
+                                                Lesson Name
+                                            </th>
+                                            <th>
+                                                Status
+                                            </th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                </div><!--End of Tab 2-->
+
+            </div>
+        </div>
+    </div>
+
+</div>

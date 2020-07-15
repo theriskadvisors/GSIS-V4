@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="3e787adec86c4a5eadebb62e62a4ee2f" Name="Diagram1">
+        <EntityTypeShape EntityType="Sea_EntitiesModel.C__MigrationHistory" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetAccountant" Width="1.5" PointX="8.25" PointY="92.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetAnnouncement" Width="1.5" PointX="7.5" PointY="82.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetAnnouncement_Subject" Width="1.5" PointX="9.75" PointY="83.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetAssessment" Width="1.5" PointX="7.5" PointY="107.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetAssessmentType" Width="1.5" PointX="5.25" PointY="105.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetBackGround" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetBranch_Admins" Width="1.5" PointX="7.5" PointY="89.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetBranch_Class" Width="1.5" PointX="5.25" PointY="101.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetBranchClass_Sections" Width="1.5" PointX="15.5" PointY="105.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspnetBranchClassSubjectSection" Width="1.5" PointX="8.25" PointY="101.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetBranch" Width="1.5" PointX="5.25" PointY="82.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetClass_Courses" Width="1.5" PointX="22.5" PointY="111.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetClass" Width="1.5" PointX="13" PointY="57.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspnetComment_Head" Width="1.5" PointX="17.25" PointY="74.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspnetComment" Width="1.5" PointX="24.5" PointY="80.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetCoursePackage" Width="1.5" PointX="7.5" PointY="71.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetCours" Width="1.5" PointX="5.25" PointY="77.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetDepartment" Width="1.5" PointX="5.25" PointY="86.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetEmployee" Width="1.5" PointX="12.5" PointY="79.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetEmployeePosition" Width="1.5" PointX="10.25" PointY="72.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetGender" Width="1.5" PointX="11.25" PointY="75.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspnetGenericBranchClassSubject" Width="1.5" PointX="7.5" PointY="78.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetHomeWork" Width="1.5" PointX="16.5" PointY="117.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspnetLesson" Width="1.5" PointX="12" PointY="63.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetLog" Width="1.5" PointX="5.25" PointY="89.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetMessage_Receiver" Width="1.5" PointX="10.5" PointY="92.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetMessage" Width="1.5" PointX="5.25" PointY="93.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetNationality" Width="1.5" PointX="11.25" PointY="109.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetNotification" Width="1.5" PointX="5.25" PointY="112" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetNotification_User" Width="1.5" PointX="13.5" PointY="101.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspnetOption" Width="1.5" PointX="15" PointY="54.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetPackage" Width="1.5" PointX="5.25" PointY="71.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetParent" Width="1.5" PointX="5.25" PointY="115.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetParent_Child" Width="1.5" PointX="5.25" PointY="119.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetProject" Width="1.5" PointX="13" PointY="115.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspnetQuestion" Width="1.5" PointX="17.25" PointY="65.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspnetQuiz" Width="1.5" PointX="17.25" PointY="70.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetReligion" Width="1.5" PointX="11.25" PointY="112.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetRole" Width="1.5" PointX="0.75" PointY="93" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetSection" Width="1.5" PointX="5.25" PointY="74.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetSession" Width="1.5" PointX="3" PointY="100.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetStatu" Width="1.5" PointX="0.75" PointY="101.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetStudent_Announcement" Width="1.5" PointX="9.75" PointY="89.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetStudent_Enrollments" Width="1.5" PointX="18.75" PointY="102.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetStudent_Histories" Width="1.5" PointX="21.75" PointY="101.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetStudent_Project" Width="1.5" PointX="15.25" PointY="86.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetStudent_Subject" Width="1.5" PointX="10.25" PointY="86.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetStudentAssessment" Width="1.5" PointX="24" PointY="105.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspnetStudentAssignment" Width="1.5" PointX="14.25" PointY="68.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspnetStudentAssignmentSubmission" Width="1.5" PointX="19.75" PointY="74.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspnetStudentAttachment" Width="1.5" PointX="14.25" PointY="65.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetStudentHomeWork" Width="1.5" PointX="18.75" PointY="93.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspnetStudentLink" Width="1.5" PointX="14.25" PointY="62.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetStudent" Width="1.5" PointX="13.5" PointY="90.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetStudentSection" Width="1.5" PointX="21.75" PointY="105.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetSubjectHomeWork" Width="1.5" PointX="24.75" PointY="92.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetSubject" Width="1.5" PointX="15.25" PointY="82.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspnetSubjectTopic" Width="1.5" PointX="9.75" PointY="78.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetTeacher_Enrollments" Width="1.5" PointX="24.75" PointY="95.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetTeacher_Histories" Width="1.5" PointX="24" PointY="99.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetTeacher" Width="1.5" PointX="17.75" PointY="87.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetTerm" Width="1.5" PointX="5.25" PointY="108.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetUserClaim" Width="1.5" PointX="5.25" PointY="122.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetUserLogin" Width="1.5" PointX="5.25" PointY="125.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetUser" Width="1.5" PointX="3" PointY="89" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.AspNetVirtualRole" Width="1.5" PointX="10.25" PointY="60.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.CalendarNotification" Width="1.5" PointX="2.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.Class_ChallanForm" Width="1.5" PointX="19.5" PointY="121.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.ClassFee" Width="1.5" PointX="0.75" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.ClassFeeType" Width="1.5" PointX="15.25" PointY="30.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.DurationType" Width="1.5" PointX="17.25" PointY="121.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.Employee_SalaryIncrement" Width="1.5" PointX="17" PointY="79.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.Employee_SalaryRecord" Width="1.5" PointX="14.75" PointY="79.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.EmployeeAbsentTable" Width="1.5" PointX="14.75" PointY="76.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.EmployeeAdvanceSalary" Width="1.5" PointX="5.25" PointY="97.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.EmployeeAutoPresent" Width="1.5" PointX="14.75" PointY="73" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.EmployeePenalty" Width="1.5" PointX="17.75" PointY="83" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.EmployeePenaltyType" Width="1.5" PointX="15.5" PointY="59.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.EmployeeSalary" Width="1.5" PointX="8.25" PointY="97.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.Event" Width="1.5" PointX="22.25" PointY="79.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.FeeDateSetting" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.FeeDiscount" Width="1.5" PointX="19.5" PointY="113.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.GenericSubject" Width="1.5" PointX="7.5" PointY="75.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.Ledger" Width="1.5" PointX="10.25" PointY="105" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.LedgerGroup" Width="1.5" PointX="11.25" PointY="101.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.LedgerHead" Width="1.5" PointX="9" PointY="112.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.Lesson_Session" Width="1.5" PointX="11.25" PointY="97.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.Month_Multiplier" Width="1.5" PointX="15.75" PointY="100.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.NonRecurringCharge" Width="1.5" PointX="18.5" PointY="110.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.NonRecurringFeeMultiplier" Width="1.5" PointX="20.75" PointY="87.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.NonRecurringMonth" Width="1.5" PointX="15.75" PointY="109.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.Order" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.PenaltyFee" Width="1.5" PointX="21.5" PointY="108.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.Quiz_Topic_Questions" Width="1.5" PointX="19.5" PointY="71.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.ruffdata" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.Student_ChallanForm" Width="1.5" PointX="21.75" PointY="93.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.Student_GenericSubjects" Width="1.5" PointX="16.25" PointY="92.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.Student_Quiz_Scoring" Width="1.5" PointX="23.5" PointY="84.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.StudentChallanForm" Width="1.5" PointX="18.75" PointY="98.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.StudentDiscount" Width="1.5" PointX="21.75" PointY="97.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.StudentFeeMonth" Width="1.5" PointX="13.25" PointY="104.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.StudentFeeMultiplier" Width="1.5" PointX="15.75" PointY="113" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.StudentLessonTracking" Width="1.5" PointX="20.25" PointY="84" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.StudentPenalty" Width="1.5" PointX="23.75" PointY="89.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.StudentRecurringFee" Width="1.5" PointX="15.25" PointY="50.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.StudentTestSubject" Width="1.5" PointX="27" PointY="98.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.TaskCalendar" Width="1.5" PointX="0.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.Teacher_GenericSubjects" Width="1.5" PointX="19.75" PointY="80.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.TestSubject" Width="1.5" PointX="18.75" PointY="105.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.TimeSetting" Width="1.5" PointX="2.75" PointY="6.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.UserAutoAbsent" Width="1.5" PointX="5.25" PointY="128.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.UserAutoPresent" Width="1.5" PointX="5.25" PointY="131.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.Voucher" Width="1.5" PointX="14.25" PointY="119.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="Sea_EntitiesModel.VoucherRecord" Width="1.5" PointX="16.5" PointY="95.875" IsExpanded="true" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetAccountants_Employee" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetAccountants_User" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_Announcement_Subject_ToAnnouncement" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetAnnouncement_Branch" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_Student_Announcement_ToAnnouncement" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_Announcement_Subject_ToSubject" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetAssessment_AssessmentType" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetAssessment_Term" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetStudentAssessments_Assessment" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetBranch_Admins_Branches" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetBranch_Admins_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetBranch_Class_Branch" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetBranch_Class_Class" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetBranch_Class_Session" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetBranchClass_Sections_BranchClass" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetBranchClass_Sections_Section" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetStudent_Enrollments_BranchClassSection" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetStudent_Histories_Section" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetStudentSection_BranchClassSection" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetTeacher_Enrollments_Section" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetTeacher_Histories_Section" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_TestSubject_AspNetBranchClass_Sections" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetBranchClassSubjectSection_AspnetGenericBranchClassSubject" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetBranchClassSubjectSection_AspNetSections" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetBranchClassSubjectSection_AspNetSessions" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetBranches_User" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetEmployee_Branch" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetGenericBranchClassSubject_AspNetBranches" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetStudents_Branch" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_VoucherRecord_Branch" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetClass_Courses_Class" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetClass_Courses_Course" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetStudent_Enrollments_ClassCourse" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetTeacher_Enrollments_Course" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetClass_ToAspNetClass" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetClasses_Class" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetGenericBranchClassSubject_AspNetClasses" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetHomewrok_AspNetClass" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetStudentAssignmentSubmission_AspNetClasses" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetStudents_Classes" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_class_FeeType_classid" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_classchallan_classid" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_RecurringFeeClass" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetComment_Head_AspnetLesson" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetComment_Head_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetComments_AspnetComments1" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetComments_AspnetComments" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetComments_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetCoursePackages_Course" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetCoursePackages_Package" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetGenericBranchClassSubject_AspNetCourses" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetStudent_Histories_Course" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetTeacher_Histories_Course" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_SubjectHW_Subject" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_TestSubject_AspNetCourses" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetDepartments_AspNetUser" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AdvanceSalaryUser" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetAbsent_Employee" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetEmployee_Employee" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetEmployee_Gender" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetEmployee_Nationality" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetEmployee_Position" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetEmployee_Religion" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetEmployee_VirtualRole" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetTeacher_Enrollments_Student" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetTeachers_Employee" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_EmployeePenalty_Employee" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_EmployeeSalaryRecord_Employee" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_SalaryUser" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_Teacher_GenericSubjects_AspNetEmployee" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetStudents_Gender" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetGenericBranchClassSubject_AspNetSections" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetSubjectTopic_AspnetGenericBranchClassSubject" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_StudentHW_HW" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_SubjectHW_HW" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetLesson_AspnetSubjectTopic" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetQuestion_AspnetLesson" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetStudentAssignment_AspnetLesson" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetStudentAssignmentSubmission_AspnetLesson" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetStudentAttachment_AspnetLesson" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetStudentLink_AspnetLesson" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_Event_AspnetLesson" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_Lesson_Session_AspnetLesson" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_StudentLessonTracking_AspnetLesson" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetLogs_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_MessageReceiver_Messages" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_MessageReceiver_User" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_MessagesSender_ToAspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetStudents_Nationality" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetNotification_ToUser" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetNotification_User_ToNotification" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetNotification_User_ToUser" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetQuestion_AspnetOption1" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetParent_ToParent" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetParent_Child_ChildToUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetParent_Child_ParentToUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetStudent_Project_ToProject" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_Quiz_Topic_Questions_AspnetQuestion" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_Student_Quiz_Scoring_AspnetQuestion" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_Quiz_Topic_Questions_AspnetQuiz" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_Student_Quiz_Scoring_AspnetQuiz" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetStudents_Religion" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AdvanceSalarySession" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.Fk_AspNetSessions_Sessions" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetSessions_Status" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetStudent_Enrollments_Session" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetStudent_Histories_Session" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetTeacher_Enrollments_Session" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetTeacher_Histories_Session" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetTerms_AspNetTerms" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_Ledger_Session" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_LedgerGroup_Session" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_Lesson_Session_AspNetSession" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_SalarySession" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_StudentFeeMonth_AspNetSession" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetStudentAssessments_Status" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetUsers_ToStatus" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_Student_Announcement_ToStudent" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetStudent_Enrollments_Student" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetStudentAssessments_StudentEnrollment" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetStudent_Histories_Student" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetStudent_Project_ToStudent" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_Student_Subject_ToStudent" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_Student_Subject_ToSubject" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetStudentAssignmentSubmission_AspNetStudent" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetStudentAssignmentSubmission_AspnetSubjectTopic" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_StudentHW_Student" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetStudent" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetStudents_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetStudentSection_Student" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_classchallan_Student" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_NonRecurring_student" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_NonRecurringMonths" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_PersonOrder" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_Student_Quiz_Scoring_AspNetStudent" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_StudentChallan_Student" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_studentdiscount_student" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_StudentMonth" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_StudentPenalty_StuedentId" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_StudentTestSubjects_AspNetStudents" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetClass_ToAspNetUsersTeacher" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetSubjectTopic_GenericSubjects" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_Quiz_Topic_Questions_AspnetSubjectTopic" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetTeacher_Histories_Teachers" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetTeachers_User" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK__Event__UserId__019E3B86" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetUsers_Absent" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetUsers_Attendance" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_Student_GenericSubjects_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_StudentLessonTracking_AspNetUsers" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspNetVirtualRole_AspNetVirtualRole" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_classchallan_duration" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_StudentChallan_classchallan" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_class_FeeType_FeeType" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_SalaryIncrement_SalaryRecord" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_EmployeePenalty_Penalty" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_studentdiscount_Feedisocunt" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_Student_GenericSubjects_GenericSubjects" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_Teacher_GenericSubjects_GenericSubjects" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_Ledger_LedgerGroup" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_Ledger_LedgerHead" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_VoucherRecord_Voucher" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_LedgerGroup_LedgerHead" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_FeeMonth" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_NonRecurring_Description" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_StudentPenalty_Penalty" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_StudentChallan_StudentFeeMonth" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_StudentTestSubjects_TestSubject" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_VoucherRecord_LedgerId" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.AspNetUserRoles" ManuallyRouted="false" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_Student_Quiz_Scoring_AspnetOption" />
+        <AssociationConnector Association="Sea_EntitiesModel.FK_AspnetQuestion_AspnetSubjectTopic" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

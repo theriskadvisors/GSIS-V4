@@ -1,0 +1,56 @@
+﻿@{
+    ViewBag.Title = "BranchclassSectoinCreate";
+}
+
+<h2>Branch Class Section</h2>
+<div class="tab-pane active" id="tab_1">
+    <div class="card">
+        <div class="card-body p-4">
+
+
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div class="box-body">
+                        <div class="box-header with-border"><h3 class="orange">Upload Excel File &nbsp; <i class="fa fa-file-excel-o" aria-hidden="true"></i></h3></div>
+                        <div class="form-three widget-shadow">
+                            @using (Html.BeginForm("BranchClassSection", "BranchAdmin", FormMethod.Post, new { enctype = "multipart/form-data", @id = "RegisterForm" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <input id="teachers" required="required" name="Branch_Class_Section" type="file" />
+                                @*<div class="form-group">
+                                    <div class="control-label col-md-3"><b>Excel File</b></div>
+                                    <div class="col-md-4">
+                                        <input id="teachers" required="required" name="Branch_Class_Section" type="file" />
+                                    </div>
+                                </div>*@
+                                <br />
+                                <br />
+                            }
+                            @*<div class="col-md-5 col-sm-5 col-lg-5">
+                                <hr />
+                                <br />
+                                <button class="col-md-2 form-control" id="return" onclick="window.location.href = '/SubjectGroups/BranchClassSection'" style="border-radius:45px;margin-right:10px;border-color:#e9271f;color:#e9271f;height:38px;width:98px; font-size:13px;background-color:#ffffff"><i class="fa fa-arrow-left"></i> Return</button>
+                                <input class="col-md-2 form-control color" id="submit" form="RegisterForm" type="submit" value="Save" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:13px;width:98px;height:38px;font-family:Montserrat" />
+
+                 
+                                <br /><br /><br />
+                            </div>*@
+                            <div class="col-md-8 pl-5 pr-5 ">
+                                <button type="submit" id="submit" form="RegisterForm" value="Save" class="btn btn-primary rounded rounded-lg"> Save </button>
+
+
+
+                                <button type="button" id="btnCancel" onclick="window.location.href = '/SubjectGroups/BranchClassSection'" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                                    <i class="material-icons mr-2">cached</i>  Cancel
+                                </button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

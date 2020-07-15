@@ -1,0 +1,349 @@
+﻿@model SEA_Application.Models.AspNetStudent
+
+@{
+    ViewBag.Title = "Edit";
+}
+<script>
+    $(document).ready(function () {
+        $("#changediv").hide();
+        var fname = $("#Name").val().split(" ");
+        var fn = fname[0];
+        var mn = fname[1];
+        var ln = fname[2];
+        $("#firstname").val(fn);
+        $("#middlename").val(mn);
+        $("#lastname").val(ln);
+        $("#full_name").html(fn+' '+mn+''+ ln);
+       
+        $("#chngPass").click(function () {
+            $("#infodiv").hide();
+            $("#changediv").show();
+            $("#savechanges").hide();
+            $("#return").hide();
+
+        })
+
+
+        $("#showprof").click(function () {
+            $("#infodiv").show();
+            $("#changediv").hide();
+            $("#savechanges").show();
+            $("#return").show();
+
+        })
+        var na = $('#STATUS').val();
+        debugger;
+        if (na == "InActive") {
+            $('#statusid option[value="' + 'False' + '"]').prop('selected', true);
+        }
+        else {
+            $('#statusid option[value="' + 'True' + '"]').prop('selected', true);
+
+        }
+    })
+
+    function DISABLE() {
+        var status = $("#statusid").val();
+        debugger;
+        if (status == "True") {
+            var id = $("#ID").val();
+            window.location.href = "/AspNetStudents/EnableStudent?id=" + id;
+        }
+        else {
+            $("#myModal2").modal('show');
+
+        }
+    }
+    function cnfmDisable() {
+        var id = $("#ID").val();
+        window.location.href = "/AspNetStudents/DisableStudent?id=" + id;;
+    }
+
+</script>
+<style>
+    .content{
+        padding:0px;
+    }
+      #navbox a:hover {
+         background-color:transparent !important;
+         color:white;
+         border-bottom:4px solid white;
+    }
+   #navbox a:focus {
+         background-color:transparent !important;
+         color:white;
+         border-bottom:4px solid white;
+    }
+      textarea{
+       height:100px;
+       width:718px;
+
+   }
+</style>
+<div class="col-md-12 col-lg-12 col-sm-12 Content" style="background-color:white;padding:0px;" id="cover">
+
+    <div class="col-md-12 col-lg-12 col-sm-12 container" style="background-color:#002938;">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="dropdown" data-target=".navbar-collapse"></button>
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-2">
+                <h4 style="font-family:Montserrat;color:white !important"><b>Edit Student</b></h4>
+            </div>
+        </div>
+        <div class="col-md-4 col-md-offset-4 col-sm-4 split-layout-right">
+            <div class="col-md-12 col-sm-12 col-lg-12">
+                <span id="full_name" style="font-weight:600;color:white;font-size:20px"></span>
+                <br /><br />
+                <div class="col-md-12">
+                    <span id="classname" style="color:white;font-family:Montserrat;background-color:#002938;font-size:15px">@ViewBag.ClassName, </span>
+                    <span id="branchname" style="color:white;font-family:Montserrat;background-color:#002938;font-size:15px">@ViewBag.BranchName</span>
+                </div>
+              
+            </div>
+        </div>
+        <div class="col-md-6 col-md-offset-4">
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav" id="navbox">
+                    <li><a style="text-align:center;font-family:Montserrat;color:#a9b2c0" id="showprof" class="dropdown-item " href="#"><b>Profile</b></a></li>
+                    <li><a style="text-align:center;font-family:Montserrat;color:#a9b2c0;" id="chngPass" class="dropdown-item" href="#"><b>Upload File</b></a></li>
+                    <li style="visibility:hidden;border-bottom:4px solid #002938"><a style="text-align:center;color:#a9b2c0;" id="chnghidden" class="dropdown-item" href="#"><b>Change Password</b></a></li>
+                </ul>
+            </div>
+        </div>      
+    </div>
+
+    <div class="col-md-4 col-lg-4 col-sm-4 split-layout-lefts" style="margin-top:-70px;z-index:2000;position:inherit;">
+        <div class="col-md-12 pull-left" style="margin:auto">
+           
+                <img style="margin-bottom:-20px;width:285px;height:285px;border-radius:50%;border:3px solid white" id="image" src=@ViewBag.Image /> <br />
+            
+            <a id="editbutton" href="#"><i style="border:3px solid white;border-radius:80%;padding:12px;z-index:5000;background-color:#128edb;font-size:15px;margin-left:40%;margin-top:-180px;color:white;" class="fa fa-pencil"></i></a>
+            <br /><br />
+        </div>
+        <div class="col-md-12 col-lg-12 col-sm-12">
+            <div class="col-md-6 col-lg-6 col-sm-6">
+                <span style="color:#128edb"><b>Phone#</b></span><br />
+                <i class="fa fa-mobile"> <span>@Model.CellNo</span></i>
+                <hr />
+            </div>
+        </div>
+        @*<div class="col-md-12 col-lg-12 col-sm-12">
+            <div class="col-md-6 col-lg-6 col-sm-6">
+                <span style="color:#128edb"><b>Hire Date</b></span><br />
+                <span style="font-family:Montserrat;color:#9d9d9d" id="JoiningDATE"></span><br />
+                <input type="hidden" id="JD" value="Joining Date" />
+                <hr />
+            </div>
+        </div>*@
+        <div class="col-md-12 col-lg-12 col-sm-12">
+            <div class="col-md-6 col-lg-6 col-sm-6">
+                <span style="color:#128edb"><b>Branch</b></span><br />
+                <span>@ViewBag.BranchName</span><br />
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-8 col-lg-8">
+             <div class="col-md-8 col-lg-8 col-sm-8" id="changediv" style="border:1px solid #a9b2c0;border-radius:8px;margin-top:25px">
+                <div class="tab-content">
+                    <form action="/Manage/PasswordChange" method="post" enctype="multipart/form-data">
+                        <div class="col-md-12 col-lg-12 col-sm-12">
+                            <div class="col-md-12 col-lg-12 col-sm-12">
+                                <br />
+                                <span style="font-family:Montserrat;color:#9d9d9d"><b>Current Password</b></span><br />
+                                <input class="form-control" id="old" name="old" type="password" />
+                                <br />
+                            </div>
+                            <div class="col-md-12 col-lg-12 col-sm-12">
+                                <span style="font-family:Montserrat;color:#9d9d9d"><b>New Password</b></span><br />
+                                <input type="hidden" name="UserID" value="@Model.Id" id="ID" />
+
+                                <input class="form-control" id="new" name="new" type="password" />
+                                <span style="font-family:Montserrat;" class="text-danger" id="NewPassword-Error"></span>
+                                <br />
+                            </div>
+                            <div class="col-md-12 col-lg-12 col-sm-12">
+                                <span style="font-family:Montserrat;color:#9d9d9d"> <b>New Password Confirm</b> </span><br />
+                                <input class="form-control" id="cnfm" name="cnfm" type="password" />
+                                <span class="text-danger" id="cnfmPassword-Error"></span>
+                                <br />
+                            </div>
+                            <div class="col-md-2 col-md-offset-10">
+                                <br /><br />
+                                <button type="submit" class="btn btn-primary" style="border-radius:35px;background-color:#128edb;border:hidden;font-size:11px;width:98px;height:38px;font-weight:400;">Save</button>
+                                <br /><br />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        <div class="col-md-12 col-lg-12"  id="infodiv">
+            <div>
+                <br />
+                <i class="fa fa-male"></i><span style="color:#002938 !important;font-family:Montserrat;font-size:18px"><b> Personal</b></span>
+                <hr />
+            </div>
+            <div>
+                <div class="col-md-12 col-lg-12 col-sm-12"><span style="font-size:15px;color:#128edb"><b>Basic Information</b></span></div>
+            </div>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "Registerform" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-horizontal">
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.Id)
+                    <hr />
+                    <div class="col-md-12 col-lg-12" style="padding:0px">
+                        <div class="col-md-2 col-lg-2 col-sm-2">
+                            <span>Status</span><br />
+                            <input type="hidden" value="@ViewBag.Status" id="STATUS" />
+                            <select name="status" class="form-control" onchange="DISABLE()" id="statusid">
+                                <option value="True">Active</option>
+                                <option value="False">In Active</option>
+                            </select>
+                        </div>
+                    </div>
+               
+                    <div class="col-md-12 col-lg-12" style="padding:0px">
+                        <div class="form-group">
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", style = "display:none" } })
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <span>Name</span><br />
+                            <input type="text" id="firstname" name="First" style="background-color:#ffffff;" class="form-control round-border" />
+                        </div>
+                        <div class="col-md-2 col-lg-2 col-sm-2">
+                            <br />
+                            <input type="text" id="middlename" name="Middle" style="background-color:#ffffff;" class="form-control round-border" />
+                        </div>
+                        <div class="col-md-2 col-lg-2 col-sm-2">
+                            <br />
+                            <input type="text" id="lastname" name="Last" style="background-color:#ffffff;" class="form-control round-border" />
+                        </div>
+                        <div class="col-md-2">
+                            <span>Roll #</span><br />
+                            @Html.EditorFor(model => model.RollNo, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.RollNo, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12 col-lg-12" style="padding:0px">
+                        <br />
+                        <div class="col-md-2">
+                            <span>Branch</span>
+                            @Html.DropDownList("BranchId", null, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-2">
+                            <span>Class</span>
+                            @Html.DropDownList("ClassId", null, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.ClassId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                 
+
+                    <div class="col-md-12 col-lg-12 col-sm-12">
+                        <hr />
+                        <span style="font-size:15px;color:#128edb"><b>Personal Information</b></span>
+                        <hr />
+                    </div>
+                    <div class="col-md-12 col-lg-12" style="padding:0px">
+                            <div class="col-md-3">
+                                <span>Nationality</span>
+                                @Html.DropDownList("NationalityId", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.NationalityId, "", new { @class = "text-danger" })
+                            </div>
+              
+                            <div class="col-md-3">
+                                <span>Religion</span>
+                                @Html.DropDownList("ReligionId", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.ReligionId, "", new { @class = "text-danger" })
+                            </div>
+                   
+                            <div class="col-md-3">
+                                <span>Gender</span>
+                                @Html.DropDownList("GenderId", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.GenderId, "", new { @class = "text-danger" })
+                            </div>
+                    </div>
+
+           
+                    <div class="col-md-12 col-lg-12 col-sm-12">
+                        <hr />
+                        <span style="font-size:15px;color:#128edb"><b>Contact Information</b></span>
+                        <hr />
+                    </div>
+                 
+                    <div class="col-md-12 col-lg-12" style="padding:0px">   
+                            <div class="col-md-3">
+                                <span>Birth Date</span>
+                                @Html.EditorFor(model => model.Birthdate, new { htmlAttributes = new { @class = "form-control round-border", @type = "Date",@id="birthdate" } })
+                                @Html.ValidationMessageFor(model => model.Birthdate, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-md-3">
+                                <span>Phone #</span>
+                                @Html.EditorFor(model => model.CellNo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.CellNo, "", new { @class = "text-danger" })
+                            </div>
+                        <div class="col-md-10 col-lg-10 col-sm-10">
+                            <br />
+                            <span>Address</span>
+                            @Html.TextAreaFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                        </div> 
+                    </div>               
+
+                    @*<div class="form-group">
+                        <div class="col-md-2">
+                            <span>Parent Id</span>
+                            @Html.DropDownList("ParentId", null, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.ParentId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>*@
+
+                    @*<div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" value="Save" class="btn btn-default" />
+                        </div>
+                    </div>*@
+                </div>
+            }
+            <div class="col-md-12 col-sm-12 col-lg-12">
+                <hr />
+                <br />
+
+                <button class="col-md-2 form-control" onclick="window.location.href='/AspNetStudents/StudentIndex'" style="border-radius:35px;border:hidden;margin-right:10px;background-color:#ff0000;color:#ffffff;font-size:11px;width:98px;height:38px;font-family:Montserrat" id="return"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Return</button>
+
+                <input class="col-md-2 form-control" id="submit" type="submit" form="Registerform" value="Save" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />
+
+                <br /><br /><br />
+            </div>
+        </div>
+      
+    </div>
+</div>
+<div class="modal fade" id="myModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Do you really want to Delete this Employee ?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="cnfmDisable()">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>

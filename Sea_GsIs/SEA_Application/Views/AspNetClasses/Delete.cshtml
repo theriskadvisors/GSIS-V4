@@ -1,0 +1,64 @@
+﻿@model SEA_Application.Models.AspNetClass
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>AspNetClass</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsActive)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsActive)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AspNetBranch.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AspNetBranch.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AspNetClass1.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AspNetClass1.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AspNetSection.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AspNetSection.Name)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

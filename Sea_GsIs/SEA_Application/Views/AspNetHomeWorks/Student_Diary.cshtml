@@ -1,0 +1,102 @@
+﻿
+@{
+    ViewBag.Title = "Student_Diary";
+}
+
+<script>
+    $(document).ready(function () {
+        table = $('#example').dataTable();
+        debugger;
+        var id=@ViewBag.HomeWorkId
+        $.ajax({
+            type: "POST",
+            url: "/AspNetHomeWorks/Student_DiaryIndex",
+            data: {HomeWorkId: id},
+            success: function (data) {
+                debugger;
+                table.fnClearTable();
+                $.each(data, function (i, item) {
+                    debugger;
+                    var time = item.Date;
+                    var startsplit = time.split('(')[1];
+                    var endsplit = startsplit.split(')')[0];
+                    var endsp = parseInt(endsplit);
+                    var d = new Date(endsp);
+                    newdate = d.toLocaleDateString();
+                    table.fnAddData([item.Name, item.RollNo, item.TeacherComment, item.ParentComment, item.Status, newdate]);
+                })
+            }
+        })
+
+        $('.table').on('click', 'tbody tr', function () {
+            var td = $(this).children("td");
+            var userName = $(td[0]).children("input").val();
+            userName = userName.trim();
+
+            window.location.href = "/AspNetStudent_HomeWork/Edit?id=" + userName;
+        });
+
+    });
+    function drawTable() {
+        $('#example_filter').addClass("form-group");
+        $('#example_filter').addClass("has-feedback");
+        $('#example_length').addClass("col-lg-9 col-md-8 col-sm-12 col-xs-12");
+        //$('#example_filter').css("col-lg-9 col-md-8 col-sm-12 col-xs-12");
+
+        $('#example_wrapper').css("text-align", "left");
+        $('#example_length').css("text-align", "left");
+        $('#example_length label').addClass("col-md-3 col-sm-12 col-lg-2");
+        $("#example_length label").css("text-align", "left");
+        $('#example_length label').addClass("col-md-2 col-lg-2 col-sm-12");
+        // // $('#example_length label select').addClass("col-md-3 col-sm-8 col-lg-3"); : auto;
+        $('#example_filter input').css({ "border": "1px solid #ddd", "border-radius": "40px", "height": "30px", "margin-top": "-0px", "outline": "none", "padding-left": "10px", "color": "#000000 !important" });
+        //$('#example_length').css({ "overflow": "auto" });
+        $('#example_filter input').addClass("add");
+        $('#example_filter').append('<span class="glyphicon glyphicon-search  form-control-feedback" style="margin-top: -25px; color: #666;"></span>');
+        var list = $("#ClassID").html();
+        $('#example_length').append(
+
+            '<div class="col-md-1 col-lg-1" style="width:0%; padding-left:1px;">' +
+            '<div class="d-bar" style="margin-top:0px;"></div>' +
+            '</div>'
+              +
+           '<div class="col-md-3 col-lg-3">' +
+           '<div class="col-md-6" style="padding:0px; margin-top:0px">' +
+           '<lable class="control-label"  style="margin-top:0px">Select Class</lable>' +
+           '</div>' +
+           '<div class="col-md-6">' +
+           '<select class="form-control  input-sm" id="Class" style="margin-top:-4px" name="ClassID" onclick="class_click(this)">' + list +
+           '</select>' +
+           '</div>' +
+           '</div>' +
+           '<div class="col-md-2 pull-right !important">' +
+          '<input type="button" class="form-control" id="cre" onclick="Disabled()" value="Disabled" style="border-radius:45px;border-color:#128edb;color:#128edb;background-color:#ffffff" />' +
+          '</div>' +
+             '<div class="col-md-2 pull-right !important">' +
+          '<input type="button" class="form-control" id="cre" onclick="Create()" value="Create" style="border-radius:45px;border-color:#128edb;color:#128edb;background-color:#ffffff" />' +
+          '</div>' +
+            '<div class="col-md-2 pull-right !important">' +
+          '<input type="button" value="Refresh"  class="form-control" id="refresh" onclick="Refresh()" style="border-radius:45px;border-color:#21cd54;color:#21cd54;background-color:#ffffff" />' +
+          '</div>');
+        $("#Class").prepend("<option value='0' selected>All</option>");
+    }
+</script>
+
+<div class="box box-primary">
+    <div class="box-body">
+     
+        <table class="table" cellpadding="0" cellspacing="0" border="0" ; id="example">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Roll No</th>
+                    <th>Teacher Comments</th>
+                    <th>Parent Comments</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>

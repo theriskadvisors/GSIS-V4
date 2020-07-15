@@ -1,0 +1,135 @@
+﻿@using SEA_Application.Models
+@model AspNetCours
+
+<h2>Course Details</h2>
+
+<style>
+    select {
+        border: 10px solid red;
+    }
+</style>
+
+@*<div class="row" style="line-height:1.75em">
+        <div class="col-xs-12 col-md-4 text-right">
+            <b>Course ID</b>
+        </div>
+        <div class="col-xs-12 col-md-8">
+            @Model.Id
+        </div>
+
+        <br />
+        <br />
+
+        <div class="col-xs-12 col-md-4 text-right">
+            <b>Course Title</b>
+        </div>
+        <div class="col-xs-12 col-md-8">
+            @Model.Name
+        </div>
+
+        <br />
+        <br />
+
+        <div class="col-xs-12 col-md-4 text-right">
+            <b>Department</b>
+        </div>
+        <div class="col-xs-12 col-md-8">
+            @Model.AspNetDepartment.Name
+        </div>
+
+        <br />
+        <br />
+
+        <div class="col-xs-12 col-md-4 text-right">
+            <b>Classes offering the course</b>
+        </div>
+        <div class="col-xs-12 col-md-8">
+            <ul class="list-unstyled">
+                @foreach (var @class in (List<AspNetClass>)ViewBag.Classes)
+                {
+                    <li>
+                        @Html.ActionLink(@class.Name, "ClassDetails", new { id = @class.Id }, new { target = "_blank" })
+                    </li>
+                }
+            </ul>
+        </div>
+
+        <br />
+        <br />
+
+        <div class="col-xs-12 col-md-4 text-right">
+            <b>Branches offering the course</b>
+        </div>
+        <div class="col-xs-12 col-md-8">
+            <ul class="list-unstyled">
+                @foreach (var branch in (List<AspNetBranch>)ViewBag.Branches)
+                {
+                    <li>
+                        @branch.Name
+                    </li>
+                }
+            </ul>
+        </div>
+
+    </div>*@
+
+<div class="form-horizontal">
+    <div class="box box-primary">
+        <div class="box-title"><h3>Course Details</h3></div>
+        <div class="box-body">
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Id, new { @class = "control-label col-md-2" })
+                <div class="col-md-7">
+                    @Html.EditorFor(model => model.Id, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, new { @class = "control-label col-md-2" })
+                <div class="col-md-7">
+                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.AspNetDepartment.Name, new { @class = "control-label col-md-2" })
+                <div class="col-md-7">
+                    @Html.EditorFor(model => model.AspNetDepartment.Name, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("ClassList", "Classes offerring the course", new { @class = "control-label col-md-2" })
+                <div class="col-md-7">
+                    <select multiple class="form-control" disabled>
+                        @foreach (var c in (List<AspNetClass>)ViewBag.Classes)
+                        {
+                            <option value="@c.Id" )>@c.Name</option>
+                        }
+
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("BranchList", "Branches offerring the course", new { @class = "control-label col-md-2" })
+                <div class="col-md-7">
+                    <select multiple class="form-control" disabled>
+                        @foreach (var branch in (List<AspNetBranch>)ViewBag.Branches)
+                        {
+                            <option value="@branch.Id">@branch.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-6">
+                    @Html.ActionLink("Edit", "EditCourse", new { id = Model.Id }, new { @class = "btn btn-primary" })
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

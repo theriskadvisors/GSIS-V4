@@ -1,0 +1,180 @@
+﻿
+@{
+    ViewBag.Title = "TeacherStudents";
+    Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
+}
+
+@{
+    ViewBag.Title = "StudentIndex";
+}
+<style>
+</style>
+
+
+<script>
+    $(document).ready(function () {
+        // table = $('#example').dataTable();
+        // drawTable();
+
+        $("#PageHeader").html("Students");
+
+        $("#BreadCrumbs").append(' <li> <a href="#"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Students</a></li>');
+
+
+        var table;
+
+
+        //   $('.eeniart0017').css("display", "block");
+
+
+
+        var RenderToCreate = '/AspNetStudents/Create';
+
+        table = $('#example').dataTable({
+            initComplete: function () {
+                // Apply the search
+                this.api().columns().every(function () {
+                    var that = this;
+
+                    $('input', this.footer()).on('keyup change clear', function () {
+                        if (that.search() !== this.value) {
+                            that
+                                .search(this.value)
+                                .draw();
+                        }
+                    });
+                });
+            },
+            buttons: [
+                {
+                    text: ''
+                },
+                {
+                    text: '',
+                    action: function (e, dt, button, config) {
+                        window.location.href = RenderToCreate;
+                    }
+                },
+                {
+                    text: ''
+                }
+            ],
+            "language": {
+                "lengthMenu": "<div class=\"d-flex showEntriesCon\">\n" +
+                    "  <div class=\"p-2\">Show </div> <div class=\"showEntries\"> _MENU_\n" +
+                    "  </div>\n" +
+                    "  </div>",
+                "info": "<div class='showingEntriesOfTotal'>Showing <span class=\"text-info\">_START_ to _END_</span> of _TOTAL_ entries</div>",
+                "paginate": {
+                    "first": "Firstt",
+                    "last": "Lastt",
+                    "next": ' <img src="~/Content/assets/assets/icons/Arrow2.png" alt=""> ',
+                    "previous": ' <img src="~/Content/assets/assets/icons/Arrow1.png" alt=""> '
+                }
+            },
+            "searching": true,
+            // dom: '<"class">Blfrtip',
+            dom: "<'row mb-3'<'col-sm-12 col-md-2 col-lg-2'l><'col-sm-12 col-md-10 col-lg-10 datatableButtonsCon text-right'Bf>>" +
+                "<'row'<'col-sm-12 datatablesData'tr>>" +
+                "<'row mt-4'<'col-sm-12 col-md-4 col-lg-6 infoCon'i><'col-sm-12 col-md-8 col-lg-6 pagCon'p>>",
+        });
+
+
+        $.ajax({
+            type: "POST",
+            url: "/AspNetStudents/GetAllStudents",
+            success: function (data) {
+                $('.eeniart0017').css("display", "none");
+                table.fnClearTable();
+                $.each(data, function (i, item) {
+                  table.fnAddData([item.Name, item.RollNo, item.PhoneNo]);
+
+
+                })
+            }
+        })
+
+        $("#example_filter").hide();
+
+    })
+    function REDIRECT() {
+
+        $('.table').on('click', 'tbody tr', function () {
+
+            var td = $(this).children("td");
+
+            if ($(td).html() != "No data available in table");
+            window.location.href = "Edit?userName=" + $(td[2]).html();
+        });
+
+    }
+    function class_click(item) {
+
+        var select = item.value;
+        ClassList(item.value);
+    }
+</script>
+
+
+<style>
+    #cre:hover {
+        background-color: #128edb !important;
+        color: #ffffff !important;
+    }
+
+    #refresh:hover {
+        background-color: #21cd54 !important;
+        color: #ffffff !important;
+    }
+
+    #example tr > :nth-child(3) {
+        /*display: none;*/
+    }
+
+    .table tr td:nth-child(4) {
+        text-align: right;
+    }
+
+    .table tr td:nth-child(2) {
+        padding-top: 15px !important;
+    }
+</style>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body p-5">
+
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <div style="display: none">
+                            @*@Html.DropDownList("ClassID", null, htmlAttributes: new { @class = "form-control" })*@
+                        </div>
+                        <div class="table-responsive">
+
+                            <table class="table hover table-bordered" id="example">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Name
+                                        </th>
+                                        <th>
+                                            RollNo
+                                        </th>
+                                        <th>
+                                            Phone
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody id="body"></tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

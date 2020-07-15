@@ -1,0 +1,52 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<link href="~/AdminLTE/style.css" rel="stylesheet" />
+<link href="~/AdminLTE/dist/css/skins/_all-skins.css" rel="stylesheet" />
+
+<script type="text/javascript">
+    function Autofoucs()
+    {
+        document.getElementById("roll").focus();
+    }
+    function Att() {
+
+        debugger;
+        var value = $("#roll").val();
+        $.ajax({
+            type: "POST",
+            url: "/AutoAttendance/Auto_Attendance",
+            data: { AttendanceId: value },
+            success: function () { }
+        });
+    }
+</script>
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Login Form</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body onload="Autofoucs()">
+    <section class="container" style="border:1px solid white;border-radius:10px;box-shadow: rgba(0, 0, 0, 0.16) 15px 25px 20px, rgba(0, 0, 0, 0.23) 0px 3px 10px;background-color:white;width:40%;height:200px; margin-top:200px">
+        <div class="login" style="text-align:center">
+            <h1>Attendance</h1>
+            <form>
+                <input type="text" class="form-control" name="login" id="roll" />
+                <br />
+                <input type="submit" class="form-control round-border" onclick="Att()" value="Submit">
+            </form>
+        </div>
+
+
+    </section>
+
+
+</body>
+</html>

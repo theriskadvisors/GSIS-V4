@@ -1,0 +1,107 @@
+﻿@model SEA_Application.Models.Ledger
+
+@{
+    ViewBag.Title = "Edit";
+}
+<script>
+    $(document).ready(function () {
+
+
+        $("#PageHeader").html("Edit");
+
+        $("#BreadCrumbs").append(' <li> <a href="/FinanceSummary/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class=""><a id="BreadCrumps1" href="/ChartOfAccounts/ChartsOf_Accounts">Chart of Accounts</a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#"> Edit </a></li>');
+
+
+        var name = $("#name").val();
+        if (name == "Student Fee" || name == "Teacher Clearing" || name == "Employee Salary" || name == "Student Receivables") {
+            $("#name").attr("readonly", true);
+            $("#headname").attr("readonly", true);
+            $("#submit").prop("disabled", true);
+        }
+    })
+</script>
+<div class="col-md-8 col-md-offset-1" style="background-color:#f7f7f7;border-radius:10px;margin-top:50px;box-shadow: rgba(0, 0, 0, 0.16) 5px 10px 5px, rgba(0, 0, 0, 0.23) 0px 3px 5px">
+
+
+    @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "Registerform" }))
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="form-horizontal">
+
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.HiddenFor(model => model.Id)
+            <br />
+            <div class="form-group">
+
+                <div class="col-md-6">
+                    <div class="form-group bmd-form-group my-3">
+                        <label class="bmd-label-floating"> Name</label>
+                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @id = "name" } })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group" style="display:none">
+
+
+
+                @Html.EditorFor(model => model.StartingBalance, new { htmlAttributes = new { @class = "form-control", @style = "display:none" } })
+                @Html.ValidationMessageFor(model => model.StartingBalance, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group" style="display:none">
+                @*@Html.LabelFor(model => model.CurrentBalance, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                @Html.EditorFor(model => model.CurrentBalance, new { htmlAttributes = new { @class = "form-control", @style = "display:none" } })
+                @Html.ValidationMessageFor(model => model.CurrentBalance, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group" style="display:none">
+                @*@Html.LabelFor(model => model.CreatedBy, htmlAttributes: new { @class = "control-label col-md-2" })*@
+                @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control", @style = "display:none" } })
+                @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="form-group" style="display:none">
+                @*@Html.LabelFor(model => model.LedgerGroupId, "LedgerGroupId", htmlAttributes: new { @class = "control-label col-md-2" })*@
+                @Html.DropDownList("LedgerGroupId", null, htmlAttributes: new { @class = "form-control", @style = "display:none" })
+                @Html.ValidationMessageFor(model => model.LedgerGroupId, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <span class="col-md-2">Ledger Head</span>
+                <div class="col-md-6">
+                    @Html.DropDownList("LedgerHeadId", null, htmlAttributes: new { @class = "form-control", @id = "headname" })
+                    @Html.ValidationMessageFor(model => model.LedgerHeadId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @*@Html.LabelFor(model => model.SessionId, "SessionId", htmlAttributes: new { @class = "control-label col-md-2" })*@
+                @Html.DropDownList("SessionId", null, htmlAttributes: new { @class = "form-control", @style = "display:none" })
+                @Html.ValidationMessageFor(model => model.SessionId, "", new { @class = "text-danger" })
+            </div>
+
+        </div>
+    }
+    <div class="col-md-5">
+        <br />
+        @*<button class="col-md-2" onclick="window.location.href = '/ChartOfAccounts/ChartsOf_Accounts'" style="border-radius:35px;border:hidden;margin-right:10px;background-color:#128edb;color:white;font-size:11px;width:98px;height:38px;font-family:Montserrat" id="return"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Return</button>*@
+
+
+
+        <button type="button" onclick="window.location.href = '/ChartOfAccounts/ChartsOf_Accounts'" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+            <i class="material-icons mr-2">cached</i>  Return
+        </button>
+
+        <button type="submit" form="Registerform" id="SaveButton" class="btn btn-primary rounded rounded-lg"> Save </button>
+
+
+
+
+        <br />
+        <br /><br />
+    </div>
+</div>

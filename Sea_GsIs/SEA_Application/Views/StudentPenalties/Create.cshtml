@@ -1,0 +1,61 @@
+﻿@model SEA_Application.Models.StudentPenalty
+
+
+@{
+    ViewBag.Title = "Create";
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#PageHeader").html("Student Penalty");
+        $("#BreadCrumbs").append(' <li> <a href="/Accountant/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li> <a href="/PenaltyFees/Index">PenaltyFees </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Create</a></li>');
+
+
+    });
+
+
+</script>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body p-5">
+
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "Registerform" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.StudentId, "StudentId", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-6">
+                                @Html.DropDownList("StudentId", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.StudentId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.PenaltyId, "PenaltyId", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-6">
+                                @Html.DropDownList("PenaltyId", null, htmlAttributes: new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.PenaltyId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <input type="submit" value="Create" id="submit" form="Registerform" class="btn btn-primary pull-right rounded rounded-lg shadow-none mr-3" />
+                    <button onclick="/*showTab(0); currentTab = 0;*/" class="btn btn-primary pull-right rounded rounded-lg bg-transparent text-muted shadow-none mr-3" type="reset">
+                        <i class="material-icons mr-2">cached</i>  Reset &nbsp; &nbsp;
+                        <div class="ripple-container"></div>
+                    </button>
+
+
+                }
+            </div>
+        </div>
+    </div>
+</div>

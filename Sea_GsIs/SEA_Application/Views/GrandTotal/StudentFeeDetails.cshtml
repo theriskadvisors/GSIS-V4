@@ -1,0 +1,164 @@
+﻿@model SEA_Application.Models.AspNetStudent
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+}
+
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<script type="text/javascript">
+    var studentID =  @ViewBag.StudentID;
+    var RecurreningFee= NonRecurringFee= PlentyFee =Discount =GrandTotal = 0;
+   
+    $(document).ready(function () {
+    
+        
+        debugger;
+    
+         $('#SelectMonth').on('change', function () {
+             debugger;
+             var studentID =  @ViewBag.StudentID;
+             var Month = this.value
+
+             $.ajax({
+                 type: "POST",
+                 url: "/GrandTotal/AllResults?Month="+Month+ "&&StudentID="+studentID,
+                 success: function (data) {
+                   
+                     if (data != "error") {
+                         debugger;
+                         data = JSON.parse(data);
+                       
+                         $("#RecurringFee").val(data.RecurrenceFee);
+                         $("#NonRecurringFee").val(data.NonRecurrenceFee);
+                         $("#PlentyFee").val(data.PlentyFee);
+                         $("#DiscountFee").val(data.Discount);
+                         
+                         var total =    parseFloat(data.RecurrenceFee)+parseFloat(data.NonRecurrenceFee)+parseFloat(data.PlentyFee)-parseFloat(data.Discount);
+                     
+                         if(isNaN(total) || total == "undefined")
+                         {
+                             $("#GrandTotal").val("0");
+                         }
+                         else{
+                             $("#GrandTotal").val(Math.round(total));
+                         }
+                     }
+                     else {
+                      
+                     }
+
+                 }
+             });
+
+             });
+    })
+
+   
+
+</script>
+
+<h4 class="orange">Student Details</h4>
+
+
+<div class="row" style="padding-bottom: 10px; padding-top: 10px; padding-left: 20px; padding-right: 20px;">
+    <input type="hidden" id="ID" />
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <div class="nav-tabs-custom">
+            <div class="tab-content" style="background-color:#ECF0F5; padding:10px 0px 0px 0px;">
+                <div class="tab-pane active" id="tab_1">
+                    <div class="form-three widget-shadow">
+                      
+                            <div class="box box-primary">
+                                <div class="box-header with-border"><h3 class="orange">Student Fee Information<span class="red-mark">*</span></h3></div>
+                                <div class="box-body">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-lg-2">Month : <span class="red-mark">*</span></label>
+                                            <div class="col-md-4">
+                                                <select name="Gender" class="form-control" required id="SelectMonth">
+                                                    <option value="">-- Select Month --</option>
+                                                    <option value="January">January</option>
+                                                    <option value="February">February</option>
+                                                    <option value="March">March</option>
+                                                    <option value="April">April</option>
+                                                    <option value="May">May</option>
+                                                    <option value="June">June</option>
+                                                    <option value="July">July</option>
+                                                    <option value="August">August</option>
+                                                    <option value="September">September</option>
+                                                    <option value="October">October</option>
+                                                    <option value="November">November</option>
+                                                    <option value="December">December</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-lg-2">ID: <span class="red-mark">*</span></label>
+                                            <div class="col-md-4">
+                                                @Html.EditorFor(model => model.Id, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" , @id = "StudentID"} })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-lg-2">Name: <span class="red-mark">*</span></label>
+                                            <div class="col-md-4">
+                                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-lg-2">Roll Number: <span class="red-mark">*</span></label>
+                                            <div class="col-md-4">
+                                              @Html.EditorFor(model => model.RollNo, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-lg-2">Cell Number: <span class="red-mark">*</span></label>
+                                            <div class="col-md-4">
+                                                @Html.EditorFor(model => model.CellNo, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-lg-2">Recurring Fee: <span class="red-mark">*</span></label>
+                                            <div class="col-md-4">
+                                             <input type="text" class="form-control" id="RecurringFee" readonly/>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-lg-2">Non-Recurring Fee: <span class="red-mark">*</span></label>
+                                            <div class="col-md-4">
+                                                <input type="text" class="form-control" id="NonRecurringFee" readonly />                                       
+                                                 </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-lg-2">Plenty Fee: <span class="red-mark">*</span></label>
+                                            <div class="col-md-4">
+                                                <input type="text" class="form-control" id="PlentyFee" readonly />
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-lg-2">Discount Fee: <span class="red-mark">*</span></label>
+                                            <div class="col-md-4">
+                                                <input type="text" class="form-control" id="DiscountFee" readonly />
+                                              </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="control-label col-md-2 col-lg-2">Grand Total: <span class="red-mark">*</span></label>
+                                            <div class="col-md-4">
+                                                <input type="text" class="form-control" id="GrandTotal" readonly />
+                                                </div>
+                                        </div>
+                                        <br />
+                                    </div>
+                                </div>
+                            </div>
+                         
+         
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

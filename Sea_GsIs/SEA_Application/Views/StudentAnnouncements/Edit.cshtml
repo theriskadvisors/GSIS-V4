@@ -1,0 +1,62 @@
+﻿@model SEA_Application.Models.AspNetAnnouncement
+
+@{
+    ViewBag.Title = "Edit";
+
+}
+<style>
+
+</style>
+<h2>Edit</h2>
+<div class="box box-primary">
+    <div class="box-body">
+
+
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "Registerform" }))
+{
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <h4>Edit Announcement</h4>
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.Id)
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.Date, new { htmlAttributes = new { @class = "form-control",@readonly="readonly" } })
+                        @Html.ValidationMessageFor(model => model.Date, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="col-md-10 col-md-offset-2 col-sm-10 col-lg-10">
+            <hr />
+
+            <button class="col-md-2 form-control" onclick="window.location.href='/StudentAnnouncements/AnnouncementIndex'" style="border-radius:35px;border:hidden;margin-right:10px;background-color:#ff0000;color:#ffffff;font-size:11px;width:98px;height:38px;font-family:Montserrat" id="return"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Return</button>
+
+            <input class="col-md-2 form-control" id="submit" type="submit" form="Registerform" value="Save" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />
+
+            <br /><br /><br />
+        </div>
+    </div>
+</div>
+

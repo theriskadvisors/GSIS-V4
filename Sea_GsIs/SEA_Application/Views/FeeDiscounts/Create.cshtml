@@ -1,0 +1,104 @@
+﻿@model SEA_Application.Models.FeeDiscount
+
+@{
+    ViewBag.Title = "Create";
+}
+<style>
+    #error-tag {
+        color: red;
+    }
+
+    .color:hover {
+        background-color: #0e72af !important;
+    }
+
+    .color2:hover {
+        background-color: #dc0000 !important;
+    }
+</style>
+
+<script>
+$(document).ready(function () {
+
+        $("#PageHeader").html("Add Discount Type");
+        $("#BreadCrumbs").append(' <li> <a href="/FinanceSummary/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li> <a id="BreadCrumps1" href="/FeeDiscounts/FeeDiscountIndex">Fee Discount Type</a><span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Create</a></li>');
+
+        $("#error-tag").hide();
+        $('#Amount').change(function () {
+            debugger;
+            var balance = $(this).val();
+
+            if (balance > 0) {
+
+                $('#submit').prop("disabled", false);
+                $("#error-tag").hide();
+            }
+            else {
+
+                $("#error-tag").show();
+                $('#submit').prop("disabled", true);
+            }
+
+        });
+
+
+
+
+        $('#submit').prop("disabled", true);
+    });
+
+</script>
+
+
+
+
+<h2></h2>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body p-5">
+                @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "Registerform" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+                        @*<h4>Fee Discount Type</h4>
+                        <hr />*@
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control", @required = "required", @id = "Amount" } })
+                                @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+                                <div class="error" id="error-tag">Fee must be greater than 0</div>
+
+                            </div>
+                        </div>
+
+
+                    </div>
+                    
+                    <input class="btn btn-primary pull-right rounded rounded-lg shadow-none mr-3" id="submit" form="Registerform" type="submit" value="Save" />
+
+                    <button onclick="/*showTab(0); currentTab = 0;*/" class="btn btn-primary pull-right rounded rounded-lg bg-transparent text-muted shadow-none mr-3" type="reset">
+                        <i class="material-icons mr-2">cached</i>  Reset &nbsp; &nbsp;
+                        <div class="ripple-container"></div>
+                    </button>
+
+                    //<button class="col-md-2 form-control color2" onclick="window.location.href = '/FeeDiscounts/FeeDiscountIndex'" style="border-radius:35px;border:hidden;background-color:red;margin-right:10px;color:white;font-size:11px;width:98px;height:38px;font-family:Montserrat" id="return"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Return</button>
+                    //<input class="col-md-2 form-control color" id="submit" form="Registerform" type="submit" value="Save" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />
+                }
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,28 @@
+﻿@using SEA_Application.Models
+@model List<AspNetCoursePackage>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-12 col-md-4 text-right">
+            Package Title
+        </div>
+        <div class="col-xs-12 col-md-8">
+            @ViewBag.PackageName
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12 col-md-4 text-right">
+            Included Courses
+        </div>
+        <div class="col-xs-12 col-md-8">
+            <ul>
+                @foreach (var item in Model)
+                {
+                    <li>
+                        @item.AspNetCours.Name
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

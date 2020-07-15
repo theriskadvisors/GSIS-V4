@@ -1,0 +1,257 @@
+﻿
+@{
+    ViewBag.Title = "TeacherComments";
+    Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
+}
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+
+
+            <div class="card-body p-5">
+
+
+                @*<div class=""><h3 class="orange">Lesson Basic Info<span class="red-mark">*</span></h3></div>*@
+
+
+
+
+                @*<div class="box-header with-border"><h3 class="orange">Comment<span class="red-mark">*</span></h3></div>*@
+
+
+
+                <div class="form-group bmd-form-group col-md-8   pt-5">
+
+
+                    <label class="control-label">Teacher Comments</label>
+                    <div class="col-md-10">
+
+                        <input type="hidden" value="@ViewBag.Id" name="id" id="id" />
+
+                        <textarea class="form-control" required id="TeacherComments" name="TeacherComments" rows="10" cols="50">
+                            @if(ViewBag.TeacherComment != null)
+                            {
+                                   @ViewBag.TeacherComment
+                            }                        
+                        
+
+                           </textarea>
+
+                    </div>
+
+                    <div></div>
+
+                    <br />
+
+                    <div class="form-group bmd-form-group">
+                        <label class="bmd-label-floating">Total Marks*</label>
+
+                        <input type="text" readonly class="TotalMarks form-control" name="TotalMarks" value="@ViewBag.TotalMarks" id="TotalMarks" />
+
+                    </div>
+
+                    <br />
+                    <div class="form-group bmd-form-group">
+                        <label class="bmd-label-floating">Enter Obtained Marks*</label>
+
+                        @if (ViewBag.ObtainedMarks != null)
+                        {
+
+                            <input type="number" class="form-control" name="ObtainedMarks" value="@ViewBag.ObtainedMarks" id="ObtainedMarks" />
+                        }
+                        else
+                        {
+                            <input type="number" class="form-control" name="ObtainedMarks" value="" id="ObtainedMarks" />
+
+                        }
+
+                    </div>
+
+
+                </div>
+
+
+                @*StudentTestSubject.ObtainedMarks*@
+
+                <div class="form-group">
+
+                    <span class="" style="font-weight:bold">Submit Checked Test </span>
+
+                    @*<i class="fa fa-paperclip" style="padding-left:80px"></i> Choose File
+                <input type="file" style="padding-left:80px" id="SubmitAssignment" name="SubmitAssignment">
+            </div>
+            <div class="col-md-offset-2 col-lg-offset-2" style="padding-left:80px">
+                <p class="help-block">Max. 32MB</p>
+            </div>*@
+                    <div class="form-row">
+                        <div class="form-group col-md-12 bmd-form-group">
+                            <div class="file-field d-flex">
+                                <div class="btn btn-primary btn-md mb-0">
+                                    <span style="color:white" onclick='event.stopPropagation(); document.getElementById("SubmitAssignment").click();'>Choose file</span>
+                                    <input id="SubmitAssignment" name="SubmitAssignment" type="file">
+                                </div>
+                                <div class="file-path-wrapper d-flex align-items-end ml-3 w-100">
+                                    <input id="FilePath" class="file-path validate form-control" type="text" readonly disabled placeholder="No file Chosen">
+                                </div>
+                            </div>
+                            <div style="color: #afbccc;font-size: 14px;font-weight: 500;" class="my-3">Max: 32 MB (Filename should be unique)</div>
+                        </div>
+                    </div>
+                    <span id="AssingmentFileToShow"></span>
+                    <span style="color:blue" id="AssignmentMessage"></span>
+
+
+                    <div @*class="col-md-10"*@>
+
+
+                        @*<input type="file" class="btn btn-default" id="SubmitAssignment" name="SubmitAssignment" />
+
+
+                <span style="color:blue" id="AssignmentMessage"></span>*@
+
+                        <br />
+
+                        @*<input style="display:none" class="btn btn-default" type="button" id="AssignmentSubmitButton" name="" value="Submit" />*@
+
+                    </div>
+
+                </div>
+
+
+
+
+                @*<div class="form-group">
+            <div class="col-md-offset-2 col-md-6">
+                <input id="SubmitBtn" type="submit" value="Submit" class="btn btn-primary" />
+                <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+            </div>
+        </div>*@
+
+                <br />
+                <button type="submit" id="SubmitBtn" class="btn btn-primary rounded rounded-lg"> Save </button>
+
+
+                <button type="button" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                    <i class="material-icons mr-2">cached</i>  Cancel
+                </button>
+
+
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#PageHeader").html("Submit Test");
+
+        $("#BreadCrumbs").append(' <li> <a href="#"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li> <a href="/AspnetQuizs/StudentSubmittedTestList"> Test List </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#"> Submit Test</a></li>');
+
+
+
+        $("#btnCancel").click(function () {
+
+            window.location.href = "/AspnetQuizs/StudentSubmittedTestList";
+        })
+
+
+        //$("#SubmitBtn").click(function () {
+
+        //    var Id = $("#id").val();
+
+        //    var TeacherComments = $("#TeacherComments").val();
+        //    //  alert(TeacherComments);
+        //    if (TeacherComments != "") {
+
+
+        //        $.ajax({
+
+
+        //            type: "POST",
+        //            url: "/StudentAssignmentSubmitted/TeacherCommentsMethod",
+        //            data: { "id": Id, "TeacherComments": TeacherComments },
+        //            success: function (data) {
+        //                window.location.href = '/StudentAssignmentSubmitted/StudentAssignments/';
+        //            }
+
+        //        })
+        //    }
+
+        //})
+
+    })
+
+           $('input[type="file"]').change(function(e){
+            var fileName = e.target.files[0].name;
+            //  alert('The file "' + fileName + '" has been selected.');
+
+            //  $("#FilePath").attr('')
+
+              document.getElementById("FilePath").placeholder =fileName;
+        });
+
+    $("#SubmitBtn").click(function (evt) {
+
+        debugger
+
+        var Id = $("#id").val();
+
+        var TeacherComments = $("#TeacherComments").val();
+        debugger
+        var fileUpload = $("#SubmitAssignment").get(0).files;
+
+        var ObtainedMarks = $("#ObtainedMarks").val();
+
+
+        var data = new FormData();
+        // data.append('LessonID', LessonId);
+        data.append('id', Id);
+        data.append('TeacherComments', TeacherComments);
+        data.append('ObtainedMarks', ObtainedMarks);
+
+        if (/*fileUpload.length > 0 &&*/ TeacherComments != "" &&  ObtainedMarks != "") {
+
+
+            data.append("file", fileUpload[0]);
+            $.ajax({
+                type: "POST",
+                url: "/AspnetQuizs/TeacherTestSubmission",
+                contentType: false,
+                processData: false,
+                data: data,
+                success: function (message) {
+
+                    $("#AssignmentMessage").html(message);
+
+                    window.location.href = "/AspnetQuizs/StudentSubmittedTestList";
+
+                },
+                error: function () {
+                    alert("There was error uploading files!");
+                }
+            });
+        }
+        else {
+            // $("#AssignmentMessage").css('color', 'red');
+
+
+            // $("#AssignmentMessage").html("Please Select Assignment");
+
+
+        }
+    });// Assignment Submission
+
+</script>
+
+
+

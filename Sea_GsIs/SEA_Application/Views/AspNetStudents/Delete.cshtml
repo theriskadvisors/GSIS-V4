@@ -1,0 +1,120 @@
+﻿@model SEA_Application.Models.AspNetStudent
+
+@{
+    ViewBag.Title = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>AspNetStudent</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RollNo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RollNo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Birthdate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Birthdate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CellNo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CellNo)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.File)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.File)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AspNetBranch.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AspNetBranch.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AspNetClass.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AspNetClass.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AspNetGender.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AspNetGender.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AspNetNationality.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AspNetNationality.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AspNetParent.UserId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AspNetParent.UserId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AspNetReligion.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AspNetReligion.Title)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

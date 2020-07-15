@@ -1,0 +1,181 @@
+﻿
+@{
+    ViewBag.Title = "StudentTests";
+    Layout = "~/Views/Shared/_StudentDashboardLayout.cshtml";
+
+}
+    <style>
+      #StudentTestList a:hover{
+
+          text-decoration:underline;
+      }
+
+    </style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+
+
+            <div class="card-body p-4">
+                <div class="tab-content" style="        padding: 10px 0px 0px 0px;">
+
+                    <div class="tab-pane active show" id="Topics-attr" role="tabpanel" aria-labelledby="Topics-tab-attr">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="box-title"></div>
+                                <div class="table-responsive">
+                                    <table class="table hover  table-striped table-bordered" id="datatable">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    Title
+                                                </th>
+                                                <th>
+                                                    Description
+                                                </th>
+                                                <th>
+                                                    Subject Name
+                                                </th>
+                                                <th>
+                                                    Start Date
+                                                </th>
+                                                <th>
+                                                    Due Date
+                                                </th>
+                                                <th>
+                                                    Test File
+                                                </th>
+
+                                                <th>
+                                                    Total Marks
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+
+
+
+                                        <tbody id="StudentTestList">
+                                        </tbody>
+
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+
+
+    $(document).ready(function () {
+
+
+        $("#PageHeader").html(" Test List");
+
+        $("#BreadCrumbs").append(' <li> <a href="/Student/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Test List</a></li>');
+
+
+        var table = $('#datatable').dataTable({
+            buttons: [
+                {
+                },
+                {
+
+                },
+                {
+                }
+            ],
+            "language": {
+                "lengthMenu": "<div class=\"d-flex showEntriesCon\">\n" +
+                    "  <div class=\"p-2\">Show </div> <div class=\"showEntries\"> _MENU_\n" +
+                    "  </div>\n" +
+                    "  </div>",
+                "info": "<div class='showingEntriesOfTotal'>Showing <span class=\"text-info\">_START_ to _END_</span> of _TOTAL_ entries</div>",
+                "paginate": {
+                    "first": "Firstt",
+                    "last": "Lastt",
+                    "next": ' <img src="~/Content/assets/assets/icons/Arrow2.png" alt=""> ',
+                    "previous": ' <img src="~/Content/assets/assets/icons/Arrow1.png" alt=""> '
+                }
+            },
+            "searching": true,
+            // dom: '<"class">Blfrtip',
+            dom: "<'row mb-3'<'col-sm-12 col-md-2 col-lg-2'l><'col-sm-12 col-md-10 col-lg-10 datatableButtonsCon text-right'Bf>>" +
+                "<'row'<'col-sm-12 datatablesData'tr>>" +
+                "<'row mt-4'<'col-sm-12 col-md-4 col-lg-6 infoCon'i><'col-sm-12 col-md-8 col-lg-6 pagCon'p>>",
+        });
+
+        $("#datatable1_filter").hide();
+
+        $('#datatable').on('click', 'tbody tr', function () {
+            var td = $(this).children("td");
+            var userName = $(td[0]).children("input").val();
+
+            // alert(userName);
+            window.location.href = "/StudentCourses/StudentSubmitTest?id=" + userName;
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "/StudentCourses/AllTestList",
+            data: {},
+
+            success: function (data) {
+                table.fnClearTable();
+                $.each(data, function (index) {
+
+
+                    //if (data[index].LessonStatus = 'false') {
+                    //    status = "Created";
+                    //} else {
+                    //    status = 'Published';
+                    //}
+
+                    //  var date = data[index].LessonStartDate.split(' ');
+
+
+                    //   var LessonDate = new Date(data[index].LessonDate);
+
+
+                    var value = new Date(parseInt(data[index].StartDate.replace(/(^.*\()|([+-].*$)/g, '')));
+                    var dat = value.getMonth() +
+                        1 +
+                        "/" +
+                        value.getDate() +
+                        "/" +
+                        value.getFullYear();// + " " +
+                    value.getTime().toString();
+
+
+                    var value1 = new Date(parseInt(data[index].EndTime.replace(/(^.*\()|([+-].*$)/g, '')));
+                    var dat1 = value1.getMonth() +
+                        1 +
+                        "/" +
+                        value1.getDate() +
+                        "/" +
+                        value1.getFullYear();// + " " +
+                    value1.getTime().toString();
+
+                    var URL = '/StudentCourses/DownloadTest/?id=' + data[index].Id;
+
+                    table.fnAddData([data[index].Title + "<input  type=hidden value=" + data[index].Id + ">", data[index].Description, data[index].Name, dat, dat1, "<a href = '" + URL + "'>" + data[index].FileName + "</a>",data[index].TotalMarks]);
+
+
+                })
+                table.fnDraw();
+
+            }
+        })
+
+    })
+</script>

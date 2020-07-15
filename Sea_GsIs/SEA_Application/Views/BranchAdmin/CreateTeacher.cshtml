@@ -1,0 +1,493 @@
+﻿@model SEA_Application.Models.TeacherUserEmployeeViewModel
+
+<script>
+    $(document).ready(function () {
+
+        $("#SessionName").prop('required', true);
+        $("#Status").prop('required', true);
+        $("#SessionStartDate").prop('required', true);
+        $("#SessionStartDate").prop('type', 'date');
+        $("#SessionEndDate").prop('required', true);
+        $("#SessionEndDate").prop('type', 'date');
+
+
+        //$("#SessionStartDate").datepicker({
+        //    dateFormat: 'dd/mm/yy',
+        //    changeMonth: true,
+        //    changeYear: true,
+        //    duration: "slow",
+        //    yearRange: '1960:2030'
+        //});
+
+        //$("#SessionEndDate").datepicker({
+        //    dateFormat: 'dd/mm/yy',
+        //    changeMonth: true,
+        //    changeYear: true,
+        //    duration: "slow",
+        //    yearRange: '1960:2030'
+        //});
+
+        $('#cancel').click(function () {
+            window.location.href = '@Url.Action("Dashboard", "Account")';
+        });
+    });
+
+    function isempty(item) {
+        var start = $("#SessionStartDate").val();
+        var end = $("#SessionEndDate").val();
+
+        if (start == "" && end == "") {
+            $(item).prop('placeholder', "Please add the date");
+            $('#submit').prop('disabled', true);
+        } else {
+            $('#submit').prop('disabled', false);
+        }
+    }
+
+
+    function onCancel() {
+        $('#cancel').click();
+    }
+    function onSave() {
+        $('#FormSubmit').click();
+    }
+
+</script>
+<h4 class="orange">Add Student</h4>
+<div class="row" style="padding-bottom: 10px; padding-top: 10px; padding-left: 20px; padding-right: 20px;">
+    <button class="btn btn-danger pull-left btn-sm" onclick="onCancel()">
+        Cancel
+    </button>
+    <button class="pull-right" style="background-color: transparent; border: none; outline: none; font-size: 20px; color: rgb(89, 89, 89) !important" onclick="onSave()">
+        <i class="fa fa-floppy-o"></i>
+    </button>
+</div>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+
+    <div class="box box-primary">
+        <div class="box-title"></div>
+        <hr />
+        <div class="box-body">
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="box-primary">
+                    <div class="box-header with-border">
+                        <h3>Personal Information</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Name, new { @class = "col-md-2 control-label" }) <span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.BirthDate, new { @class = "col-md-2 control-label" }) <span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.BirthDate, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                                @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.NationalityId, new { @class = "col-md-2 control-label" }) <span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.DropDownList("NationalityId", null, "Select your nationality", new { @class = "form-control", required = "required" })
+                                @Html.ValidationMessageFor(model => model.NationalityId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ReligionId, new { @class = "col-md-2 control-label" }) <span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.DropDownList("ReligionId", null, "Select your religion", new { @class = "form-control", required = "required" })
+                                @Html.ValidationMessageFor(model => model.ReligionId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.GenderId, new { @class = "col-md-2 control-label" }) <span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.DropDownList("GenderId", null, "Select your gender", new { @class = "form-control", required = "required" })
+                                @Html.ValidationMessageFor(model => model.GenderId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box-primary">
+                    <div class="box-header with-border">
+                        <h3>Contact Information</h3>
+                    </div>
+
+                    <div class="box-body">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Landline, new { @class = "col-md-2 control-label" }) <span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.Landline, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Landline, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.CellNo, new { @class = "col-md-2 control-label" }) <span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.CellNo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.CellNo, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <h4>Address</h4>
+                        <div class="box-body">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Street, new { @class = "col-md-2 control-label" }) <span class="red-mark">*</span>
+                                <div class="col-md-6">
+                                    @Html.EditorFor(model => model.Street, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Street, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.City, new { @class = "col-md-2 control-label" }) <span class="red-mark">*</span>
+                                <div class="col-md-6">
+                                    @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.State, new { @class = "col-md-2 control-label" })
+                                <div class="col-md-6">
+                                    @Html.EditorFor(model => model.State, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.State, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.Country, new { @class = "col-md-2 control-label" })<span class="red-mark">*</span>
+                                <div class="col-md-6">
+                                    @Html.EditorFor(model => model.Country, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Country, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box-primary">
+                    <div class="box-header with-border">
+                        <h3>Login Information</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.UserName, new { @class = "col-md-2 control-label" }) <span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Email, new { @class = "col-md-2 control-label" }) <span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Password, new { @class = "col-md-2 control-label" }) <span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ConfirmPassword, new { @class = "col-md-2 control-label" }) <span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box-primary">
+                    <div class="box-header with-border">
+                        <h3>Branch Information</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.RegistrationNo, new { @class = "col-md-2 control-label" }) <span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.RegistrationNo, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.RegistrationNo, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.BranchId, new { @class = "col-md-2 control-label" }) <span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.DropDownListFor(model => model.BranchId, (IEnumerable<SelectListItem>)ViewBag.Branches, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.JoiningDate, new { @class = "col-md-2 control-label" }) <span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.JoiningDate, new { htmlAttributes = new { @class = "form-control", type = "date" } })
+                                @Html.ValidationMessageFor(model => model.JoiningDate, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="box-primary">
+                    <div class="box-header with-border">
+                        <h3>Funds Information</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.GrossSalary, new { @class = "col-md-2 control-label" }) <span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><b>Rs.</b></span>
+                                    @Html.EditorFor(model => model.GrossSalary, new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.GrossSalary, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.BasicSalary, new { @class = "col-md-2 control-label" }) <span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><b>Rs.</b></span>
+                                    @Html.EditorFor(model => model.BasicSalary, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.BasicSalary, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.MedicalAllowance, new { @class = "col-md-2 control-label" }) <span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><b>Rs.</b></span>
+                                    @Html.EditorFor(model => model.MedicalAllowance, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.MedicalAllowance, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Accomodation, new { @class = "col-md-2 control-label" }) <span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.Accomodation)
+                                @Html.ValidationMessageFor(model => model.Accomodation, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ProvidedFund, new { @class = "col-md-2 control-label" }) <span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><b>Rs.</b></span>
+                                    @Html.EditorFor(model => model.ProvidedFund, new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.ProvidedFund, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Tax, new { @class = "col-md-2 control-label" }) <span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><b>Rs.</b></span>
+                                    @Html.EditorFor(model => model.Tax, new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.Tax, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.EOP, new { @class = "col-md-2 control-label" }) <span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><b>Rs.</b></span>
+                                    @Html.EditorFor(model => model.EOP, new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                                @Html.ValidationMessageFor(model => model.EOP, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <input id="FormSubmit" type="submit" value="Save" class="btn btn-primary" />
+    </div>
+}
+
+<div id="modal-error-username" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Username already taken</h3>
+                <a class="close" data-dismiss="modal" role="button">&times;</a>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-dismiss="modal">Dismiss</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-error-email" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Email already registered</h3>
+                <a class="close" data-dismiss="modal" role="button">&times;</a>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-dismiss="modal">Dismiss</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-error-rollNo" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Roll No already registered</h3>
+                <a class="close" data-dismiss="modal" role="button">&times;</a>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-dismiss="modal">Dismiss</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#UserName').change(function () {
+        var value = $('#UserName').val();
+        $.ajax({
+            url: '/BranchAdmin/IsUsernameAvailable',
+            data: {
+                'username': $(this).val()
+            }
+        })
+            .done(function (response) {
+                if (response == 'true') {
+
+                } else {
+                    $('#modal-error-username .modal-body').html('Sorry, the username ' + value + ' is already taken. Please try another one.');
+                    $('#modal-error-username').modal('show');
+                }
+            })
+            .error(function () {
+                console.log('Error in ajax request for checking username availability');
+            });
+    });
+
+    $('#Email').change(function () {
+        var value = $('#Email').val();
+        $.ajax({
+            url: '/BranchAdmin/IsEmailAvailable',
+            data: {
+                'email': $(this).val()
+            }
+        })
+            .done(function (response) {
+                if (response == 'true') {
+
+                } else {
+                    $('#modal-error-email .modal-body').html('Sorry, the email address ' + value + ' is already registered. Please try another one.');
+                    $('#modal-error-email').modal('show');
+                }
+            })
+            .error(function () {
+                console.log('Error in ajax request for checking email availability');
+            });
+    });
+
+    $('#RegistrationNo').change(function () {
+        var regNo = $('#RegistrationNo').val();
+        var branchId = $('#BranchId').val();
+        $.ajax({
+            url: '/BranchAdmin/IsRegistrationNumberAvailableInBranch',
+            data: {
+                'registration': regNo,
+                'branchId': branchId
+            }
+        })
+            .done(function (response) {
+                if (response == 'true') {
+
+                } else {
+                    $('#modal-error-regNo .modal-body').html('Sorry, the registration number ' + regNo + ' is already taken in the selected branch. Please try another registration Number or change the branch.');
+                    $('#modal-error-regNo').modal('show');
+                }
+            })
+            .error(function () {
+                console.log('Error in ajax request for checking username availability');
+            });
+    });
+
+    $('#BranchId').change(function () {
+        var regNo = $('#RegistrationNo').val();
+        var branchId = $('#BranchId').val();
+        $.ajax({
+            url: '/BranchAdmin/IsRegistrationNumberAvailableInBranch',
+            data: {
+                'registration': regNo,
+                'branchId': branchId
+            }
+        })
+            .done(function (response) {
+                if (response == 'true') {
+
+                } else {
+                    $('#modal-error-regNo .modal-body').html('Sorry, the registration number ' + regNo + ' is already taken in the selected branch. Please try another registration Number or change the branch.');
+                    $('#modal-error-regNo').modal('show');
+                }
+            })
+            .error(function () {
+                console.log('Error in ajax request for checking username availability');
+            });
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $('#GrossSalary').change(function () {
+            var value = Number($(this).val());
+            $('#BasicSalary').val(value * 0.66);
+            $('#MedicalAllowance').val(value * 0.06);
+            $('#Accomodation').val(1230);
+        });
+    });
+</script>

@@ -1,0 +1,164 @@
+﻿@using SEA_Application.Models
+@model AspNetClass
+
+<script>
+    function getParameterByName(name, url) {
+        if (!url) url = window.location.href;
+        name = name.replace(/[\[\]]/g, "\\$&");
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+            results = regex.exec(url);
+        if (!results) return null;
+        if (!results[2]) return '';
+        return decodeURIComponent(results[2].replace(/\+/g, " "));
+    }
+</script>
+
+<h2>Class Details</h2>
+
+@using (Html.BeginForm("EditClass", "SuperAdmin"))
+{
+    @Html.AntiForgeryToken()
+
+
+    <div class="box box-primary">
+        <div class="box-title"></div>
+        <hr />
+        <div class="box-body">
+            <div class="form-horizontal all-disabled">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                @Html.HiddenFor(model => model.Id)
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Name, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control dual" } })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.NextClassId, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-6">
+                        @Html.DropDownList("NextClassId", null, new { @class = "form-control"})
+                        @Html.ValidationMessageFor(model => model.NextClassId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-md-offset-2">
+            <input id="FormSubmit" type="submit" value="Save" class="btn btn-primary hide" />
+            <button class="btn btn-primary" btn-back>Back</button>
+            <button class="btn btn-danger" btn-edit>Edit</button>
+            <button type="button" class="btn btn-danger" btn-disable data-command-remove id="btn-disable">Disable</button>
+        </div>
+    </div>
+}
+
+<script>
+    $('.dual').attr('disabled', 'disabled');
+    $('button[btn-edit]').click(function () {
+        $('.dual').removeAttr('disabled');
+        $('input[type=submit]').removeClass('hide');
+        return false;
+    })
+</script>
+
+
+<div id="modal-confirm-delete" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h3>Do you really want to delete this class?</h3>
+                </div>
+                <div class="modal-body text-danger">
+                    This action is <em>irreversible</em> and will result in the following:
+                    <ul>
+                        <li>Delete the class from the branches it exits in.</li>
+                        <li>Delete the record of what courses are registered in this class. <em>This will, however, not delete the associated courses.</em></li>
+                        <li>Delete all the sections of the class.</li>
+                        <li>Delete the existence of class in the system.</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-button-delete-confirm data-item-id>Delete</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-delete-success" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h3>Successfully deleted the class</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-delete-error" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h3>Could not delete the class</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#modal-delete-success').on('hidden.bs.modal', function () {
+            location.href = location.href;
+        });
+    });
+
+    (function handleCommandRemove() {
+        $('[data-command-remove]').click(function () {
+            $('#modal-confirm-delete button[data-button-delete-confirm]').attr('data-item-id', getParameterByName('id'));
+            $('#modal-confirm-delete').modal({
+                'show': true,
+                'keyboard': false,
+                'backdrop': false
+            });
+            return false;
+        });
+
+        $('#modal-confirm-delete button[data-button-delete-confirm]').click(function () {
+            var id = $(this).attr('data-item-id');
+            $(this).attr('data-item-id', '');
+            $('#progress-table-update').css('visibility', 'visible');
+            $('#modal-confirm-delete').modal('hide');
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("DeleteClass")',
+                data: {
+                    'id': id
+                },
+                success: function (result) {
+                    if (result) {
+                        $('#modal-delete-success').modal('show');
+                    } else {
+                        $('#modal-delete-error').modal('show');
+                    }
+                    $('#progress-table-update').css('visibility', 'hidden');
+                },
+                error: function (xhr) {
+                    $('#modal-delete-error').modal('show');
+                    $('#progress-table-update').css('visibility', 'hidden');
+                    console.log(xhr.responseText);
+                }
+            })
+        });
+    })();
+</script>

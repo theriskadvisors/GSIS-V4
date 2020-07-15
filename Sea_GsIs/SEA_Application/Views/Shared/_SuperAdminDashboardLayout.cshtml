@@ -1,0 +1,158 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<aside class="main-sidebar">
+    <section class="sidebar">
+        @*<div class="user-panel">
+            <div class="pull-left image">
+                <img src="~/AdminLTE/dist/img/user.svg" class="img-circle" alt="User Image">
+            </div>
+            <div class="pull-left info">
+
+                <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+            </div>
+        </div>*@
+
+        <ul class="sidebar-menu">
+            <li class="header">Users</li>
+            @* <li id="left-sidebar-menu-widgets">
+            <a href="@Url.Action("StudentsIndex", "AspNetUser")">
+                <i class="fa fa-user"></i> <span>Students</span>
+            </a>
+        </li>
+        <li id="left-sidebar-menu-widgets">
+            <a href="@Url.Action("TeachersIndex", "AspNetUser")">
+                <i class="fa fa-graduation-cap"></i> <span>Teachers</span>
+            </a>
+        </li>
+        <li id="left-sidebar-menu-widgets">
+            <a href="@Url.Action("ParentIndex", "AspNetUser")">
+                <i class="fa fa-female"></i> <span>Parents</span>
+            </a>
+        </li>
+        <li id="left-sidebar-menu-widgets">
+            <a href="@Url.Action("AccountantIndex", "AspNetUser")">
+                <i class="fa fa-bar-chart"></i> <span>Accountant</span>
+            </a>
+        </li>*@
+            <li id="left-sidebar-menu-widgets">
+                <a href="@Url.Action("CreateEmployee", "SuperAdmin")">
+                    <i class="fa fa-users"></i> <span>Employees</span>
+                </a>
+            </li>
+
+
+            <li class="header">Academics</li>
+            <li id="left-sidebar-menu-widgets">
+                <a href="@Url.Action("ViewSession", "SuperAdmin")">
+                    <i class="fa fa-exchange"></i> <span>Session</span>
+
+                </a>
+            </li>
+            <li id="left-sidebar-menu-widgets">
+                <a href="@Url.Action("AddTerm", "SuperAdmin")">
+                    <i class="fa fa-sitemap"></i> <span>Term</span>
+
+                </a>
+            </li>
+
+
+
+            <li class="header">Hierarchy</li>
+            <li id="left-sidebar-menu-charts" class="treeview">
+                <a href="@Url.Action("ViewBranches", "SuperAdmin")">
+                    <i class="fa fa-list-ol"></i>
+                    <span>Branches</span>
+                </a>
+
+            </li>
+            <li id="left-sidebar-menu-charts" class="treeview">
+                <a href="@Url.Action("Index", "AspNetClass")">
+                    <i class="fa fa-list-ol"></i>
+                    <span>Classes</span>
+                </a>
+                @*<ul class="treeview-menu">
+                <li id="left-sidebar-menu-charts-chartjs"><a href="@Url.Action("Create", "AspNetClass")"><i class="fa fa-circle-o"></i>Add Class</a></li>
+                <li id="left-sidebar-menu-charts-morris"><a href="@Url.Action("Index", "AspNetClass")"><i class="fa fa-circle-o"></i>View Classes</a></li>
+            </ul>*@
+            </li>
+            <li id="left-sidebar-menu-charts" class="treeview">
+                <a href="@Url.Action("Index", "AspNetClass")">
+                    <i class="fa fa-list-ol"></i>
+                    <span>Cources</span>
+                </a>
+
+            </li>
+            @*<li id="left-sidebar-menu-charts" class="treeview">
+            <a href="@Url.Action("ClassIndex", "AspNetSubject")">
+                <i class="fa fa-list-ul"></i>
+                <span>Subjects</span>
+                @*<i class="fa fa-angle-left pull-right"></i>
+            </a>
+
+        </li>*@
+            <li id="left-sidebar-menu-widgets">
+                <a id="widget" href="@Url.Action("Index", "AspNetPackages")">
+                    <i style="color:black;font-size:13px" class="fa fa-user"></i> <span style="color:#000000 !important">Groups</span>
+                </a>
+            </li>
+            <li id="left-sidebar-menu-widgets">
+                <a id="widget" href="@Url.Action("Index", "AspNetCours")">
+                    <i style="color:black;font-size:13px" class="fa fa-user"></i> <span style="color:#000000 !important">Courses</span>
+                </a>
+            </li>
+
+            <li class="header">General</li>
+            <li id="left-sidebar-menu-widgets">
+                <a href="@Url.Action("ViewLogs", "AspNetLogs")">
+                    <i class="fa fa-eye"></i> <span>View Log</span>
+
+                </a>
+            </li>
+
+
+
+
+
+
+            @*<li id="left-sidebar-menu-charts" class="treeview">
+            <a href="#">
+                <i class="fa fa-bar-chart"></i>
+                <span>Accountant</span>
+                <i class="fa fa-angle-left pull-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                <li id="left-sidebar-menu-charts-chartjs"><a href="@Url.Action("AccountantRegister","Admin_Dashboard")"><i class="fa fa-circle-o"></i>Add Accountant</a></li>
+                <li id="left-sidebar-menu-charts-morris"><a href="@Url.Action("AccountantIndex", "AspNetUser")"><i class="fa fa-circle-o"></i>View Accountants</a></li>
+            </ul>
+        </li>
+        <li id="left-sidebar-menu-charts" class="treeview">
+            <a href="#">
+                <i class="fa fa-female"></i>
+                <span>Parents</span>
+                <i class="fa fa-angle-left pull-right"></i>
+            </a>
+            <ul class="treeview-menu">
+                <li id="left-sidebar-menu-charts-chartjs"><a href="@Url.Action("ParentRegister","Admin_Dashboard")"><i class="fa fa-circle-o"></i>Add Parent</a></li>
+                <li id="left-sidebar-menu-charts-morris"><a href="@Url.Action("ParentIndex", "AspNetUser")"><i class="fa fa-circle-o"></i> View Parent</a></li>
+            </ul>
+        </li>*@
+
+
+
+            <li id="left-sidebar-menu-calendar">
+                <a href="@(Url.Action("Index", "AspNetMessages"))">
+                    <i class="fa fa-envelope"></i>
+                    <span>MailBox</span>
+                </a>
+            </li>
+
+        </ul>
+    </section>
+</aside>
+<div class="content-wrapper">
+
+    <section class="content">
+        @RenderBody()
+    </section>
+</div>

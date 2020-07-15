@@ -1,0 +1,208 @@
+﻿@model SEA_Application.Models.AspNetBranch
+@{
+    ViewBag.Title = "Edit";
+}
+<script>
+    function onCancel() {
+        $('#cancel').click();
+    }
+    function onSave() {
+        $('#FormSubmit').click();
+
+    }
+
+
+    
+
+
+
+</script>
+<h4 class="orange">Branch Detail</h4>
+<div class="row" style="padding-bottom: 10px; padding-top: 10px; padding-left: 20px; padding-right: 20px;">
+    @*<button class="btn btn-danger pull-left btn-sm" onclick="onCancel()">
+            Cancel
+        </button>
+        <button class="pull-right" style="background-color: transparent; border: none; outline: none; font-size: 20px; color: rgb(89, 89, 89) !important" onclick="onSave()">
+            <i class="fa fa-floppy-o"></i>
+        </button>*@
+</div>
+
+@using (Html.BeginForm("EditBranch", "SuperAdmin", new { id = Model.Id} ))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @*<h4>AspNetEmployee</h4>*@
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id)
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.BranchPrincipalId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownList("Principals", null, "No principal selected",  new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Administrators</label>
+            <div class="col-md-10">
+                @Html.ListBox("Admins", null, new { @class = "form-control" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Classes</label>
+            <div class="col-md-10">
+                @Html.ListBox("Classes", null, new { @class = "form-control" })
+                <div style="display:none;">
+                    <select name="PreviouslySelectedClassIds">
+                        @foreach (var id in (IEnumerable<int>)ViewBag.SelectedClassIds)
+                        {
+                            <option selected value=@id>@id</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2">
+                <button type="button" class="btn btn-primary">Back</button>
+                <button type="button" class="btn btn-danger" btn-edit>Edit</button>
+                <button type="button" class="btn btn-danger" data-command-remove>Disable</button>
+                <input type="submit" class="btn btn-primary" value="Save"/>
+            </div>
+        </div>
+
+    </div>
+}
+<script>
+    function redirect() {
+        window.location.href = 'Index';
+    }
+
+    $(':input')
+        .filter(function () {
+            return $(this)[0].nodeName.toLowerCase() != 'button';
+        })
+        .each(function () {
+            $(this).attr('disabled', 'disabled');
+        });
+
+    $('input[type=submit]').addClass('hide');
+
+    $('button[btn-edit]').click(function () {
+        $(':input').removeAttr('disabled');
+        $('input[type=submit]').removeClass('hide');
+    })
+</script>
+
+<div id="modal-confirm-delete" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h3>Do you really want to delete this branch?</h3>
+                </div>
+                <div class="modal-body text-danger">
+                    This action is <em>irreversible</em> and will result in the following:
+                    <ul>
+                        <li>Delete the branch.</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-button-delete-confirm data-item-id>Delete</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-delete-success" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h3>Successfully deleted the branch</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-delete-error" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h3>Could not delete the branch</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#modal-delete-success').on('hidden.bs.modal', function () {
+            location.href = '@Url.Action("ViewBranches")';
+        });
+    });
+
+    (function handleCommandRemove() {
+        $('[data-command-remove]').click(function () {
+            $('#modal-confirm-delete button[data-button-delete-confirm]').attr('data-item-id', getParameterByName('id'));
+            $('#modal-confirm-delete').modal({
+                'show': true,
+                'keyboard': false,
+                'backdrop': false
+            });
+            return false;
+        });
+
+        $('#modal-confirm-delete button[data-button-delete-confirm]').click(function () {
+            var id = $(this).attr('data-item-id');
+            $(this).attr('data-item-id', '');
+            $('#progress-table-update').css('visibility', 'visible');
+            $('#modal-confirm-delete').modal('hide');
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("DeleteBranch")',
+                data: {
+                    'id': id
+                },
+                success: function (result) {
+                    if (result) {
+                        $('#modal-delete-success').modal('show');
+                    } else {
+                        $('#modal-delete-error').modal('show');
+                    }
+                    $('#progress-table-update').css('visibility', 'hidden');
+                },
+                error: function (xhr) {
+                    $('#modal-delete-error').modal('show');
+                    $('#progress-table-update').css('visibility', 'hidden');
+                    console.log(xhr.responseText);
+                }
+            })
+        });
+    })();
+</script>

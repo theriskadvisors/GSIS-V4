@@ -1,0 +1,49 @@
+﻿@model SEA_Application.Models.AspNetSection
+
+@{
+    ViewBag.Title = "Create";
+}
+<style>
+      .color:hover{
+        background-color:#0e72af !important;
+    }
+    #return:hover{
+        background-color:#e9271f !important;
+        color:#ffffff !important;
+    }
+</style>
+<h2>Add Sections</h2>
+<div class="box box-primary">
+    <div class="box-body">
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "Registerform" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <h4>Section</h4>
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+
+            </div>
+        }
+        <div class="col-md-offset-2 col-md-5">
+            <br />
+            <button class="col-md-2 form-control" id="return" onclick="window.location.href = '/AspNetSections/Index'" style="border-radius:45px;margin-right:10px;border-color:#e9271f;color:#e9271f;height:38px;width:98px; font-size:13px;background-color:#ffffff"><i class="fa fa-arrow-left"></i> Return</button>
+            <input class="col-md-2 form-control color" id="submit" form="Registerform" type="submit" value="Save" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:13px;width:98px;height:38px;font-family:Montserrat" />
+
+            <br />
+            <br /><br />
+        </div>
+    </div>
+</div>
+
+
+

@@ -1,0 +1,216 @@
+﻿@model SEA_Application.Models.AspNetHomeWork
+
+@{
+    ViewBag.Title = "Create";
+
+}
+<script>
+    var Subject_Homework =
+   {
+       SubjectID: '',
+       HomeworkDetail: ''
+   }
+    var Homework =
+        {
+            ClassId: '',
+            Date: '',
+            TeacherComment: '',
+            Reading: '',
+            subject_Homework: []
+        }
+    $(document).ready(function () {
+
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "/AspnetStudentHomeWorks/GetClassListbyTeacher",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+
+                var $el = $(".ClassIdDDL");
+                $el.empty();
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                                 .attr("value", 0).text('Select Class'));
+                    for (i = 0; i < sch.length; i++) {
+                        $el.append($("<option></option>")
+                                .attr("value", sch[i].Id).text(sch[i].Name));
+                    }
+                }
+                else {
+                    $el.append($("<option></option>")
+                               .attr("value", '').text('Select'));
+                }
+            }
+        });
+
+        var date = new Date();
+
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        var year = date.getFullYear();
+
+        if (month < 10) month = "0" + month;
+        if (day < 10) day = "0" + day;
+
+        var today = year + "-" + month + "-" + day;
+        $("#SelectDate").attr("value", today);
+        $('#ClassId').prepend("<option selected>Select Class </option>");
+        $('#ClassId').click(function () {
+            var ClassId = $('#ClassId').val();
+            $.get('@Url.Action("SubjectByTeahcer")',
+                {ClassId:ClassId},
+                 function (data) {
+                     
+                    $("#HomeworkDetailTbody").html('');
+                    $.each(data, function (i, item) {
+                        
+                        $("#HomeworkDetailTbody").append('<tr id=' + item.Id + '><td>' + item.Subject + '</td><td><textarea class="form-control" id="HomeWorkDetail"></textarea></td></tr>');
+                    });
+                });
+
+
+        });
+
+        $('#AddDiary').click(function () {
+            
+            aspNetHomework = Object.create(Homework);
+            aspNetHomework.ClassId = $('#ClassId').val();
+            aspNetHomework.Date = $('#SelectDate').val();
+            aspNetHomework.TeacherComment = $('#TeacherComment').val();
+            aspNetHomework.subject_Homework = [];
+            $('#HomeworkDetailTbody tr').each(function () {
+                
+                aspNetSubject_Homework = Object.create(Subject_Homework);
+                aspNetSubject_Homework.SubjectID = $(this).attr('id');
+                aspNetSubject_Homework.HomeworkDetail = $('#HomeWorkDetail', this).val();
+                aspNetHomework.subject_Homework.push(aspNetSubject_Homework);
+            });
+            aspNetHomework = JSON.stringify({ 'aspNetHomework': aspNetHomework });
+
+            console.log(aspNetHomework);
+            
+            $('.eeniart0017').css("display", "block");
+
+            $.ajax({
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                type: 'POST',
+                url: '/AspnetStudentHomeWorks/AddDiary',
+                data: aspNetHomework,
+                success: function () {
+
+                    
+                        var formdata = new FormData(); //FormData object
+                    var fileInput = document.getElementById('attachment');
+                        //Iterating through each files selected in fileInput
+                        for (i = 0; i < fileInput.files.length; i++) {
+                            //Appending each file to FormData object
+                            formdata.append(fileInput.files[i].name, fileInput.files[i]);
+                        }
+                        //Creating an XMLHttpRequest and sending
+                        var xhr = new XMLHttpRequest();
+                    xhr.open('POST', '/AspnetStudentHomeWorks/Upload');
+                        xhr.send(formdata);
+                        xhr.onreadystatechange = function () {
+                            if (xhr.readyState == 4 && xhr.status == 200) {
+                                alert(xhr.responseText);
+                            }
+                        }
+                    
+                    
+
+                    $('.eeniart0017').css("display", "none");
+                    $('#partial').html('Attendance Successfully Save');
+                    //window.location.href = "Index";
+                    window.location.href = "/AspnetStudentHomeWorks/Index";
+                },
+                failure: function (response) {
+                    $('#partial').html('Something went wrong');
+                }
+            });
+        });
+
+    })
+</script>
+<h2>Add New Diary</h2>
+<div class="box box-primary">
+    <div class="box-body">
+        <div class="col-md-12">
+            <div class="col-md-2">
+                <span>Select Class</span>
+            </div>
+            <div class="col-md-6">
+                <select class="form-control ClassIdDDL" id="ClassId" name="ClassId" required></select>
+                <br />
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="col-md-2">
+                <span>Creation Date</span>
+            </div>
+            <div class="col-md-6">
+                <input type="date" class="form-control round-border" id="SelectDate" />
+            </div>
+        </div>
+
+
+    </div>
+</div>
+<div class="box box-primary">
+    <div class="box-body">
+        <div class="col-md-12">
+            <table class="table table-bordered ">
+                <thead>
+                    <tr>
+                        <th>
+                            Subject Name
+                        </th>
+                        <th>
+                            Homework Detail
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="HomeworkDetailTbody"></tbody>
+            </table>
+            <hr />
+
+            <div class="form-group" style="margin-left:1px">
+                <div>
+                    <lable class="col-md-1 col-lg-1 pull-left">Attachment:</lable>
+
+                    <input type="file" id="attachment" name="attachment">
+                </div>
+            </div>
+
+            <div class="col-md-12">
+                <span><b>Teacher Comments</b></span>
+            </div>
+            <div class="col-md-12">
+                <textarea id="TeacherComment" style="width:750px;height:150px"></textarea>
+            </div>
+            <div class="col-md-12">
+                <hr />
+                <button class="col-md-2 form-control" onclick="window.location.href = '/AspnetStudentHomeWorks/Index'" style="border-radius:35px;border:hidden;margin-right:10px;background-color:red;color:white;font-size:13px;width:98px;height:38px;font-family:Montserrat" id="return"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Cancel</button>
+                <input class="col-md-2 form-control" id="AddDiary" onclick="SaveVoucher()" type="submit" value="Save" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:13px;width:98px;height:38px;font-family:Montserrat" />
+            </div>
+            @*<table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <td>
+                        Teacher Comment
+                    </td>
+                    <td>
+                        <textarea class="form-control" id="TeacherComment"></textarea>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>*@
+        </div>
+        </div>
+    </div>
+        

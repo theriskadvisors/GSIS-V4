@@ -1,0 +1,177 @@
+﻿
+@{
+    ViewBag.Title = "QuizDetailsByAdmin";
+    if (User.IsInRole("Branch_Admin"))
+    {
+        Layout = "~/Views/Shared/_BranchAdminDashboardLayout.cshtml";
+    }
+    else if (User.IsInRole("Branch_Principal"))
+    {
+        Layout = "~/Views/Shared/_BranchAdminDashboardLayout.cshtml";
+    }
+    else
+    {
+        Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
+    }
+
+}
+
+
+<style>
+    .upload-photo {
+        background-color: #f2f5fa !important;
+        min-height: 191.667px;
+        max-height: 100%;
+        width: 246px;
+    }
+</style>
+
+<script>
+
+    $(document).ready(function () {
+
+
+        var QuizTime = $("#QuizTime").val();
+        $("#BreadCrumbs").append(' <li><a href="#"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">My Quizz</a></li>');
+        var QuizID = $("#QuizId").val();
+
+        $.ajax({
+               type: "POST",
+            url: "/AspNetQuizs/PublishChecker",
+            data: { "QuizID": QuizID },
+            success: function (data) {
+                
+                if (data == "published") {
+
+                    $("#publish").prop('disabled', true);
+                    $("#publish").html('Published');
+                }
+                else {
+                  
+                }
+                    }
+                })
+
+       
+    });
+    function publish() {
+       
+        var QuizID = $("#QuizId").val();
+        $.ajax({
+
+            type: "POST",
+            url: "/AspNetQuizs/PublishQuiz",
+            data: { "QuizID": QuizID },
+            success: function (data) {
+                
+                if(data == "success")
+                {
+
+                    $("#publish").prop('disabled', true);
+                    $("#publish").html('Published');
+                }
+                else {
+                    $("#publish").prop('disabled', true);
+                    $("#publish").html('Published');
+                }
+
+            }
+
+        })
+
+    }
+</script>
+
+
+@{
+    int counter = 1;
+    bool flag = true;
+}
+<div class="row">
+    <div class="col-md-12">
+        <div class="pageHeading">
+            <div class="row">
+               
+                <div class="col-sm-12 col-md-6 col-lg-7">
+
+
+                    <h1 class="">Quiz Details</h1>
+
+
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-5 align-items-center d-flex justify-content-end">
+                    &nbsp;
+                    <div class="student-attendance-headding align-items-center fc-left d-flex justify-content-between">
+
+                    </div>
+
+                    @if (User.IsInRole("Branch_Admin")){
+                        <button onclick="publish()" id="publish" type="button" class="btn btn-primary  pull-left rounded rounded-lg createBtn coursesBtn mr-3">
+                            Publish
+                        </button>
+                     }
+                </div>
+
+
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body p-5">
+
+                <h3 class="tabMainHeading mb-3">@ViewBag.QuizName</h3>
+                <h5 class="tabMainHeading mb-3">@ViewBag.QuizDescription</h5>
+                <input id="QuizId" class="hidden" type="text" value="@ViewBag.QuizId" />
+
+
+                <div class="questionCon">
+                    @foreach (var item in ViewBag.questionList_MCQS)
+                    {
+                        <h4 class="tabHeading">Question @counter: @item.name</h4>
+                        <input id="@item.id" class="Option" type="hidden" value="" />
+
+
+                        if (item.Photo != null)
+                        {
+                            <div style="height: 120px;" class="upload-photo border rounded d-flex align-items-center justify-content-center flex-column mb-4">
+                                <a href="#">
+                                    <img id="imgPreview" style="width: 150px; height: 150px" src="~/Content/QuestionPhotos/@item.Photo" />
+                                </a>
+                                <input style="display:none;" id="UploadImg" type="file" name="image" />
+                                <div id="UploadPhotoDiv" class="mt-3"></div>
+                            </div>
+                        }
+
+
+
+                        <ol>
+                            @foreach (var item1 in item.options)
+                            {
+                                <li>@item1.name  </li>
+                            }
+                        </ol>
+
+                        counter = counter + 1;
+
+
+
+                    }
+
+
+                </div>
+
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+
+
+

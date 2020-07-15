@@ -1,0 +1,42 @@
+﻿@model SEA_Application.Models.Student_ChallanForm
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Student_ChallanForm</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AmountPayable)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AmountPayable)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AspNetStudent.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AspNetStudent.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Class_ChallanForm.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Class_ChallanForm.Title)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,421 @@
+﻿@{
+    ViewBag.Title = "TeacherComments";
+    Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
+}
+<style>
+    h2#PageHeader2 {
+        font-size: 34px;
+        font-weight: 600;
+        color: #00b8ec;
+    }
+
+    ul#menu {
+        font-size: 16px;
+        line-height: normal;
+    }
+</style>
+
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+
+            <input type="hidden" id="TeacherFile" value="@ViewBag.TeacherFile" />
+            <input type="hidden" name="name" id="TeacherResubmittedFileExist" value="@ViewBag.TeacherResubmittedFileExist" />
+            <div class="card-body p-5">
+
+                <div class="form-group bmd-form-group pt-5 col-md-8">
+
+
+                    <label class="control-label">Teacher Comments</label>
+                    <div class="col-md-12">
+
+                        <input type="hidden" value="@ViewBag.Id" name="id" id="id" />
+                        <textarea class="form-control" required id="TeacherComments" name="TeacherComments" rows="10" cols="50">
+                            @ViewBag.TeacherComments
+                        </textarea>
+
+                    </div>
+
+                    <br />
+                    <div class="form-group bmd-form-group ">
+                        <label class="bmd-label-floating">Total Marks*</label>
+                        @if (ViewBag.TotalMarks != null)
+                        {
+                            <input type="text" readonly class="TotalMarks form-control" name="TotalMarks" value="@ViewBag.TotalMarks" id="TotalMarks" />
+                        }
+                        else
+                        {
+                            <input type="text" readonly class="TotalMarks form-control" name="TotalMarks" value="0" id="TotalMarks" />
+                        }
+
+
+                    </div>
+
+                    <br />
+                    <div class="form-group bmd-form-group">
+
+                        <label class="bmd-label-floating">Enter Obtained Marks*</label>
+
+                        @if (ViewBag.ObtainedMarks != null)
+                        {
+
+                            <input type="number" class="form-control" name="ObtainedMarks" value="@ViewBag.ObtainedMarks" id="ObtainedMarks" />
+                        }
+                        else
+                        {
+                            <input type="number" class="form-control" name="ObtainedMarks" value="0" id="ObtainedMarks" />
+
+                        }
+
+                    </div>
+
+                    <br />
+                    <div class="form-group bmd-form-group">
+                        <input type="hidden" id="IsReSubmissionRequired" name="name" value="@ViewBag.IsReSubmissionRequired" />
+                        <label class="control-label">Is Resubmission Required</label>
+                        &nbsp;
+                        <input type="checkbox" name="ResubmissionCheckBox" id="ResubmissionCheckBox" style="width:20px;height:20px" class="checkbox" />
+                    </div>
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <span class="" style="font-weight:bold">Submit your Assignment </span>
+
+                    @*<i class="fa fa-paperclip" style="padding-left:80px"></i> Choose File
+                    <input type="file" style="padding-left:80px" id="SubmitAssignment" name="SubmitAssignment">
+                </div>
+                <div class="col-md-offset-2 col-lg-offset-2" style="padding-left:80px">
+                    <p class="help-block">Max. 32MB</p>
+                </div>*@
+                    <div class="form-row">
+                        <div class="form-group col-md-12 bmd-form-group">
+                            <div class="file-field d-flex">
+                                <div class="btn btn-primary btn-md mb-0">
+                                    <span style="color:white" onclick='event.stopPropagation(); document.getElementById("SubmitAssignment").click();'>Choose Files</span>
+                                    <input type="file" class="multiple" name="files" id="SubmitAssignment" multiple />
+                                </div>
+
+                                @*<div class="btn btn-primary btn-md mb-0">
+                                <span style="color:white">Choose file</span>
+
+                                <div id="multiple">
+                                    <input type="file" class="multiple" name="files" id="SubmitAssignment" multiple />
+                                </div>
+
+                            </div>*@
+                                <div class="file-path-wrapper d-flex align-items-end ml-3 w-100">
+                                    <input id="FilePath" class="file-path validate form-control" type="text" readonly disabled placeholder="No file Chosen">
+                                </div>
+                            </div>
+                            <div style="color: #afbccc;font-size: 14px;font-weight: 500;" class="my-3">Max: 32 MB (Filename should be unique)</div>
+                        </div>
+                    </div>
+                    <span style="color:blue" id="AssingmentFileToShow"></span>
+                    <span style="color:blue" id="AssignmentMessage"></span>
+
+
+                    <div @*class="col-md-10"*@>
+
+
+                        @*<input type="file" class="btn btn-default" id="SubmitAssignment" name="SubmitAssignment" />
+
+
+                    <span style="color:blue" id="AssignmentMessage"></span>*@
+
+                        <br />
+
+                        @*<input style="display:none" class="btn btn-default" type="button" id="AssignmentSubmitButton" name="" value="Submit" />*@
+
+                    </div>
+
+                </div>
+
+
+
+
+                @*<div class="form-group">
+                <div class="col-md-offset-2 col-md-6">
+                    <input id="SubmitBtn" type="submit" value="Submit" class="btn btn-primary" />
+                    <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                </div>
+            </div>*@
+
+                <br />
+                <button type="submit" id="SubmitBtn" class="btn btn-primary rounded rounded-lg"> Save </button>
+
+
+                <button type="button" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                    <i class="material-icons mr-2">cached</i>  Cancel
+                </button>
+
+
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <div class="col-md-6">
+
+        @*<h2 id="PageHeader2" class="float-left">Student Assignments</h2>*@
+        <h3 id="PageHeader2" style="color:#00b8ec" class="float-left">Student Assignments</h3>
+        <div class="card">
+            <div class="card-body p-5">
+
+                <ul id="menu">
+                    @*<li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Services</a></li>*@
+                </ul>
+            </div>
+        </div>
+
+        <h3 id="PageHeader2" style="color:#00b8ec" class="float-left"> Resubmitted Assignments</h3>
+        <div class="card">
+            <div class="card-body p-5">
+                <ul id="menu1">
+                    @*<li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Services</a></li>*@
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+        var fileUpload = $("#TeacherFile").val().split('/');
+
+        var files = "";
+        if (fileUpload.length > 0 && fileUpload != "") {
+
+            for (var i = 0; i < fileUpload.length; i++) {
+                files = files + fileUpload[0];
+            }
+            document.getElementById("FilePath").placeholder = files;
+            $("#SubmitBtn").attr('disabled', true);
+            $("#SubmitAssignment").attr('disabled', true);
+            $("#SubmitBtn").html("Saved");
+            $("#SubmitBtn").removeClass("btn-primary");
+            $("#SubmitBtn").addClass("btn-success");
+        }
+
+        $('input[type="file"]').change(function (e) {
+
+            var fileName = e.target.files[0].name;
+            var fileUpload = $("#SubmitAssignment").get(0).files;
+
+            var fruits = [];
+            if (fileUpload.length > 0) {
+
+                for (var i = 0; i < fileUpload.length; i++) {
+                    fruits.push(fileUpload[i].name + "  ");
+                }
+            }
+
+            document.getElementById("FilePath").placeholder = fruits;
+        });
+
+        var IsReSubmissionRequired = $("#IsReSubmissionRequired").val();
+        if (IsReSubmissionRequired == 1) {
+            $("#ResubmissionCheckBox").prop("checked", true);
+            $("#ResubmissionCheckBox").attr('disabled', true);
+        }
+
+        if (IsReSubmissionRequired == 1 && $("#TeacherResubmittedFileExist").val() == "Yes") {
+            $("#ResubmissionCheckBox").attr('disabled', true);
+        }
+
+        if ($("#TeacherComments").val() == "") {
+            $("#ResubmissionCheckBox").prop("checked", false);
+        }
+
+        $("#PageHeader").html("Add Comment");
+
+        $("#BreadCrumbs").append(' <li> <a href="#"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li> <a href="/StudentAssignmentSubmitted/StudentAssignments"> Student Assignments </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#"> Add Comment</a></li>');
+
+        $("#btnCancel").click(function () {
+            window.location.href = "/StudentAssignmentSubmitted/StudentAssignments";
+        })
+
+        var Id = $("#id").val();
+        $.ajax({
+            type: "POST",
+            url: "/StudentAssignmentSubmitted/GetStudentAssignements",
+            data: { "Id": Id },
+
+            success: function (data) {
+
+                //debugger
+
+                if (data != "error") {
+
+                    var Rdata = JSON.parse(data);
+                    for (var j = 0; j < Rdata.length; j++) {
+
+                        var obj = Rdata[j].AssigmentName;
+                        
+                        var objId = Rdata[j].Id;
+                        var ArrNames = obj.split("/");
+                        for (var i = 0; i < ArrNames.length ; i++) {
+                            var obj = ArrNames[i];
+                            //console.log(obj);
+                            if (obj != "") {
+                                $("#menu").append('</br><li><a href="/StudentAssignmentSubmitted/DownloadFileOfAssignment/?id=' + objId + '&Name=' + obj + '"> ' + obj + '</a></li></br></br>');
+                            }
+                            
+                        }
+                    }
+
+                }
+                else {
+
+                }
+
+            }
+        })
+
+        $.ajax({
+            type: "POST",
+            url: "/StudentAssignmentSubmitted/GetStudentReSubmittedAssignements",
+            data: { "Id": Id },
+            success: function (data) {
+                //debugger	
+                if (data != "error") {
+                    var Rdata = JSON.parse(data);
+                    for (var j = 0; j < Rdata.length; j++) {
+                        var obj = Rdata[j].AssigmentName;
+                        var objId = Rdata[j].Id;
+                        var ArrNames = obj.split("/");
+                        for (var i = 0; i < ArrNames.length; i++) {
+                            var obj = ArrNames[i];
+                            //console.log(obj);	
+                            if (obj != "") {
+                                $("#SubmitAssignment").prop("disabled", false);
+                                $("#SubmitBtn").prop("disabled", false);
+                                $("#menu1").append('</br><li><a href="/StudentAssignmentSubmitted/DownloadResubmittedFileOfAssignment/?id=' + objId + '&Name=' + obj + '"> ' + obj + '</a></li></br></br>');
+                            }
+                        }
+                    }
+                }
+                else {
+                }
+            }
+        })
+
+        //$("#SubmitBtn").click(function () {
+
+        //    var Id = $("#id").val();
+
+        //    var TeacherComments = $("#TeacherComments").val();
+        //    //  alert(TeacherComments);
+        //    if (TeacherComments != "") {
+
+
+        //        $.ajax({
+
+
+        //            type: "POST",
+        //            url: "/StudentAssignmentSubmitted/TeacherCommentsMethod",
+        //            data: { "id": Id, "TeacherComments": TeacherComments },
+        //            success: function (data) {
+
+
+        //                window.location.href = '/StudentAssignmentSubmitted/StudentAssignments/';
+        //            }
+
+        //        })
+        //    }
+
+        //})
+
+    })
+
+    $("#SubmitBtn").click(function (evt) {
+
+       // debugger;
+
+        var Resubmit;
+        if ($("#ResubmissionCheckBox").prop("checked") == true) {
+            Resubmit = true;
+        }
+        else if ($("#ResubmissionCheckBox").prop("checked") == false) {
+            Resubmit = false;
+        }
+
+        var Id = $("#id").val();
+        $("#SubmitBtn").html("Please Wait");
+        $("#SubmitBtn").attr('disabled', true);
+
+        var TeacherComments = $("#TeacherComments").val();
+        var fileUpload = $("#SubmitAssignment").get(0).files;
+        var data = new FormData();
+        if (fileUpload.length > 0) {
+
+            for (var i = 0; i < fileUpload.length; i++) {
+                data.append("file", fileUpload[i]);
+            }
+        }
+
+        var ObtainedMarks = $("#ObtainedMarks").val();
+
+
+        //var data = new FormData();
+        //data.append('LessonID', LessonId);
+        data.append('id', Id);
+        data.append('TeacherComments', TeacherComments);
+        data.append('ObtainedMarks', ObtainedMarks);
+        data.append('IsResubmissionRequired', Resubmit);
+
+        if (/*fileUpload.length > 0 &&*/ TeacherComments != "" && ObtainedMarks != "") {
+
+            //console.log("ma Kam kr ra hun");
+            //console.log(data);
+            $.ajax({
+                type: "POST",
+                url: "/StudentAssignmentSubmitted/TeacherAssignmentSubmission",
+                contentType: false,
+                processData: false,
+                data: data,
+                success: function (message) {
+
+                    $("#AssignmentMessage").html(message);
+                    $("#SubmitBtn").html("Submitted");
+                    $("#SubmitBtn").addClass("hidden");
+
+                    var type = 'success';
+                    var msg = "Assignment Submitted successfully";
+                    showNotification('top', 'center', msg, type);
+                },
+                error: function () {
+                    alert("There was error uploading files!, Kindly select files again and submit again");
+                    $("#SubmitBtn").html("Submit");
+                    $("#SubmitBtn").attr('disabled', false);
+                }
+            });
+        }
+        else {
+            // $("#AssignmentMessage").css('color', 'red');
+
+
+            // $("#AssignmentMessage").html("Please Select Assignment");
+
+
+        }
+    });// Assignment Submission
+
+</script>
+
+
+

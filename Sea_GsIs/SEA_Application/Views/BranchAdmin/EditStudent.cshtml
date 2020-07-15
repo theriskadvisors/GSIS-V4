@@ -1,0 +1,243 @@
+﻿@model SEA_Application.Models.StudentUserViewModel
+
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+
+    <div class="box box-primary">
+        <div class="box-title"><h3>Edit Student</h3></div>
+        <hr />
+        <div class="box-body">
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group">
+                    <label class="control-label col-md-2">Student ID</label>
+                    <div class="col-md-6">
+                        <input type="text" value="@Model.Id" class="form-control" disabled/>
+                        @Html.HiddenFor(model => model.Id)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Name, new { @class = "col-md-2 control-label" })<span class="red-mark">*</span>
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.Hidden("PreviousName", Model.Name)
+                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.RollNo, new { @class = "col-md-2 control-label" })<span class="red-mark">*</span>
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.RollNo, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.Hidden("PreviousRollNo", Model.RollNo)
+                        @Html.ValidationMessageFor(model => model.RollNo, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Address, new { @class = "col-md-2 control-label" })<span class="red-mark">*</span>
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control", @value = Model.Address } })
+                        @Html.Hidden("PreviousAddress", Model.Address)
+                        @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+
+                <div class="box box-primary">
+                    <div class="box-title">
+                        User Information
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.UserName, new { @class = "col-md-2 control-label" })<span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.Hidden("PreviousUsername", Model.UserName)
+                                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Email, new { @class = "col-md-2 control-label" })<span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.Hidden("PreviousEmail", Model.Email)
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-2">Password</label>
+                            <div class="col-md-6">
+                                <input type="password" disabled class="form-control" value="@Model.Password"/>
+                                @Html.HiddenFor(model => model.Password)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box-title"></div>
+
+                <div class="form-group">
+                    <label class="col-md-2 control-label" for="UserName">Branch: <span class="red-mark">*</span></label>
+                    <div class="col-md-6">
+                        @Html.DropDownListFor(model => model.BranchId, (IEnumerable<SelectListItem>)ViewBag.Branches, new { @class = "form-control" })
+                        @Html.Hidden("PreviousBranch", Model.BranchId)
+                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+        <input id="FormSubmit" type="submit" value="Save" class="btn btn-primary" />
+    </div>
+}
+
+<div id="modal-error-username" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Username already taken</h3>
+                <a class="close" data-dismiss="modal" role="button">&times;</a>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-dismiss="modal">Dismiss</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-error-email" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Email already registered</h3>
+                <a class="close" data-dismiss="modal" role="button">&times;</a>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-dismiss="modal">Dismiss</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-error-rollNo" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Roll No already registered</h3>
+                <a class="close" data-dismiss="modal" role="button">&times;</a>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-dismiss="modal">Dismiss</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#UserName').change(function () {
+        var value = $('#UserName').val();
+        $.ajax({
+            url: '/BranchAdmin/IsUsernameAvailable',
+            data: {
+                'username': $(this).val()
+            }
+        })
+            .done(function (response) {
+                if (response == 'true') {
+
+                } else {
+                    $('#modal-error-username .modal-body').html('Sorry, the username ' + value + ' is already taken. Please try another one.');
+                    $('#modal-error-username').modal('show');
+                }
+            })
+            .error(function () {
+                console.log('Error in ajax request for checking username availability');
+            });
+    });
+
+    $('#Email').change(function () {
+        var value = $('#Email').val();
+        $.ajax({
+            url: '/BranchAdmin/IsEmailAvailable',
+            data: {
+                'email': $(this).val()
+            }
+        })
+            .done(function (response) {
+                if (response == 'true') {
+
+                } else {
+                    $('#modal-error-email .modal-body').html('Sorry, the email address ' + value + ' is already registered. Please try another one.');
+                    $('#modal-error-email').modal('show');
+                }
+            })
+            .error(function () {
+                console.log('Error in ajax request for checking email availability');
+            });
+    });
+
+    $('#RollNo').change(function () {
+        var rollNo = $('#RollNo').val();
+        var branchId = $('#BranchId').val();
+        $.ajax({
+            url: '/BranchAdmin/IsRollNumberAvailableInBranch',
+            data: {
+                'rollNo': rollNo,
+                'branchId': branchId
+            }
+        })
+            .done(function (response) {
+                if (response == 'true') {
+
+                } else {
+                    $('#modal-error-rollNo .modal-body').html('Sorry, the roll number ' + rollNo + ' is already taken in the selected branch. Please try another roll Number or change the branch.');
+                    $('#modal-error-rollNo').modal('show');
+                }
+            })
+            .error(function () {
+                console.log('Error in ajax request for checking username availability');
+            });
+    });
+
+    $('#BranchId').change(function () {
+        var rollNo = $('#RollNo').val();
+        var branchId = $('#BranchId').val();
+        $.ajax({
+            url: '/BranchAdmin/IsRollNumberAvailableInBranch',
+            data: {
+                'rollNo': rollNo,
+                'branchId': branchId
+            }
+        })
+            .done(function (response) {
+                if (response == 'true') {
+
+                } else {
+                    $('#modal-error-rollNo .modal-body').html('Sorry, the roll number ' + rollNo + ' is already taken in the selected branch. Please try another roll Number or change the branch.');
+                    $('#modal-error-rollNo').modal('show');
+                }
+            })
+            .error(function () {
+                console.log('Error in ajax request for checking username availability');
+            });
+    });
+</script>

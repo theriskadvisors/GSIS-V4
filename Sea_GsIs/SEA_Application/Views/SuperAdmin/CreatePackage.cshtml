@@ -1,0 +1,165 @@
+﻿@model SEA_Application.Models.AspNetPackage
+    @using SEA_Application.Models;
+
+<script>
+    $(document).ready(function () {
+
+        $("#SessionName").prop('required', true);
+        $("#Status").prop('required', true);
+        $("#SessionStartDate").prop('required', true);
+        $("#SessionStartDate").prop('type', 'date');
+        $("#SessionEndDate").prop('required', true);
+        $("#SessionEndDate").prop('type', 'date');
+
+
+        //$("#SessionStartDate").datepicker({
+        //    dateFormat: 'dd/mm/yy',
+        //    changeMonth: true,
+        //    changeYear: true,
+        //    duration: "slow",
+        //    yearRange: '1960:2030'
+        //});
+
+        //$("#SessionEndDate").datepicker({
+        //    dateFormat: 'dd/mm/yy',
+        //    changeMonth: true,
+        //    changeYear: true,
+        //    duration: "slow",
+        //    yearRange: '1960:2030'
+        //});
+
+        $('#cancel').click(function () {
+            window.location.href = '@Url.Action("Dashboard", "Account")';
+        });
+    });
+
+    function isempty(item) {
+        var start = $("#SessionStartDate").val();
+        var end = $("#SessionEndDate").val();
+
+        if (start == "" && end == "") {
+            $(item).prop('placeholder', "Please add the date");
+            $('#submit').prop('disabled', true);
+        } else {
+            $('#submit').prop('disabled', false);
+        }
+    }
+
+
+    function onCancel() {
+        $('#cancel').click();
+    }
+    function onSave() {
+        alert("Did you listen to me?")
+        $('#FormSubmit').click();
+    }
+
+</script>
+<h4 class="orange">Add Package</h4>
+<div class="row" style="padding-bottom: 10px; padding-top: 10px; padding-left: 20px; padding-right: 20px;">
+    <button class="btn btn-danger pull-left btn-sm" onclick="onCancel()">
+        Cancel
+    </button>
+    <button class="pull-right" style="background-color: transparent; border: none; outline: none; font-size: 20px; color: rgb(89, 89, 89) !important" onclick="onSave()">
+        <i class="fa fa-floppy-o"></i>
+    </button>
+</div>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+
+    <div class="box box-primary">
+        <div class="box-title"></div>
+        <hr />
+        <div class="box-body">
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    <label class="col-md-2 control-label" for="UserName">Package Name: <span class="red-mark">*</span></label>
+                    <div class="col-md-6">
+                        @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control", required = "required" } })
+                        @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-2 control-label" for="">Select a department:</label>
+                    <div class="col-md-6">
+                        @Html.DropDownList("departmentSelect", (IEnumerable<SelectListItem>)ViewBag.Departments, "Select a department", new { @class = "form-control", required = "required" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-md-2 control-label" for="">Select courses:</label>
+                    <div class="col-md-6">
+                        <select multiple id="courselist" name="courselist" class="form-control" required>
+                            
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <input id="FormSubmit" type="submit" value="Save" class="btn btn-primary" />
+    </div>
+}
+
+<div id="logihandlers" style="display:none;">
+    <table id="course-dept-table-dept-table">
+        <thead>
+            <tr>
+                <th>Course ID</th>
+                <th>Course Name</th>
+                <th>Department ID</th>
+                <th>Department Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in (List<AspNetCours>)ViewBag.CourseList)
+            {
+                <tr id=@("dept-" + item.DepartmentId)>
+                    <td>@item.Id</td>
+                    <td>@item.Name</td>
+                    <td>@item.DepartmentId</td>
+                    <td>@item.AspNetDepartment.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script>
+    var courseDepartList = [];
+    $('#course-dept-table-dept-table tbody tr').each(function () {
+        var currentCourseDept = {};
+        var cid = $(this).find('td:nth-child(1)');
+        var cname = $(this).find('td:nth-child(2)');
+        var did = $(this).find('td:nth-child(3)');
+        var dname = $(this).find('td:nth-child(4)');
+
+        currentCourseDept.CourseId = $(cid).html().trim();
+        currentCourseDept.CourseName = $(cname).html().trim();
+        currentCourseDept.DeptId = $(did).html().trim();
+        currentCourseDept.DeptName = $(dname).html().trim();
+
+        courseDepartList.push(currentCourseDept);
+    });
+</script>
+
+<script>
+    $('#departmentSelect').change(function () {
+        $('#courselist').empty();
+        var currentValue = $(this).val();
+
+        var filteredRows = $(courseDepartList).filter(function () {
+            return this.DeptId == currentValue;
+        })
+
+        for (let i = 0; i < filteredRows.length; i++) {
+            let currentOption = '<option value = ' + filteredRows[i].CourseId + '>' + filteredRows[i].CourseName + '</option>';
+            $(currentOption).appendTo('#courselist');
+        }
+        
+    });
+</script>

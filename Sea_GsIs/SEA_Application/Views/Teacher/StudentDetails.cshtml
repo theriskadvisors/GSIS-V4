@@ -1,0 +1,71 @@
+﻿
+    @{
+        ViewBag.Title = "Details";
+    }
+<style>
+    i.fa.fa-list {
+        color: #fff;
+    }
+
+    h3 {
+        color: #ffffff !important;
+    }
+</style>
+
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box" style="margin-top:35px">
+            <div class="box-header box-solid bg-purple-gradient">
+                <h3 class="box-title"> <i class="fa fa-list"></i> Students Details</h3>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                </div>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body box-border-grey">
+                <table id="example2" class="table table-striped table-bordered table-hover dt-responsive dataTable no-footer dtr-inline ">
+                    <thead>
+                        <tr>
+
+                            <th><label>Name</label></th>
+                            <th><label>Roll No</label></th>
+                            <th><label>Address</label></th>
+                            <th><label>Time In</label></th>
+                            <th><label>Time Out</label></th>
+                            <th><label>IP Address</label></th>
+
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tblbody">
+    @if(ViewBag.StudentDetails != null)
+    { 
+                            foreach (var c in ViewBag.StudentDetails)
+    {
+                        <tr>
+                            <td>@c.Name</td>
+                            <td>@c.RollNo</td>
+
+                            <td>@c.Address</td>
+
+                            <td>@c.TimeIn</td>
+                            <td>@c.TimeOut</td>
+                            <td>@c.IP_Address</td>
+
+                        </tr>
+        }
+    }
+    else
+    {
+         <tr>No Records Found  </tr>
+    }
+                        </tbody>
+                </table>
+
+            </div>
+            <!-- /.box-body -->
+        </div>
+    </div>
+    <!-- /.col -->
+</div>     

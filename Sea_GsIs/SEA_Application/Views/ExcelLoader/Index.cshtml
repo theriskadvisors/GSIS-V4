@@ -1,0 +1,117 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+
+    Layout = "~/Views/Shared/_AdminDashboardLayout.cshtml";
+}
+
+@model SEA_Application.Models.AspNetStudent
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<script>
+    $(document).ready(function () {
+   
+
+        
+        $("#submit").click(function () {
+            debugger;
+            var roll = $("#RollNo").val();
+            if (roll == "") {
+                $('#UserName-Error').html("This field is required");
+                $('#submit').prop('disabled', true);
+                $('#UserName-Error').attr("color", "red");
+
+            }
+            else {
+                $('#UserName-Error').html("");
+                $('#submit').prop('disabled', false);
+            }
+        })
+     
+    });
+
+
+
+</script>
+<style>
+    .col-md-2 {
+        width: 19.666667%;
+    }
+
+    .content {
+        padding: 0px;
+    }
+
+    #navbox a:hover {
+        background-color: transparent !important;
+        color: white;
+        border-bottom: 4px solid white;
+    }
+
+    #navbox a:focus {
+        background-color: transparent !important;
+        color: white;
+        border-bottom: 4px solid white;
+    }
+
+    textarea {
+        height: 100px;
+        width: 718px;
+    }
+
+    span {
+        color: #9d9d9d;
+    }
+</style>
+<div class="col-md-12 col-lg-12 col-sm-12 Content" style="background-color:white;padding:0px;" id="cover">
+
+
+    <div class="col-md-12 col-lg-12 col-sm-12 container" style="background-color:#002938">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="dropdown" data-target=".navbar-collapse"></button>
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-2">
+                <br>
+                <h4 style="font-family:Montserrat;color:white !important"><b>Excel Loader</b></h4>
+            </div>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav" id="navbox">
+                <li><a style="text-align:center;font-family:Montserrat;color:#a9b2c0;" id="chngPass" class="dropdown-item" href="#"><b>Upload File</b></a></li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-6 col-sm-6 col-lg-6" style="border:1px solid #bdb2b2;margin-left:30px;border-radius:8px;margin-top:30px" id="changediv">
+
+        <div class="box-header with-border"><h3 class="orange">Upload Excel File &nbsp; <i class="fa fa-file-excel-o" aria-hidden="true"></i></h3></div>
+        <div class="form-three widget-shadow">
+            @using (Html.BeginForm("UploadFile", "ExcelLoader", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    <div class="control-label col-md-3"><b>Excel File</b></div>
+                    <div class="col-md-4">
+                        <input id="teachers" required="required" name="students" type="file" />
+                    </div>
+                </div>
+                <br />
+                <br />
+                <div class="box-footer">
+                    <div class="form-group">
+                        <div class="col-md-10" style="padding-left:0px">
+                            <input class="col-md-2" type="submit" value="Submit" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+  
+    </div>
+
+

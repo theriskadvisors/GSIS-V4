@@ -1,0 +1,93 @@
+﻿@using SEA_Application.Models
+@model AspNetStudentRegistrationApplication
+
+<div class="box box-primary">
+    <div class="box-title">
+        Application Status
+    </div>
+    <div class="box-body text-uppercase">
+        <div class="row">
+            <div class="col-xs-12 col-md-4 text-right">
+                Application Reference
+            </div>
+            <div class="col-xs-12 col-md-6">
+                @Model.Id
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-md-4 text-right">
+                Name
+            </div>
+            <div class="col-xs-12 col-md-6">
+                @Model.Name                
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-md-4 text-right">
+                Username
+            </div>
+            <div class="col-xs-12 col-md-6">
+                @Model.AspNetUser.UserName
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-md-4 text-right">
+                Email Address
+            </div>
+            <div class="col-xs-12 col-md-6">
+                @Model.AspNetUser.Email
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-md-4 text-right">
+                Application Status
+            </div>
+            <div class="col-xs-12 col-md-6">
+                <p class=@(Model.IsAccepted ? "text-success" : "text-danger")>
+                    @(Model.IsAccepted ? "Accepted" : "Not Accepted")
+                </p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-md-4 text-right">
+                School
+            </div>
+            <div class="col-xs-12 col-md-6">
+                @Model.AspNetBranch_Class.AspNetBranch.AspNetSchool.Name
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-md-4 text-right">
+                Branch
+            </div>
+            <div class="col-xs-12 col-md-6">
+                @Model.AspNetBranch_Class.AspNetBranch.Name
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-md-4 text-right">
+                Class
+            </div>
+            <div class="col-xs-12 col-md-6">
+                @Model.AspNetBranch_Class.AspNetClass.Name
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-md-4 text-right">
+                Address
+            </div>
+            <div class="col-xs-12 col-md-6">
+                @($"{Model.AspNetAddress.Street} {Model.AspNetAddress.City} {Model.AspNetAddress.State} {Model.AspNetAddress.Country}")
+            </div>
+        </div>
+
+    </div>
+</div>

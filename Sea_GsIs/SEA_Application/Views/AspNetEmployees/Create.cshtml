@@ -1,0 +1,495 @@
+﻿@model SEA_Application.Models.AspNetEmployee
+
+@{
+    ViewBag.Title = "Create";
+}
+@if (ViewBag.Error != null)
+{
+    <span>@ViewBag.Error</span>
+    <span>ViewBag.Error</span>
+}
+@if (ViewBag.test != null)
+{
+    <span>@ViewBag.test</span>
+    <span>ViewBag.test</span>
+}
+<style>
+     .content {
+    padding: 0px; 
+    background-color:white !important;
+      
+}
+     .content-wrapper{
+         background-color:white !important;
+     }
+    #navbox a:hover {
+         background-color:transparent !important;
+         color:white;
+         border-bottom:4px solid white;
+    }
+   #navbox a:focus {
+         background-color:transparent !important;
+         color:white;
+         border-bottom:4px solid white;
+    }
+   textarea{
+       height:100px;
+       width:718px;
+
+   }
+   label{
+       font-family:Montserrat !important;
+       color:#9d9d9d;
+   }
+   span{
+        font-family:Montserrat !important;
+       color:#9d9d9d;
+   }
+</style>
+<script>
+    $(document).ready(function () {
+
+        //$("#changediv").hide();
+
+        $("#chngPass").click(function () {
+            $("#infodiv").hide();
+            $("#changediv").show();
+            $("#savechanges").hide();
+            $("#return").hide();
+
+        })
+
+        $("#showprof").click(function () {
+            $("#infodiv").show();
+            $("#changediv").hide();
+            $("#savechanges").show();
+            $("#return").show();
+
+        })
+        $("#ClassId").click(function () {
+            var selectedClass = $("#ClassId").val();
+            $.ajax({
+                url: '@Url.Action("SubjectsByClass")',
+                type: 'GET',
+                dataType: 'json',
+                cache: false,
+                traditional: true,
+                data: { id: selectedClass },
+
+            }).done(function (response) {
+                $('#subjects').html('');
+
+                $.each(response, function (i, item) {
+                  //  var classname = $("#ClassId option[value='" + item.ClassID + "']").text();
+                    $('#subjects').append('<option value=' + item.id + '>' + item.Subject + ' (' + item.Class + ')</option>');
+                });
+            })
+
+
+        });
+        @*$("#ClassId").click(function () {
+            
+            var selectedClass = $("#ClassId").val();
+            $.get('@Url.Action("SubjectsByClass")',
+                { id: selectedClass }, function (data) {
+
+                    $('#subjects').html('');
+
+                    $.each(data, function (i, item) {
+                        var classname = $("#ClassID option[value='" + item.ClassID + "']").text();
+
+                        $('#subjects').append('<option value=' + item.Id + '>' + item.Name + '</option>');
+                    });
+
+                });
+        });*@
+
+        $("#Pass").bind('blur', function () {
+            var password = $("#Pass").val();
+            var patt = new RegExp("^(?=.{6,})(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])(?=.*[@@#$%^&+=]).*$");
+            var test = patt.test(password);
+            if (test == false) {
+                $('#Password-Error').html("There should be one uppercase, one lowercase, one special chracter('@@#$%^&+=') and one number in password");
+                $('#submit').prop('disabled', true);
+            } else {
+                $('#Password-Error').html('');
+                $('#submit').prop('disabled', false);
+            }
+        });
+
+        $("#submit").click(function () {
+            
+            var roll = $("#User_Name").val();
+            if (roll == "") {
+                $('#UserName-Error').html("This field is required");
+                $('#submit').prop('disabled', true);
+            }
+            else {
+                $('#UserName-Error').html("");
+                $('#submit').prop('disabled', false);
+            }
+        })
+
+        $("#E_mail").bind('blur', function () {
+            var email = $("#E_mail").val();
+            var patt = /^(([^<>()[\]\\.,;:\s@@\"]+(\.[^<>()[\]\\.,;:\s@@\"]+)*)|(\".+\"))@@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            var test = patt.test(String(email).toLocaleLowerCase());
+
+            if (test == false) {
+                $('#Email-Error').html("Email is not in Correct Formate");
+                $('#submit').prop('disabled', true);
+            } else {
+                $('#Email-Error').html("");
+                $('#submit').prop('disabled', false);
+            }
+        });
+
+        $("#CnfmPass").bind('blur', function () {
+            
+            var cnfm = $("#CnfmPass").val();
+            var newpass = $("#Pass").val();
+            if (cnfm != newpass) {
+                $('#CnfmPass-Error').html("New Password and Confirm Password does not match");
+                $('#submit').prop('disabled', true);
+            } else {
+                $('#submit').prop('disabled', false);
+                $('#CnfmPass-Error').html(" ");
+            }
+        });
+        
+        $("#User_Name").bind('blur', function () {
+            
+            var userName = $("#User_Name").val();
+            $.ajax({
+                type: "POST",
+                url: "/AspNetStudents/GetUserName",
+                data: { "userName": userName },
+                success: function (data) {
+                    if (data.count == 0) {
+                        $('#submit').removeAttr('disabled');
+                        $('#UserName-Error').html("");
+                    }
+                    else {
+                        $('#UserName-Error').html("This User Name Already taken by " + data.by);
+                        $('#submit').prop('disabled', true);
+                    }
+
+                }
+            });
+
+        });
+    });
+
+    function Return() {
+        window.location.href = "TeacherIndex";
+    }
+    function checkPhone(phone) {
+        var length = phone.value.length;
+        
+        if (length == 11) {
+            var patt = new RegExp("^[0]+[0-9]{10,}$");
+            var test = patt.test(phone.value);
+            console.log(test);
+            if (test == false) {
+                $('#Phone-Error').html("Phone number is not in correct formate");
+                $('#submit').prop('disabled', true);
+            } else {
+                $('#submit').prop('disabled', false);
+                $('#Phone-Error').html(" ");
+            }
+        } else {
+            $('#Phone-Error').html("Phone # is not in correct formate");
+            $('#submit').prop('disabled', true);
+        }
+    }
+</script>
+
+
+<div class="col-md-12 col-lg-12 col-sm-12 Content" style="background-color:white;padding:0px;" id="cover">
+
+    <div class="col-md-12 col-lg-12 col-sm-12 container" style="background-color:#002938">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="dropdown" data-target=".navbar-collapse"></button>
+        </div>
+        <div class="col-md-12">
+            <div class="col-md-2">
+                <h4 style="font-family:Montserrat;color:white !important"><b>Add New Employee</b></h4>
+            </div>
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav" id="navbox">
+                <li><a style="text-align:center;font-family:Montserrat;color:#a9b2c0" id="showprof" class="dropdown-item " href="#"><b>Profile</b></a></li>
+                <li><a style="text-align:center;font-family:Montserrat;color:#a9b2c0;" id="chngPass" class="dropdown-item" href="#"><b>Upload File</b></a></li>
+                <li style="visibility:hidden;border-bottom:4px solid #002938"><a style="text-align:center;color:#a9b2c0;" id="chnghidden" class="dropdown-item" href="#"><b>Change Password</b></a></li>
+            </ul>
+        </div>
+    </div>
+    @if (ViewBag.LoaderError != null)
+    {
+        <p style="color: red; font-size: 16px ; margin-left: 33px;">@ViewBag.LoaderError. </p>
+    }
+    @if (ViewBag.InternalError != null)
+    {
+        <p style="color: red; font-size: 16px ; margin-left: 33px;">@ViewBag.InternalError. </p>
+    }
+    <div class="col-md-6 col-sm-6 col-lg-6 tab-pane" style="border:1px solid #bdb2b2;margin-left:30px;border-radius:8px;margin-top:30px" id="changediv">
+
+        <div class="box-header with-border"><h3 class="orange">Upload Excel File &nbsp; <i class="fa fa-file-excel-o" aria-hidden="true"></i></h3></div>
+        <div class="form-three widget-shadow">
+            @using (Html.BeginForm("TeacherfromFile", "BranchAdmin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="form-group">
+                <div class="control-label col-md-3"><b>Excel File</b></div>
+                @*<input id="teachers" required="required" name="teachers" type="file" />*@
+
+                <div class="form-row mt-5">
+                    <div class="form-group col-md-12 bmd-form-group">
+                        <div class="file-field d-flex">
+                            <div class="btn btn-primary btn-md mb-0">
+                                <span onclick='event.stopPropagation();  document.getElementById("teachers").click();'>Choose file</span>
+                                <input id="teachers" name="teachers" type="file">
+                            </div>
+                            <div class="file-path-wrapper d-flex align-items-end ml-3 w-100">
+                                <input class="file-path validate form-control" type="text" readonly disabled placeholder="No file Chosen">
+                            </div>
+                        </div>
+                        <div style="color: #afbccc;font-size: 14px;font-weight: 500;" class="my-3">Max: 32 MB (Filename should be unique)</div>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+
+                </div>
+            </div>
+                <br />
+                    <br />
+                    <div class="box-footer">
+                        <div class="form-group">
+                            <div class="col-md-10" style="padding-left:0px">
+                                <input class="col-md-2" type="submit" value="Submit" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />
+                            </div>
+                        </div>
+                    </div>
+            }
+        </div>
+
+
+
+
+    </div>
+    <div class="col-md-8 col-lg-8" style="font-family:Montserrat;margin-left:30px;margin-top:20px" id="infodiv">
+        <div>
+            <br />
+            <i class="fa fa-male"></i><span style="color:#002938 !important;font-family:Montserrat;font-size:18px"><b> Personal</b></span>
+            <hr />
+        </div>
+        <div>
+
+            <div class="col-md-12 col-lg-12 col-sm-12"><span style="font-size:15px;color:#128edb"><b>Basic Information</b></span></div>
+            <hr />
+        </div>
+        <div class="col-md-12 col-lg-12">
+            @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "Registerform" }))
+            {
+                @Html.AntiForgeryToken()
+
+                <div class="form-horizontal">
+                    <hr />
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            <span>Name</span>
+                            <input type="text" name="FName" id="first" class="form-control" required />
+                        </div>
+
+                        <div class="col-md-2">
+                            <br />
+                            <input type="text" name="MName" id="middle" class="form-control"  />
+                        </div>
+
+                        <div class="col-md-2">
+                            <br />
+                            <input type="text" name="LName" id="last" class="form-control" />
+                        </div>
+
+                        <div class="col-md-2">
+                            <span>User Name</span>
+                            <input type="text" name="UserName" id="User_Name" class="form-control" required />
+                            <span class="text-danger" id="UserName-Error"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            <label>Password</label>
+                            <input type="password" name="Password" id="Pass" class="form-control" required />
+                        </div>
+
+                        <div class="col-md-2">
+                            <label>Confirm Password</label>
+                            <input type="password" name="ConfirmPassword" id="CnfmPass" class="form-control" required />
+                        </div>
+                        <div class="col-md-12">
+                            <span class="text-danger" id="Password-Error"></span>
+                            <span class="text-danger" id="CnfmPass-Error"></span>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-2">
+                            <label>Position</label>
+                            @Html.DropDownList("Position", null, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Position, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="col-md-2">
+                            <label>Branch</label>
+                            @Html.DropDownList("BranchId", null, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    @*<div class="form-group">
+                        <div class="col-md-4">
+                            <label>Class</label>
+                            @Html.ListBox("ClassId", null, htmlAttributes: new { @class = "form-control", @style = "height:300px;" })
+                        </div>
+                
+                        <div class="col-md-4">
+                            <label class="control-label col-md-1 col-lg-1">Subjects</label>
+                            <select multiple class="form-control" style="height:300px" id="subjects" name="subjects" required></select>
+                        </div>
+                    </div>*@
+                    <hr />
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <label>Date Available</label>
+                            @Html.EditorFor(model => model.DateAvailable, new { htmlAttributes = new { @class = "form-control round-border", @type = "Date",} })
+                            @Html.ValidationMessageFor(model => model.DateAvailable, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>Joining Date</label>
+                            @Html.EditorFor(model => model.JoiningDate, new { htmlAttributes = new { @class = "form-control round-border", @type = "Date" } })
+                            @Html.ValidationMessageFor(model => model.JoiningDate, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>Birth Date</label>
+                            @Html.EditorFor(model => model.BirthDate, new { htmlAttributes = new { @class = "form-control round-border", @type = "Date" } })
+                            @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-lg-12 col-sm-12" style="padding:0px">
+                        <hr />
+                        <span style="font-size:15px;color:#128edb"><b>Personal Information</b></span>
+                        <hr />
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <label>Nationality</label>
+                            @Html.DropDownList("NationalityId", null, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.NationalityId, "", new { @class = "text-danger" })
+                        </div>
+ 
+                        <div class="col-md-3">
+                            <label>Religion</label>
+                            @Html.DropDownList("ReligionId", null, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.ReligionId, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>Gender</label>
+                            @Html.DropDownList("GenderId", null, htmlAttributes: new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.GenderId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-12 col-lg-12 col-sm-12" style="padding:0px">
+                        <hr />
+                        <span style="font-size:15px;color:#128edb"><b>Contact Information</b></span>
+                        <hr />
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-3">
+                            <label>Email</label>
+                            <input type="text" name="Email" id="E_mail" class="form-control" required />
+                            <span id="Email-Error" style="color:red"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Phone #</label>
+                            @Html.EditorFor(model => model.CellNo, new { htmlAttributes = new { @class = "form-control", @onblur = "checkPhone(this)", @required = "required" } })
+                            @Html.ValidationMessageFor(model => model.CellNo, "", new { @class = "text-danger", @id = "Phone-Error" })
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>Land Line</label>
+                            @Html.EditorFor(model => model.Landline, new { htmlAttributes = new { @class = "form-control", @required = "required" } })
+                            @Html.ValidationMessageFor(model => model.Landline, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-2"><label>Address</label></div>
+                        <div class="col-md-12">
+                            @Html.TextAreaFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                       
+                    <div class="col-md-12 col-lg-12 col-sm-12 hidden" style="padding:0px">
+                        <hr />
+                        <span style="font-size:15px;color:#128edb"><b>Spouse Information</b></span>
+                        <hr />
+                    </div>
+                    <div class="form-group hidden">
+                        <div class="col-md-3">
+                            <label>Spouse Name</label>
+                            @Html.EditorFor(model => model.SpouseName, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.SpouseName, "", new { @class = "text-danger" })
+                        </div>
+      
+                        <div class="col-md-3">
+                            <label>Spouse Highest Degree</label>
+                            @Html.EditorFor(model => model.SpouseHighestDegree, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.SpouseHighestDegree, "", new { @class = "text-danger" })
+                        </div>
+       
+                        <div class="col-md-3">
+                            <label>Spouse Occupation</label>
+                            @Html.EditorFor(model => model.SpouseOccupation, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.SpouseOccupation, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group hidden">
+                        <div class="col-md-4"><label>Spouse Business Address</label></div>
+                        <div class="col-md-10">
+                            @Html.TextAreaFor(model => model.Spouse_Address, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Spouse_Address, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 col-sm-12 col-lg-12">
+                        <hr />
+                        <br />
+
+                        <button class="col-md-2 form-control" onclick="Return()" style="border-radius:35px;border:hidden;margin-right:10px;background-color:#ff0000;color:white;font-size:11px;width:98px;height:38px;font-family:Montserrat" id="return"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Return</button>
+
+                        <input class="col-md-2 form-control" id="submit" type="submit" form="Registerform" value="Save" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />
+
+                        <br /><br /><br />
+                    </div>
+                </div>
+            }
+        </div>
+       
+    </div>
+</div>
+@*<form action="/AspNetEmployees/Savefile" method="post" enctype="multipart/form-data">
+        <input type="file" name="Image" id="inputfile" accept=".jpg,.png,.gif" />
+        <input type="text" name="ImageName" class="form-control" />
+        <input type="submit" class="btn btn-default" id="save" value="Confirm" />
+</form>*@

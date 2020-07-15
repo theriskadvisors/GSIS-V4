@@ -1,0 +1,399 @@
+﻿@using SEA_Application.Models
+@model StudentRegisterViewModel
+
+<script>
+    $(document).ready(function () {
+
+        $("#SessionName").prop('required', true);
+        $("#Status").prop('required', true);
+        $("#SessionStartDate").prop('required', true);
+        $("#SessionStartDate").prop('type', 'date');
+        $("#SessionEndDate").prop('required', true);
+        $("#SessionEndDate").prop('type', 'date');
+
+
+        //$("#SessionStartDate").datepicker({
+        //    dateFormat: 'dd/mm/yy',
+        //    changeMonth: true,
+        //    changeYear: true,
+        //    duration: "slow",
+        //    yearRange: '1960:2030'
+        //});
+
+        //$("#SessionEndDate").datepicker({
+        //    dateFormat: 'dd/mm/yy',
+        //    changeMonth: true,
+        //    changeYear: true,
+        //    duration: "slow",
+        //    yearRange: '1960:2030'
+        //});
+
+        $('#cancel').click(function () {
+            window.location.href = '@Url.Action("Dashboard", "Account")';
+        });
+    });
+
+    function isempty(item) {
+        var start = $("#SessionStartDate").val();
+        var end = $("#SessionEndDate").val();
+
+        if (start == "" && end == "") {
+            $(item).prop('placeholder', "Please add the date");
+            $('#submit').prop('disabled', true);
+        } else {
+            $('#submit').prop('disabled', false);
+        }
+    }
+
+
+    function onCancel() {
+        $('#cancel').click();
+    }
+    function onSave() {
+        $('#FormSubmit').click();
+    }
+
+</script>
+<h4 class="orange">Add Student</h4>
+<div class="row" style="padding-bottom: 10px; padding-top: 10px; padding-left: 20px; padding-right: 20px;">
+    <button class="btn btn-danger pull-left btn-sm" onclick="onCancel()">
+        Cancel
+    </button>
+    <button class="pull-right" style="background-color: transparent; border: none; outline: none; font-size: 20px; color: rgb(89, 89, 89) !important" onclick="onSave()">
+        <i class="fa fa-floppy-o"></i>
+    </button>
+</div>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+
+    <div class="box box-primary">
+        <div class="box-title"></div>
+        <hr />
+        <div class="box-body">
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="box box-primary">
+                    <div class="box-title">
+                        <h3>Personal Information</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Name, new { @class = "col-md-2 control-label" })<span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box box-primary">
+                    <div class="box-title">
+                        <h3>Address</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Street, new { @class = "col-md-2 control-label" })<span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.Street, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Street, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.City, new { @class = "col-md-2 control-label" })<span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.State, new { @class = "col-md-2 control-label" })
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.State, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.State, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Country, new { @class = "col-md-2 control-label" })
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.Country, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Country, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box box-primary">
+                    <div class="box-title">
+                        User Information
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.UserName, new { @class = "col-md-2 control-label" })<span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.UserName, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.UserName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Email, new { @class = "col-md-2 control-label" })<span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Password, new { @class = "col-md-2 control-label" })<span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ConfirmPassword, new { @class = "col-md-2 control-label" })<span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.EditorFor(model => model.ConfirmPassword, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.ConfirmPassword, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box box-primary">
+                    <div class="box-title">
+                        <h3>Application Information</h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.SchoolId, new { @class = "col-md-2 control-label" })<span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.DropDownListFor(model => model.SchoolId, (IEnumerable<SelectListItem>)ViewBag.SchoolsList, "Select a school",new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.SchoolId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.BranchId, new { @class = "col-md-2 control-label" })<span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.DropDownListFor(model => model.BranchId, null, "Select a school first", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.ClassId, new { @class = "col-md-2 control-label" })<span class="red-mark">*</span>
+                            <div class="col-md-6">
+                                @Html.DropDownListFor(model => model.ClassId, null, "Select a branch first", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.ClassId, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <input id="FormSubmit" type="submit" value="Save" class="btn btn-primary" />
+    </div>
+}
+
+<div id="modal-error-username" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Username already taken</h3>
+                <a class="close" data-dismiss="modal" role="button">&times;</a>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-dismiss="modal">Dismiss</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-error-email" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Email already registered</h3>
+                <a class="close" data-dismiss="modal" role="button">&times;</a>
+            </div>
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" data-dismiss="modal">Dismiss</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#UserName').change(function () {
+        var value = $('#UserName').val();
+        $.ajax({
+            url: '/StudentApplicant/IsUsernameAvailable',
+            data: {
+                'username': $(this).val()
+            }
+        })
+            .done(function (response) {
+                if (response == 'true') {
+
+                } else {
+                    $('#modal-error-username .modal-body').html('Sorry, the username ' + value + ' is already taken. Please try another one.');
+                    $('#modal-error-username').modal('show');
+                }
+            })
+            .error(function () {
+                console.log('Error in ajax request for checking username availability');
+            });
+    });
+
+    $('#Email').change(function () {
+        var value = $('#Email').val();
+        $.ajax({
+            url: '/StudentApplicant/IsEmailAvailable',
+            data: {
+                'email': $(this).val()
+            }
+        })
+            .done(function (response) {
+                if (response == 'true') {
+
+                } else {
+                    $('#modal-error-email .modal-body').html('Sorry, the email address ' + value + ' is already registered. Please try another one.');
+                    $('#modal-error-email').modal('show');
+                }
+            })
+            .error(function () {
+                console.log('Error in ajax request for checking email availability');
+            });
+    });
+</script>
+
+@{ 
+    var branchList = (List<AspNetBranch>)ViewBag.Branches;
+    var branchClassList = (List<AspNetBranch_Class>)ViewBag.BranchClasses;
+    
+}
+
+<div class="row" style="display: none">
+    <div class="col-md-6">
+        Branch - School Table
+    </div>
+    <div class="col-md-6">
+        Class - Branch Table
+    </div>
+</div>
+
+<div class="row" style="display: none">
+    <div class="col-md-6">
+        <table id="table-branch-school">
+            <thead>
+                <tr>
+                    <th>School Id</th>
+                    <th>School Name</th>
+                    <th>Branch Id</th>
+                    <th>Branch Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in branchList)
+                {
+                    <tr>
+                        <td>@item.SchoolId</td>
+                        <td>@item.AspNetSchool.Name</td>
+                        <td>@item.Id</td>
+                        <td>@item.Name</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-6">
+        <table id="table-class-branch">
+            <thead>
+                <tr>
+                    <th>Branch Id</th>
+                    <th>Branch Name</th>
+                    <th>Class Id</th>
+                    <th>Class Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in branchClassList)
+                {
+                    <tr>
+                        <td>@item.BranchId</td>
+                        <td>@item.AspNetBranch.Name</td>
+                        <td>@item.ClassId</td>
+                        <td>@item.AspNetClass.Name</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    var branchChangeHandler = function () {
+        var currentValue = $('#BranchId').val();
+
+        var allRows = $('#table-class-branch tbody tr');
+
+        var rowsWithCurrentValue = $(allRows).filter(function () {
+            var currentTd = $($(this).find('td:nth-child(1)')).html();
+            return currentTd == currentValue;
+        });
+
+        $('#ClassId').empty();
+
+        if ($(rowsWithCurrentValue).length == 0) {
+            $('#ClassId').html('<option value selected>No classes available</option>');
+        } else {
+            $('#ClassId').html('<option value selected>Select a class</option>');
+            $(rowsWithCurrentValue).each(function () {
+                var value = $($(this).find('td:nth-child(3)')).html();
+                var text = $($(this).find('td:nth-child(4)')).html();
+                $('#ClassId').append('<option value = ' + value + '>' + text + '</option>');
+            });
+        }
+    }
+
+    $('#SchoolId').change(function () {
+        var currentValue = $(this).val();
+
+        var allRows = $('#table-branch-school tbody tr');
+
+        var rowsWithCurrentValue = $(allRows).filter(function () {
+            var currentTd = $($(this).find('td:nth-child(1)')).html();
+            return currentTd == currentValue;
+        });
+
+        $('#BranchId').empty();
+
+        if ($(rowsWithCurrentValue).length == 0) {
+            $('#BranchId').html('<option value selected>No branches available</option>');
+        } else {
+            $('#BranchId').html('<option value selected>Select a branch</option>');
+            $(rowsWithCurrentValue).each(function () {
+                var value = $($(this).find('td:nth-child(3)')).html();
+                var text = $($(this).find('td:nth-child(4)')).html();
+                $('#BranchId').append('<option value = ' + value + '>' + text + '</option>');
+            });
+        }
+        branchChangeHandler();
+    });
+
+    $('#BranchId').change(branchChangeHandler);
+</script>

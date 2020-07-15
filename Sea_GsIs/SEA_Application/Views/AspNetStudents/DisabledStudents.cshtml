@@ -1,0 +1,144 @@
+﻿
+@{
+    ViewBag.Title = "DisabledStudents";
+}
+
+<h2>Disabled Students</h2>
+
+
+@{
+    ViewBag.Title = "StudentIndex";
+}
+
+<script>
+    $(document).ready(function () {
+        table = $('#example').dataTable();
+        $('.table').on('click', 'tbody tr', function () {
+            debugger;
+
+            var td = $(this).children("td");
+
+            if ($(td).html() != "No data available in table");
+            window.location.href = "Edit?userName=" + $(td[1]).html();
+        });
+        drawTable();
+        debugger;
+        $.ajax({
+            type: "POST",
+            url: "/AspNetStudents/GetDiabledStudents",
+            success: function (data) {
+                  table.fnClearTable();
+                $.each(data, function (i, item) {
+                    debugger;
+                      table.fnAddData([item.Name, item.RollNo, item.PhoneNo]);
+                })
+            }
+        })
+    })
+
+    function class_click(item) {
+        debugger;
+        var select = item.value;
+        ClassList(item.value);
+    }
+    function ClassList(selectedClass) {
+        debugger;
+        if (selectedClass != null) {
+            $('.eeniart0017').css("display", "block");
+        }
+        $.get('@Url.Action("StudentsList", "AspNetStudents")',
+            { id: selectedClass },
+            function (data) {
+                $('.eeniart0017').css("display", "none");
+
+                debugger;
+                table.fnClearTable();
+                $.each(data, function (i, item) {
+                    debugger;
+                    var personimage = '<img src="~/Content/Images/logo SEA.PNG" " style="border-radius:50%;width:35px;height:35px" />';
+                  //  var personimage = '<img src="' + item.Image + '" style="border-radius:50%;width:35px;height:35px" />';
+                    var btn = '<input type="button" id="showdetails" onclick="REDIRECT()" value="Edit Employee" style="border-radius:35px;font-weight:700;margin-left:5px;margin-right:5px;margin-top:5px;border:none;color:#808080;font-size:10px;font-family:Montserrat;background-color:#f5f5f5;width:10%;height:25px" />'
+                    table.fnAddData([personimage, item.Name, item.RollNo, item.CellNo]);
+                });
+
+                if (selectedClass == 0) {
+                    $('#View').html("View Default");
+                } else {
+                    $('#View').html("View Filtered");
+                }
+
+            });
+    }
+    function drawTable() {
+        $('#example_filter').addClass("form-group");
+        $('#example_filter').addClass("has-feedback");
+        $('#example_length').addClass("col-lg-9 col-md-8 col-sm-12 col-xs-12");
+        //$('#example_filter').css("col-lg-9 col-md-8 col-sm-12 col-xs-12");
+
+        $('#example_wrapper').css("text-align", "left");
+        $('#example_length').css("text-align", "left");
+        $('#example_length label').addClass("col-md-3 col-sm-12 col-lg-2");
+        $("#example_length label").css("text-align", "left");
+        $('#example_length label').addClass("col-md-2 col-lg-2 col-sm-12");
+        // // $('#example_length label select').addClass("col-md-3 col-sm-8 col-lg-3"); : auto;
+        $('#example_filter input').css({ "border": "1px solid #ddd", "border-radius": "40px", "height": "30px", "margin-top": "-0px", "outline": "none", "padding-left": "10px", "color": "#000000 !important" });
+        //$('#example_length').css({ "overflow": "auto" });
+        $('#example_filter input').addClass("add");
+        $('#example_filter').append('<span class="glyphicon glyphicon-search  form-control-feedback" style="margin-top: -25px; color: #666;"></span>');
+        var list = $("#ClassID").html();
+        $('#example_length').append(
+
+     );
+        $("#Class").prepend("<option value='0' selected>All</option>");
+    }
+    function Create() {
+        window.location.href = "/AspNetStudents/Create";
+    }
+    function Disabled() {
+        window.location.href = "DisableEmployee";
+    }
+    function Refresh() {
+        window.location.href = "";
+    }
+
+
+</script>
+
+
+<style>
+    #cre:hover {
+        background-color: #128edb !important;
+        color: #ffffff !important;
+    }
+
+    #refresh:hover {
+        background-color: #21cd54 !important;
+        color: #ffffff !important;
+    }
+
+
+    .table tr td:nth-child(4) {
+        text-align: right;
+    }
+
+    .table tr td:nth-child(2) {
+        padding-top: 15px !important;
+    }
+</style>
+<div class="box box-primary">
+    <div class="box-body">
+        
+        <table class="table" id="example">
+            <thead>
+                <tr>
+                    <th>Name
+                    </th>
+                    <th>Roll No
+                    </th>
+                    <th>Cell No</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>

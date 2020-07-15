@@ -1,0 +1,141 @@
+﻿@model SEA_Application.Models.AspNetAnnouncement
+
+@{
+    ViewBag.Title = "Create";
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $("#PageHeader").html("Create");
+
+        $("#BreadCrumbs").append(' <li> <a href="/BranchAdmin/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li> <a href="/AspNetBranchAnnouncements/Index"> Announcements </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Create</a></li>');
+
+        $("#ClassID").change(function () {
+            var selectedClass = $("#ClassID").val();
+
+            $.ajax({
+                url: '@Url.Action("SubjectsByClass")',
+                type: 'GET',
+                dataType: 'json',
+                cache: false,
+                traditional: true,
+                data: { id: selectedClass },
+
+            }).done(function (response) {
+                $('#subjects').html('');
+
+                $.each(response, function (i, item) {
+                    var classname = $("#ClassID option[value='" + item.ClassID + "']").text()
+                    $('#subjects').append('<option value=' + item.CourseId + '>' + item.Name + ' (' + classname + ')</option>');
+                });
+            })
+        });
+
+        $('input[type="file"]').change(function (e) {
+            var fileName = e.target.files[0].name;
+            //  alert('The file "' + fileName + '" has been selected.');
+
+            //  $("#FilePath").attr('')
+
+            document.getElementById("FilePath").placeholder = fileName;
+        });
+
+
+    });
+
+  
+</script>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body p-5">
+
+                @using (Html.BeginForm("Create", "AspNetBranchAnnouncements", FormMethod.Post, new { id = "Registerform", enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger"})
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-8">
+                                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Title, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-8">
+                                @Html.TextAreaFor(model => model.Description, 10, 97, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <div class="file-field d-flex">
+                                    <div class="btn btn-primary btn-md mb-0">
+                                        <span style="color:white" onclick='event.stopPropagation(); document.getElementById("FileName").click();'>Choose file</span>
+                                        <input id="FileName" name="FileName" type="file">
+                                    </div>
+                                    <div class="file-path-wrapper d-flex align-items-end ml-3 w-100">
+                                        <input id="FilePath" class="file-path validate form-control" type="text" readonly disabled placeholder="No file Chosen">
+                                    </div>
+                                </div>
+                                <div style="color: #afbccc;font-size: 14px;font-weight: 500;" class="my-3">Max: 32 MB (Filename should be unique)</div>
+                            </div>
+                        </div>
+
+
+                        @*<div class="form-group">
+                    <label class="control-label col-md-1 col-lg-1"> Choose Class:</label>
+                    <div class="col-md-10">
+                        <div class="row">
+                            <div class="col-md-5">
+                                <label class="control-label col-md-2">Class:</label>
+                            </div>
+                            <div class="col-md-5">
+                                <label class="control-label col-md-2">Subjects:</label>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5">
+                                @Html.ListBox("ClassID", null, htmlAttributes: new { @class = "form-control",name="ClassId" })
+                            </div>
+                            <div class="col-md-5">
+                                <select multiple class="form-control" id="subjects" name="subjects"></select>
+                            </div>
+                        </div>
+                    </div>
+                </div>*@
+
+
+                    </div>
+
+                    <input type="submit" value="Create" id="submit" form="Registerform" class="btn btn-primary pull-right rounded rounded-lg shadow-none mr-3" />
+                    <button onclick="/*showTab(0); currentTab = 0;*/" class="btn btn-primary pull-right rounded rounded-lg bg-transparent text-muted shadow-none mr-3" type="reset">
+                        <i class="material-icons mr-2">cached</i>  Reset &nbsp; &nbsp;
+                        <div class="ripple-container"></div>
+                    </button>
+
+                    @*<div class="form-group">
+                        <div class="col-md-10 col-md-offset-2 col-sm-10 col-lg-10">
+                            <hr />
+
+                            <button class="col-md-2 form-control" onclick="window.location.href='/AspNetBranchAnnouncements/AnnouncementIndex'" style="border-radius:35px;border:hidden;margin-right:10px;background-color:#ff0000;color:#ffffff;font-size:11px;width:98px;height:38px;font-family:Montserrat" id="return"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Return</button>
+
+                            <input class="col-md-2 form-control" id="submit" type="submit" form="Registerform" value="Save" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />
+
+                            <br /><br /><br />
+                        </div>
+
+                    </div>*@
+                }
+            </div>
+        </div>
+    </div>
+</div>
+

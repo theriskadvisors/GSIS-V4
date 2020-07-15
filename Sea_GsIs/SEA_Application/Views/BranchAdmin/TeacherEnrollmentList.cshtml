@@ -1,0 +1,226 @@
+﻿
+@model IEnumerable<SEA_Application.Models.AspNetTeacher_Enrollments>
+@{
+    ViewBag.Title = "Index";
+}
+
+<script>
+    var table;
+    var bgcolor;
+    $(document).ready(function () {
+
+        table = $("#example").dataTable();
+
+
+        //$('.table').on('mouseover', 'tbody tr', function () {
+        //    bgcolor = $(this).css("background-color");
+        //    $(this).css({ "background-color": "#DBEEF4", "color": "blue", "cursor": "pointer" });
+        //})
+
+        //$('.table').on('mouseout', 'tbody tr', function () {
+        //    $(this).css({ "background-color": bgcolor, "color": "#222" });
+        //})
+
+        $('.table').on('click', 'tbody tr', function () {
+            var td = $(this).children("td");
+            var userName = $(td[0]).attr('data-item-id');
+            userName = userName.trim();
+
+
+            window.location.href = "/BranchAdmin/TeacherEnrollmentDetails?id=" + userName;
+        });
+
+        DrawTable();
+    });
+
+    function DrawTable() {
+        $('#example_filter').addClass("form-group");
+        $('#example_filter').addClass("has-feedback");
+        $('#example_filter input').css({ "border": "1px solid #ddd", "border-radius": "40px", "height": "30px", "margin-top": "-5px", "outline": "none", "padding-left": "10px", "color": "#ddd !important" });
+        $('#example_filter').append('<span class="glyphicon glyphicon-search form-control-feedback" style="margin-top: -33px; color: #666;"></span>');
+        $('#example_length').append(
+            '<div class="form-inline" style="margin-left: 140px !important; margin-top: -25px !important; z-index: -3 !important">'
+            +
+            '&nbsp;&nbsp;&nbsp;&nbsp;' +
+            '<div class="form-group">' +
+            '<div class="d-bar"></div>' +
+            '</div>' +
+            '&nbsp;&nbsp;&nbsp;&nbsp;' +
+            '<div class="form-group">' +
+            '<div class="edit-section">' +
+            '<a href=""><i class="glyphicon glyphicon-repeat" data-toggle="tooltip" title="Refresh" data-placement="bottom"></i></a>' +
+            '<a class="" href="/BranchAdmin/CreateTeacherEnrollment" id="edit-view-3" data-toggle="tooltip" title="Create" data-placement="bottom">&nbsp;' +
+            '<i class="glyphicon glyphicon-edit"></i>' +
+            '</a>' +
+            '<a href=""><i class="glyphicon glyphicon-download-alt"></i></a>&nbsp;' + '<img src="/Content/progress2.gif" style="width:25px;height:25px;visibility:hidden" id="progress-table-update"/>' +
+            '</div>' +
+            '</div>' +
+            '<div class="form-group">' +
+            '<div class="d-bar"></div>' +
+            '</div>' +
+            '</div>'
+        );
+
+    }
+</script>
+
+<label>Home > User > <span class="text-primary">Sections</span></label>
+<h4>Sections</h4>
+<label id="View">View Default</label>
+
+<div class="box box-primary">
+    <div class="box-body">
+        <br />
+
+        @if (ViewBag.Error != null)
+            {
+            <div class="box-alert" id="work">
+                Section Successfully created and updated
+            </div>
+        }
+        <table class="table" id="example">
+            <thead>
+                <tr>
+                    <th>Sr.</th>
+                    <th>Student Name</th>
+                    <th>Class Title</th>
+                    <th>Section Title</th>
+                    <th>Course Title</th>
+                    <th>Branch Name</th>
+                    <th>Session Year</th>
+                    <th></th>
+                </tr>
+
+            </thead>
+            <tbody>
+                @{ int row = 0; }
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td data-item-id="@item.Id">@(++row)</td>
+                        <td>@item.AspNetTeacher.AspNetEmployee.Name</td>
+                        <td>@item.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetClass.Name</td>
+                        <td>@item.AspNetBranchClass_Sections.AspNetSection.Name</td>
+                        <td>@item.AspNetCours.Name</td>
+                        <td>@item.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetBranch.Name</td>
+                        <td>@item.AspNetSession.Year</td>
+                        <td>
+                            <span class="glyphicon glyphicon-edit" data-command-item-id="@item.Id" data-command-edit></span>
+                            <span class="glyphicon glyphicon-remove" data-command-item-id="@item.Id" data-command-remove></span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+<div id="modal-confirm-delete" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h3>Do you really want to delete this section?</h3>
+                </div>
+                <div class="modal-body text-danger">
+                    This action is <em>irreversible</em> and will result in the following:
+                    <ul>
+                        <li>Delete the section from the class it exits in.</li>
+                        <li>Delete the existence of section in the system.</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-button-delete-confirm data-item-id>Delete</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-delete-success" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h3>Successfully deleted the section</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="modal-delete-error" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-header">
+                    <a class="close" data-dismiss="modal">&times;</a>
+                    <h3>Could not delete the section</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+        $('#modal-delete-success').on('hidden.bs.modal', function () {
+            location.href = location.href;
+        });
+    });
+
+    function handleCommandRemove() {
+        $('[data-command-remove]').click(function () {
+            $('#modal-confirm-delete button[data-button-delete-confirm]').attr('data-item-id', $(this).attr('data-command-item-id'));
+            $('#modal-confirm-delete').modal({
+                'show': true,
+                'keyboard': false,
+                'backdrop': false
+            });
+            return false;
+        });
+
+        $('#modal-confirm-delete button[data-button-delete-confirm]').click(function () {
+            var id = $(this).attr('data-item-id');
+            $(this).attr('data-item-id', '');
+            $('#progress-table-update').css('visibility', 'visible');
+            $('#modal-confirm-delete').modal('hide');
+            $.ajax({
+                type: 'POST',
+                url: '/BranchAdmin/DeleteSection',
+                data: {
+                    'id': id
+                },
+                success: function (result) {
+                    if (result) {
+                        $('#modal-delete-success').modal('show');
+                    } else {
+                        $('#modal-delete-error').modal('show');
+                    }
+                    $('#progress-table-update').css('visibility', 'hidden');
+                },
+                error: function (xhr) {
+                    $('#modal-delete-error').modal('show');
+                    $('#progress-table-update').css('visibility', 'hidden');
+                    console.log(xhr.responseText);
+                }
+            })
+        });
+    }
+
+    function handleCommandEdit() {
+        $('[data-command-edit]').click(function () {
+            location.href = '/BranchAdmin/EditSection/' + $(this).attr('data-command-item-id');
+            return false;
+        });
+    }
+
+    handleCommandRemove();
+    handleCommandEdit();
+
+</script>

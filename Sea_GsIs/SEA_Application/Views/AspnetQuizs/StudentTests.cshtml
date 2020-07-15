@@ -1,0 +1,404 @@
+﻿@model SEA_Application.Models.TestSubject
+
+@{
+    Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
+
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body p-5">
+
+                @using (Html.BeginForm("StudentTests", "AspnetQuizs", FormMethod.Post, new { id = "createLessonForm", enctype = "multipart/form-data" }))
+                {
+
+                    <div class="row">
+                        <div class="col-md-6 leftCol">
+
+                            <div class="form-group bmd-form-group">
+
+                                @Html.LabelFor(model => model.Title, htmlAttributes: new { @class = "bmd-label-floating" })
+
+                                @Html.EditorFor(model => model.Title, new { htmlAttributes = new { @class = "form-control", @required = true } })
+
+                            </div>
+
+
+
+
+                            <div class="form-group bmd-form-group pt-5">
+                                <label class="bmd-label-floating"> Description</label>
+                                <textarea required class="form-control" name="Description" id="Description" rows="5"></textarea>
+                                @*@Html.TextAreaFor(model => model.LessonDescription, new { htmlAttributes = new { @rows= "5", @class="form-control" } })
+                                    @Html.ValidationMessageFor(model => model.LessonDescription, "", new { @class = "text-danger" })*@
+                            </div>
+
+
+                            <br />
+                            <div class="form-row" id="ImageAttachemntFile">
+                                <div class="form-group col-md-12 bmd-form-group">
+
+
+                                    <div class="file-field d-flex">
+                                        <div class="btn btn-primary btn-md mb-0">
+                                            <span onclick='event.stopPropagation(); document.getElementById("AttachmentFile").click();'>Choose file</span>
+                                            <input id="AttachmentFile" name="AttachmentFile" type="file">
+                                        </div>
+                                        <div class="file-path-wrapper d-flex align-items-end ml-3 w-100">
+                                            <input id="FilePath" class="file-path validate form-control" type="text" readonly disabled placeholder="No file Chosen">
+                                        </div>
+                                    </div>
+                                    <div style="color: #afbccc;font-size: 14px;font-weight: 500;" class="my-3">Max: 32 MB (Filename should be unique)</div>
+                                </div>
+                            </div>
+                            <br />
+
+                            <div class="form-group">
+                                <label class="control-label">Start Date </label>
+                                <input type="date" name="StartDate" id="StartDate" value="" required class="form-control" />
+                                @*@Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })*@
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="control-label">Due Date </label>
+                                <input type="date" name="EndTime" id="EndTime" required value="" class="form-control" />
+                                @*@Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })*@
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-6 pl-5 pr-5 ">
+
+                            @*<div class="form-row mt-3">
+                                    <div class="form-group col-md-12 bmd-form-group">
+                                        <label for="" class="bmd-label-static pl-2">Select Section*</label>
+                                        <select class="form-control SecIdDDL" id="SessionId" name="SessionId" required></select>
+                                    </div>
+                                </div>*@
+                            @*<div class="form-row mt-3">
+                                    <div class="form-group col-md-12 bmd-form-group">
+                                        <label for="" class="bmd-label-static pl-2">Select Course Type*</label>
+                                        <select class="form-control CTIdDDL" id="CTId" name="CTId" required>
+
+                                            <option value="">Select One</option>
+
+                                            <option value="CSS">CSS</option>
+                                            <option value="PMS">PMS</option>
+
+                                        </select>
+
+                                    </div>
+                                </div>*@
+
+                            <div class="form-row mt-4">
+                                <div class="form-group col-md-12 bmd-form-group">
+                                    <label for="" class="bmd-label-static pl-2">Select Branch*</label>
+
+                                    <select class="form-control" id="BranchId" name="BranchId" required></select>
+
+                                </div>
+                            </div>
+
+
+                            <div class="form-row mt-4">
+                                <div class="form-group col-md-12 bmd-form-group">
+                                    <label for="" class="bmd-label-static pl-2">Select class *</label>
+
+                                    <select class="form-control" id="ClassId" name="ClassId" required></select>
+
+                                </div>
+                            </div>
+
+                            <div class="form-row mt-4">
+                                <div class="form-group col-md-12 bmd-form-group">
+                                    <label for="" class="bmd-label-static pl-2">Select Section *</label>
+
+                                    <select class="form-control" id="SectionId" name="SectionId" required></select>
+
+                                </div>
+                            </div>
+
+                            @*<div class="form-row mt-4">
+                                    <div class="form-group col-md-12 bmd-form-group">
+                                        <label for="" class="bmd-label-static pl-2">Subject*</label>
+
+                                        <select class="form-control SubIdDDL" id="SubjectId" name="SubjectId" required></select>
+
+                                    </div>
+                                </div>*@
+
+                            <div class="form-row mt-3">
+                                <div class="form-group col-md-12 bmd-form-group">
+                                    <label for="" class="bmd-label-static pl-2">Select Subject*</label>
+                                    <select class="form-control SubIdDDL" id="SubId" name="SubId" required></select>
+                                </div>
+                            </div>
+
+                            <div class="form-group bmd-form-group">
+
+                                <label class="bmd-label-floating">Total Marks</label>
+
+                                <input type="number" name="TotalMarks" class="form-control" required />
+
+                            </div>
+
+                            @*<div class="form-group">
+                                    <label for="" class="control-label">Lesson* </label>
+
+                                    <select class="form-control LessIdDDL" id="LessonId" name="LessonId" required></select>
+                                </div>*@
+
+                            @*<div class="form-row mt-3">
+                                    <div class="form-group col-md-12 bmd-form-group">
+                                        <label class="bmd-label-floating"> Duration*</label>
+                                        <input type="date" id="EndTime" class="form-control" name="EndTime" required />
+
+                                    </div>
+                                </div>*@
+
+                        </div>
+                    </div>
+
+
+
+                    <input type="submit" value="Create" id="CreateBtn" class="btn btn-primary pull-right rounded rounded-lg shadow-none mr-3" />
+
+                    @*<span id="GenericError" style="color:red;text-align: center;margin-left: 8%;"></span>*@
+                }
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+
+    $(document).ready(function () {
+
+
+
+        $("#PageHeader").html(" Create ");
+
+        $("#BreadCrumbs").append(' <li> <a href="/Teacher/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li ><a id="BreadCrumps1" href="/AspnetQuizs/AllTestList">Test List <span>&gt;</span></li></a></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Create</a></li>');
+
+
+
+        $('input[type="file"]').change(function (e) {
+            var fileName = e.target.files[0].name;
+            //  alert('The file "' + fileName + '" has been selected.');
+
+            //  $("#FilePath").attr('')
+
+            document.getElementById("FilePath").placeholder = fileName;
+        });
+
+
+
+        $("form").submit(function () {
+            if (document.getElementById("AttachmentFile").files.length == 0) {
+
+
+
+                return false;
+            }
+        })
+
+
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "/AspNetProject/AllBranches",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#BranchId");
+                $el.empty();
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").text('Select Branch'));
+                    for (i = 0; i < sch.length; i++) {
+
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i].Id).text(sch[i].Name));
+                    }
+                }
+                else {
+                    $el.append($("<option></option>")
+                        .attr("value", '').text('Select Branch'));
+                }
+            }
+        });
+
+
+        $('#BranchId').change(function () {
+
+            var BranchId = $(this).val();
+
+            if (BranchId != "") {
+
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/AspNetProject/ClassesByBranch?BranchId=" + BranchId,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#ClassId");
+                        $el.empty();
+                        var $e2 = $("#SubId");
+                        $e2.empty();
+                        var $e3 = $(".TopicIdDDL");
+                        $e3.empty();
+                        var $e4 = $("#SectionId");
+                        $e4.empty();
+
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Class'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Class'));
+                        }
+                    }
+                });
+            }
+            else {
+                var $el = $("#ClassId");
+                $el.empty();
+                var $e2 = $("#SubId");
+                $e2.empty();
+                var $e3 = $(".TopicIdDDL");
+                $e3.empty();
+                var $e4 = $("#SectionId");
+                $e4.empty();
+
+            }
+
+        });
+
+        $('#ClassId').change(function () {
+
+            var ClassId = $(this).val();
+            //Class = UserName;
+
+            if (ClassId != "") {
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $(".SubIdDDL");
+                        $el.empty();
+                        var $e3 = $(".TopicIdDDL");
+                        $e3.empty();
+                        var $e4 = $("#SectionId");
+                        $e4.empty();
+
+                        if (sch.length > 0) {
+                            $e4.append($("<option></option>")
+                                .attr("value", "").text('Select Section'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $e4.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $e4.append($("<option></option>")
+                                .attr("value", '').text('Select Section'));
+                        }
+                    }
+                });
+            }
+
+            else {
+
+                var $el = $(".SubIdDDL");
+                $el.empty();
+                var $e3 = $(".TopicIdDDL");
+                $e3.empty();
+
+                var $e4 = $("#SectionId");
+                $e4.empty();
+
+
+            }
+
+        });
+        $('#SectionId').change(function () {
+
+            var SectionId = $(this).val();
+            //Class = UserName;
+
+            if (SectionId != "") {
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/AspNetProject/SubjectsByClass?SectionId=" + SectionId,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#SubId");
+                        $el.empty();
+                        var $e3 = $(".TopicIdDDL");
+                        $e3.empty();
+
+
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Subject'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Subject'));
+                        }
+                    }
+                });
+            }
+
+            else {
+
+                var $el = $("#SubId");
+                $el.empty();
+                var $e3 = $(".TopicIdDDL");
+                $e3.empty();
+
+
+            }
+
+        });
+
+
+    })
+</script>

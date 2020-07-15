@@ -1,0 +1,157 @@
+﻿
+@model IEnumerable<SEA_Application.Models.AspNetCours>
+@{
+    ViewBag.Title = "Index";
+}
+
+<script>
+    var table;
+    var bgcolor;
+    $(document).ready(function () {
+
+        table = $("#example").dataTable();
+
+
+        //$('.table').on('mouseover', 'tbody tr', function () {
+        //    bgcolor = $(this).css("background-color");
+        //    $(this).css({ "background-color": "#DBEEF4", "color": "blue", "cursor": "pointer" });
+        //})
+
+        //$('.table').on('mouseout', 'tbody tr', function () {
+        //    $(this).css({ "background-color": bgcolor, "color": "#222" });
+        //})
+
+        $('.table').on('click', 'tbody tr', function () {
+            var td = $(this).children("td");
+            var userName = $(td[0]).attr('data-item-id');
+            userName = userName.trim();
+
+
+            window.location.href = "/BranchPrincipal/CourseDetails?id=" + userName;
+        });
+
+        DrawTable();
+    });
+
+    function DrawTable() {
+        $('#example_filter').addClass("form-group");
+        $('#example_filter').addClass("has-feedback");
+        $('#example_filter input').css({ "border": "1px solid #ddd", "border-radius": "40px", "height": "30px", "margin-top": "-5px", "outline": "none", "padding-left": "10px", "color": "#ddd !important" });
+        $('#example_filter').append('<span class="glyphicon glyphicon-search form-control-feedback" style="margin-top: -33px; color: #666;"></span>');
+        $('#example_length').append(
+            '<div class="form-inline" style="margin-left: 140px !important; margin-top: -25px !important; z-index: -3 !important">'
+          +
+            '&nbsp;&nbsp;&nbsp;&nbsp;' +
+            '<div class="form-group">' +
+                 '<div class="d-bar"></div>' +
+             '</div>' +
+             '&nbsp;&nbsp;&nbsp;&nbsp;' +
+                 '<div class="form-group">' +
+                     '<div class="edit-section">' +
+                         '<a href=""><i class="glyphicon glyphicon-repeat" data-toggle="tooltip" title="Refresh" data-placement="bottom"></i></a>' +
+                         '<a class="" href="/BranchAdmin/CreateCourse" id="edit-view-3" data-toggle="tooltip" title="Create" data-placement="bottom">&nbsp;' +
+                             '<i class="glyphicon glyphicon-edit"></i>' +
+                         '</a>' +
+                         '<a href=""><i class="glyphicon glyphicon-download-alt"></i></a>&nbsp;' +
+                     '</div>' +
+                 '</div>' +
+             '<div class="form-group">' +
+                 '<div class="d-bar"></div>' +
+             '</div>' +
+         '</div>'
+         );
+
+    }
+</script>
+
+<label>Home > User > <span class="text-primary">Courses</span></label>
+<h4>Courses</h4>
+<label id="View">View Default</label>
+
+
+@*<div class="box box-primary">
+        <div class="box-title"></div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-xs-12 col-lg-4 text-right">
+                    Select School
+                </div>
+                <div class="col-xs-12 col-lg-8">
+                    <select id="SchoolList" class="form-control">
+                        <option value="all">Remove Filter</option>
+                        @foreach (var item in (List<SEA_Application.Models.AspNetSchool>)ViewBag.Schools)
+                        {
+                            <option value="@item.Name">@item.Name</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+
+<div class="box box-primary">
+    <div class="box-body">
+        <br />
+
+        @if (ViewBag.Error != null)
+            {
+            <div class="box-alert" id="work">
+                Course Successfully created and updated
+            </div>
+        }
+        <table class="table" id="example">
+            <thead>
+                <tr>
+                    <th>Sr.</th>
+                    <th>Course Title</th>
+                    <th>Department</th>
+                </tr>
+
+            </thead>
+            <tbody>
+                @{ int row = 0; }
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td data-item-id="@item.Id">
+                            @(++row)
+                        </td>
+                        <td>
+                            @item.Name
+                        </td>
+                        <td>
+                            @item.AspNetDepartment.Name
+                        </td>
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+<script>
+
+    // To get the required school departments
+    $('#SchoolList').change(function () {
+        var allRows = $('#example').find('tbody tr');
+        var currentValue = $(this).val().trim();
+        if (currentValue == "all") {
+            $(allRows).css('display', 'table-row');
+            return;
+        }
+        var rowsHavingCurrentValue = $(allRows).filter(function (index, element) {
+            var thirdCell = $(this).children()[3];
+            return $(thirdCell).html().trim() == currentValue;
+        });
+        var rowsNotHavingCurrentValue = $(allRows).filter(function (index, element) {
+            var thirdCell = $(this).children()[3];
+            return $(thirdCell).html().trim() != currentValue;
+        });
+
+        $(rowsHavingCurrentValue).css('display', 'table-row');
+        $(rowsNotHavingCurrentValue).css('display', 'none');
+    });
+
+</script>
