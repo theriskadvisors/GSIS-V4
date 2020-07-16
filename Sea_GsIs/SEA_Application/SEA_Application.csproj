@@ -3549,6 +3549,7 @@
     <Folder Include="AdminLTE\select2-master\docs\dist\" />
     <Folder Include="App_Data\" />
     <Folder Include="Content\BranchAnnouncement\" />
+    <Folder Include="Content\DownloadedAssignments\" />
     <Folder Include="Content\Homework\" />
     <Folder Include="Content\LessonImage\" />
     <Folder Include="Content\Profile\Accountant\" />
