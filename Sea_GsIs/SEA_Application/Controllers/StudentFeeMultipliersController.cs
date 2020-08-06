@@ -70,50 +70,50 @@ namespace SEA_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,StudentId,TutionFee,PaidAmount,RemainingAmount,SharePerInstalment,Instalments,PaidInstalments,RemainingInstalments,Multiplier")] StudentFeeMultiplier studentFeeMultiplier)
         {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    var checkbox = Request.Form["MonthName"];
-                    if(checkbox==null)
-                    {
-                        ViewBag.ErrorMessage = "No Month Selected, Please Select Month";
-                    }
-                    else
-                    {
-                        List<string> names = new List<string>(checkbox.Split(','));
-                        if(names.Count!=studentFeeMultiplier.Instalments)
-                        {
-                            ViewBag.ErrorMessage = "No of Months and Instalments are not same";
-                        }
-                        else
-                        {
-                            var namecount = names.Count;
-                            db.StudentFeeMultipliers.Add(studentFeeMultiplier);
-                            db.SaveChanges();
-                            foreach (var item in names)
-                            {
-                                StudentFeeMonth stdfeemonth = new StudentFeeMonth();
-                                stdfeemonth.StudentId = studentFeeMultiplier.StudentId;
-                                stdfeemonth.Status = "Pending";
-                                stdfeemonth.InstalmentAmount = studentFeeMultiplier.SharePerInstalment;
-                                var dddd = DateTime.Now;
-                                var d = dddd.ToString("yyyy-MM-dd");
-                                stdfeemonth.IssueDate = dddd;
-                                stdfeemonth.Months = item;
-                                db.StudentFeeMonths.Add(stdfeemonth);
-                                db.SaveChanges();
-                            }
-                            return RedirectToAction("Index");
-                        }                       
-                    }  
-                }
-            }
-            catch(Exception e)
-            {
-                ViewBag.ErrorMessage = e.Message;
-                return View(studentFeeMultiplier);
-            }
+            //try
+            //{
+            //    if (ModelState.IsValid)
+            //    {
+            //        var checkbox = Request.Form["MonthName"];
+            //        if(checkbox==null)
+            //        {
+            //            ViewBag.ErrorMessage = "No Month Selected, Please Select Month";
+            //        }
+            //        else
+            //        {
+            //            List<string> names = new List<string>(checkbox.Split(','));
+            //            if(names.Count!=studentFeeMultiplier.Instalments)
+            //            {
+            //                ViewBag.ErrorMessage = "No of Months and Instalments are not same";
+            //            }
+            //            else
+            //            {
+            //                var namecount = names.Count;
+            //                db.StudentFeeMultipliers.Add(studentFeeMultiplier);
+            //                db.SaveChanges();
+            //                foreach (var item in names)
+            //                {
+            //                    StudentFeeMonth stdfeemonth = new StudentFeeMonth();
+            //                    stdfeemonth.StudentId = studentFeeMultiplier.StudentId;
+            //                    stdfeemonth.Status = "Pending";
+            //                    stdfeemonth.InstalmentAmount = studentFeeMultiplier.SharePerInstalment;
+            //                    var dddd = DateTime.Now;
+            //                    var d = dddd.ToString("yyyy-MM-dd");
+            //                    stdfeemonth.IssueDate = dddd;
+            //                    stdfeemonth.Months = item;
+            //                    db.StudentFeeMonths.Add(stdfeemonth);
+            //                    db.SaveChanges();
+            //                }
+            //                return RedirectToAction("Index");
+            //            }                       
+            //        }  
+            //    }
+            //}
+            //catch(Exception e)
+            //{
+            //    ViewBag.ErrorMessage = e.Message;
+            //    return View(studentFeeMultiplier);
+            //}
 
 
             ViewBag.StudentId = new SelectList(db.AspNetStudents, "Id", "Name", studentFeeMultiplier.StudentId);
@@ -143,65 +143,65 @@ namespace SEA_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit([Bind(Include = "Id,StudentId,TutionFee,PaidAmount,RemainingAmount,SharePerInstalment,Instalments,PaidInstalments,TotalPayableFee,RemainingInstalments,Multiplier")] StudentFeeMultiplier studentFeeMultiplier)
         {
-            if (ModelState.IsValid)
-            {
-                var checkbox = Request.Form["MonthName"];
-                if(checkbox==null)
-                {
-                    ViewBag.ErrorMessage = "No Month selected, Please select months";
+            //if (ModelState.IsValid)
+            //{
+            //    var checkbox = Request.Form["MonthName"];
+            //    if(checkbox==null)
+            //    {
+            //        ViewBag.ErrorMessage = "No Month selected, Please select months";
 
-                }
-                else
-                {
-                    List<string> names = new List<string>(checkbox.Split(','));
-                    if (names.Count != studentFeeMultiplier.Instalments)
-                    {
-                        ViewBag.ErrorMessage = "No. of Months and instalments are not same";
+            //    }
+            //    else
+            //    {
+            //        List<string> names = new List<string>(checkbox.Split(','));
+            //        if (names.Count != studentFeeMultiplier.Instalments)
+            //        {
+            //            ViewBag.ErrorMessage = "No. of Months and instalments are not same";
 
-                    }
-                    else
-                    {
-                        var tdfee = db.StudentFeeMonths.Where(x => x.StudentId == studentFeeMultiplier.StudentId && x.Status == "Pending").ToList();
-                        foreach (var item in tdfee)
-                        {
-                            StudentFeeMonth std = db.StudentFeeMonths.Where(x => x.Id == item.Id).FirstOrDefault();
-                            db.StudentFeeMonths.Remove(std);
-                            db.SaveChanges();
-                        }
-                        foreach (var item in names)
-                        {
-                            StudentFeeMonth stdfeemonth = new StudentFeeMonth();
-                            stdfeemonth.StudentId = studentFeeMultiplier.StudentId;
-                            stdfeemonth.Status = "Pending";
-                            stdfeemonth.InstalmentAmount = studentFeeMultiplier.SharePerInstalment;
-                            var dddd = DateTime.Now;
-                            var d = dddd.ToString("yyyy-MM-dd");
-                            stdfeemonth.IssueDate = dddd;
-                            stdfeemonth.Months = item;
-                            db.StudentFeeMonths.Add(stdfeemonth);
-                            db.SaveChanges();
+            //        }
+            //        else
+            //        {
+            //            var tdfee = db.StudentFeeMonths.Where(x => x.StudentId == studentFeeMultiplier.StudentId && x.Status == "Pending").ToList();
+            //            foreach (var item in tdfee)
+            //            {
+            //                StudentFeeMonth std = db.StudentFeeMonths.Where(x => x.Id == item.Id).FirstOrDefault();
+            //                db.StudentFeeMonths.Remove(std);
+            //                db.SaveChanges();
+            //            }
+            //            foreach (var item in names)
+            //            {
+            //                StudentFeeMonth stdfeemonth = new StudentFeeMonth();
+            //                stdfeemonth.StudentId = studentFeeMultiplier.StudentId;
+            //                stdfeemonth.Status = "Pending";
+            //                stdfeemonth.InstalmentAmount = studentFeeMultiplier.SharePerInstalment;
+            //                var dddd = DateTime.Now;
+            //                var d = dddd.ToString("yyyy-MM-dd");
+            //                stdfeemonth.IssueDate = dddd;
+            //                stdfeemonth.Months = item;
+            //                db.StudentFeeMonths.Add(stdfeemonth);
+            //                db.SaveChanges();
 
-                        }
-                        double? remaining = 0;
-                        var list = db.StudentFeeMonths.Where(x => x.StudentId == studentFeeMultiplier.StudentId && x.Status == "Pending").Select(x => x.InstalmentAmount).ToList();
-                        foreach (var item in list)
-                        {
-                            remaining += item;
-                        }
-                        studentFeeMultiplier.RemainingAmount = remaining;
-                        studentFeeMultiplier.PaidAmount = studentFeeMultiplier.TutionFee - remaining;
-                        studentFeeMultiplier.Instalments = Convert.ToInt32(12 / studentFeeMultiplier.Multiplier);
-                        studentFeeMultiplier.SharePerInstalment = studentFeeMultiplier.RemainingAmount / studentFeeMultiplier.Instalments;
-                        studentFeeMultiplier.RemainingInstalments = Convert.ToDouble(studentFeeMultiplier.RemainingAmount / studentFeeMultiplier.SharePerInstalment);
-                        db.Entry(studentFeeMultiplier).State = EntityState.Modified;
-                        db.SaveChanges();
-                        return RedirectToAction("Index");
-                    }
+            //            }
+            //            double? remaining = 0;
+            //            var list = db.StudentFeeMonths.Where(x => x.StudentId == studentFeeMultiplier.StudentId && x.Status == "Pending").Select(x => x.InstalmentAmount).ToList();
+            //            foreach (var item in list)
+            //            {
+            //                remaining += item;
+            //            }
+            //            studentFeeMultiplier.RemainingAmount = remaining;
+            //            studentFeeMultiplier.PaidAmount = studentFeeMultiplier.TutionFee - remaining;
+            //            studentFeeMultiplier.Instalments = Convert.ToInt32(12 / studentFeeMultiplier.Multiplier);
+            //            studentFeeMultiplier.SharePerInstalment = studentFeeMultiplier.RemainingAmount / studentFeeMultiplier.Instalments;
+            //            studentFeeMultiplier.RemainingInstalments = Convert.ToDouble(studentFeeMultiplier.RemainingAmount / studentFeeMultiplier.SharePerInstalment);
+            //            db.Entry(studentFeeMultiplier).State = EntityState.Modified;
+            //            db.SaveChanges();
+            //            return RedirectToAction("Index");
+            //        }
 
-                }
-            }
+            //    }
+            //}
                
-            ViewBag.StudentId = new SelectList(db.AspNetStudents, "Id", "Name", studentFeeMultiplier.StudentId);
+            //ViewBag.StudentId = new SelectList(db.AspNetStudents, "Id", "Name", studentFeeMultiplier.StudentId);
             return View(studentFeeMultiplier);
         }
 

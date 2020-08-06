@@ -144,12 +144,19 @@
 
 
 
-                        <ol>
-                            @foreach (var item1 in item.options)
-                            {
-                                <li>@item1.name  </li>
-                            }
-                        </ol>
+                <ol>
+                    @foreach (var item1 in item.options)
+                     {
+                        if (item1.name == item.CorrectOption)
+                        {
+                            <li>@item1.name  <i class="fa fa-check" aria-hidden="true" style="color: #37a937; font-size:20px"></i></li> 
+                        }
+                        else
+                        {
+                            <li>@item1.name  </li>
+                        }
+                     }
+                </ol>
 
                         counter = counter + 1;
 

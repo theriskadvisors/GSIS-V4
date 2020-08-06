@@ -1,0 +1,433 @@
+﻿@model SEA_Application.Controllers.NonRecurringFeeController._NonRecurringFee
+
+@{
+    ViewBag.Title = "Edit";
+
+    Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body p-5">
+
+                <div class="col-md-6 pl-5 pr-5 ">
+                    <br />
+
+                    <input type="hidden" id="BranchIdValue" name="BranchIdValue" value="@Model.BranchId" />
+                    <input type="hidden" id="ClassIdValue" name="ClassIdValue" value="@Model.ClassId" />
+                    <input type="hidden" id="SectionIdValue" name="SectionIdValue" value="@Model.SectionId" />
+                    <input type="hidden" id="StudentIdValue" name="SectionIdValue" value="@Model.StudentId" />
+
+                    <form id="tab2Form">
+
+                        <div class="form-row mt-4">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <label for="" class="control-label"> Branch</label>
+
+                                <select class="form-control" id="BranchId1" name="BranchId1" required></select>
+
+                            </div>
+                        </div>
+
+                        <div class="form-row mt-4">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <label for="" class="control-label"> class </label>
+
+                                <select class="form-control" id="ClassId1" name="ClassId1" required></select>
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-row mt-4">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <label for="" class="control-label"> Section *</label>
+
+                                <select class="form-control" id="SectionId1" name="SectionId1" required></select>
+                            </div>
+                        </div>
+
+
+                        <div class="form-row mt-4">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <label for="" class="control-label"> Student *</label>
+
+                                <select class="form-control" id="StudentId" name="StudentId" required></select>
+
+                            </div>
+                        </div>
+
+                        <div class="form-row mt-4">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <label for="" class="bmd-label-static pl-2">Month*</label>
+
+                                <select class="form-control " id="Month1" name="Month1" required>
+                                    <option value=""> Select one</option>
+                                    <option value="1">January</option>
+                                    <option value="2">February</option>
+                                    <option value="3">March</option>
+                                    <option value="4">April</option>
+                                    <option value="5">May</option>
+                                    <option value="6">June</option>
+                                    <option value="7">July</option>
+                                    <option value="8">August</option>
+                                    <option value="9">September</option>
+                                    <option value="10">October</option>
+                                    <option value="11">November</option>
+                                    <option value="12">December</option>
+                                </select>
+
+                                <span id="error1" style="color:red"> </span>
+                            </div>
+                        </div>
+
+
+                        @if (ViewBag.FeeType != null)
+                        {
+                            foreach (var type in ViewBag.FeeType)
+                            {
+                                <br />
+                                <div class="form-group" id="@type.TypeName">
+
+                                    <label class="control-label">@type.TypeName</label>
+
+                                    <input min="0" required class="form-control tab2NumberFields" type="number" name="@type.TypeName" value="@type.Amount" id="@type.TypeId" />
+
+                                </div>
+
+                            }
+
+                        }
+                        <br />
+                        <div class="col-md-12 pl-12 pr-5 ">
+                            <button type="submit" id="SaveButton1" class="btn btn-primary rounded rounded-lg"> Save </button>
+
+
+                            <button type="button" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                                <i class="material-icons mr-2">cached</i>  Cancel
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+            </div>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+
+        var BranchId = $("#BranchIdValue").val();
+        var ClassId = $("#ClassIdValue").val();
+        var SectionId = $("#SectionIdValue").val();
+        var StudentId = $("#StudentIdValue").val();
+
+
+        
+        $("#PageHeader").html("Edit");
+
+        $("#BreadCrumbs").append(' <li> <a  href="/FinanceSummary/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li> <a href="/NonRecurringFee/Index"> Non Recurring Fee </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Edit</a></li>');
+
+
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "/NonRecurringFee/AllBranches",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#BranchId1");
+                $el.empty();
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").text('Select Branch'));
+                    for (i = 0; i < sch.length; i++) {
+
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i].Id).text(sch[i].Name));
+                    }
+                }
+                else {
+                    $el.append($("<option></option>")
+                        .attr("value", '').text('Select Branch'));
+                }
+
+                $('#BranchId1 option[value="' + BranchId + '"]').prop('selected', true);
+
+            }
+        });
+
+
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "/NonRecurringFee/ClassesByBranch?BranchId=" + BranchId,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#ClassId1");
+                $el.empty();
+
+              
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").text('Select Class'));
+                    for (i = 0; i < sch.length; i++) {
+
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i].Id).text(sch[i].Name));
+                    }
+                }
+                else {
+                    $el.append($("<option></option>")
+                        .attr("value", '').text('Select Class'));
+                }
+
+                $('#ClassId1 option[value="' + ClassId + '"]').prop('selected', true);
+            }
+
+
+        });
+
+
+
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "/NonRecurringFee/SectionByClasses?ClassId=" + ClassId,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#SectionId1");
+                $el.empty();
+
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").text('Select Section'));
+                    for (i = 0; i < sch.length; i++) {
+
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i].Id).text(sch[i].Name));
+                    }
+                }
+                else {
+                    $el.append($("<option></option>")
+                        .attr("value", '').text('Select Section'));
+                }
+
+                $('#SectionId1 option[value="' + SectionId + '"]').prop('selected', true);
+
+            }
+        });
+
+
+
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "/NonRecurringFee/GetStudents?BranchId=" + BranchId + "&&ClassId=" + ClassId + "&&SectionId=" + SectionId,
+
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#StudentId");
+                $el.empty();
+
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").text('Select Student'));
+                    for (i = 0; i < sch.length; i++) {
+
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i].Id).text(sch[i].Name));
+                    }
+                }
+                else {
+                    $el.append($("<option></option>")
+                        .attr("value", '').text('Select Student'));
+                }
+
+                $('#StudentId option[value="' + StudentId + '"]').prop('selected', true);
+
+            }
+        });
+
+
+        $('#BranchId1').change(function () {
+
+            var BranchId = $(this).val();
+
+            if (BranchId != "") {
+
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/NonRecurringFee/ClassesByBranch?BranchId=" + BranchId,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#ClassId1");
+                        $el.empty();
+
+                        var $elStudent = $("#StudentId");
+                        $elStudent.empty();
+                        var $e3 = $("#SectionId1");
+                        $e3.empty();
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Class'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Class'));
+                        }
+                    }
+                });
+            }
+            else {
+                var $el = $("#ClassId1");
+                $el.empty();
+
+                var $e3 = $("#SectionId1");
+                $e3.empty();
+
+                var $elStudent = $("#StudentId");
+                $elStudent.empty();
+
+            }
+
+        });
+
+        $('#ClassId1').change(function () {
+
+            var ClassId = $(this).val();
+            //Class = UserName;
+
+            if (ClassId != "") {
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/NonRecurringFee/SectionByClasses?ClassId=" + ClassId,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#SectionId1");
+                        $el.empty();
+
+                        var $elStudent = $("#StudentId");
+                        $elStudent.empty();
+
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Section'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Section'));
+                        }
+                    }
+                });
+            }
+
+            else {
+
+                var $el = $("#SectionId1");
+                $el.empty();
+
+                var $elStudent = $("#StudentId");
+                $elStudent.empty();
+            }
+
+        });
+
+        $('#SectionId1').change(function () {
+
+            var BranchId = $("#BranchId1").val();
+            var ClassId = $("#ClassId1").val();
+            var SectionId = $(this).val();
+
+
+            if (BranchId != "" && ClassId != "" && SectionId != "") {
+
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/NonRecurringFee/GetStudents?BranchId=" + BranchId + "&&ClassId=" + ClassId + "&&SectionId=" + SectionId,
+
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#StudentId");
+                        $el.empty();
+
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Student'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Student'));
+                        }
+                    }
+                });
+
+            }
+            else {
+
+                var $el = $("#StudentId");
+                $el.empty();
+
+            }
+
+        })
+
+
+
+
+         $("div[id = 'Admission Fee']").hide();
+
+    })
+
+</script>
+
+

@@ -15,24 +15,24 @@ namespace SEA_Application.Controllers
         Sea_Entities db = new Sea_Entities();
         // GET: FinanceSummary
 
-            public ActionResult CalendarNotification()
-           {
+        public ActionResult CalendarNotification()
+        {
             var id = User.Identity.GetUserId();
             var fullname = db.AspNetUsers.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault();
             var namelist = fullname.Split(' ');
             var name = namelist[0];
             var result = new { name };
             return Json(result, JsonRequestBehavior.AllowGet);
-        
-    }
+
+        }
         public ActionResult UserName()
         {
             var id = User.Identity.GetUserId();
             var name = db.AspNetUsers.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault();
             var date = DateTime.Now;
             var result = new { date, name };
-        
-            return Json(result,JsonRequestBehavior.AllowGet);
+
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
         public ActionResult InterTransaction()
         {
@@ -196,7 +196,7 @@ namespace SEA_Application.Controllers
             using (Sea_Entities dc = new Sea_Entities())
             {
                 var id = User.Identity.GetUserId();
-                var events = dc.Events.Where(x=>x.UserId==id || x.IsPublic==true).Select(x => new { x.Description ,x.End,x.EventID,x.IsFullDay,x.Subject, x.ThemeColor,x.Start,x.IsPublic}).ToList();
+                var events = dc.Events.Where(x => x.UserId == id || x.IsPublic == true).Select(x => new { x.Description, x.End, x.EventID, x.IsFullDay, x.Subject, x.ThemeColor, x.Start, x.IsPublic }).ToList();
                 return new JsonResult { Data = events, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
             }
         }
@@ -204,8 +204,8 @@ namespace SEA_Application.Controllers
         [HttpPost]
         public JsonResult SaveEvent(Event e)
         {
-           e.UserId=User.Identity.GetUserId();
-           var status = false;
+            e.UserId = User.Identity.GetUserId();
+            var status = false;
             using (Sea_Entities dc = new Sea_Entities())
             {
                 if (e.EventID > 0)
@@ -258,7 +258,7 @@ namespace SEA_Application.Controllers
         {
             var headlist = db.LedgerHeads.ToList();
             List<Ledger_Head> ledgerheadlist = new List<Ledger_Head>();
-            
+
             foreach (var h_item in headlist)
             {
                 Ledger_Head ledgerhead = new Ledger_Head();
@@ -266,7 +266,7 @@ namespace SEA_Application.Controllers
                 ledgerhead.HeadName = h_item.Name;
                 decimal? amount = 0;
                 var grouplist = db.LedgerGroups.Where(x => x.LedgerHeadID == h_item.Id).ToList();
-                var _ledgerlist = db.Ledgers.Where(x => x.LedgerHeadId == h_item.Id && x.LedgerGroupId==null).ToList();
+                var _ledgerlist = db.Ledgers.Where(x => x.LedgerHeadId == h_item.Id && x.LedgerGroupId == null).ToList();
                 ledgerhead.ledgerGroup = new List<Ledger_Group>();
                 ledgerhead.ledger = new List<_Ledger>();
                 foreach (var g_item in grouplist)
@@ -293,7 +293,7 @@ namespace SEA_Application.Controllers
                             groupAmount = groupAmount + l_item.CurrentBalance;
                             amount = amount + l_item.CurrentBalance;
                         }
-                        
+
                         lg.ledger.Add(l);
                     }
                     lg.GroupTotal = groupAmount;
@@ -318,7 +318,7 @@ namespace SEA_Application.Controllers
                 ledgerhead.TotalAmount = amount;
                 ledgerheadlist.Add(ledgerhead);
             }
-            
+
             return Json(ledgerheadlist, JsonRequestBehavior.AllowGet);
         }
         public ActionResult Cash()
@@ -335,8 +335,8 @@ namespace SEA_Application.Controllers
             var cash = (from ledger in db.Ledgers
                         join grp in db.LedgerGroups on ledger.LedgerGroupId equals grp.Id
                         where grp.Name == "Cash"
-                        select new {ledger.Id, ledger.Name, ledger.StartingBalance, ledger.CurrentBalance, h_name = ledger.LedgerHead.Name, g_name = ledger.LedgerGroup.Name }).ToList();
-            return Json(cash,JsonRequestBehavior.AllowGet);
+                        select new { ledger.Id, ledger.Name, ledger.StartingBalance, ledger.CurrentBalance, h_name = ledger.LedgerHead.Name, g_name = ledger.LedgerGroup.Name }).ToList();
+            return Json(cash, JsonRequestBehavior.AllowGet);
         }
         ///////////////////////////////////////BANK///////////////////////////
         public ActionResult Bank()
@@ -353,13 +353,13 @@ namespace SEA_Application.Controllers
             var bank = (from ledger in db.Ledgers
                         join grp in db.LedgerGroups on ledger.LedgerGroupId equals grp.Id
                         where grp.Name == "Bank"
-                        select new {ledger.Id, ledger.Name, ledger.StartingBalance, ledger.CurrentBalance, h_name = ledger.LedgerHead.Name, g_name = ledger.LedgerGroup.Name }).ToList();
+                        select new { ledger.Id, ledger.Name, ledger.StartingBalance, ledger.CurrentBalance, h_name = ledger.LedgerHead.Name, g_name = ledger.LedgerGroup.Name }).ToList();
             return Json(bank, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult JournalEntryList(int id)
         {
-       
+
             ViewBag.LedgerId = id;
             return View();
         }
@@ -382,7 +382,7 @@ namespace SEA_Application.Controllers
                 j.Afterbalance = item.AfterBalance.ToString();
                 entry.Add(j);
             }
-            return Json(entry,JsonRequestBehavior.AllowGet);
+            return Json(entry, JsonRequestBehavior.AllowGet);
         }
         /////////////////////////////////////////////////////////////////
         public ActionResult AddBankVoucher(_Voucher Vouchers)
@@ -482,6 +482,34 @@ namespace SEA_Application.Controllers
                     {
                         voucherrecord.BranchId = item.BranchId;
                     }
+                    //studentid
+                    if (item.StudentId != null)
+                    {
+
+                        string[] EmployeeStudentId = item.StudentId.Split('-');
+
+
+                        if (EmployeeStudentId[0] == "Student")
+                        {
+                            voucherrecord.UserType = "Student";
+                            voucherrecord.UserId = EmployeeStudentId[1];
+
+                        }
+                        else // if (EmployeeStudentId[0] == "Employee")
+                        {
+                            voucherrecord.UserType = "Employee";
+                            voucherrecord.UserId = EmployeeStudentId[1];
+                        }
+
+                    }
+                    else
+                    {
+                        voucherrecord.UserType = null;
+                        voucherrecord.UserId = null;
+
+                    }
+                    //studentId
+
                     if (voucherrcd.Type == "Dr")
                     {
                         voucherrecord.Type = "Cr";
@@ -601,11 +629,11 @@ namespace SEA_Application.Controllers
                 VoucherRecord voucherrcd = new VoucherRecord();
 
                 voucherrcd.LedgerId = Vouchers.uppercode;
-                if(Vouchers.accounttype== "Dr")
+                if (Vouchers.accounttype == "Dr")
                 {
                     voucherrcd.Type = "Dr";
                 }
-                else if(Vouchers.accounttype== "Cr")
+                else if (Vouchers.accounttype == "Cr")
                 {
                     voucherrcd.Type = "Cr";
                 }
@@ -613,7 +641,7 @@ namespace SEA_Application.Controllers
                 voucherrcd.Description = Vouchers.upperdesc;
                 var record = db.Ledgers.Where(x => x.Id == voucherrcd.LedgerId).FirstOrDefault();
                 var currentbalance = record.CurrentBalance;
-                if(currentbalance==null)
+                if (currentbalance == null)
                 {
                     voucherrcd.CurrentBalance = 0;
                 }
@@ -621,7 +649,7 @@ namespace SEA_Application.Controllers
                 {
                     voucherrcd.CurrentBalance = currentbalance;
                 }
-               
+
                 var total = decimal.Parse(Vouchers.uppertotal);
                 voucherrcd.Amount = total;
                 if (voucherrcd.Type == "Cr")
@@ -657,16 +685,44 @@ namespace SEA_Application.Controllers
                     {
                         voucherrecord.BranchId = item.BranchId;
                     }
-                    if(voucherrcd.Type == "Dr")
+                    //studentid
+                    if (item.StudentId != null)
+                    {
+
+                        string[] EmployeeStudentId = item.StudentId.Split('-');
+
+
+                        if (EmployeeStudentId[0] == "Student")
+                        {
+                            voucherrecord.UserType = "Student";
+                            voucherrecord.UserId = EmployeeStudentId[1];
+
+                        }
+                        else // if (EmployeeStudentId[0] == "Employee")
+                        {
+                            voucherrecord.UserType = "Employee";
+                            voucherrecord.UserId = EmployeeStudentId[1];
+                        }
+
+                    }
+                    else
+                    {
+                        voucherrecord.UserType = null;
+                        voucherrecord.UserId = null;
+
+                    }
+                    //studentId
+
+                    if (voucherrcd.Type == "Dr")
                     {
                         voucherrecord.Type = "Cr";
                     }
-                    else if(voucherrcd.Type == "Cr")
+                    else if (voucherrcd.Type == "Cr")
                     {
                         voucherrecord.Type = "Dr";
                     }
                     voucherrecord.Description = item.Transaction;
-                    
+
                     var ledgerrecord = db.Ledgers.Where(x => x.Id == voucherrecord.LedgerId).FirstOrDefault();
                     voucherrecord.CurrentBalance = ledgerrecord.CurrentBalance;
                     //////////////////////////Game/////////////////////
@@ -759,8 +815,8 @@ namespace SEA_Application.Controllers
             int No;
             try
             {
-                    No =(int)db.Vouchers.Select(x => x.VoucherNo).Max();
-                    No++;
+                No = (int)db.Vouchers.Select(x => x.VoucherNo).Max();
+                No++;
 
             }
             catch
@@ -789,7 +845,7 @@ namespace SEA_Application.Controllers
         }
         public JsonResult SelectListLedgers()
         {
-            
+
             var ledger = db.Ledgers.Where(x => x.LedgerGroup.Name == "Cash").ToList();
             List<Ledger> List = new List<Ledger>();
 
@@ -804,7 +860,7 @@ namespace SEA_Application.Controllers
         }
         public JsonResult SelectAllLedgers()
         {
-            
+
             var headlist = db.LedgerHeads.ToList();
 
             List<HeadList> Head_list = new List<HeadList>();
@@ -814,7 +870,7 @@ namespace SEA_Application.Controllers
                 hl.HeadId = item.Id;
                 hl.HeadName = item.Name;
 
-                var ledger = db.Ledgers.Where(x => x.LedgerGroup.Name != "Cash" && x.LedgerGroup.Name != "Bank" && x.LedgerHeadId==item.Id).ToList();
+                var ledger = db.Ledgers.Where(x => x.LedgerGroup.Name != "Cash" && x.LedgerGroup.Name != "Bank" && x.LedgerHeadId == item.Id).ToList();
                 hl.accountlist = new List<AccountsList>();
                 foreach (var l_item in ledger)
                 {
@@ -865,6 +921,7 @@ namespace SEA_Application.Controllers
             public string Debit { get; set; }
             public double balance { get; set; }
             public int BranchId { get; set; }
+            public string StudentId { get; set; }
 
 
         }

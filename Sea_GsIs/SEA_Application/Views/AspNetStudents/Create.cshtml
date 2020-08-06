@@ -1,4 +1,4 @@
-﻿@model SEA_Application.Models.AspNetStudent
+﻿@model SEA_Application.Models.StudentRegistrationViewModel
 
 @{
     ViewBag.Title = "Create";
@@ -13,17 +13,100 @@
 }
 
 <script>
+
+
+    var studentRegistrationViewModel = {
+        TutionFee: '',
+        ComputerFee: '',
+        LabCharges: '',
+        OtherServices: '',
+    };
+    Vouchers = [];
+
     $(document).ready(function () {
 
 
         $("#PageHeader").html("Add Student");
 
-        $("#BreadCrumbs").append(' <li> <a href="#"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li> <a href="/FinanceSummary/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li> <a href="/AspnetStudents/StudentIndex"> Students Index </a> <span>&gt;</span></li>');
         $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Create</a></li>');
-
 
         $("#UploadImg").change(function () {
             readURL(this);
+        });
+
+        $.ajax({
+
+            type: "POST",
+            cache: false,
+            url: "/StudentRecurringFees/AllBranches",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#BranchId");
+                $el.empty();
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").text('Select Branch'));
+                    for (i = 0; i < sch.length; i++) {
+
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i].Id).text(sch[i].Name));
+                    }
+                }
+
+                else {
+                    $el.append($("<option></option>")
+                        .attr("value", '').text('Select Branch'));
+                }
+            }
+        });
+
+        $('#BranchId').change(function () {
+
+            var BranchId = $(this).val();
+
+            if (BranchId != "") {
+
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/StudentRecurringFees/ClassesByBranch?BranchId=" + BranchId,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#ClassId");
+                        $el.empty();
+
+
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Class'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Class'));
+                        }
+                    }
+                });
+            }
+            else {
+                var $el = $("#ClassId");
+                $el.empty();
+
+            }
+
         });
 
         $("#branchddl").change(function () {
@@ -77,8 +160,8 @@
             $("#return").show();
 
         })
-        $("#Pass").bind('blur', function () {
-            var password = $("#Pass").val();
+        $("#Password").bind('blur', function () {
+            var password = $("#Password").val();
 
             var patt = new RegExp("^(?=.{6,})(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])(?=.*[@@#$%^&+=]).*$");
             var test = patt.test(password);
@@ -92,23 +175,23 @@
             }
 
         });
-        $("#submit").click(function () {
-            debugger;
-            var roll = $("#RollNo").val();
-            if (roll == "") {
-                $('#UserName-Error').html("This field is required");
-                $('#submit').prop('disabled', true);
-                $('#UserName-Error').attr("color", "red");
+        //$("#submit").click(function () {
+        //    debugger;
+        //    var roll = $("#RollNo").val();
+        //    if (roll == "") {
+        //        $('#UserName-Error').html("This field is required");
+        //        $('#submit').prop('disabled', true);
+        //        $('#UserName-Error').attr("color", "red");
 
-            }
-            else {
-                $('#UserName-Error').html("");
-                $('#submit').prop('disabled', false);
-            }
-        })
+        //    }
+        //    else {
+        //        $('#UserName-Error').html("");
+        //        $('#submit').prop('disabled', false);
+        //    }
+        //})
 
-        $("#E_mail").bind('blur', function () {
-            var email = $("#E_mail").val();
+        $("#Email").bind('blur', function () {
+            var email = $("#Email").val();
             var patt = /^(([^<>()[\]\\.,;:\s@@\"]+(\.[^<>()[\]\\.,;:\s@@\"]+)*)|(\".+\"))@@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             var test = patt.test(String(email).toLocaleLowerCase());
 
@@ -122,8 +205,8 @@
         });
 
 
-        $("#E_mail").bind('blur', function () {
-            var email = $("#E_mail").val();
+        $("#Email").bind('blur', function () {
+            var email = $("#Email").val();
 
             $.ajax({
                 type: "POST",
@@ -143,8 +226,8 @@
                 }
             });
         });
-        $("#UserName").bind('blur', function () {
-            var rollno = $("#UserName").val();
+        $("#RollNo").bind('blur', function () {
+            var rollno = $("#RollNo").val();
 
             $.ajax({
                 type: "POST",
@@ -164,17 +247,11 @@
                 }
             });
 
-
-
-
         });
-
-
-
 
         $("#CnfmPass").bind('blur', function () {
             var cnfm = $("#CnfmPass").val();
-            var newpass = $("#Pass").val();
+            var newpass = $("#Password").val();
 
             if (cnfm != newpass) {
                 $('#CnfmPass-Error').html("New Password and Confirm Password does not match");
@@ -186,6 +263,310 @@
 
         });
 
+        $("#BranchId").change(function () {
+
+            ResestFields();
+            GetFeeHeads();
+        })
+        $("#ClassId").change(function () {
+
+            ResestFields();
+            GetFeeHeads();
+        })
+
+        $(".code").on("keyup", function () {
+            TotalFee();
+
+            CalculateDisountedAmount1(this);
+
+        })
+
+        $(".Month").on("keyup", function () {
+            $("#MonthsError").html("");
+            $("#submit").prop("disabled", false);
+
+            MonthsTotal();
+        })
+        // $("input[type='number']").on("keyup", function () {
+        //    debugger
+        // var Number =$(this).val();
+
+        //     if (Number < 0) {
+        //         $("#submit").prop("disabled", true);
+
+        //     }
+        //     else {
+        //         $("#submit").prop("disabled", false);
+
+        //     }
+
+        //})
+        $('#StudentForm').validate({ // initialize the plugin
+            rules: {
+                FName: {
+                    required: true,
+                    //email: true
+                },
+                AdmissionFeeDisPer: {
+                    required: true,
+                    min: 0,
+                }
+
+
+            },
+            submitHandler: function (form) {
+                debugger;
+
+                // return false;
+
+                debugger
+                var Junuary = $("#Junuary").val();
+                var February = $("#February").val();
+                var March = $("#March").val();
+                var April = $("#April").val();
+                var May = $("#May").val();
+                var June = $("#June").val();
+                var July = $("#July").val();
+                var August = $("#August").val();
+                var September = $("#September").val();
+                var October = $("#October").val();
+                var November = $("#November").val();
+                var December = $("#December").val();
+
+                if (Junuary == "") {
+
+                    Junuary = 0;
+                }
+                if (February == "") {
+                    February = 0;
+                }
+                if (March == "") {
+                    March = 0;
+                }
+                if (April == "") {
+                    April = 0;
+                }
+                if (May == "") {
+                    May = 0;
+                }
+                if (June == "") {
+                    June = 0;
+                }
+                if (July == "") {
+                    July = 0;
+                }
+                if (August == "") {
+                    August = 0;
+                } if (September == "") {
+                    September = 0;
+                }
+                if (October == "") {
+                    October = 0;
+                }
+                if (November == "") {
+                    November = 0;
+                } if (December == "") {
+                    December = 0;
+                }
+
+
+                var Total = parseFloat(Junuary) + parseFloat(February) + parseFloat(March) + parseFloat(April) + parseFloat(May) + parseFloat(June) + parseFloat(July) + parseFloat(August) + parseFloat(September) + parseFloat(October) + parseFloat(November) + parseFloat(December);
+                var Check = true;
+
+
+                if (Total > 12 || Total < 12 || Total == 0 || Total < 0) {
+
+                    $("#MonthsError").html("Months total must be 12");
+                    $("#submit").prop("disabled", true);
+                    Check = false;
+
+                    return false;
+
+                }
+                else {
+                    Check = true;
+                }
+
+                if (/*$("#DisAmountTotal").val() == 0 ||*/ $("#DisAmountTotal").val() < 0) {
+
+                    return false;
+                }
+
+                if (Check == true) {
+
+
+                    $("#submit").prop("disabled", true);
+
+                    var studentRegistrationViewModel = {
+
+                        FName: $("#FName").val(),
+                        BranchId: $("#BranchId").val(),
+                        NationalityId: $("#NationalityId").val(),
+                        ReligionId: $("#ReligionId").val(),
+                        GenderId: $("#GenderId").val(),
+                        Birthdate: $("#Birthdate").val(),
+                        CellNo: $("#CellNo").val(),
+                        RollNo: $("#RollNo").val(),
+                        Password: $("#Password").val(),
+                        Email: $("#Email").val(),
+                        BranchId: $("#BranchId").val(),
+                        ClassId: $("#ClassId").val(),
+
+                        AdmissionFee: $("#AdmissionFee").val(),
+                        TutionFee: $("#TutionFee").val(),
+                        LabCharges: $("#LabFee").val(),
+                        ComputerFee: $("#ComputerFee").val(),
+                        OtherServices: $("#OtherServices").val(),
+                        TotalFee: $("#FeesHeadTotal").val(),
+
+                        DiscountAdmissionFee: $("#AdmissionFeeDisPer").val(),
+                        DiscountTutionFee: $("#TutionFeeDisPer").val(),
+                        DiscountLabCharges: $("#LabFeeDisPer").val(),
+                        DiscountComputerFee: $("#ComputerFeeDisPer").val(),
+                        DiscountOtherServices: $("#OtherServicesDisPer").val(),
+                        //DiscountTotal: $("#DisPerTotal").val(),
+
+                        DiscountAdmissionFeeAmount: $("#AdmissionFeeDisAmount").val(),
+                        DiscountTutionFeeAmount: $("#TutionFeeDisAmount").val(),
+                        DiscountLabChargesAmount: $("#LabFeeDisAmount").val(),
+                        DiscountComputerFeeAmount: $("#ComputerFeeDisAmount").val(),
+                        DiscountOtherServicesAmount: $("#OtherServicesDisAmount").val(),
+                        DiscountTotalAmount: $("#DisAmountTotal").val(),
+
+                        Jan_Multiplier: $("#Junuary").val(),
+                        Feb_Multiplier: $("#February").val(),
+                        Mar_Multiplier: $("#March").val(),
+                        April__Multiplier: $("#April").val(),
+                        May_Multiplier: $("#May").val(),
+                        June_Multiplier: $("#June").val(),
+                        July__Multiplier: $("#July").val(),
+                        Aug_Multiplier: $("#August").val(),
+                        Sep_Multiplier: $("#September").val(),
+                        Oct_Multiplier: $("#October").val(),
+                        Nov_Multiplier: $("#November").val(),
+                        Dec__Multiplier: $("#December").val(),
+
+
+                    };
+
+                    //  var fileUpload = $("#UploadImg").get(0).files;
+                    //  var data = new FormData();
+                    // data.append('studentRegistrationViewModel', studentRegistrationViewModel);
+                    //  data.append('ObtainedMarks', ObtainedMarks);
+                    // data.append("file", fileUpload[0]);
+
+                    $.ajax({
+                        type: "post",
+                        url: "/AspNetStudents/Create",
+                        data: { 'studentRegistrationViewModel': studentRegistrationViewModel },
+                        datatype: "json",
+                        cache: false,
+                        success: function (data) {
+                            debugger
+
+                            if (data.IsStudentCreated == "Yes") {
+
+                                uploadStudentImage(data.UserId);
+                                window.location.href = "/AspnetStudents/StudentIndex";
+
+                            }
+                            else {
+
+
+                            }
+
+
+                        }
+
+                    })
+                }
+            }
+        });
+        //$("#submit").click(function () {
+
+
+        //    var studentRegistrationViewModel = {
+
+        //        FName: $("#FName").val(),
+        //        BranchId: $("#BranchId").val(),
+        //        NationalityId: $("#NationalityId").val(),
+        //        ReligionId : $("#ReligionId").val(),
+        //        GenderId: $("#GenderId").val(),
+        //        GenderId: $("#GenderId").val(),
+        //        CellNo: $("#CellNo").val(),
+        //        RollNo : $("#RollNo").val(),
+        //        Password: $("#Password").val(),
+        //        Email: $("#Email").val(),
+        //        BranchId: $("#BranchId").val(),
+        //        ClassId: $("#ClassId").val(),
+
+        //        AdmissionFee: $("#AdmissionFee").val(),
+        //        TutionFee: $("#TutionFee").val(),
+        //        LabCharges: $("#LabFee").val(),
+        //        ComputerFee: $("#ComputerFee").val(),
+        //        OtherServices: $("#OtherServices").val(),
+        //        TotalFee: $("#FeesHeadTotal").val(),
+
+
+        //        DiscountAdmissionFee: $("#AdmissionFeeDisPer").val(),
+        //        DiscountTutionFee: $("#TutionFeeDisPer").val(),
+        //        DiscountLabCharges: $("#LabFeeDisPer").val(),
+        //        DiscountComputerFee: $("#ComputerFeeDisPer").val(),
+        //        DiscountOtherServices: $("#OtherServicesDisPer").val(),
+        //        DiscountTotal: $("#DisPerTotal").val(),
+
+
+        //        DiscountAdmissionFeeAmount: $("#AdmissionFeeDisAmount").val(),
+        //        DiscountTutionFeeAmount: $("#TutionFeeDisAmount").val(),
+        //        DiscountLabChargesAmount: $("#LabFeeDisAmount").val(),
+        //        DiscountComputerFeeAmount: $("#ComputerFeeDisAmount").val(),
+        //        DiscountOtherServicesAmount: $("#OtherServicesDisAmount").val(),
+        //        DiscountTotalAmount: $("#DisAmountTotal").val(),
+
+
+        //        Jan_Multiplier: $("#Junuary").val(),
+        //        Feb_Multiplier: $("#February").val(),
+        //        Mar_Multiplier: $("#March").val(),
+        //        April__Multiplier: $("#April").val(),
+        //        May_Multiplier: $("#May").val(),
+        //        June_Multiplier: $("#June").val(),
+
+
+        //        July__Multiplier: $("#July").val(),
+        //        Aug_Multiplier: $("#August").val(),
+        //        Sep_Multiplier: $("#September").val(),
+        //        Oct_Multiplier: $("#October").val(),
+        //        Nov_Multiplier: $("#November").val(),
+        //        Dec__Multiplier: $("#November").val(),
+
+
+
+        //    };
+
+        //   // Vouchers = JSON.stringify({ 'Vouchers': studentRegistrationViewModel });
+
+        //     $.ajax({
+        //        type: "post",
+        //        url:"/AspNetStudents/Create",
+        //        data: studentRegistrationViewModel,
+        //        datatype: "json",
+        //        cache: false,
+        //        success: function(data) {
+        //            alert("View Model Passed Successfully");
+        //        },
+
+        //    })
+        //})
+
+
+
+
+
+        //$(".CalculateDiscountedAmount").on("keyup", function () {
+
+        //    CalculateDiscountedAmount();
+
+        //})
         //$("#RollNo").bind('blur', function () {
         //    var userName = $("#RollNo").val();
         //    $.ajax({
@@ -208,7 +589,336 @@
         //});
     });
 
+    function uploadStudentImage(id) {
 
+        debugger
+        var UserId = id;
+        var fileUpload = $("#UploadImg").get(0).files;
+        var data = new FormData();
+
+        data.append('UserId', UserId);
+        data.append("file", fileUpload[0]);
+
+
+        if (fileUpload.length > 0 && UserId != "") {
+
+            $.ajax({
+                type: "POST",
+                url: "/AspnetStudents/UploadImageOfStudent",
+                contentType: false,
+                processData: false,
+                data: data,
+                success: function (result) {
+                    window.location.href = "/AspnetStudents/StudentIndex";
+
+                }
+            })
+
+        }
+        else {
+            window.location.href = "/AspnetStudents/StudentIndex";
+
+        }
+
+    }
+
+    function MonthsTotal() {
+
+        var Junuary = $("#Junuary").val();
+        var February = $("#February").val();
+        var March = $("#March").val();
+        var April = $("#April").val();
+        var May = $("#May").val();
+        var June = $("#June").val();
+        var July = $("#July").val();
+        var August = $("#August").val();
+        var September = $("#September").val();
+        var October = $("#October").val();
+        var November = $("#November").val();
+        var December = $("#December").val();
+
+        if (Junuary == "") {
+            Junuary = 0;
+        }
+        if (February == "") {
+            February = 0;
+        }
+        if (March == "") {
+            March = 0;
+        }
+        if (April == "") {
+            April = 0;
+        }
+        if (May == "") {
+            May = 0;
+        }
+        if (June == "") {
+            June = 0;
+        }
+        if (July == "") {
+            July = 0;
+        }
+        if (August == "") {
+            August = 0;
+        } if (September == "") {
+            September = 0;
+        }
+        if (October == "") {
+            October = 0;
+        }
+        if (November == "") {
+            November = 0;
+        } if (December == "") {
+            December = 0;
+        }
+
+
+        var Total = parseFloat(Junuary) + parseFloat(February) + parseFloat(March) + parseFloat(April) + parseFloat(May) + parseFloat(June) + parseFloat(July) + parseFloat(August) + parseFloat(September) + parseFloat(October) + parseFloat(November) + parseFloat(December);
+
+        if (Total > 12) {
+
+            $("#MonthsError").html("Months total must be 12");
+            $("#submit").prop("disabled", true);
+
+        }
+        
+    }
+
+    function CalculateDiscountedAmount(e) {
+
+        debugger
+
+        var id = e.id;
+
+        var FeeHeadFieldVal = $("#" + id).val();
+        if (FeeHeadFieldVal != "") {
+
+            if (id == "AdmissionFeeDisPer") {
+
+                var AdmissionFee = $("#AdmissionFee").val();
+
+                var DiscountedAmount = parseFloat(AdmissionFee) * (FeeHeadFieldVal / 100);
+
+                var AmountToDisplay = AdmissionFee - DiscountedAmount;
+
+                $("#AdmissionFeeDisAmount").val(AmountToDisplay);
+
+            }
+            else if (id == "TutionFeeDisPer") {
+
+                var TutionFee = $("#TutionFee").val();
+                var DiscountedAmount = parseFloat(TutionFee) * (FeeHeadFieldVal / 100);
+
+                var AmountToDisplay = TutionFee - DiscountedAmount;
+
+                $("#TutionFeeDisAmount").val(AmountToDisplay);
+
+            }
+            else if (id == "LabFeeDisPer") {
+
+                var LabFee = $("#LabFee").val();
+                var DiscountedAmount = parseFloat(LabFee) * (FeeHeadFieldVal / 100);
+                var AmountToDisplay = LabFee - DiscountedAmount;
+                $("#LabFeeDisAmount").val(AmountToDisplay);
+            }
+
+            else if (id == "ComputerFeeDisPer") {
+
+                var ComputerFee = $("#ComputerFee").val();
+                var DiscountedAmount = parseFloat(ComputerFee) * (FeeHeadFieldVal / 100);
+                var AmountToDisplay = ComputerFee - DiscountedAmount;
+                $("#ComputerFeeDisAmount").val(AmountToDisplay);
+            }
+            else if (id == "OtherServicesDisPer") {
+
+                var OtherServices = $("#OtherServices").val();
+                var DiscountedAmount = parseFloat(OtherServices) * (FeeHeadFieldVal / 100);
+                var AmountToDisplay = OtherServices - DiscountedAmount;
+                $("#OtherServicesDisAmount").val(AmountToDisplay);
+            }
+            else {
+
+            }
+
+            calculateDiscountPercentageAverage();
+            calculateDiscountAmountTotal();
+
+        }
+    }
+
+    function CalculateDisountedAmount1(e) {
+        debugger
+        var id = e.id;
+        //  alert(id);
+
+        var FeeHeadFieldVal = $("#" + id).val();
+        if (FeeHeadFieldVal != "") {
+
+            if (id == "AdmissionFee") {
+
+                var DiscountPercentageFieldValue = $("#AdmissionFeeDisPer").val();
+
+                var DiscountedAmount = parseFloat(FeeHeadFieldVal) * (DiscountPercentageFieldValue / 100);
+
+                var AmountToDisplay = FeeHeadFieldVal - DiscountedAmount;
+
+                $("#AdmissionFeeDisAmount").val(AmountToDisplay);
+
+
+
+            }
+            else if (id == "TutionFee") {
+
+                var DiscountPercentageFieldValue = $("#TutionFeeDisPer").val();
+
+                var DiscountedAmount = parseFloat(FeeHeadFieldVal) * (DiscountPercentageFieldValue / 100);
+
+                var AmountToDisplay = FeeHeadFieldVal - DiscountedAmount;
+
+                $("#TutionFeeDisAmount").val(AmountToDisplay);
+
+            }
+            else if (id == "LabFee") {
+
+                var DiscountPercentageFieldValue = $("#LabFeeDisPer").val();
+                var DiscountedAmount = parseFloat(FeeHeadFieldVal) * (DiscountPercentageFieldValue / 100);
+                var AmountToDisplay = FeeHeadFieldVal - DiscountedAmount;
+                $("#LabFeeDisAmount").val(AmountToDisplay);
+            }
+
+            else if (id == "ComputerFee") {
+
+                var DiscountPercentageFieldValue = $("#ComputerFeeDisPer").val();
+                var DiscountedAmount = parseFloat(FeeHeadFieldVal) * (DiscountPercentageFieldValue / 100);
+                var AmountToDisplay = FeeHeadFieldVal - DiscountedAmount;
+                $("#ComputerFeeDisAmount").val(AmountToDisplay);
+            }
+            else if (id == "OtherServices") {
+
+                var DiscountPercentageFieldValue = $("#OtherServicesDisPer").val();
+                var DiscountedAmount = parseFloat(FeeHeadFieldVal) * (DiscountPercentageFieldValue / 100);
+                var AmountToDisplay = FeeHeadFieldVal - DiscountedAmount;
+                $("#OtherServicesDisAmount").val(AmountToDisplay);
+            }
+            else {
+
+            }
+            calculateDiscountPercentageAverage();
+            calculateDiscountAmountTotal();
+
+        }
+    }
+
+    function calculateDiscountPercentageAverage() {
+
+        var AdmissionFeeDisPer = $("#AdmissionFeeDisPer").val();
+        var TutionFeeDisPer = $("#TutionFeeDisPer").val();
+        var LabFeeDisPer = $("#LabFeeDisPer").val();
+        var ComputerFeeDisPer = $("#ComputerFeeDisPer").val();
+        var OtherServicesDisPer = $("#OtherServicesDisPer").val();
+
+
+        if (AdmissionFeeDisPer == "") {
+
+            AdmissionFeeDisPer = 0;
+        }
+
+        if (TutionFeeDisPer == "") {
+
+            TutionFeeDisPer = 0;
+        }
+        if (LabFeeDisPer == "") {
+
+            LabFeeDisPer = 0;
+        }
+        if (ComputerFeeDisPer == "") {
+
+            ComputerFeeDisPer = 0;
+        }
+        if (OtherServicesDisPer == "") {
+
+            OtherServicesDisPer = 0;
+        }
+
+        var TotalDiscountPercentage = parseFloat(AdmissionFeeDisPer) + parseFloat(TutionFeeDisPer) + parseFloat(LabFeeDisPer) + parseFloat(ComputerFeeDisPer) + parseFloat(OtherServicesDisPer);
+        var AverageDiscountPercentage = TotalDiscountPercentage / 5;
+        $("#DisPerTotal").val(AverageDiscountPercentage);
+
+    }
+    function TotalFee() {
+        debugger
+
+        var TutionFee = $("#TutionFee").val();
+        if (TutionFee == "") {
+
+            TutionFee = 0;
+        }
+
+        var LabCharges = $("#LabFee").val();
+
+        if (LabCharges == "") {
+
+            LabCharges = 0;
+        }
+        var ComputerFee = $("#ComputerFee").val();
+
+        if (ComputerFee == "") {
+
+            ComputerFee = 0;
+        }
+        var OtherServices = $("#OtherServices").val();
+        if (OtherServices == "") {
+
+            OtherServices = 0;
+        }
+
+        var AdmissionFee = $("#AdmissionFee").val();
+        if (AdmissionFee == "") {
+
+            AdmissionFee = 0;
+        }
+
+        Total = parseFloat(TutionFee) + parseFloat(LabCharges) + parseFloat(ComputerFee) + parseFloat(AdmissionFee) + parseFloat(OtherServices);
+
+        $("#FeesHeadTotal").val(Total);
+
+
+    }
+
+    function calculateDiscountAmountTotal() {
+
+        var AdmissionFeeDisAmount = $("#AdmissionFeeDisAmount").val();
+        var TutionFeeDisAmount = $("#TutionFeeDisAmount").val();
+        var LabFeeDisAmount = $("#LabFeeDisAmount").val();
+        var ComputerFeeDisAmount = $("#ComputerFeeDisAmount").val();
+        var OtherServicesDisAmount = $("#OtherServicesDisAmount").val();
+
+        if (AdmissionFeeDisAmount == "") {
+
+            AdmissionFeeDisAmount = 0;
+        }
+
+        if (TutionFeeDisAmount == "") {
+
+            TutionFeeDisAmount = 0;
+        }
+
+        if (LabFeeDisAmount == "") {
+
+            LabFeeDisAmount = 0;
+        }
+        if (ComputerFeeDisAmount == "") {
+
+            ComputerFeeDisAmount = 0;
+        }
+        if (OtherServicesDisAmount == "") {
+
+            OtherServicesDisAmount = 0;
+        }
+        var TotalDiscountAmount = parseFloat(AdmissionFeeDisAmount) + parseFloat(TutionFeeDisAmount) + parseFloat(LabFeeDisAmount) + parseFloat(ComputerFeeDisAmount) + parseFloat(OtherServicesDisAmount);
+
+        $("#DisAmountTotal").val(TotalDiscountAmount);
+    }
 
     function Return() {
         window.location.href = "StudentIndex"
@@ -221,7 +931,7 @@
             var test = patt.test(phone.value);
             console.log(test);
             if (test == false) {
-             $('#Phone-Error').html("Phone number is not in correct formate");
+                $('#Phone-Error').html("Phone number is not in correct formate");
 
 
                 $('#submit').prop('disabled', true);
@@ -230,7 +940,7 @@
                 $('#Phone-Error').html(" ");
             }
         } else {
-           $('#Phone-Error').html("Phone number is not in correct formate");
+            $('#Phone-Error').html("Phone number is not in correct formate");
             $('#submit').prop('disabled', true);
         }
     }
@@ -249,10 +959,73 @@
         }
     }
 
+    function GetFeeHeads() {
+
+        debugger
+        var BranchId = $("#BranchId").val();
+        var ClassId = $("#ClassId").val();
+
+        if (BranchId != "" && ClassId != "") {
+
+            $.ajax({
+                type: "POST",
+                url: "/AspnetStudents/GetFeeHeads",
+                data: { "BranchId": BranchId, "ClassId": ClassId },
+                success: function (data) {
+
+                    $("#AdmissionFee").val(data.AdmissionFee);
+                    $("#TutionFee").val(data.TutionFee);
+                    $("#LabFee").val(data.LabCharges);
+                    $("#ComputerFee").val(data.ComputerFee);
+                    $("#OtherServices").val(data.OtherServices);
+                    $("#FeesHeadTotal").val(data.Total);
+
+                    $("#AdmissionFeeDisAmount").val(data.AdmissionFee);
+                    $("#TutionFeeDisAmount").val(data.TutionFee);
+                    $("#LabFeeDisAmount").val(data.LabCharges);
+                    $("#ComputerFeeDisAmount").val(data.ComputerFee);
+                    $("#OtherServicesDisAmount").val(data.OtherServices);
+                    $("#DisAmountTotal").val(data.Total);
+
+                }
+            })
+
+        }
+
+    }
+    function ResestFields() {
+
+        $("#AdmissionFee").val(0);
+        $("#TutionFee").val(0);
+        $("#LabFee").val(0);
+        $("#ComputerFee").val(0);
+        $("#OtherServices").val(0);
+        $("#AdmissionFeeDisPer").val(0);
+        $("#TutionFeeDisPer").val(0);
+        $("#LabFeeDisPer").val(0);
+        $("#ComputerFeeDisPer").val(0);
+        $("#OtherServicesDisPer").val(0);
+        $("#AdmissionFeeDisAmount").val(0);
+        $("#TutionFeeDisAmount").val(0);
+        $("#LabFeeDisAmount").val(0);
+        $("#ComputerFeeDisAmount").val(0);
+        $("#OtherServicesDisAmount").val(0);
+        $("#FeesHeadTotal").val(0);
+        $("#DisPerTotal").val(0);
+        $("#DisAmountTotal").val(0);
+
+    }
+
+
+
 </script>
 <style>
     .col-md-2 {
         width: 19.666667%;
+    }
+
+    .error {
+        color: red !important;
     }
 
     .content {
@@ -279,6 +1052,26 @@
     span {
         color: #9d9d9d;
     }
+
+    .horizontal_style {
+        margin: 0;
+        padding: 0;
+        border-bottom: 1px solid #d2d2d2;
+        border-left: 0;
+        border-right: 0;
+        border-top: 0;
+    }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
 </style>
 
 <div class="row">
@@ -286,9 +1079,9 @@
         <div class="card">
             <div class="card-body p-5">
 
-                @using (Html.BeginForm("Create", "AspNetStudents", FormMethod.Post, new { enctype = "multipart/form-data", @class = "forms form-horizontal", role = "form", id = "Registerform" }))
-                {
-                    @Html.AntiForgeryToken()
+                @*@using (Html.BeginForm("Create", "AspNetStudents", FormMethod.Post, new { enctype = "multipart/form-data", @class = "forms form-horizontal", role = "form", id = "Registerform" }))
+                    {*@
+                <form id="StudentForm">
 
                     <div class="row">
                         <div class="col-md-2 pl-3 pr-5">
@@ -307,15 +1100,15 @@
                             <div class="form-group bmd-form-group">
                                 @*<label class="bmd-label-floating">Name <span class="red-mark">*</span></label>*@
                                 <span>Name</span>
-                                <input type="text" name="FName" id="first" class="form-control round-border" required />
+                                <input type="text" name="FName" id="FName" class="form-control round-border" required />
                             </div>
 
-                            <div class="form-group bmd-form-group">
-                                @*<label class="bmd-label-floating">Branch <span class="red-mark">*</span></label>*@
-                                <span>Branch</span>
-                                @Html.DropDownList("BranchId", null, htmlAttributes: new { @class = "form-control round-border", @id = "branchddl" })
-                                @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                            </div>
+                            @*<div class="form-group bmd-form-group">
+
+                                    <span>Branch</span>
+                                    @Html.DropDownList("BranchId", null, htmlAttributes: new { @class = "form-control round-border", @id = "branchddl" })
+                                    @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                </div>*@
 
 
 
@@ -365,15 +1158,14 @@
                             <h2 class="column-heading mb-4">Account Information</h2>
 
                             <div class="form-group bmd-form-group my-3 is-filled">
-                                @*<label class="bmd-label-floating">Roll Number <span class="red-mark">*</span></label>*@
                                 <span>Roll Number</span>
-                                <input type="text" id="UserName" class="form-control round-border" name="RollNo" />
+                                <input type="text" id="RollNo" class="form-control round-border" name="RollNo" />
                                 <span style="color:red" id="RollNoError"></span>
                             </div>
 
                             <div class="form-group bmd-form-group">
                                 <span>Email</span>
-                                <input type="text" name="Email" id="E_mail" class="form-control" required>
+                                <input type="text" name="Email" id="Email" class="form-control" required>
                                 <span id="Email-Error" style="color:red"></span>
                                 <br />
                                 <span id="Email-Error1" style="color:red"></span>
@@ -381,7 +1173,7 @@
 
                             <div class="form-group bmd-form-group">
                                 <span>Password</span>
-                                <input type="password" name="Password" id="Pass" class="form-control" required>
+                                <input type="password" name="Password" id="Password" class="form-control" required>
                                 @Html.ValidationMessageFor(model => model.CellNo, "", new { @class = "text-danger", @id = "Password-Error" })
                             </div>
 
@@ -392,39 +1184,247 @@
                             </div>
                         </div>
                         <hr class="mt-5 mb-4">
+                    </div> <!-- end of row -->
+                    <br>
+
+                    <div class="form-row mt-4">
+                        <div class="form-group col-md-6 bmd-form-group">
+                            <label for="" class="bmd-label-static pl-2">Select Branch*</label>
+
+                            <select class="form-control" id="BranchId" name="BranchId" required></select>
+
+                        </div>
                     </div>
 
+
+                    <div class="form-row mt-4">
+                        <div class="form-group col-md-6 bmd-form-group">
+                            <label for="" class="bmd-label-static pl-2">Select class *</label>
+
+                            <select class="form-control" id="ClassId" name="ClassId" required></select>
+
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="row">
+
+                        <div class="col-md-4 pl-4 pr-5 border-right border-color-sea">
+
+                            <h4>Fee Heads</h4>
+                            <br />
+                            <div class="form-group">
+                                <label class="control-label col-md-5 pull-left" style="padding-left: 0px;">Admission Fee : </label>
+                                <input class="horizontal_style code" min="0" required id="AdmissionFee" type="number" name="AdmissionFee" value="0" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-md-5 pull-left" style="padding-left: 0px;">Tution Fee : </label>
+                                <input class="horizontal_style code" min="0" required id="TutionFee" type="number" name="TutionFee" value="0" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-md-5 pull-left" style="padding-left: 0px;">Lab Fee : </label>
+                                <input class="horizontal_style code" min="0" required id="LabFee" type="number" name="LabFee" value="0" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-md-5 pull-left" style="padding-left: 0px;">Computer Fee : </label>
+                                <input class="horizontal_style code" min="0" required id="ComputerFee" type="number" name="ComputerFee" value="0" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-md-5 pull-left" style="padding-left: 0px;">Other Services : </label>
+                                <input class="horizontal_style code" min="0" required id="OtherServices" type="number" name="OtherServices" value="0" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-md-5 pull-left" style="padding-left: 0px;">Total : </label>
+                                <input style="background:#C0C0C0;" min="0" readonly class="horizontal_style" required id="FeesHeadTotal" type="number" name="FeesHeadTotal" value="0" />
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4 pl-4 pr-5 border-right border-color-sea">
+                            <h4>Discount %</h4>
+                            <br />
+
+                            <div class="form-group">
+                                <input class="horizontal_style" min="0" max="100" required onkeyup="CalculateDiscountedAmount(this)" id="AdmissionFeeDisPer" type="number" name="AdmissionFeeDisPer" value="0" />
+                            </div>
+
+                            <div class="form-group">
+                                <input class="horizontal_style" min="0" max="100" required onkeyup="CalculateDiscountedAmount(this)" id="TutionFeeDisPer" type="number" name="TutionFeeDisPer" value="0" />
+                            </div>
+
+
+                            <div class="form-group">
+                                <input class="horizontal_style" min="0" max="100" required onkeyup="CalculateDiscountedAmount(this)" id="LabFeeDisPer" type="number" name="LabFeeDisPer" value="0" />
+                            </div>
+
+                            <div class="form-group">
+                                <input class="horizontal_style" min="0" max="100" required onkeyup="CalculateDiscountedAmount(this)" id="ComputerFeeDisPer" type="number" name="ComputerFeeDisPer" value="0" />
+                            </div>
+
+                            <div class="form-group">
+                                <input class="horizontal_style" min="0" max="100" required onkeyup="CalculateDiscountedAmount(this)" id="OtherServicesDisPer" type="number" name="OtherServicesDisPer" value="0" />
+                            </div>
+
+                            @*<div class="form-group">
+                                    <input style="background:#C0C0C0" min="0" class="horizontal_style" required id="DisPerTotal" type="number" name="DisPerTotal" value="0" />
+                                </div>*@
+
+                        </div>
+
+
+                        <div class="col-md-4 pl-4 pr-5 border-right border-color-sea">
+                            <h4>Discounted Amount</h4>
+                            <br />
+
+                            <div class="form-group">
+                                <input class="horizontal_style" min="0" required readonly id="AdmissionFeeDisAmount" type="number" name="AdmissionFeeDisAmount" value="0" />
+                            </div>
+
+                            <div class="form-group">
+                                <input class="horizontal_style" min="0" required readonly id="TutionFeeDisAmount" type="number" name="TutionFeeDisAmount" value="0" />
+                            </div>
+
+                            <div class="form-group">
+                                <input class="horizontal_style" min="0" required readonly id="LabFeeDisAmount" type="number" name="LabFeeDisAmount" value="0" />
+                            </div>
+
+
+                            <div class="form-group">
+                                <input class="horizontal_style" min="0" required readonly id="ComputerFeeDisAmount" type="number" name="ComputerFeeDisAmount" value="0" />
+                            </div>
+
+
+                            <div class="form-group">
+                                <input class="horizontal_style" min="0" required readonly id="OtherServicesDisAmount" type="number" name="OtherServicesDisAmount" value="0" />
+                            </div>
+
+                            <div class="form-group">
+                                <input style="background:#C0C0C0" min="0" class="horizontal_style" required readonly id="DisAmountTotal" type="number" name="DisAmountTotal" value="0" />
+                            </div>
+
+                        </div>
+                    </div>
+                    <br>
+
+                    <hr />
+                    <br>
+
+                    <div class="row">
+
+                        <div class="col-md-4 pl-4 pr-5 border-right border-color-sea">
+
+                            <div class="form-group">
+                                <label class="control-label col-md-5 pull-left" style="padding-left: 0px;">January </label>
+                                <input min="0" required class="horizontal_style Month" id="Junuary" type="number" name="Junuary" value="0" />
+                            </div>
+
+                            <div class="form-group">
+                                <label class="control-label col-md-5 pull-left" style="padding-left: 0px;">February </label>
+                                <input min="0" required class="horizontal_style Month" id="February" type="number" name="February" value="0" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5 pull-left" style="padding-left: 0px;">March </label>
+                                <input min="0" required class="horizontal_style Month" id="March" type="number" name="March" value="0" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5 pull-left" style="padding-left: 0px;">April </label>
+                                <input min="0" required class="horizontal_style Month" id="April" type="number" name="April" value="0" />
+                            </div>
+
+                        </div>
+
+                        <div class="col-md-4 pl-4 pr-5 border-right border-color-sea">
+
+                            <div class="form-group">
+                                <label class="control-label col-md-5 pull-left" style="padding-left: 0px;">May </label>
+                                <input min="0" required class="horizontal_style Month" id="May" type="number" name="May" value="0" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5 pull-left" style="padding-left: 0px;">June </label>
+                                <input min="0" required class="horizontal_style Month" id="June" type="number" name="June" value="0" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5 pull-left" style="padding-left: 0px;">July </label>
+                                <input min="0" required class="horizontal_style Month" id="July" type="number" name="July" value="0" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5 pull-left" style="padding-left: 0px;">August </label>
+                                <input min="0" required class="horizontal_style Month" id="August" type="number" name="August" value="0" />
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-4 pl-4 pr-5 border-right border-color-sea">
+                            <div class="form-group">
+                                <label class="control-label col-md-5 pull-left" style="padding-left: 0px;">September </label>
+                                <input min="0" required class="horizontal_style Month" id="September" type="number" name="September" value="0" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5 pull-left" style="padding-left: 0px;">October </label>
+                                <input min="0" required class="horizontal_style Month" id="October" type="number" name="October" value="0" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5 pull-left" style="padding-left: 0px;">November </label>
+                                <input min="0" required class="horizontal_style Month" id="November" type="number" name="November" value="0" />
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-5 pull-left" style="padding-left: 0px;">December </label>
+                                <input min="0" required class="horizontal_style Month" id="December" type="number" name="December" value="0" />
+                            </div>
+
+                        </div>
+                        <br />
+                        <div class="col-md-4">
+
+                            <span id="MonthsError" style="color:red;padding-left:10px;"> </span>
+                        </div>
+                    </div><!--end of row-->
+
+
+                    <br>
+
                     <div class="pull-right">
-                        <button class="btn btn-primary" id="submit" type="submit" form="Registerform">Save</button>
-                        <button id="cancel" type="button" class="btn btn-primary pull-right rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                        <button class="btn btn-primary" id="submit" type="submit">Save</button>
+                        <button onclick="window.location.href = '/AspnetStudents/StudentIndex'" id="cancel" type="button" class="btn btn-primary pull-right rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
                             <i class="material-icons mr-2">cached</i>  Cancel &nbsp; &nbsp;
                         </button>
                         <div class="clearfix"></div>
                     </div>
-                }
+
+
+                </form>
+
+                @*}*@
             </div>
         </div>
     </div>
 </div>
 
 
-<div>
+@*<div>
     <div class="box-header with-border"><h3 class="orange">Upload Excel File &nbsp; <i class="fa fa-file-excel-o" aria-hidden="true"></i></h3></div>
     <div class="form-three widget-shadow">
         @using (Html.BeginForm("StudentsfromFile", "BranchAdmin", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             @Html.AntiForgeryToken()
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            
-                <input id="teachers" required="required" name="students" type="file" />
+
+            <input id="teachers" required="required" name="students" type="file" />
             <div class="form-group">
                 <div class="control-label col-md-3"><b></b></div>
                 <div class="col-md-4">
-                   
+
                 </div>
             </div>
             <br />
             <br />
+
             <div class="box-footer">
                 <div class="form-group">
                     <div class="col-md-10" style="padding-left:0px">
@@ -432,6 +1432,7 @@
                     </div>
                 </div>
             </div>
+
         }
     </div>
-</div>
+</div>*@

@@ -2,19 +2,26 @@
 @{
     ViewBag.Title = "JournalEntry";
 }
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 <style>
-  
+
     .select2-container--default .select2-selection--single {
-    background-color: #fff;
-    border-radius: 4px;
-    height: 33px;
-}
+        background-color: #fff;
+        border-radius: 4px;
+        height: 33px;
+    }
+
     .color:hover {
         background-color: #0e72af !important;
     }
 
     .color2:hover {
         background-color: #dc0000 !important;
+    }
+
+    select.form-control:not([size]):not([multiple]) {
+        height: 36px !important;
     }
 </style>
 <script>
@@ -23,9 +30,23 @@
     row[0] = 0;
     row[1] = 1;
     $(document).ready(function () {
+
+
+//    $('.js-example-basic-single').select2();
+        AllStudents();
+
+        $("#PageHeader").html("New Journal Entry");
+        $("#BreadCrumbs").append(' <li> <a  href="/FinanceSummary/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li> <a href="/Vouchers/Voucher"> Journal Entry </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Create</a></li>');
+
+
+
       //  $("#branch0").perpend("<option value=''>All</option>").val('');
         $("#branch0").prepend("<option value=''>---Select One---</option>").val('');
         $("#branch1").prepend("<option value=''>---Select One---</option>").val('');
+
+
 
         var now = new Date();
         addLedger(0);
@@ -54,8 +75,9 @@
           Transaction: '',
           Credit: '',
           Debit: '',
-          BranchId:'',
-      };
+          BranchId: '',
+          StudentId: '',
+    };
 
     var Voucher = {
         VoucherName: '',
@@ -67,7 +89,36 @@
 
     Vouchers = [];
 
+    function AccountList(e) {
+
+        debugger
+        // alert(e.id);
+        var value = $("#" + e.id + " option:selected").text();
+        var rowNumber = e.id;
+        var result = rowNumber.substring(4);
+
+            if (value == "Student Fee" || value == "Discount" || value == "Account Receivable") {
+
+                $("#studentsdiv"+result).removeClass('hidden');
+                $("#descriptionDiv"+result).removeClass();
+                $("#descriptionDiv"+result).addClass('col-md-2');
+            }
+
+            else {
+               // $("#students" + result).val("");
+                $("#students"+ result).val(null).trigger('change');
+                $("#studentsdiv"+result).addClass('hidden');
+                $("#descriptionDiv"+result).removeClass();
+                $("#descriptionDiv"+result).addClass("col-md-4");
+
+        }
+
+
+    }
+
+
     function SaveVoucher() {
+        debugger
         var t = true;
         var name = $("#voucher").val();
 
@@ -80,11 +131,11 @@
         }
         else if (total != 0)
         {
-            
+
                 $("#zero_Error").html("Total must be Zero");
                 $("#submit").prop("disabled", true);
         }
-        
+
         else
         {
             Voucher = Object.create(Voucher);
@@ -101,6 +152,7 @@
                 VoucherDetail = Object.create(VoucherDetail);
                 var code = "code" + row[i];
                 VoucherDetail.Code = document.getElementById(code).value;
+
                 var transaction = "description" + row[i];
                 VoucherDetail.Transaction = document.getElementById(transaction).value;
                 var credit = "credit" + row[i];
@@ -108,7 +160,39 @@
                 var debit = "debit" + row[i];
                 VoucherDetail.Debit = document.getElementById(debit).value;
                 var branch = "branch" + row[i];
-                VoucherDetail.BranchId = document.getElementById(branch).value;
+               var BranchValue= document.getElementById(branch).value;
+
+                if (BranchValue == "") {
+
+                    $("#zero_Error").html("Please Select Branch");
+                    t = false;
+                    break;
+                }
+                else {
+
+                    VoucherDetail.BranchId = BranchValue;
+                }
+
+                var student = "students" + row[i];
+                var StudentIdVal = document.getElementById(student).value;
+
+                var AccountValue =  $("#" + code+ " option:selected").text();
+
+                if ((AccountValue == "Student Fee" || AccountValue == "Discount" || AccountValue == "Account Receivable" ) && StudentIdVal == "") {
+
+                    $("#zero_Error").html("Please Select Student");
+                     t = false;
+                    break;
+                }
+
+                if (StudentIdVal == "") {
+                    VoucherDetail.StudentId = null;
+                }
+                else {
+                    VoucherDetail.StudentId = StudentIdVal
+                }
+
+
                 if (VoucherDetail.Credit != "" && VoucherDetail.Debit != "") {
                     $("#zero_Error").html("Invalid Input statement");
 
@@ -129,17 +213,20 @@
                     t = false;
                     break;
                 }
+
+
+
                 if(isNaN( VoucherDetail.Credit) || isNaN(VoucherDetail.Debit))
                 {
                     $("#zero_Error").html("Enter only numbers");
-                    
+
                     t = false;
                     break;
                 }
-               
+
                 Voucher.VoucherDetail.push(VoucherDetail);
             }
-           
+
             if (t == true)
             {
                 Vouchers = JSON.stringify({ 'Vouchers': Voucher });
@@ -162,14 +249,14 @@
                     }
                 });
             }
-            
+
             }
-            
+
     }
     function numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
-    function CheckVoucherNo() {       
+    function CheckVoucherNo() {
         $.ajax({
             type: "POST",
             url: "/FinanceSummary/FindVoucherNo",
@@ -194,39 +281,45 @@
     }
     function journalentries()
     {
-        //var newDiv = document.createElement("div")      
+        //var newDiv = document.createElement("div")
 
-        $("#journaldiv").append('<div class="col-md-10" style="margin-top:3px" id="'+count+'">' +
+                $("#journaldiv").append('<div class="row" style="margin:0px" id="'+count+'">' +
                     '<div class="col-md-2">' +
                        '<select id="code' + count + '" class="form-control drop" onchange="Codedescription(this)"></select>' +
-                    '</div>'+
-                    '<div class="col-md-4" style="padding-left:0px">'+
-                        '<input type="text" name="Name" id="description'+count+'" class="form-control" />'+
+                    '</div>' +
+
+                      '<div class="col-md-2" id="studentsdiv' + count + '" >' +
+                     '<select id="students' + count + '" class="form-control drop" ></select>' +
+                    '</div>' +
+
+                    '<div id="descriptionDiv' + count + '" class="col-md-2" style="padding-left:0px">'+
+                        '<input placeholder="Description" type="text" name="Name" id="description'+count+'" class="form-control" />'+
                     '</div>' +
                     '<div class="col-md-2" style="padding-left:0px">' +
-                       '<select id="branch' + count + '" class="form-control drop" disabled></select>' +
+                       '<select id="branch' + count + '" class="form-control drop" ></select>' +
                     '</div>' +
                     '<div class="col-md-1" style="padding:0px">'+
-                        '<input type="text" name="dr" onkeyup="debitvalue()" onblur="NAN(this)" id="debit'+count+'" class="form-control dr" />'+
+                        '<input placeholder="Debit" type="text" name="dr" onkeyup="debitvalue()" onblur="NAN(this)" id="debit'+count+'" class="form-control dr" />'+
                     '</div>'+
-                    '<div class="col-md-1" style="padding:0px">'+
-                        '<input type="text" name="cr" onkeyup="creditvalue()" onblur="NAN(this)" id="credit' + count + '" class="form-control cr" />' +
+                    '<div class="col-md-1" style="padding:0px;margin-left:10px">'+
+                        '<input placeholder="Credit" type="text" name="cr" onkeyup="creditvalue()" onblur="NAN(this)" id="credit' + count + '" class="form-control cr" />' +
                     '</div>'+
                     '<div class="col-md-1">' +
-                        '<button class="btn btn-danger" onclick="Remove('+count+')"><span class="glyphicon glyphicon-remove"></span></button>'+
+                        '<button class="btn btn-sm btn-danger" onclick="Remove('+count+')"><i class="fa fa-window-close" aria-hidden="true" style="font-size:12px"></i></button>'+
                     '</div>'+
                 '</div>')
 
         row[count] = count;
         addLedger(count);
         AddBranch(count);
+        AddStudents(count);
         var id = "#branch" + count;
         var node = $(id);
         node.prepend("<option value=''>---Select One---</option>").val('');
 
        // node.prop("disabled", true);
         count = count + 1;
-   
+
 
         $(".drop").select2();
     }
@@ -266,7 +359,7 @@
         $("#TotalDebit").val(debit);
         $("#zero").html((debit-credit));
         document.getElementById(e).remove();
-      
+
         row.splice(x, 1);
 
     }
@@ -283,6 +376,10 @@
 
     function Codedescription(e)
     {
+
+
+        AccountList(e);
+
         var id = e.value;
         var ledgerid = e.id;
         var number = ledgerid[4];
@@ -299,10 +396,10 @@
                 if(flag==true)
                 {
 
-                    node.prop("disabled", false);
+                   // node.prop("disabled", false);
                 }
                 else {
-                    node.prop("disabled", true);
+                   //    node.prop("disabled", true);
 
                 }
             }
@@ -359,148 +456,250 @@
             }
         });
     }
-    function AddBranch(rowNumber) {
-        var id = "#branch" + rowNumber;
-        var node = $(id);
+     function AddStudents(rowNumber) {
+
+         var id = "#students" + rowNumber;
+                var node = $(id);
         $.ajax({
             type: "POST",
-            url: "/Vouchers/SelectListBranch",
+            url: "/Vouchers/AllStudentList",
             success: function (data) {
                 console.log(data);
+
+                    node.append("<option value='' >Select One</option>");
+
+
                 $.each(data, function (i, item) {
-                    console.log(data.Name);
-                    node.append("<option value=" + item.Id + " >" + item.Name + "</option>")
+                    node.append("<option value=" + item.Id + " >" + item.Name + "</option>");
 
                 });
 
             }
-        });
-    }
-    function creditvalue() {
-        var sum = 0;
-        var subtotal=$("#zero").text();
-        var subdebit = $("#TotalDebit").val();
-        if (subdebit == "")
-        {
-            subdebit = 0;
+        })
+
         }
-        $(".cr").each(function () {
-            if (!isNaN(this.value)) {
-                sum += +$(this).val();
-                $("#TotalCredit").val(sum);
-                var total = parseInt(subdebit) - sum;
-                $("#zero").html(total);
+    function AllStudents() {
+
+        //  var id = "#student" + rowNumber;
+        // var node = $(id);
+        $.ajax({
+            type: "POST",
+            url: "/Vouchers/AllStudentList",
+            success: function (data) {
+                console.log(data);
+
+                $("#students0").append("<option value=''>Select One</option>")
+                $("#students1").append("<option value=''>Select One</option>")
+
+                $.each(data, function (i, item) {
+
+
+                    $("#students0").append("<option value=" + item.Id + " >" + item.Name + "</option>")
+                    $("#students1").append("<option value=" + item.Id + " >" + item.Name + "</option>")
+
+                });
+
             }
         })
 
-    }
+        }
+    function AddBranch(rowNumber) {
+                var id = "#branch" + rowNumber;
+                var node = $(id);
+                $.ajax({
+                    type: "POST",
+                    url: "/Vouchers/SelectListBranch",
+                    success: function (data) {
+                        console.log(data);
+                        $.each(data, function (i, item) {
+                            console.log(data.Name);
+                            node.append("<option value=" + item.Id + " >" + item.Name + "</option>")
+
+                        });
+
+                    }
+                });
+            }
+    function creditvalue() {
+                var sum = 0;
+                var subtotal = $("#zero").text();
+                var subdebit = $("#TotalDebit").val();
+                if (subdebit == "") {
+                    subdebit = 0;
+                }
+                $(".cr").each(function () {
+                    if (!isNaN(this.value)) {
+                        sum += +$(this).val();
+                        $("#TotalCredit").val(sum);
+                        var total = parseInt(subdebit) - sum;
+                        $("#zero").html(total);
+                    }
+                })
+
+            }
+
 </script>
-<div class="col-md-10" style="background-color:#f1f2e5;margin:50px;border-radius:10px;padding:10px;box-shadow: rgba(0, 0, 0, 0.16) 5px 10px 5px, rgba(0, 0, 0, 0.23) 0px 3px 5px">
 
-    <h4>New Journal Entry</h4>
-    <hr />
-    <div class="col-md-10">
-        <div class="col-md-3">
-            <span style="font-weight:600">Date</span><br />
-            <input type="date" class="form-control round-border" id="ddate" />
-            <br />
-        </div>    
-    </div>
 
-    <div class="col-md-10">
-        <div class="col-md-2">
-            <span style="font-weight:600">Voucher No</span>
-            <div class="input-group">
-                <span style="font-weight:600" class="input-group-addon">#</span>
-                <input id="VoucherNo" type="text" class="form-control" readonly />
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body p-5">
+                @*<div class="col-md-10" style="background-color:#f7f7f7;margin:50px;border-radius:10px;padding:10px;box-shadow: rgba(0, 0, 0, 0.16) 5px 10px 5px, rgba(0, 0, 0, 0.23) 0px 3px 5px">*@
+                <div class="col-md-12">
+
+                    @*<h4>New Journal Entry</h4>
+                        <hr />*@
+
+
+                    <div class="col-md-4">
+
+                        <label class="control-label">Date</label><br />
+                        <input type="date" class="form-control round-border" id="ddate" />
+                        <br />
+                    </div>
+                    <br />
+
+
+                    <div class="row" style="margin:0">
+
+                        <div class="col-md-2 ">
+
+                            <label class="control-label">Voucher No</label>
+                            <div class="input-group">
+                                @*<span style="font-weight:600" class="input-group-addon">#</span>*@
+                                <input id="VoucherNo" type="text" class="form-control" readonly />
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="control-label">Voucher</label><br />
+                            <input type="text" class="form-control" id="voucher" required />
+                            <span id="Error_Vocuher" style="color:red"></span>
+
+                            <br />
+                        </div>
+                    </div>
+
+
+                    <br />
+
+                    <div class="col-md-5">
+                        <label class="control-label" style="font-weight:600">Narration</label>
+                        <input type="text" name="Name" id="Naration" class="form-control" />
+                        <br />
+                    </div>
+                    <br />
+                    <div class="row" style="margin:0">
+
+                        <div class="col-md-2">
+                            <label class="control-label"></label>
+                            <select id='code0' class='form-control drop' onchange='Codedescription(this)'></select>
+                        </div>
+
+                        <div id="studentsdiv0" class="col-md-2">
+                            <label class="control-label "></label>
+                            <select id='students0' class='form-control drop'></select>
+                        </div>
+
+                        <div class="col-md-2 descriptionDiv0" id="descriptionDiv0" style="padding-left:0px">
+                            <label class="control-label"></label>
+                            <input placeholder="Description" type="text" name="Name" id="description0" class="form-control" />
+                        </div>
+
+                        <div class="col-md-2" style="padding-left:0px">
+                            <label class="control-label"></label>
+                            <select id='branch0' class='form-control drop'></select>
+                        </div>
+                        <div class="col-md-1" style="padding:0px">
+                            <label class="control-label"></label>
+                            <input placeholder="Debit" type="text" name="dr" onkeyup="debitvalue()" onblur="NAN(this)" id="debit0" class="form-control dr" />
+                        </div>
+                        <div class="col-md-1" style="padding:0px;margin-left:10px;">
+                            <label class="control-label"></label>
+                            <input placeholder="Credit" type="text" name="cr" onkeyup="creditvalue()" onblur="NAN(this)" id="credit0" class="form-control cr" />
+                        </div>
+                        <div class="col-md-1">
+                            <br />
+                            <button style="background:#32CD32" class="btn btn-sm btn-default" onclick="journalentries()"><i class="fa fa-plus" style="font-size:12px"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin:0">
+
+                        <div class="col-md-2">
+                            <select id='code1' class='form-control drop' onchange='Codedescription(this)'></select>
+                        </div>
+
+                        <div class="col-md-2" id="studentsdiv1">
+
+                            <select id='students1' class='form-control drop'></select>
+                        </div>
+
+                        <div id="descriptionDiv1" class="col-md-2 descriptionDiv1" style="padding-left:0px">
+
+
+                            <input placeholder="Description" type="text" name="Name" id="description1" class="form-control" />
+                        </div>
+                        <div class="col-md-2" style="padding-left:0px">
+                            <select id='branch1' class='form-control drop'></select>
+                        </div>
+                        <div class="col-md-1" style="padding:0px">
+                            <input placeholder="Debit" pattern="Debit" type="text" name="dr" onkeyup="debitvalue()" onblur="NAN(this)" id="debit1" class="form-control dr" />
+                        </div>
+                        <div class="col-md-1" style="padding:0px;margin-left:10px">
+                            <input placeholder="Credit" type="text" name="cr" onkeyup="creditvalue()" onblur="NAN(this)" id="credit1" class="form-control cr" />
+                        </div>
+                        <div class="col-md-1">
+                            <button style="background:#32CD32" class="btn btn-sm btn-default" onclick="journalentries()"><i class="fa fa-plus" style="font-size:12px"></i></button>
+                        </div>
+                    </div>
+
+                    <div id="journaldiv">
+
+                    </div>
+
+                    <br />
+                    <div class="row">
+                        <div class="col-md-8">
+
+                        </div>
+                        <div class="col-md-1" style="padding:0px">
+                            <input type="text" value="0" name="Tdebit" id="TotalDebit" style="background-color:white;text-align:right !important" class="form-control" readonly />
+                        </div>
+                        <div class="col-md-1" style="padding:0px;margin-left:10px;">
+                            <input type="text" name="tcredit" value="0" id="TotalCredit" style="background-color:white;text-align:right !important" class="form-control" readonly />
+                        </div>
+                        <div class="col-md-1" style="margin-top:5px">
+                            <label class="control-label" style="color:red" id="zero"><b>0</b></label><br />
+                            <label class="control-label" style="color:red" id="zero_Error"></label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <hr />
+                        @*<button class="col-md-2 form-control color2" onclick="window.location.href = '/Vouchers/Voucher'" style="border-radius:35px;border:hidden;margin-right:10px;background-color:red;color:white;font-size:11px;width:98px;height:38px;font-family:Montserrat" id="return"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Return</button>
+
+                            <input class="col-md-2 form-control color" id="submit" onclick="SaveVoucher()" type="submit" value="Save" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />*@
+
+
+                        <button type="button" onclick="window.location.href = '/Vouchers/Voucher'" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                            <i class="material-icons mr-2">cached</i>  Return
+                        </button>
+
+                        <button type="submit" onclick="SaveVoucher()" id="submit" class="btn btn-primary rounded rounded-lg"> Save </button>
+
+
+                    </div>
+
+
+
+
+                </div>
+                @*</div>*@
             </div>
         </div>
-        <div class="col-md-3">
-            <span style="font-weight:600">Voucher</span><br />
-            <input type="text" class="form-control round-border" id="voucher" required/>
-            <span id="Error_Vocuher" style="color:red"></span>
-
-            <br />
-
-        </div>
-    </div>
-    <div class="col-md-10">
-        <div class="col-md-4">
-            <span style="font-weight:600">Narration</span>
-            <input type="text" name="Name" id="Naration" class="form-control" />
-            <br />
-        </div>
-    </div>
-
-
-    <div class="col-md-10" id="top">
-        <div class="col-md-2">
-            <span style="font-weight:600">Account</span>
-            <select id='code0' class='form-control drop' onchange='Codedescription(this)'></select>
-        </div>
-        <div class="col-md-4" style="padding-left:0px">
-            <span style="font-weight:600">Description</span>
-            <input type="text" name="Name" id="description0" class="form-control" />
-        </div>
-        <div class="col-md-2" style="padding-left:0px">
-            <span style="font-weight:600">Branch</span>
-             <select id='branch0' class='form-control drop' disabled></select>
-        </div>
-        <div class="col-md-1" style="padding:0px">
-            <span style="font-weight:600;text-align:right !important">Debit</span>
-            <input type="text" name="dr" onkeyup="debitvalue()" onblur="NAN(this)" id="debit0" class="form-control dr" />
-        </div>
-        <div class="col-md-1" style="padding:0px">
-            <span style="font-weight:600">Credit</span>
-            <input type="text" name="cr" onkeyup="creditvalue()" onblur="NAN(this)" id="credit0" class="form-control cr" />
-        </div>
-        <div class="col-md-1">
-            <br />
-            <button class="btn btn-default" onclick="journalentries()"><span class="glyphicon glyphicon-plus" style="color:gray"></span></button>
-        </div>
-    </div>
-    <div class="col-md-10" style="margin-top:3px" id="second">
-        <div class="col-md-2">
-            <select id='code1' class='form-control drop' onchange='Codedescription(this)'></select>
-        </div>
-        <div class="col-md-4" style="padding-left:0px">
-            <input type="text" name="Name" id="description1" class="form-control" />
-        </div>
-        <div class="col-md-2" style="padding-left:0px">
-            <select id='branch1' class='form-control drop' disabled></select>
-        </div>
-        <div class="col-md-1" style="padding:0px">
-            <input type="text" name="dr" onkeyup="debitvalue()" onblur="NAN(this)" id="debit1" class="form-control dr" />
-        </div>
-        <div class="col-md-1" style="padding:0px">
-            <input type="text" name="cr" onkeyup="creditvalue()" onblur="NAN(this)" id="credit1" class="form-control cr" />
-        </div>
-        <div class="col-md-1">
-            <button class="btn btn-default" onclick="journalentries()"><span class="glyphicon glyphicon-plus" style="color:gray"></span></button>
-        </div>
-    </div>
-    <div id="journaldiv">
-
-    </div>
-    <div class="col-md-10" style="margin-top:3px">
-        <div class="col-md-8">
-
-        </div>
-        <div class="col-md-1" style="padding:0px">
-            <input type="text" value="0" name="Tdebit" id="TotalDebit" style="background-color:white;text-align:right !important" class="form-control" readonly />
-        </div>
-        <div class="col-md-1" style="padding:0px">
-            <input type="text" name="tcredit" value="0"  id="TotalCredit" style="background-color:white;text-align:right !important" class="form-control" readonly />
-        </div>
-        <div class="col-md-2" style="margin-top:5px">
-            <span style="color:red" id="zero"><b>0</b></span><br />
-            <span style="color:red" id="zero_Error"></span>
-        </div>
-    </div>
-    <div class="col-md-12">
-        <hr />
-        <button class="col-md-2 form-control color2" onclick="window.location.href = '/Vouchers/Voucher'" style="border-radius:35px;border:hidden;margin-right:10px;background-color:red;color:white;font-size:11px;width:98px;height:38px;font-family:Montserrat" id="return"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Return</button>
-
-        <input class="col-md-2 form-control color" id="submit" onclick="SaveVoucher()" type="submit" value="Save" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>

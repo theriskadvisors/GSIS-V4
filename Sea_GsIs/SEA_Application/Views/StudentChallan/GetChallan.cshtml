@@ -1,0 +1,801 @@
+﻿
+@{
+    ViewBag.Title = "GetChallan";
+    Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+
+}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+
+<style>
+
+    .error {
+        color: red !important;
+    }
+      span.select2 
+    {
+        width:100% !important;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+
+            <div class="card-body p-5">
+                <div class="tabsCon">
+
+                    <ul class="nav nav-tabs" id="myTabAttr" role="tablist" \>
+                        <li class="nav-item">
+                            <a class="nav-link active" id="Fee-tab-attr" data-toggle="tab" href="#Fee-attr" role="tab" aria-controls="Fee-attr"
+                               aria-selected="true" style="color:#141437 !important">Class Challan</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="defaulter-tab-attr" data-toggle="tab" href="#defaulter-attr" role="tab" aria-controls="defaulter-attr"
+                               aria-selected="false" style="color: #141437 !important">Student Challan</a>
+                        </li>
+                    </ul>
+
+                    <div class="col-md-6 pl-5 pr-5 ">
+
+                        <div class="tab-content">
+                            <div class="tab-pane active show" id="Fee-attr" role="tabpanel" aria-labelledby="Fee-tab-attr">
+                                <form id="tab1Form">
+
+                                    <div class="form-row mt-4">
+                                        <div class="form-group col-md-12 bmd-form-group">
+                                            <label for="" class="control-label"> Branch*</label>
+
+                                            <select class="form-control" id="BranchId" name="BranchId" required></select>
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-row mt-4">
+                                        <div class="form-group col-md-12 bmd-form-group">
+                                            <label for="" class="control-label"> class *</label>
+
+                                            <select class="form-control" id="ClassId" name="ClassId" required></select>
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-row mt-4">
+                                        <div class="form-group col-md-12 bmd-form-group">
+                                            <label for="" class="control-label"> Section *</label>
+
+                                            <select class="form-control" id="SectionId" name="SectionId" required></select>
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-row mt-4">
+                                        <div class="form-group col-md-12 bmd-form-group">
+                                            <label for="" class="control-label">Month*</label>
+
+                                            <select class="form-control " id="MonthId" name="MonthId" required>
+
+                                                <option value=""> Select one</option>
+                                                <option value="1">January</option>
+                                                <option value="2">February</option>
+                                                <option value="3">March</option>
+                                                <option value="4">April</option>
+                                                <option value="5">May</option>
+                                                <option value="6">June</option>
+                                                <option value="7">July</option>
+                                                <option value="8">August</option>
+                                                <option value="9">September</option>
+                                                <option value="10">October</option>
+                                                <option value="11">November</option>
+                                                <option value="12">December</option>
+
+
+                                            </select>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row mt-4">
+                                        <div class="form-group col-md-12 bmd-form-group">
+                                            <label for="" class="control-label pl-2">Due Date*</label>
+
+                                            <input required class="form-control" type="date" name="DueDate" id="DueDate" />
+                                        </div>
+                                    </div>
+
+
+                                    <br />
+                                    <br />
+                                    <div class="col-md-12 pl-12 pr-5 ">
+                                        <button type="submit" id="SaveButton" class="btn btn-primary rounded rounded-lg"> Save </button>
+
+
+                                        <button onclick="window.location.href = '/StudentFeeMonths/Index'" type="button" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                                            <i class="material-icons mr-2">cached</i>  Cancel
+                                        </button>
+                                        <br />
+                                        <br />
+                                        <span id="error" style="color:red"></span>
+
+                                    </div>
+
+
+                                </form>
+                            </div>
+
+                            <div class="tab-pane" id="defaulter-attr" role="tabpanel" aria-labelledby="defaulter-tab-attr">
+
+                                <form id="tab2Form">
+
+                                    @*<div class="form-row mt-4">
+                                            <div class="form-group col-md-12 bmd-form-group">
+                                                <label for="" class="control-label"> Branch</label>
+
+                                                <select class="form-control" id="BranchId1" name="BranchId1" required></select>
+
+                                            </div>
+                                        </div>*@
+
+
+
+
+                                    @*<div class="form-row mt-4">
+                                            <div class="form-group col-md-12 bmd-form-group">
+                                                <label for="" class="control-label"> class </label>
+
+                                                <select class="form-control" id="ClassId1" name="ClassId1" required></select>
+
+                                            </div>
+                                        </div>*@
+
+
+                                    @*<div class="form-row mt-4">
+                                            <div class="form-group col-md-12 bmd-form-group">
+                                                <label for="" class="control-label"> Section *</label>
+
+                                                <select class="form-control" id="SectionId1" name="SectionId1" required></select>
+                                            </div>
+                                        </div>*@
+
+
+                                    <div class="form-row mt-4">
+                                        <div class="form-group col-md-12 bmd-form-group">
+                                            <label for="" class="control-label"> Student *</label>
+
+                                            <select class="form-control select2dropdown" id="StudentId" name="StudentId" required></select>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row mt-4">
+                                        <div class="form-group col-md-12 bmd-form-group">
+                                            <label for="" class="bmd-label-static pl-2">Month*</label>
+
+                                            <select class="form-control " id="Month1" name="Month1" required>
+                                                <option value=""> Select one</option>
+                                                <option value="1">January</option>
+                                                <option value="2">February</option>
+                                                <option value="3">March</option>
+                                                <option value="4">April</option>
+                                                <option value="5">May</option>
+                                                <option value="6">June</option>
+                                                <option value="7">July</option>
+                                                <option value="8">August</option>
+                                                <option value="9">September</option>
+                                                <option value="10">October</option>
+                                                <option value="11">November</option>
+                                                <option value="12">December</option>
+                                            </select>
+
+                                            <span id="error1" style="color:red"></span>
+
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-row mt-4">
+                                        <div class="form-group col-md-12 bmd-form-group">
+                                            <label for="" class="control-label pl-2">Due Date*</label>
+
+                                            <input required class="form-control" type="date" name="DueDate1" id="DueDate1" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row mt-4">
+                                        <div class="form-group col-md-12 bmd-form-group">
+                                            <label for="" class="control-label pl-2">Further Discount Tution Fee*</label>
+
+                                            <input min="0" required value="0" class="form-control" type="number" name="FurtherDiscount" id="FurtherDiscount" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row mt-4">
+                                        <div class="form-group col-md-12 bmd-form-group">
+                                            <label for="" class="control-label pl-2">Discount Comments*</label>
+
+                                            <input class="form-control" type="text" name="DiscountComments" id="DiscountComments" />
+                                        </div>
+                                    </div>
+                                    <div class="form-row mt-4">
+                                        <div class="form-group col-md-12 bmd-form-group">
+                                            <label for="" class="control-label pl-2">Tution Fee*</label>
+
+                                            <input min="0" style="background:#C0C0C0;" readonly value="0" class="form-control" type="number" name="TutionFee" id="TutionFee" />
+
+                                        </div>
+                                    </div>
+                                    <div class="form-row mt-4">
+                                        <div class="form-group col-md-12 ">
+                                            <span>Total Fee </span>
+                                            <input type="hidden" value="0" name="" id="HiddenTotalFee" />
+                                            <input type="hidden" id="Multiplier" name="name" value="0" />
+                                            <input type="hidden" name="HiddenTutionFee" id="HiddenTutionFee" value="" />
+                                            <input min="0" style="background:#C0C0C0;" readonly value="0" class="form-control" type="number" name="TotalFee" id="TotalFee" />
+                                            <br />
+                                            <span style="color:red" id="TotalFeeError"></span>
+                                        </div>
+                                    </div>
+
+                                    <br />
+
+                                    <div class="col-md-12 pl-12 pr-5 ">
+                                        <button type="submit" id="SaveButton1" class="btn btn-primary rounded rounded-lg"> Save </button>
+                                        <button onclick="window.location.href = '/StudentFeeMonths/Index'" type="button" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                                            <i class="material-icons mr-2">cached</i>  Cancel
+                                        </button>
+                                    </div>
+                                </form>
+
+
+                            </div><!--tab Content-->
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#PageHeader").html("Challan");
+        $("#BreadCrumbs").append(' <li> <a href="/FinanceSummary/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Challan</a></li>');
+
+
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "/NonRecurringFee/AllBranches",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#BranchId");
+                $el.empty();
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").text('Select Branch'));
+                    for (i = 0; i < sch.length; i++) {
+
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i].Id).text(sch[i].Name));
+                    }
+                }
+                else {
+                    $el.append($("<option></option>")
+                        .attr("value", '').text('Select Branch'));
+                }
+            }
+        });
+
+        $("#FurtherDiscount").keyup(function () {
+            debugger
+            //  $("#SaveButton1").attr('disabled', false);
+
+            var Multiplier = $("#Multiplier").val();
+
+            $("#TotalFeeError").html("");
+            var FurtherDiscount = $("#FurtherDiscount").val();
+            var TotalAmount = $("#HiddenTotalFee").val();
+            var TutionFee = $("#HiddenTutionFee").val();
+
+            if (FurtherDiscount == "") {
+                FurtherDiscount = 0;
+            }
+            if (TotalAmount == "") {
+                TotalAmount = 0;
+            }
+            if (TutionFee == "")
+                TutionFee = 0;
+
+
+            var Tution = TutionFee - FurtherDiscount;
+            var Total = TotalAmount - (FurtherDiscount);
+
+            $("#TotalFee").val(Total);
+            $("#TutionFee").val(Tution);
+
+            if (Tution < 0) {
+
+                $("#SaveButton1").attr('disabled', true);
+
+
+                $("#TotalFeeError").html("Discount cannot be greater than tution fee");
+            }
+            else {
+
+                $("#SaveButton1").attr('disabled', false);
+
+            }
+
+
+        })
+
+        $('#BranchId').change(function () {
+
+            var BranchId = $(this).val();
+
+            if (BranchId != "") {
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/NonRecurringFee/ClassesByBranch?BranchId=" + BranchId,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#ClassId");
+                        $el.empty();
+                        var $e3 = $("#SectionId");
+                        $e3.empty();
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Class'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Class'));
+                        }
+                    }
+                });
+            }
+            else {
+                var $el = $("#ClassId");
+                $el.empty();
+
+                var $e3 = $("#SectionId");
+                $e3.empty();
+
+            }
+
+        });
+
+        $('#ClassId').change(function () {
+
+            var ClassId = $(this).val();
+            //Class = UserName;
+            var SectionId = $("#SectionId").val();
+            if (ClassId != "") {
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/NonRecurringFee/SectionByClasses?ClassId=" + ClassId + "&&SectionId=" + SectionId,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#SectionId");
+                        $el.empty();
+
+
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Section'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Section'));
+                        }
+                    }
+                });
+            }
+
+            else {
+
+                var $el = $("#SectionId");
+                $el.empty();
+
+
+
+            }
+
+        });
+
+        //$.ajax({
+        //    type: "POST",
+        //    cache: false,
+        //    url: "/NonRecurringFee/AllBranches",
+        //    processData: false,
+        //    contentType: false,
+        //    success: function (data) {
+        //        var sch = JSON.parse(data);
+        //        console.log(sch);
+        //        var $el = $("#BranchId1");
+        //        $el.empty();
+        //        if (sch.length > 0) {
+        //            $el.append($("<option></option>")
+        //                .attr("value", "").text('Select Branch'));
+        //            for (i = 0; i < sch.length; i++) {
+
+        //                $el.append($("<option></option>")
+        //                    .attr("value", sch[i].Id).text(sch[i].Name));
+        //            }
+        //        }
+        //        else {
+        //            $el.append($("<option></option>")
+        //                .attr("value", '').text('Select Branch'));
+        //        }
+        //    }
+        //});
+
+        //$('#BranchId1').change(function () {
+
+        //    var BranchId = $(this).val();
+
+        //    if (BranchId != "") {
+
+
+        //        $.ajax({
+        //            type: "POST",
+        //            cache: false,
+        //            url: "/NonRecurringFee/ClassesByBranch?BranchId=" + BranchId,
+        //            processData: false,
+        //            contentType: false,
+        //            success: function (data) {
+        //                var sch = JSON.parse(data);
+        //                console.log(sch);
+        //                var $el = $("#ClassId1");
+        //                $el.empty();
+
+        //                var $elStudent = $("#StudentId");
+        //                $elStudent.empty();
+        //                var $e3 = $("#SectionId1");
+        //                $e3.empty();
+        //                if (sch.length > 0) {
+        //                    $el.append($("<option></option>")
+        //                        .attr("value", "").text('Select Class'));
+        //                    for (i = 0; i < sch.length; i++) {
+
+        //                        $el.append($("<option></option>")
+        //                            .attr("value", sch[i].Id).text(sch[i].Name));
+        //                    }
+        //                }
+        //                else {
+        //                    $el.append($("<option></option>")
+        //                        .attr("value", '').text('Select Class'));
+        //                }
+        //            }
+        //        });
+        //    }
+        //    else {
+        //        var $el = $("#ClassId1");
+        //        $el.empty();
+
+        //        var $e3 = $("#SectionId1");
+        //        $e3.empty();
+
+        //        var $elStudent = $("#StudentId");
+        //        $elStudent.empty();
+
+        //    }
+
+        //});
+        //$('#ClassId1').change(function () {
+
+        //    var ClassId = $(this).val();
+        //    //Class = UserName;
+        //    var SectionId = $("#SectionId").val();
+        //    if (ClassId != "") {
+
+        //        $.ajax({
+        //            type: "POST",
+        //            cache: false,
+        //            url: "/NonRecurringFee/SectionByClasses?ClassId=" + ClassId + "&&SectionId=" + SectionId,
+        //            processData: false,
+        //            contentType: false,
+        //            success: function (data) {
+        //                var sch = JSON.parse(data);
+        //                console.log(sch);
+        //                var $el = $("#SectionId1");
+        //                $el.empty();
+
+        //                var $elStudent = $("#StudentId");
+        //                $elStudent.empty();
+
+        //                if (sch.length > 0) {
+        //                    $el.append($("<option></option>")
+        //                        .attr("value", "").text('Select Section'));
+        //                    for (i = 0; i < sch.length; i++) {
+
+        //                        $el.append($("<option></option>")
+        //                            .attr("value", sch[i].Id).text(sch[i].Name));
+        //                    }
+        //                }
+        //                else {
+        //                    $el.append($("<option></option>")
+        //                        .attr("value", '').text('Select Section'));
+        //                }
+        //            }
+        //        });
+        //    }
+
+        //    else {
+
+        //        var $el = $("#SectionId1");
+        //        $el.empty();
+
+        //        var $elStudent = $("#StudentId");
+        //        $elStudent.empty();
+        //    }
+
+        //});
+
+
+
+
+
+
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "/NonRecurringFee/GetStudents?SectionId=" + SectionId,
+
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#StudentId");
+                $el.empty();
+
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").text('Select Student'));
+                    for (i = 0; i < sch.length; i++) {
+
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i].Id).text(sch[i].Name));
+                    }
+                }
+                else {
+                    $el.append($("<option></option>")
+                        .attr("value", '').text('Select Section'));
+                }
+            }
+        });
+
+                 $('.select2dropdown option[value=""]').removeAttr("selected");
+        var data1 = $('.select2dropdown').select2()
+            .on("select2:select", function (e) {
+                var selected_element = $(e.currentTarget);
+                var select_val = selected_element.val();
+             //   var id = $(this).children(".select2-hidden-accessible").context.id;
+            });
+
+
+        //$('#BranchId1').change(function () {
+        //    $("#FurtherDiscount").val(0);
+        //    getTotalFee();
+
+        //})
+        //$('#ClassId1').change(function () {
+        //    $("#FurtherDiscount").val(0);
+        //    getTotalFee();
+
+        //})
+        //$('#SectionId1').change(function () {
+        //    $("#FurtherDiscount").val(0);
+        //    getTotalFee();
+
+        //})
+        $('#StudentId').change(function () {
+
+            $("#FurtherDiscount").val(0);
+            getTotalFee();
+            $("#error1").html("");
+            checkStudentChallan();
+
+        })
+        $('#Month1').change(function () {
+
+            $("#FurtherDiscount").val(0);
+            getTotalFee();
+            $("#error1").html("");
+
+            checkStudentChallan();
+        })
+
+
+
+
+        $('#tab1Form').validate({ // initialize the plugin
+            rules: {
+                ClassId: {
+                    required: true,
+                },
+
+            },
+            submitHandler: function (form) {
+                debugger
+
+                $("#SaveButton").prop("disabled", true);
+
+                $("#error").html("");
+                var BranchId = $("#BranchId").val();
+                var ClassId = $("#ClassId").val();
+                var SectionId = $("#SectionId").val();
+                var MonthId = $("#MonthId").val();
+                var DueDate = $("#DueDate").val();
+
+                $.ajax({
+                    type: "post",
+                    url: "/StudentChallan/SaveChallanForm",
+                    data: { 'BranchId': BranchId, 'ClassId': ClassId, 'SectionId': SectionId, 'MonthId': MonthId, 'DueDate': DueDate },
+
+                    success: function (data) {
+                        debugger
+                        if (data == "Created") {
+                            window.location.href = "/StudentFeeMonths/Index";
+
+                        }
+                        else if (data == "Exception") {
+
+                        }
+
+                        else {
+                            $("#error").html(data);
+                        }
+
+                    }
+                })
+
+            }
+
+        })
+
+
+
+        $('#tab2Form').validate({ // initialize the plugin
+            rules: {
+                ClassId1: {
+                    required: true,
+                },
+
+            },
+            submitHandler: function (form) {
+                debugger
+                //var BranchId = $("#BranchId1").val();
+                //var ClassId = $("#ClassId1").val();
+                //var SectionId = $("#SectionId1").val();
+                //var MonthId = $("#Month1").val();
+                //var DueDate = $("#DueDate1").val();
+
+                $("#SaveButton1").prop("disabled", true);
+
+                debugger
+                var data = $("#tab2Form").serialize();
+
+
+
+                $.ajax({
+                    type: "post",
+                    url: "/StudentChallan/SaveChallanFormOfStudent",
+                    data: data, //{ 'BranchId': BranchId, 'ClassId': ClassId, 'SectionId': SectionId, 'MonthId': MonthId, 'DueDate': DueDate },
+
+                    success: function (data) {
+
+
+                        window.location.href = "/StudentFeeMonths/Index";
+
+
+                    }
+                })
+
+            }
+
+        })
+
+
+    });
+
+    function getTotalFee() {
+
+        $("#TotalFee").val(0);
+        $("#HiddenTotalFee").val(0);
+
+        //   var BranchId = $("#BranchId1").val();
+        //  var ClassId = $("#ClassId1").val();
+        // var SectionId = $("#SectionId1").val();
+        var MonthId = $("#Month1").val();
+        var StudentId = $("#StudentId").val();
+
+        if (MonthId != "" || StudentId != "") {
+
+            $.ajax({
+                type: "post",
+                url: "/StudentChallan/GetTotalFee",
+                data: { 'MonthId': MonthId, 'StudentId': StudentId },
+                success: function (data) {
+                    debugger
+
+                    $("#TotalFee").val(data.paidAmount);
+                    $("#HiddenTotalFee").val(data.paidAmount);
+                    $("#Multiplier").val(data.MonthMultiplier);
+                    $("#HiddenTutionFee").val(data.tutionFee);
+                    $("#TutionFee").val(data.tutionFee);
+
+                }
+            })
+
+        }
+    }
+
+    function checkStudentChallan() {
+        debugger
+        var StudentId = $("#StudentId").val();
+        var MonthId = $("#Month1").val();
+
+        if (StudentId != "" && MonthId != "") {
+
+            $.ajax({
+                type: "post",
+                url: "/StudentChallan/checkStudentChallan",
+                data: { 'StudentId': StudentId, 'MonthId': MonthId },
+                success: function (data) {
+
+                    if (data == "") {
+
+                        $("#error1").html(data);
+                        $('#SaveButton1').prop('disabled', false);
+                        $('#FurtherDiscount').attr('readonly', false);
+                        $('#DiscountComments').attr('readonly', false);
+                    }
+
+                    else {
+                        $('#FurtherDiscount').attr('readonly', true);
+                        $('#DiscountComments').attr('readonly', true);
+                        $("#error1").html(data);
+                        $('#SaveButton1').prop('disabled', true);
+                    }
+                }
+
+            })
+        }
+
+
+    } //end function
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>

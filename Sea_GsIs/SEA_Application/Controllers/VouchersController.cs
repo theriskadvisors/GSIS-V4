@@ -30,8 +30,8 @@ namespace SEA_Application.Controllers
             var result = (from voucher in db.Vouchers
                           join record in db.VoucherRecords on voucher.Id equals record.VoucherId
                           where voucher.Id == record.VoucherId
-                          select new { voucher.Id,voucher.VoucherNo, voucher.Name, record.Description, voucher.Date, record.Amount, record.Type,l_name=record.Ledger.Name }).ToList();
-          //  var voucherresult = db.Vouchers.ToList();
+                          select new { voucher.Id, voucher.VoucherNo, voucher.Name, record.Description, voucher.Date, record.Amount, record.Type, l_name = record.Ledger.Name }).ToList();
+            //  var voucherresult = db.Vouchers.ToList();
 
             List<Voucher_list> list = new List<Voucher_list>();
             foreach (var item in result)
@@ -47,13 +47,32 @@ namespace SEA_Application.Controllers
                 vl.type = item.Type;
                 list.Add(vl);
             }
-            return Json(list,JsonRequestBehavior.AllowGet);
+            return Json(list, JsonRequestBehavior.AllowGet);
         }
         public ActionResult JournalEntry()
         {
             ViewBag.Ledger = new SelectList(db.Ledgers, "Id", "Name");
             return View();
         }
+        public ActionResult AllStudentList()
+        {
+            var AllStudents = (from user in db.AspNetUsers
+                               join student in db.AspNetStudents on user.Id equals student.UserId
+                               select new { Id = "Student-" + student.Id, Name = user.Name + "(" + user.UserName + ")" }).ToList();
+
+            var AllEmployee = (from user in db.AspNetEmployees
+                               select new { Id = "Employee-" + user.Id, Name = user.Name }).ToList();
+
+            foreach (var item in AllEmployee)
+            {
+                AllStudents.Add(item);
+            }
+
+            //var allusers = AllEmployee.AddRange(AllStudents.ToList());
+
+            return Json(AllStudents, JsonRequestBehavior.AllowGet);
+        }
+
         public JsonResult SelectListLedgers()
         {
             var headlist = db.LedgerHeads.ToList();
@@ -83,11 +102,11 @@ namespace SEA_Application.Controllers
         {
             var flag = false;
             var headName = db.Ledgers.Where(x => x.Id == id).Select(x => x.LedgerHead.Name).FirstOrDefault();
-            if(headName=="Income" || headName== "Expense")
+            if (headName == "Income" || headName == "Expense")
             {
                 flag = true;
             }
-            return Json(flag,JsonRequestBehavior.AllowGet);
+            return Json(flag, JsonRequestBehavior.AllowGet);
         }
         public JsonResult SelectListBranch()
         {
@@ -107,7 +126,6 @@ namespace SEA_Application.Controllers
         {
             try
             {
-          
                 string[] D4 = Vouchers.Time.Split('-');
                 Vouchers.Time = D4[2] + "/" + D4[1] + "/" + D4[0];
                 Voucher v = new Voucher();
@@ -171,21 +189,49 @@ namespace SEA_Application.Controllers
                     {
                         voucherrecord.BranchId = item.BranchId;
                     }
+
+                    if (item.StudentId != null)
+                    {
+
+                        string[] EmployeeStudentId = item.StudentId.Split('-');
+
+
+                        if (EmployeeStudentId[0] == "Student")
+                        {
+                            voucherrecord.UserType = "Student";
+                            voucherrecord.UserId = EmployeeStudentId[1];
+
+                        }
+                        else // if (EmployeeStudentId[0] == "Employee")
+                        {
+                            voucherrecord.UserType = "Employee";
+                            voucherrecord.UserId = EmployeeStudentId[1];
+                        }
+
+                    }
+                    else
+                    {
+                        voucherrecord.UserType = null;
+                        voucherrecord.UserId = null;
+
+                    }
+
+
                     voucherrecord.Description = item.Transaction;
                     var ledgerrecord = db.Ledgers.Where(x => x.Id == voucherrecord.LedgerId).FirstOrDefault();
                     voucherrecord.CurrentBalance = ledgerrecord.CurrentBalance;
                     //////////////////////////Game/////////////////////
                     var groupid = ledgerrecord.LedgerGroupId;
                     var ledgerHead = "";
-                    if(groupid!=null)
+                    if (groupid != null)
                     {
                         var ledgerheadId = db.LedgerGroups.Where(x => x.Id == groupid).Select(x => x.LedgerHeadID).FirstOrDefault();
-                         ledgerHead = db.LedgerHeads.Where(x => x.Id == ledgerheadId).Select(x => x.Name).FirstOrDefault();
+                        ledgerHead = db.LedgerHeads.Where(x => x.Id == ledgerheadId).Select(x => x.Name).FirstOrDefault();
                     }
                     else
                     {
                         var headid = ledgerrecord.LedgerHeadId;
-                         ledgerHead = db.LedgerHeads.Where(x => x.Id == headid).Select(x => x.Name).FirstOrDefault();
+                        ledgerHead = db.LedgerHeads.Where(x => x.Id == headid).Select(x => x.Name).FirstOrDefault();
 
                     }
 
@@ -236,7 +282,7 @@ namespace SEA_Application.Controllers
                 var result = "yes";
                 return Json(result, JsonRequestBehavior.AllowGet);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 var result = "No";
                 ViewBag.Error = e.Message;
@@ -358,6 +404,7 @@ namespace SEA_Application.Controllers
             public string Debit { get; set; }
             public double balance { get; set; }
             public int BranchId { get; set; }
+            public string StudentId { get; set; }
 
         }
         public class AccountsList
@@ -382,8 +429,8 @@ namespace SEA_Application.Controllers
             public string LedgerName { get; set; }
             public string type { get; set; }
 
-}
-protected override void Dispose(bool disposing)
+        }
+        protected override void Dispose(bool disposing)
         {
             if (disposing)
             {

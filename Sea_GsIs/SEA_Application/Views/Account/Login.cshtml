@@ -24,12 +24,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <!-- CSS Files -->
     <link href="~/Content/assets/css/material-dashboard.css?v=2.1.2" rel="stylesheet" />
-    <!-- CSS Just for demo purpose, don't include it in your project -->
-    <!--    <link href="~/Content/assets/demo/demo.css" rel="stylesheet" />-->
 
-    <link rel="stylesheet" href="~/Content/assets/css/style.css">
-    <script src="~/AdminLTE/plugins/jquery/js/jQuery-2.1.4.min.js"></script>
-    <link rel="stylesheet" href="~/Content/assets/assets/summernote.min.css">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-show-password/1.0.3/bootstrap-show-password.min.js"></script>
 
     <style>
         table.dataTable.hover tbody tr:hover,
@@ -80,16 +79,16 @@
     $(document).ready(function () {
 
 
-    $(".toggle-password").click(function () {
-        //debugger;
-        $(this).toggleClass("fa-eye fa-eye-slash");
-        var input = $("#Password");
-        if (input.attr("type") == "Password") {
-            input.attr("type", "text");
-        } else {
-            input.attr("type", "Password");
-        }
-    });
+        $(".toggle-password").click(function () {
+            //debugger;
+            $(this).toggleClass("fa-eye fa-eye-slash");
+            var input = $("#Password");
+            if (input.attr("type") == "Password") {
+                input.attr("type", "text");
+            } else {
+                input.attr("type", "Password");
+            }
+        });
     });
 
     var allcookies = document.cookie;
@@ -148,6 +147,7 @@
     .color:hover {
         background-color: #0e72af !important;
     }
+
     .field-icon {
         float: right;
         margin-left: -25px;
@@ -188,28 +188,33 @@
                                 <div class="form-group">
                                     <div class="col-md-10">
                                         @*<label style="font-weight:normal; font-size:15px;">Username:</label>*@
-                                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", placeholder = "Username", Style = "border-radius:3px;width:130%" })
+                                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control", placeholder = "Username" })
 
                                         @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger" })
                                         @*<span class="glyphicon glyphicon-envelope form-control-feedback split-layout-left"></span>*@
                                     </div>
                                 </div>
+                                @*<div class="form-group">
+                                        <div class="col-md-10">
+                                            @*<label style="font-weight:normal; font-size:15px;">Password:</label>
+                                            @Html.PasswordFor(m => m.Password, new { @class = "form-control", type = "password", placeholder = "Password", Style = "border-radius:3px;width:130%" })
+                                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                                            <span toggle="#password" class="fa fa-fw fa-eye field-icon toggle-password"></span>
+                                            @*<span class="glyphicon glyphicon-lock form-control-feedback"></span>
+                                        </div>
+                                    </div>*@
                                 <div class="form-group">
                                     <div class="col-md-10">
-                                        @*<label style="font-weight:normal; font-size:15px;">Password:</label>*@
-                                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", type = "password", placeholder = "Password", Style = "border-radius:3px;width:130%" })
-                                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
-                                        <span toggle="#password" class="fa fa-fw fa-eye field-icon toggle-password"></span>
-                                        @*<span class="glyphicon glyphicon-lock form-control-feedback"></span>*@
+                                        <input type="password" id="password" name="password" class="form-control" placeholder="Password" data-toggle="password" required>
                                     </div>
                                 </div>
 
 
                                 <div class="form-group">
                                     <div class="col-md-2">
-                                      @*  <button type="submit" class="form-control color" style="border-radius:35px;border:none;color:#ffffff;background-color:#128edb;font-size:11px;width:98px;height:38px;font-weight:400;font-family:Montserrat">LOG IN</button>*@
+                                        @*  <button type="submit" class="form-control color" style="border-radius:35px;border:none;color:#ffffff;background-color:#128edb;font-size:11px;width:98px;height:38px;font-weight:400;font-family:Montserrat">LOG IN</button>*@
                                         <button class="btn btn-primary pull-left rounded rounded-lg shadow-none mr-3" type="submit" style="border-radius:35px;border:none;font-size:11px;width:98px;height:38px;font-weight:400;font-family:Montserrat">LOG IN</button>
-                                      </div>
+                                    </div>
                                 </div>
                                 <br /><br /><br /><br /><br /><br />
                                 <div class="col-md-12 col-lg-12 " hidden>

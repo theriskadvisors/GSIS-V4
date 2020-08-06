@@ -31,10 +31,10 @@ namespace SEA_Application.Controllers
             foreach (var item in durationlist)
             {
                 var classname = db.AspNetClasses.Where(x => x.Id == item.ClassId).Select(x => x.Name).FirstOrDefault();
-                var classfee = db.ClassFees.Where(x => x.Id == item.ClassFeeId).Select(x => x.Name).FirstOrDefault();
+                //var classfee = db.ClassFees.Where(x => x.Id == item.ClassFeeId).Select(x => x.Name).FirstOrDefault();
                 Fee_Type dt = new Fee_Type();
                 dt.ClassName = classname;
-                dt.FeeType = classfee;
+                //dt.FeeType = classfee;
                 duratintype.Add(dt);
             }
             return Json(duratintype, JsonRequestBehavior.AllowGet);
@@ -69,27 +69,27 @@ namespace SEA_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "Id,ClassFeeId,ClassId")] ClassFeeType classFeeType)
         {
-            try
-            {
-                if (ModelState.IsValid)
-                {
-                    db.ClassFeeTypes.Add(classFeeType);
-                    db.SaveChanges();
-                    var studentlist = db.AspNetStudents.Where(x => x.ClassId == classFeeType.ClassId).ToList();
-                    foreach (var item in studentlist)
-                    {
-                        Student_ChallanForm std_form = db.Student_ChallanForm.Where(x => x.StudentId == item.Id).FirstOrDefault();
-                        var amountpayable = db.ClassFees.Where(x => x.Id == classFeeType.ClassFeeId).Select(x => x.Amount).FirstOrDefault();
-                        std_form.AmountPayable += amountpayable;
-                        db.SaveChanges();
-                    }
-                    return RedirectToAction("FeeTypeIndex");
-                }
-            }
-            catch
-            {
-                return RedirectToAction("Create");
-            }
+            //try
+            //{
+            //    if (ModelState.IsValid)
+            //    {
+            //        db.ClassFeeTypes.Add(classFeeType);
+            //        db.SaveChanges();
+            //        var studentlist = db.AspNetStudents.Where(x => x.ClassId == classFeeType.ClassId).ToList();
+            //        foreach (var item in studentlist)
+            //        {
+            //            Student_ChallanForm std_form = db.Student_ChallanForm.Where(x => x.StudentId == item.Id).FirstOrDefault();
+            //            var amountpayable = db.ClassFees.Where(x => x.Id == classFeeType.ClassFeeId).Select(x => x.Amount).FirstOrDefault();
+            //            std_form.AmountPayable += amountpayable;
+            //            db.SaveChanges();
+            //        }
+            //        return RedirectToAction("FeeTypeIndex");
+            //    }
+            //}
+            //catch
+            //{
+            //    return RedirectToAction("Create");
+            //}
 
 
             ViewBag.ClassId = new SelectList(db.AspNetClasses, "Id", "Name", classFeeType.ClassId);

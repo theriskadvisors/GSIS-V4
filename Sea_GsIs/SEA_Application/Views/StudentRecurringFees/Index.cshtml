@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SEA_Application.Models.StudentRecurringFee>
+﻿@model IEnumerable<SEA_Application.Models.ClassFee>
 
 @{
     ViewBag.Title = "Index";
@@ -16,9 +16,9 @@
         color: #ffffff !important;
     }
 
-    #example tr > :nth-child(1) {
+    /*#example tr > :nth-child(1) {
         display: none;
-    }
+    }*/
 </style>
 
 <script>
@@ -34,7 +34,7 @@
         $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Recurring Fee</a></li>');
 
 
-        var table = $('#datatable').dataTable({
+       var table = $('#datatable').dataTable({
             buttons: [
                 {
                     text: '<span class="datatableButtonsReset"> <img src="/Content/assets/assets/icons/Icon-Reset2.png" alt=""> Reset</span>'
@@ -42,7 +42,7 @@
                 {
                     text: '<span class="datatableButtonsEdit"> <img src="/Content/assets/assets/icons/Icon-edit.png" alt=""> Create</span>',
                     action: function (e, dt, button, config) {
-                        window.location.href = '/StudentRecurringFees/Create';
+                        window.location.href = '/StudentREcurringFees/Create';
                     }
                 },
                 {
@@ -71,12 +71,18 @@
 
 
 
+
+
         $('.table').on('click', 'tbody tr', function () {
             debugger;
             var td = $(this).children("td");
+          //  alert($(td).html());
 
+            var id = parseInt($(td[0]).html());
+
+           
             if ($(td).html() != "No data available in table");
-            window.location.href = "/StudentRecurringFees/Edit?id=" + $(td[0]).html();
+            window.location.href = "/StudentRecurringFees/Edit?id=" + id;
         });
         // drawTable();
 
@@ -124,7 +130,7 @@
         <div class="box box-primary">
             <div class="box-body">
                 <div class="table-responsive">
-                    <table class="table table-bordered" id="datatable">
+                    <table class="table hover  table-striped table-bordered" id="datatable">
                         <thead>
                             <tr>
                                 <th>
@@ -141,7 +147,10 @@
                                 </th>
 
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Other)
+                                    @Html.DisplayNameFor(model => model.OtherServices)
+                                </th>
+                                <th>
+                                    <span>Admission Fee</span>
                                 </th>
                                 <th>
                                     <span>Tution Fee</span>
@@ -154,15 +163,16 @@
                         </thead>
 
 
-                        @foreach (var item in Model)
-                        {
-                            <tbody>
+                     
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
                                 <tr>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Id)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.AspNetClass.Name)
+                                        @Html.DisplayFor(modelItem => item.AspNetBranch_Class.AspNetClass.Name)
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.LabCharges)
@@ -171,24 +181,30 @@
                                         @Html.DisplayFor(modelItem => item.ComputerFee)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.Other)
+                                        @Html.DisplayFor(modelItem => item.OtherServices)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.AdmissionFee)
                                     </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.TutionFee)
                                     </td>
+
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.TotalFee)
+                                        @Html.DisplayFor(modelItem => item.Total)
                                     </td>
 
                                     @*<td>
-                                            @Html.ActionLink("Edit", "Edit", new { id = item.Id })
-                                            @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                                            @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-                                        </td>*@
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id })
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </td>*@
                                 </tr>
-                            </tbody>
 
-                        }
+                            }
+                        </tbody>
+
+                        
 
                     </table>
                 </div>

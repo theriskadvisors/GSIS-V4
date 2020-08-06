@@ -27,9 +27,24 @@
         $("#BreadCrumbs").append(' <li> <a href="/FinanceSummary/Index"> Home </a> <span>&gt;</span></li>');
         $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Quiz Details </a></li>');
 
-
+        $('#datatable tfoot th').each(function () {
+            var title = $(this).text();
+            $(this).html('<input type="text" class="round-border" style="border-color:#00b8ec; border-radius:5px;width:100%" placeholder="Search" />');
+        });
 
         var table = $('#datatable').dataTable({
+            initComplete: function () {
+                // Apply the search
+                this.api().columns().every(function () {
+                    var that = this;
+
+                    $('input', this.footer()).on('keyup change clear', function () {
+                        if (that.search() !== this.value) {
+                            that.search(this.value).draw();
+                        }
+                    });
+                });
+            },
             buttons: [
                 {
                     text: ''
@@ -71,6 +86,8 @@
         })
 
 
+        $("#datatable_filter").hide();
+        $('#datatable tfoot tr').appendTo('#datatable thead');
 
         //  drawTable();
         $('.eeniart0017').css("display", "block");
@@ -83,10 +100,8 @@
                 table.fnClearTable();
                 $.each(data, function (i, item) {
 
-                    table.fnAddData([item.StudentName, item.QuizName, item.QuizDesription, item.StartDate, "<button class='btn buttonload btn-sm btn-primary'    id='" + item.QuizID + "'  name='" + item.StudentID +"'     onclick='start1(this)'><i class='fa fa-spinner'></i>Details</button>"]);
-
+                    table.fnAddData([item.Class, item.StudentName, item.Subject, item.Section, item.QuizName, item.QuizDesription, item.StartDate, "<button class='btn buttonload btn-sm btn-primary'    id='" + item.QuizID + "'  name='" + item.StudentID +"'     onclick='start1(this)'><i class='fa fa-spinner'></i>Details</button>"]);
                 })
-
             }
         })
     })
@@ -124,16 +139,29 @@
                     <table class="table table-bordered" id="datatable">
                         <thead>
                             <tr>
-                                
+                                <th>Class</th>
                                 <th>Student Name</th>
+                                <th>Subject</th>
+                                <th>Section</th>
                                 <th>Quiz Name</th>
                                 <th>Quiz Description</th>
-                                
                                 <th>Start Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody></tbody>
+                        <tfoot>
+                            <tr>
+                                <th>Class</th>
+                                <th>Student Name</th>
+                                <th>Subject</th>
+                                <th>Section</th>
+                                <th>Quiz Name</th>
+                                <th>Quiz Description</th>
+                                <th>Start Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>

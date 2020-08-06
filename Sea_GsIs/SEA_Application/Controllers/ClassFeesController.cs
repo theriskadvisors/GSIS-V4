@@ -30,8 +30,8 @@ namespace SEA_Application.Controllers
             foreach (var item in durationlist)
             {
                 ClassFee dt = new ClassFee();
-                dt.Name = item.Name;
-                dt.Amount = item.Amount;
+                //dt.Name = item.Name;
+                //dt.Amount = item.Amount;
                 duratintype.Add(dt);
             }
             return Json(duratintype, JsonRequestBehavior.AllowGet);

@@ -54,6 +54,8 @@
 
 
         var table = $('#datatable').dataTable({
+            "order": [[3, "desc"]], //or  
+            "columnDefs": [{ "targets": 3, "type": "date-eu" }],
             buttons: [
                 {
                     text: '<span class="datatableButtonsReset">  </span>'
@@ -112,7 +114,15 @@
                 table.fnClearTable();
                 $.each(data, function (i, item) {
 
-                    table.fnAddData([item.Subject, item.QuizName, item.QuizDescription, item.StartDate, item.Duration, item.Meeting, "<button class='btn buttonload btn-sm btn-success hidden' id='" + item.QuizId+"' onclick='start(this)'><i class='fa fa-spinner'></i>Start</button>"]);
+                    var value = new Date(parseInt(item.StartDate.replace(/(^.*\()|([+-].*$)/g, '')));
+                    var dat = 
+                        value.getDate() +
+                        "/" +
+                        (value.getMonth() +
+                            1) + "/" + 
+                        value.getFullYear();
+
+                    table.fnAddData([item.Subject, item.QuizName, item.QuizDescription, "<span style='Display:none'>" + item.StartDate+"</span>" + dat, item.Duration, item.Meeting, "<button class='btn buttonload btn-sm btn-success hidden' id='" + item.QuizId+"' onclick='start(this)'><i class='fa fa-spinner'></i>Start</button>"]);
 
                 })
 
@@ -140,6 +150,10 @@
                     window.location.href = "/AspNetStudents/GetQuestions?id=" + id;
                 else if (data == "Something went Wrong")
                     alert("There is an issue in your quiz startup, Kindly contact administrator");
+                else{
+                    alert("You've already submitted this Quiz");
+                    window.location.reload();
+                }
             }
         });
 

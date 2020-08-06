@@ -3,12 +3,11 @@
     if (User.IsInRole("Branch_Admin") || User.IsInRole("Branch_Principal"))
     {
         Layout = "~/Views/Shared/_BranchAdminDashboardLayout.cshtml";
-    }else if (User.IsInRole("Accountant"))
+    }
+    else if (User.IsInRole("Accountant"))
     {
         Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
     }
-
-    string test = "";
 }
 <style>
 </style>
@@ -18,11 +17,44 @@
     $(document).ready(function () {
         // table = $('#example').dataTable();
         // drawTable();
+        $("#example_filter").css('display', 'none');
 
         $("#PageHeader").html("Students");
 
         $("#BreadCrumbs").append(' <li> <a href="#"> Home </a> <span>&gt;</span></li>');
         $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Students</a></li>');
+
+         $('#example tfoot th').each(function () {
+            var title = $(this).text();
+            $(this).html('<input type="text" class="round-border" style="border-color:#053f89; border-radius:5px" placeholder="Search ' + title + '" />');
+        });
+
+
+
+             if ($("#StudentCreatedMsg").val() != "") {
+            var type = 'success';
+            var msg = "Student Created Successfully";
+            showNotification('top', 'center', msg, type);
+            //toastr.info('Lesson updated successfully');
+        }
+           if ($("#StudentUpdatedMsg").val() != "") {
+            var type = 'success';
+            var msg = "Student Updated Successfully";
+            showNotification('top', 'center', msg, type);
+            //toastr.info('Lesson updated successfully');
+        }
+
+
+
+
+
+             $('.table').on('click', 'tbody tr', function () {
+
+                    var td = $(this).children("td");
+
+                    if ($(td).html() != "No data available in table");
+                    window.location.href = "Edit?userName=" + $(td[1]).html();
+                });
 
 
         var table;
@@ -34,19 +66,19 @@
 
         var RenderToCreate = '/AspNetStudents/Create';
 
-        @if (User.IsInRole("Accountant"))
-        {
-            test = "text: '<span class=datatableButtonsEdit> <img src=/Content/assets/assets/icons/Icon-edit.png > Create</span>',action: function(e, dt, button, config) {window.location.href =/AspNetStudents/Create;}";
-        }
-
         table = $('#example').dataTable({
-        initComplete: function () {
+            initComplete: function () {
                 // Apply the search
                 this.api().columns().every(function () {
                     var that = this;
 
                     $('input', this.footer()).on('keyup change clear', function () {
-                        if (that.search() !== this.value) {
+                        //if (that.search() !== this.value) {
+                        //    that
+                        //        .search(this.value)
+                        //        .draw();
+                        //}
+                             if (that.search() !== this.value) {
                             that
                                 .search(this.value)
                                 .draw();
@@ -56,14 +88,17 @@
             },
             buttons: [
                 {
-                // text: '<span class="datatableButtonsReset"> <img src="/Content/assets/assets/icons/Icon-Reset2.png" alt=""> Reset</span>'
-            },
+                   // text: '<span class="datatableButtonsReset"> <img src="/Content/assets/assets/icons/Icon-Reset2.png" alt=""> Reset</span>'
+                },
                 {
-                @test.ToString()
-            },
+                    text: '<span class="datatableButtonsEdit"> <img src="/Content/assets/assets/icons/Icon-edit.png" alt=""> Create</span>',
+                    action: function (e, dt, button, config) {
+                        window.location.href = RenderToCreate;
+                    }
+                },
                 {
-                //   text: '<span class="datatableButtonsDownload"> <img src="/Content/assets/assets/icons/Icon-download.png" alt=""> Download</span>'
-            }
+                 //   text: '<span class="datatableButtonsDownload"> <img src="/Content/assets/assets/icons/Icon-download.png" alt=""> Download</span>'
+                }
             ],
             "language": {
                 "lengthMenu": "<div class=\"d-flex showEntriesCon\">\n" +
@@ -74,8 +109,8 @@
                 "paginate": {
                     "first": "Firstt",
                     "last": "Lastt",
-                    "next": ' <img src="/Content/assets/assets/icons/Arrow2.png" alt=""> ',
-                    "previous": ' <img src="/Content/assets/assets/icons/Arrow1.png" alt=""> '
+                    "next": ' <img src="~/Content/assets/assets/icons/Arrow2.png" alt=""> ',
+                    "previous": ' <img src="~/Content/assets/assets/icons/Arrow1.png" alt=""> '
                 }
             },
             "searching": true,
@@ -84,8 +119,13 @@
                 "<'row'<'col-sm-12 datatablesData'tr>>" +
                 "<'row mt-4'<'col-sm-12 col-md-4 col-lg-6 infoCon'i><'col-sm-12 col-md-8 col-lg-6 pagCon'p>>",
         });
+           $('#example tfoot tr').appendTo('#example thead');
+         $("#example_filter").hide();
+        //  $('#example tfoot tr').appendTo('#example thead');
 
-
+          $('input#global_filter').on('keyup click', function () {
+            filterGlobal();
+        });
         $.ajax({
             type: "POST",
             url: "/AspNetStudents/GetStudents",
@@ -94,18 +134,19 @@
                 $('.eeniart0017').css("display", "none");
                 table.fnClearTable();
                 $.each(data, function (i, item) {
-                    //debugger
+                    debugger
                     //  var personimage = '<img src="' + item.image + '" style="border-radius:50%;width:35px;height:35px" />';
                     //   var personimage='<img src="~/Content/Images/co.jpg" />';
                     //var btn = '<input type="button" id="showdetails" onclick="REDIRECT()" value="Edit Student" style="border-radius:35px;font-weight:700;margin-left:5px;margin-right:5px;margin-top:5px;border:none;color:#808080;font-size:10px;font-family:Montserrat;background-color:#f5f5f5;width:10%;height:25px" />';
 
-                    table.fnAddData([item.Name, item.RollNo, item.PhoneNo, item.JoiningDate, item.ClassName]);
+                    table.fnAddData([item.Name, item.RollNo, item.CellNo, item.JoiningDate, item.ClassName]);
 
 
                 });
                 table.fnDraw();
             }
         })
+        $('#datatable tfoot tr').appendTo('#datatable thead');
 
     })
     function REDIRECT() {
@@ -119,6 +160,7 @@
         });
 
     }
+
     function class_click(item) {
 
         var select = item.value;
@@ -288,6 +330,8 @@
                             @*@Html.DropDownList("ClassID", null, htmlAttributes: new { @class = "form-control" })*@
                         </div>
                         <div class="table-responsive">
+                            <input type="hidden" id="StudentCreatedMsg" name="name" value="@TempData["StudentCreated"]" />
+                            <input type="hidden" id="StudentUpdatedMsg" name="name" value="@TempData["StudentUpdated"]" />
 
                             <table class="table hover table-bordered" id="example">
                                 <thead>
@@ -311,6 +355,27 @@
                                 </thead>
                                 <tbody id="body">
                                 </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>
+                                            Name
+                                        </th>
+                                        <th>
+                                            RollNo
+                                        </th>
+                                        <th>
+                                            Phone
+                                        </th>
+                                        <th>
+                                            Joining Date
+                                        </th>
+                                        <th>
+                                            Class
+                                        </th>
+                                    </tr>
+                                </tfoot>
+
+
                             </table>
                         </div>
 
@@ -320,3 +385,10 @@
         </div>
     </div>
 </div>
+<script>
+
+    $(document).ready(function () {
+
+
+    })
+</script>

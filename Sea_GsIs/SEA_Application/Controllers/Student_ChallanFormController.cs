@@ -53,18 +53,18 @@ namespace SEA_Application.Controllers
             challan.ChallanCopy.Add("Bank Copy");
             challan.ChallanCopy.Add("School Copy");
             var classid = db.AspNetStudents.Where(x => x.Id == studentid).Select(x => x.ClassId).FirstOrDefault();
-            var feetypes = (from classtype in db.ClassFeeTypes
-                            join classfee in db.ClassFees on classtype.ClassFeeId equals classfee.Id
-                            where classid == classtype.ClassId
-                            select new { classfee.Name, classfee.Amount }).ToList();
+            //var feetypes = (from classtype in db.ClassFeeTypes
+            //                join classfee in db.ClassFees on classtype.ClassFeeId equals classfee.Id
+            //                where classid == classtype.ClassId
+            //                select new { classfee.Name, classfee.Amount }).ToList();
             challan.FeeType = new List<FeeTypes>();
-            foreach (var item in feetypes)
-            {
-                FeeTypes stu_pay = new FeeTypes();
-                stu_pay.Amount = item.Amount;
-                stu_pay.Name = item.Name;
-                challan.FeeType.Add(stu_pay);
-            }
+            //foreach (var item in feetypes)
+            //{
+            //    FeeTypes stu_pay = new FeeTypes();
+            //    stu_pay.Amount = item.Amount;
+            //    stu_pay.Name = item.Name;
+            //    challan.FeeType.Add(stu_pay);
+            //}
 
             var discounttype = (from feedisc in db.FeeDiscounts
                             join std_disc in db.StudentDiscounts on feedisc.Id equals std_disc.FeeDiscountId

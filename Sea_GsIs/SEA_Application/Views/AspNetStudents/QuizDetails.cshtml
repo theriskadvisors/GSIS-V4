@@ -21,6 +21,28 @@
         width: 246px;
         border-color: #fff !important;
     }
+
+
+    .radiocontainer.correct.selected {
+        background-color: #d4edda;
+        padding: 9px;
+    }
+
+    .radiocontainer.wrong.selected {
+        background-color: #f8d7da;
+        padding: 9px;
+    }
+
+    h4, .h4 {
+        font-size: 1.125rem;
+        line-height: 2.4em;
+        font-weight: 300;
+    }
+
+    .radiocontainer.wrong {
+        background-color: #f8d7da;
+    }
+
 </style>
 
 <script>
@@ -68,16 +90,16 @@
                 <div class="questionCon">
                     @foreach (var item in ViewBag.questionList_MCQS)
                     {
-                    <h4 class="tabHeading">
-                         @counter: @item.name
+                        <h4 class="tabHeading">
+                            @counter: @item.name
 
-                        @if (item.selectedOption == null)
-                        {
-                            <i class="fa fa-times" aria-hidden="true" style="color: red; font-size:20px"></i>
-                            <span>(Not Attempted/Incorerct)</span>
-                        }
+                            @if (item.selectedOption == null)
+                            {
+                                <i class="fa fa-times" aria-hidden="true" style="color: red; font-size:20px"></i>
+                                <span>(Not Attempted/Incorerct)</span>
+                            }
 
-                    </h4>
+                        </h4>
 
                         <input id="@item.id" class="Option" type="hidden" value="" />
 
@@ -98,20 +120,53 @@
                             {
                                 if (item1.name == item.CorrectOption)
                                 {
-                            <li>@item1.name  <i class="fa fa-check" aria-hidden="true" style="color: #37a937; font-size:20px"></i> (Correct Answer)</li>
+                                    <li>@item1.name  <i class="fa fa-check" aria-hidden="true" style="color: #37a937; font-size:20px"></i></li>
 
                                 }
                                 else
                                 {
                                     if (item1.name == item.selectedOption)
                                     {
-                        <li>@item1.name  <i class="fa fa-times" aria-hidden="true" style="color: red; font-size:20px"></i>(Incorrect Answer Selected) </li>
+                                        <li>@item1.name  <i class="fa fa-times" aria-hidden="true" style="color: red; font-size:20px"></i>(Incorrect Answer Selected) </li>
                                     }
                                     else
                                     {
                                         <li>@item1.name  </li>
 
                                     }
+
+                                }
+                            }
+                        </ol>
+                        <ol>
+                            @if (item.selectedOption == null)
+                            {
+                                <div class="radiocontainer wrong selected" id="label2" style="padding-right:135px;"><div class="markcontainer"></div>&nbsp;&nbsp;<span class="answercomment">&nbsp;&nbsp;<i class="fa fa-times" aria-hidden="true" style="color: red; font-size:20px"></i> Not Attempted, Correct Answer is (@item.CorrectOption) &nbsp;&nbsp;</span></div>
+
+                            }
+                            @foreach (var item1 in item.options)
+                            {
+
+                                if (item.selectedOption != null)
+                                {
+
+
+                                    if (item1.name == item.CorrectOption)
+                                    {
+
+                                        <div class="radiocontainer correct selected" id="label2" style="padding-right:135px;"><div class="markcontainer"></div>&nbsp;&nbsp;<span class="answercomment">&nbsp;&nbsp;<i class="fa fa-check" aria-hidden="true" style="color: #37a937; font-size:20px"></i> Correct Answer (@item.CorrectOption)&nbsp;&nbsp;</span></div>
+
+
+
+                                        break;
+                                    }
+                                    else if (item1.name == item.selectedOption)
+                                    {
+                                        <div class="radiocontainer wrong selected" id="label2" style="padding-right:135px;"><div class="markcontainer"></div>&nbsp;&nbsp;<span class="answercomment">&nbsp;&nbsp;<i class="fa fa-times" aria-hidden="true" style="color: red; font-size:20px"></i> Incorrect Answer, Correct Answer is (@item.CorrectOption)&nbsp;&nbsp;</span></div>
+
+                                        break;
+                                    }
+
 
                                 }
                             }

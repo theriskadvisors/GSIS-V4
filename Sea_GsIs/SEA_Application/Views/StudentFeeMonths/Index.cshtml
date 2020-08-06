@@ -1,4 +1,4 @@
-﻿@model IEnumerable<SEA_Application.Models.StudentFeeMonth>
+﻿@model IEnumerable<SEA_Application.Models.StudentFeeDetail>
 
 @{
     ViewBag.Title = "Index";
@@ -107,6 +107,14 @@
     label.col-md-3.col-sm-12.col-lg-2.col-md-2 {
         width: 13.066667%;
     }
+
+    .table-responsive {
+        display: block;
+        width: 100%;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+    }
 </style>
 <script>
     $(document).ready(function () {
@@ -115,6 +123,21 @@
 
         $("#BreadCrumbs").append(' <li> <a href="/Account/Dashboard"> Home </a> <span>&gt;</span></li>');
         $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Student Fee Months</a></li>');
+
+
+        if ($("#StudentChallanFormMsg").val() != "") {
+            var type = 'success';
+            var msg = "Challan Created Successfully";
+            showNotification('top', 'center', msg, type);
+            //toastr.info('Lesson updated successfully');
+        }
+
+        if ($("#ClassChallanFormMsg").val() != "") {
+            var type = 'success';
+            var msg = "Challan Created Successfully";
+            showNotification('top', 'center', msg, type);
+            //toastr.info('Lesson updated successfully');
+        }
 
         $(document).on('change', '#MonthID', function () {
             $('.eeniart0017').css("display", "block");
@@ -194,23 +217,45 @@
 
     });
 </script>
-
-
 <script>
     $(document).ready(function () {
+
+
+
+        $('#example tfoot th').each(function () {
+            var title = $(this).text();
+            $(this).html('<input type="text" class="round-border" style="border-color:#00b8ec; border-radius:5px;width:100%" placeholder="Search ' + title + '" />');
+        });
         var table = $('#example').dataTable({
+            initComplete: function () {
+                // Apply the search
+                this.api().columns().every(function () {
+                    var that = this;
+
+                    $('input', this.footer()).on('keyup change clear', function () {
+                        //if (that.search() !== this.value) {
+                        //    that
+                        //        .search(this.value)
+                        //        .draw();
+                        //}
+                        if (that.search() !== this.value) {
+                            that.search(this.value).draw();
+                        }
+                    });
+                });
+            },
             buttons: [
                 {
-                    text: '<button value="Challan Date" class="btn btn-default" id="challan-date" data-toggle="modal" data-target="#myModal1" ><i class="fa fa-calendar"> </i>  Challan Date</button>'
+                    text: '<button onclick="PrintChallan()" value="Get Challan" class="btn btn-default" id="challan-date" ><i class="fa fa-calendar"> </i> Get Challan</button>'
                 },
                 {
                     text: '<span class="datatableButtonsEdit"> <img src="/Content/assets/assets/icons/Icon-edit.png" alt=""> Create</span>',
                     action: function (e, dt, button, config) {
-                        window.location.href = "/NonRecurringFeeMultipliers/Create";
+                        window.location.href = "/StudentChallan/GetChallan";
                     }
                 },
                 {
-                    text: '<span class="datatableButtonsDownload"> <img src="/Content/assets/assets/icons/Icon-download.png" alt=""> Download</span>'
+                    text: '<button onclick="ChangeStatusChallan()" value="Paid" class="btn btn-default"><i class="fa fa-calendar"> </i> Paid</button>'
                 }
             ],
             "language": {
@@ -241,105 +286,147 @@
             //   window.location.href = "/StudentFeeMonths/Edit?id=" + $(td[0]).html();
         });
         //drawTable();
+
+        $("#example_filter").hide();
+        $('#example tfoot tr').appendTo('#example thead');
     })
-    function drawTable() {
 
-        $('#example_length').addClass("col-lg-9 col-md-8 col-sm-12 col-xs-12");
-        $('#example_length label').addClass("col-md-3 col-sm-12 col-lg-2");
-        $("#example_length label").css("text-align", "left");
-        $('#example_length label').addClass("col-md-2 col-lg-2 col-sm-12");
-        var list = $("#Position").html();
-        $('#example_length').append(
 
-            '<div class="col-md-1 col-lg-1" style="width:0%; padding-left:1px;">' +
-            '<div class="d-bar" style="margin-top:0px;"></div>' +
-            '</div>'
-            +
-            '<div class="col-md-3 col-lg-3">' +
-            '<div class="col-md-6" style="padding:0px; margin-top:0px">' +
-            '<lable class="control-label"  style="margin-top:0px">Select Month</lable>' +
-            '</div>' +
-            '<div class="col-md-6">' +
-            '<select class="form-control  input-sm" id="MonthID" style="margin-top:0px" name="Month">' +
-            '<option value="All">All</option>'
-            + '<option value="January">January</option>' +
-            '<option value="February">February</option>' +
-            '<option value="March">March</option>' +
-            '<option value="April">April</option>' +
-            '<option value="May">May</option>' +
-            '<option value="June">June</option>' +
-            '<option value="July">July</option>' +
-            '<option value="August">August</option>' +
-            '<option value="September">September</option>' +
-            '<option value="October">October</option>' +
-            '<option value="November">November</option>' +
-            '<option value="December">December</option>' +
-            '</select>' +
-            '</div>' +
-            '</div>' +
-            '<div class="col-md-1 col-lg-1" style="width:0%; padding-left:1px;">' +
-            '<div class="d-bar" style="margin-top:0px;"></div>' +
-            '</div>'
-            +
-            '<div class="col-md-3 col-lg-3">' +
-            '<div class="col-md-6" style="padding:0px; margin-top:0px">' +
-            '<lable class="control-label"  style="margin-top:0px">Select Status</lable>' +
-            '</div>' +
-            '<div class="col-md-6">' +
-            '<select class="form-control  input-sm" id="StatusID" style="margin-top:0px" name="Status">' + list +
-            '<option value="All">All</option>' +
-            '<option value="Pending">Pending</option>' +
-            '<option value="Clear">Clear</option>' +
-            '<option value="Printed">Printed</option>' +
-            '</select>' +
-            '</div>' +
-            '</div>' +
-            '<div class="col-md-2 pull-right">' +
-            '<input type="button" value="Update Status"  class="form-control updatebtn" id="updatestatus" onclick="updatestatus()" style="border-radius:45px;border-color:#21cd54;color:#21cd54;background-color:#ffffff" />' +
-            '</div>'
-            +
-            '<div class="col-md-2 pull-right !important">' +
-            '<input type="button" class="form-control" id="cre" onclick="GetChallanForm()" value="Print Challan" style="border-radius:45px;border-color:#128edb;color:#128edb;background-color:#ffffff" />' +
-            '</div>'
-        );
-        $("#Class").prepend("<option value='0' selected>All</option>");
-    }
-
+    var isPending = "";
+    var isPaid = "";
     var Counter = 0;
 
     var SelectedMonths = [];
 
+    var Status = [];
+
     function GetChallanForm() {
         debugger;
-        var Month = $("#MonthID").val();
+
+    }
+    function PrintChallan() {
+
+        debugger
+
         var StdId = SelectedMonths.toString();
         if (StdId == "") {
             $("#Error_Text").html("! Please select Student to Print Challan");
         }
-        else if (Month == "" || Month == "All") {
-            $("#Error_Text").html("! Please select Month to Print Challan");
+        else {
+            debugger
+            isPaid = "";
+            for (var a = 0; a < Status.length; a++) {
+
+                if (Status[a] == "Paid") {
+
+                    isPaid = "Paid";
+                    break;
+                }
+            }
+            if (isPaid == "Paid") {
+
+                var type = 'danger';
+                var msg = "Paid Challan Cannot be Printed";
+                showNotification('top', 'center', msg, type);
+
+            }
+            else {
+                window.location.href = "/StudentFeeMonths/ChallanFormView?idlist=" + StdId;
+            }
+        }
+    }
+    function ChangeStatusChallan() {
+
+
+        var StdId = SelectedMonths.toString();
+        if (StdId == "") {
+
+            $("#Error_Text").html("");
 
         }
+
         else {
-            window.location.href = "/StudentFeeMonths/ChallanFormView?month=" + Month + "&&idlist= " + StdId;
+            debugger
+            isPaid = "";
+            isPending = "";
+            for (var a = 0; a < Status.length; a++) {
+
+                if (Status[a] == "Paid") {
+
+                    isPaid = "Paid";
+                    break;
+                }
+                else if (Status[a] == "Pending") {
+                    isPending = "Pending";
+                    break;
+                }
+                else {
+
+                }
+            }
+            if (isPaid == "Paid") {
+
+                var type = 'danger';
+                var msg = "Challan is already paid";
+                showNotification('top', 'center', msg, type);
+
+            }
+            else if (isPending == "Pending") {
+
+                var type = 'danger';
+                var msg = "Pending challan cannot be paid";
+                showNotification('top', 'center', msg, type);
+
+            }
+            else {
+                // window.location.href = "/StudentFeeMonths/ChallanFormView?idlist=" + StdId;
+
+                window.location.href = "/StudentFeeMonths/ChangeChallanStatus?idlist=" + StdId;
+            }
         }
+
     }
 
 
     $(document).on("click", ".check_class", function () {
+        debugger
+
+
         debugger;
         var ischecked = $(this).is(':checked');
         if (!ischecked) {
             var selectedvalue = $(this).val();
             var index = SelectedMonths.indexOf(selectedvalue);
             SelectedMonths.splice(index, 1);
+            Status.splice(index, 1);
         }
         else {
             var selectedvalue = $(this).val();
             SelectedMonths.push(selectedvalue);
             Counter++;
             $("#counter").val(SelectedMonths);
+            var statusName = $(this).attr('name')
+            Status.push(statusName);
+
         }
+
+
+        // isPaid = "";
+
+        //$("input:checked").each(function () {
+
+        //    var name = $(this).attr('name');
+
+        //    if (name == "Paid") {
+
+        //        isPaid = "Paid";
+
+        //    }
+
+        //})
+
+
+
 
     });
 
@@ -399,11 +486,13 @@
     function Refresh() {
         window.location.href = "";
     }
+
 </script>
 
 <div class="inc-btn hidden">
     <span id="Error_Text" style="margin-right:40%" class="text-danger"></span>
-    <button value="Challan Date" class="btn btn-default" id="challan-date" data-toggle="modal" data-target="#myModal1"><i class="fa fa-calendar"> </i>  Challan Date</button>
+    @*<button value="Challan Date" class="btn btn-default" id="challan-date" data-toggle="modal" data-target="#myModal1"><i class="fa fa-calendar"> </i>  Challan Date</button>*@
+
 </div>
 <input type="hidden" name="counter" id="counter" />
 
@@ -415,7 +504,13 @@
 
             <div class="box-body">
 
+                <input type="hidden" id="StudentChallanFormMsg" name="name" value="@TempData["StudentChallanFormCreated"]" />
+                <input type="hidden" id="ClassChallanFormMsg" name="name" value="@TempData["ClassChallanFormCreated"]" />
+
+
                 <div class="table-responsive">
+
+
                     <table class="table table-bordered" id="example">
                         <thead>
                             <tr>
@@ -423,10 +518,13 @@
                                     @Html.DisplayNameFor(model => model.Id)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.AspNetStudent.Name)
+                                    @Html.DisplayNameFor(model => model.StudentFee.AspNetStudent.Name)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.IssueDate)
+                                    @Html.DisplayNameFor(model => model.ChallanIssueDate)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.ChallanDueDate)
                                 </th>
                                 <th>
                                     Month
@@ -435,17 +533,13 @@
                                     Status
                                 </th>
                                 <th>
-                                    Payable Fee
+                                    Payable Amount
                                 </th>
                                 <th>
-                                    Monthly Fee
-                                </th>
-                                <th>
-
                                     @Html.DisplayNameFor(model => model.Multiplier)
                                 </th>
                                 <th>
-                                    Status
+                                    Action
                                 </th>
                             </tr>
                         </thead>
@@ -459,15 +553,95 @@
                                         @Html.DisplayFor(modelItem => item.Id)
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.AspNetStudent.Name)
+                                        @Html.DisplayFor(modelItem => item.StudentFee.AspNetStudent.Name)
 
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.IssueDate)
+                                        @*@Html.DisplayFor(modelItem => item.ChallanIssueDate)*@
+
+                                        @string.Format("{0:MM/dd/yyyy}", item.ChallanIssueDate)
 
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.Months)
+
+                                        @*@Html.DisplayFor(modelItem => item.ChallanDueDate.Value.ToShortDateString())*@
+                                        @*@Html.DisplayFor(modelItem => item.ChallanDueDate)*@
+
+                                        @string.Format("{0:MM/dd/yyyy}", item.ChallanDueDate)
+
+                                    </td>
+                                    <td>
+
+                                        @if (item.Month == 1)
+                                        {
+                                            <label>January</label>
+                                        }
+                                        else if (item.Month == 2)
+                                        {
+                                            <label>February</label>
+
+                                        }
+                                        else if (item.Month == 3)
+                                        {
+                                            <label>March</label>
+
+                                        }
+
+                                        else if (item.Month == 4)
+                                        {
+
+                                            <label>April</label>
+                                        }
+
+                                        else if (item.Month == 5)
+                                        {
+                                            <label>May</label>
+
+                                        }
+
+                                        else if (item.Month == 6)
+                                        {
+                                            <label>June</label>
+
+                                        }
+
+                                        else if (item.Month == 7)
+                                        {
+                                            <label>July</label>
+
+                                        }
+
+                                        else if (item.Month == 8)
+                                        {
+                                            <label>August</label>
+
+                                        }
+
+                                        else if (item.Month == 9)
+                                        {
+                                            <label>September</label>
+
+                                        }
+
+                                        else if (item.Month == 10)
+                                        {
+                                            <label>October</label>
+
+                                        }
+
+                                        else if (item.Month == 11)
+                                        {
+                                            <label>November</label>
+
+                                        }
+
+                                        else if (item.Month == 12)
+                                        {
+                                            <label>December</label>
+
+                                        }
+
+
 
                                     </td>
                                     <td>
@@ -475,23 +649,51 @@
 
                                     </td>
                                     <td>
-                                        @Html.DisplayFor(modelItem => item.FeePayable)
+                                        @Html.DisplayFor(modelItem => item.PaidAmount)
 
                                     </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.InstalmentAmount)
 
-                                    </td>
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Multiplier)
                                     </td>
 
                                     <td>
-                                        <input type="checkbox" value=@item.Id class="check_class" name="printcheck" id="test'@item.Id'" /><label for="test'@item.Id'"></label>
+                                        <input type="checkbox" value=@item.Id class="check_class" name="@item.Status" id="test'@item.Id'" /><label for="test'@item.Id'"></label>
                                     </td>
                                 </tr>
                             }
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Id)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.StudentFee.AspNetStudent.Name)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.ChallanIssueDate)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.ChallanDueDate)
+                                </th>
+                                <th>
+                                    Month
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                                <th>
+                                    Payable Amount
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Multiplier)
+                                </th>
+                                <th>
+                                    Action
+                                </th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>

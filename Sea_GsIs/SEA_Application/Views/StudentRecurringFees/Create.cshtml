@@ -1,4 +1,4 @@
-﻿@model SEA_Application.Models.StudentRecurringFee
+﻿@model SEA_Application.Models.ClassFee
 @{
     ViewBag.Title = "Create";
 }
@@ -14,6 +14,10 @@
     .color2:hover {
         background-color: #dc0000 !important;
     }
+    #Error
+    {
+        color:red;
+    }
 </style>
 <script>
     $(document).ready(function () {
@@ -24,26 +28,135 @@
         $("#BreadCrumbs").append(' <li class=""><a id="BreadCrumps1" href="/StudentRecurringFees/Index">Recurring Fee</a> <span>&gt;</span></li>');
         $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#"> Create </a></li>');
 
+        $.ajax({
 
-        $.post(
-            "/StudentRecurringFees/CheckClassDeplication?Id=1007",
-            function (value) {
-                if (value == 'success') {
+            type: "POST",
+            cache: false,
+            url: "/StudentRecurringFees/AllSession",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#SessionID");
 
-                    $('#submit').prop("disabled", false);
-                    $("#error-tag").hide();
+
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").text('Select Session'));
+                    for (i = 0; i < sch.length; i++) {
+
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i].Id).text(sch[i].Year));
+                    }
                 }
+
                 else {
 
-                    $("#error-tag").show();
-                    $('#submit').prop("disabled", true);
                 }
-            },
-            "text"
-        );
+            }
+        });
 
-        $("#error-tag").hide();
+        $.ajax({
+
+            type: "POST",
+            cache: false,
+            url: "/StudentRecurringFees/AllBranches",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#BranchId");
+                $el.empty();
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").text('Select Branch'));
+                    for (i = 0; i < sch.length; i++) {
+
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i].Id).text(sch[i].Name));
+                    }
+                }
+
+                else {
+                    $el.append($("<option></option>")
+                        .attr("value", '').text('Select Branch'));
+                }
+            }
+        });
+
+
+
+    //    $('input[type="number"]').on('keyup', function () {
+
+    //        debugger
+    //    v = parseInt($(this).val());
+    //    min = parseInt($(this).attr('min'));
+    //   // max = parseInt($(this).attr('max'));
+
+    //    /*if (v < min){
+    //        $(this).val(min);
+    //    } else */
+    //         if (v > min) {
+    //        $(this).val(v);
+    //    }
+    //})
+
+        $('#BranchId').change(function () {
+
+            $("#Error").html("");
+            $("#SaveButton").prop('disabled', false);
+            checkRecurringFeeExist();
+            var BranchId = $(this).val();
+
+            if (BranchId != "") {
+
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/StudentRecurringFees/ClassesByBranch?BranchId=" + BranchId,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#ClassId");
+                        $el.empty();
+
+
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Class'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Class'));
+                        }
+                    }
+                });
+            }
+            else {
+                var $el = $("#ClassId");
+                $el.empty();
+
+            }
+
+        });
+
+
         $('#ClassId').change(function () {
+
+            $("#Error").html("");
+            $("#SaveButton").prop('disabled', false);
+
+            checkRecurringFeeExist();
             var ClassId = $(this).val();
 
             $.post(
@@ -72,27 +185,105 @@
 
     })
 
-    function TotalFee(a) {
-        var sum = 0;
-        var total = 0;
+    function TotalFee() {
+        debugger
 
-        //var feetype = parseInt(e);
-        total = parseInt($("#total").val());
-        if (isNaN(total)) {
-            total = 0;
-            $("#total").val(total);
+        var TutionFee = $("#TutionFee").val();
+        if (TutionFee == "") {
 
+            TutionFee = 0;
         }
 
-        var sum = 0;
-        $(".code").each(function () {
-            if (!isNaN(this.value) && this.value.length != 0) {
-                sum += +$(this).val();
-            }
-            $("#total").val(sum);
+        var LabCharges = $("#LabCharges").val();
 
-        })
+        if (LabCharges == "") {
+
+            LabCharges = 0;
+        }
+        var ComputerFee = $("#ComputerFee").val();
+
+        if (ComputerFee == "") {
+
+            ComputerFee = 0;
+        }
+        var OtherServices = $("#OtherServices").val();
+        if (OtherServices == "") {
+
+            OtherServices = 0;
+        }
+
+        var AdmissionFee = $("#AdmissionFee").val();
+        if (AdmissionFee == "") {
+
+            AdmissionFee = 0;
+        }
+
+        Total = parseInt(TutionFee) + parseInt(LabCharges) + parseInt(ComputerFee) + parseInt(AdmissionFee) + parseInt(OtherServices);
+
+        $("#total").val(Total);
+
+
     }
+
+    function checkRecurringFeeExist() {
+
+        var BranchId = $("#BranchId").val();
+        var ClassId = $("#ClassId").val();
+
+        if (BranchId != "" && ClassId != "") {
+
+            $.ajax({
+                type: "POST",
+                url: "/StudentRecurringFees/checkRecurringFeeExist",
+                data: { "BranchId": BranchId, "ClassId": ClassId },
+                success: function (data) {
+
+                    if (data == "") {
+                        $("#SaveButton").prop('disabled', false);
+                        $("#Error").html("");
+                    }
+                    else {
+
+
+                        $("#SaveButton").prop('disabled', true);
+                        $("#Error").html(data);
+
+                    }
+
+
+
+                }
+
+
+            })
+        }
+
+
+
+
+    }
+
+    //function TotalFee(a) {
+    //    var sum = 0;
+    //    var total = 0;
+
+    //    //var feetype = parseInt(e);
+    //    total = parseInt($("#total").val());
+    //    if (isNaN(total)) {
+    //        total = 0;
+    //        $("#total").val(total);
+
+    //    }
+
+    //    var sum = 0;
+    //    $(".code").each(function () {
+    //        if (!isNaN(this.value) && this.value.length != 0) {
+    //            sum += +$(this).val();
+    //        }
+    //        $("#total").val(sum);
+
+    //    })
+    //}
 
 
 
@@ -112,28 +303,49 @@
 
                     </div>
                 }
-                @using (Html.BeginForm(null, null, FormMethod.Post, new { id = "Registerform" }))
+                @using (Html.BeginForm("Create", "StudentRecurringFees", FormMethod.Post, new { id = "Registerform" }))
                 {
                     @Html.AntiForgeryToken()
 
                     <div class="form-horizontal">
                         @*<hr />*@
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        <div class="form-group">
+                            <span class="col-md-2">Branch</span>
+                            <div class="col-md-6">
+                                <select class="form-control" id="BranchId" name="BranchId" required></select>
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <span class="col-md-2">Class</span>
                             <div class="col-md-6">
-                                @Html.DropDownList("ClassId", null, htmlAttributes: new { @class = "form-control", @id = "ClassId" })
-                                @Html.ValidationMessageFor(model => model.ClassId, "", new { @class = "text-danger" })
-                                <div class="error" id="error-tag">Class Already Exists !</div>
+
+                                <select class="form-control" id="ClassId" name="ClassId" required></select>
+                                <br />
+                                <span id="Error"></span>
+                            </div>
+                          
+
+                        </div>
+
+                        <div class="form-group">
+                            <span class="col-md-2">Session</span>
+                            <div class="col-md-6">
+
+                                <select class="form-control" id="SessionID" name="SessionID" required></select>
+
                             </div>
                         </div>
+
                         <div class="form-group">
 
                             <div class="col-md-6">
 
                                 <div class="form-group bmd-form-group my-3">
                                     <label class="bmd-label-floating">Tution  Fee</label>
-                                    @Html.EditorFor(model => model.TutionFee, new { htmlAttributes = new { @class = "form-control code" } })
+                                    @Html.EditorFor(model => model.TutionFee, new { htmlAttributes = new {  @type = "number", @Value = 0, @min = 0, @class = "form-control code", @required = true } })
                                     @Html.ValidationMessageFor(model => model.TutionFee, "", new { @class = "text-danger" })
                                 </div>
                             </div>
@@ -144,7 +356,7 @@
 
                                 <div class="form-group bmd-form-group my-3">
                                     <label class="bmd-label-floating">Lab Charges</label>
-                                    @Html.EditorFor(model => model.LabCharges, new { htmlAttributes = new { @class = "form-control code" } })
+                                    @Html.EditorFor(model => model.LabCharges, new { htmlAttributes = new {  @type = "number", @Value = 0, @min = 0, @class = "form-control code", @required = true } })
                                     @Html.ValidationMessageFor(model => model.LabCharges, "", new { @class = "text-danger" })
                                 </div>
                             </div>
@@ -154,7 +366,7 @@
                             <div class="col-md-6">
                                 <div class="form-group bmd-form-group my-3">
                                     <label class="bmd-label-floating">Computer Fee</label>
-                                    @Html.EditorFor(model => model.ComputerFee, new { htmlAttributes = new { @class = "form-control code" } })
+                                    @Html.EditorFor(model => model.ComputerFee, new { htmlAttributes = new {  @type = "number" ,@Value = 0, @min = 0, @class = "form-control code", @required = true } })
                                     @Html.ValidationMessageFor(model => model.ComputerFee, "", new { @class = "text-danger" })
                                 </div>
                             </div>
@@ -205,8 +417,19 @@
                             <div class="col-md-6">
                                 <div class="form-group bmd-form-group my-3">
                                     <label class="bmd-label-floating">Other</label>
-                                    @Html.EditorFor(model => model.Other, new { htmlAttributes = new { @class = "form-control code" } })
-                                    @Html.ValidationMessageFor(model => model.Other, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.OtherServices, new { htmlAttributes = new {  @type = "number", @Value = 0, @min = 0, @class = "form-control code", @required = true } })
+                                    @Html.ValidationMessageFor(model => model.OtherServices, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <div class="col-md-6">
+                                <div class="form-group bmd-form-group my-3">
+                                    <label class="bmd-label-floating">Admission Fee</label>
+                                    @Html.EditorFor(model => model.AdmissionFee, new { htmlAttributes = new {  @type = "number", @Value = 0, @min = 0, @class = "form-control code", @required = true } })
                                 </div>
                             </div>
                         </div>
@@ -215,13 +438,17 @@
                         <div class="form-group">
                             <span class="col-md-2">Total Fee</span>
                             <div class="col-md-6">
-                                @Html.EditorFor(model => model.TotalFee, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @id = "total" } })
-                                @Html.ValidationMessageFor(model => model.TotalFee, "", new { @class = "text-danger" })
+                                @Html.EditorFor(model => model.Total, new { htmlAttributes = new {  @type = "number" ,@class = "form-control", @min = 0, @readonly = "readonly", @id = "total", @required = true } })
+                                @Html.ValidationMessageFor(model => model.Total, "", new { @class = "text-danger" })
                             </div>
                         </div>
 
+                        <br />
 
-                    </div>
+
+                        <div>
+                        </div>
+                        </div>
                 }
 
                 <div class="col-md-offset-2 col-md-5">
@@ -229,16 +456,13 @@
                     @*<button class="col-md-2 form-control color2" onclick="window.location.href = '/StudentRecurringFees/Index'" style="border-radius:35px;border:hidden;background-color:red;margin-right:10px;color:white;font-size:11px;width:98px;height:38px;font-family:Montserrat" id="return"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Return</button>
                         <input class="col-md-2 form-control color" id="submit" form="Registerform" type="submit" value="Save" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />*@
 
-
-
                     <button type="button" onclick="window.location.href = '/StudentRecurringFees/Index'" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
                         <i class="material-icons mr-2">cached</i>  Return
                     </button>
 
                     <button type="submit" form="Registerform" id="SaveButton" class="btn btn-primary rounded rounded-lg"> Save </button>
 
-
-
+                    
                     <br />
                     <br /><br />
                 </div>

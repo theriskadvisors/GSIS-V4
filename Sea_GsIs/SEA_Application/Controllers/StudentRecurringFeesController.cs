@@ -14,12 +14,18 @@ namespace SEA_Application.Controllers
     {
         private Sea_Entities db = new Sea_Entities();
 
-        // GET: StudentRecurringFees
+        //GET: StudentRecurringFees
         public ActionResult Index()
         {
-            var studentRecurringFees = db.StudentRecurringFees.Include(s => s.AspNetClass);
+            var studentRecurringFees = db.ClassFees.Include(x => x.AspNetBranch_Class.AspNetClass).Include(x => x.AspNetBranch_Class.AspNetBranch);
             return View(studentRecurringFees.ToList());
         }
+
+        //public ActionResult Index()
+        //{
+        //    var classFee = db.ClassFees.Include(s => s.AspNetSession).Include(x=>x.AspNetBranch_Class.AspNetBranch);
+        //    return View(classFee.ToList());
+        //}
 
         // GET: StudentRecurringFees/Details/5
         public ActionResult Details(int? id)
@@ -41,8 +47,8 @@ namespace SEA_Application.Controllers
         public ActionResult CheckClassDeplication(int Id)
         {
             string status = "error";
-           
-           if(db.StudentRecurringFees.Where(x=>x.ClassId == Id).Count() > 0)
+
+            if (db.StudentRecurringFees.Where(x => x.ClassId == Id).Count() > 0)
             {
                 status = "error";
             }
@@ -60,78 +66,82 @@ namespace SEA_Application.Controllers
             return View();
         }
 
+        public ActionResult AllBranches()
+        {
+            var Branches = (from branch in db.AspNetBranches
+                            select new
+                            {
+                                branch.Id,
+                                branch.Name,
+                            }).Distinct();
+
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(Branches);
+            return Content(status);
+        }
+        public ActionResult AllSession()
+        {
+            var Sessions = (from Session in db.AspNetSessions
+
+                            select new
+                            {
+                                Session.Id,
+                                Session.Year,
+
+                            });
+
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(Sessions);
+            return Content(status);
+        }
+
+
+        public ActionResult ClassesByBranch(int BranchId)
+        {
+            //var Classes = (from classs in db.AspNetClasses
+            //               join branchclasssubject in db.AspnetGenericBranchClassSubjects on classs.Id equals branchclasssubject.ClassId
+            //               where branchclasssubject.BranchId == BranchId
+            //               select new
+            //               {
+            //                   classs.Id,
+            //                   classs.Name,
+            //               }).Distinct();
+
+
+            var Classes = db.AspNetBranch_Class.Where(x => x.BranchId == BranchId).ToList().Select(x => new { x.AspNetClass.Id, x.AspNetClass.Name });
+
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(Classes);
+            return Content(status);
+        }
+
+
         // POST: StudentRecurringFees/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,ClassId,ComputerFee,SecurityServices,LabCharges,Transportation,SportsShirt,ChineseClassFee,AdvanceTax,Other,TutionFee,TotalFee")] StudentRecurringFee studentRecurringFee)
+        public ActionResult Create(/*[Bind(Include = "Id,ClassId,ComputerFee,SecurityServices,LabCharges,Transportation,SportsShirt,ChineseClassFee,AdvanceTax,Other,TutionFee,TotalFee")]*/ ClassFee classFee)
         {
+
             try
             {
+                var BranchId = Convert.ToInt32(Request.Form["BranchId"]);
+                var ClassId = Convert.ToInt32(Request.Form["ClassId"]);
 
+                int BranchClassId = db.AspNetBranch_Class.Where(x => x.BranchId == BranchId && x.ClassId == ClassId).FirstOrDefault().Id;
 
-             
-                if (ModelState.IsValid)
-                {
-                    db.StudentRecurringFees.Add(studentRecurringFee);
-                    db.SaveChanges();
-                    var stdList = db.AspNetStudents.Where(x => x.ClassId == studentRecurringFee.ClassId).ToList().Count();
-                    for (int i = 0; i < stdList; i++)
-                    {
-                        Ledger ledger = db.Ledgers.Where(x => x.Name == "Student Receivables").FirstOrDefault();
-                        ledger.StartingBalance += Convert.ToDecimal(studentRecurringFee.TotalFee);
-                        ledger.CurrentBalance += Convert.ToDecimal(studentRecurringFee.TotalFee);
-                        db.SaveChanges();
+                classFee.BranchClassID = BranchClassId;
+                classFee.CreationDate = DateTime.Now;
 
-                    }
+                db.ClassFees.Add(classFee);
+                db.SaveChanges();
+                return RedirectToAction("Index");
 
-                    for (int i = 0; i < stdList; i++)
-                    {
-                        Ledger ledger = db.Ledgers.Where(x => x.Name == "Student Fee").FirstOrDefault();
-                        ledger.StartingBalance += Convert.ToDecimal(studentRecurringFee.TotalFee);
-                        ledger.CurrentBalance += Convert.ToDecimal(studentRecurringFee.TotalFee);
-                        db.SaveChanges();
-
-                    }
-
-                    //multiplier
-                    List<AspNetStudent> list = db.AspNetStudents.Where(x => x.ClassId == studentRecurringFee.ClassId).ToList();
-                    foreach (var std in list)
-                    {
-                        var classid = db.AspNetStudents.Where(x => x.Id == std.Id).Select(x => x.ClassId).FirstOrDefault();
-                        var totalfee = db.StudentRecurringFees.Where(x => x.ClassId == std.ClassId).FirstOrDefault();
-                        var installment = totalfee.TotalFee / 12;
-                        string[] Months = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
-                        for (int i = 0; i < Months.Count(); i++)
-                        {
-                            StudentFeeMonth stdfeemonth = new StudentFeeMonth();
-                            stdfeemonth.StudentId = std.Id;
-                            stdfeemonth.Status = "Pending";
-                            stdfeemonth.InstalmentAmount = installment;
-                            stdfeemonth.FeePayable = installment;
-                            var dddd = DateTime.Now;
-                            var d = dddd.ToString("yyyy-MM-dd");
-                            stdfeemonth.IssueDate = dddd;
-                            stdfeemonth.Months = Months[i];
-                            db.StudentFeeMonths.Add(stdfeemonth);
-                            db.SaveChanges();
-
-                        }
-
-                    }
-
-
-                    return RedirectToAction("Index");
-                }
             }
-            catch(Exception e)
+            catch (Exception ex)
             {
-                ViewBag.ErrorMessage = e.Message;
+                return View(classFee);
             }
 
-            ViewBag.ClassId = new SelectList(db.AspNetClasses, "Id", "Name", studentRecurringFee.ClassId);
-            return View(studentRecurringFee);
+
         }
 
         // GET: StudentRecurringFees/Edit/5
@@ -141,13 +151,38 @@ namespace SEA_Application.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            StudentRecurringFee studentRecurringFee = db.StudentRecurringFees.Find(id);
-            if (studentRecurringFee == null)
+            ClassFee classFee = db.ClassFees.Find(id);
+            if (classFee == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.ClassId = new SelectList(db.AspNetClasses, "Id", "Name", studentRecurringFee.ClassId);
-            return View(studentRecurringFee);
+            //  ViewBag.ClassId = new SelectList(db.AspNetClasses, "Id", "Name", studentRecurringFee.ClassId);
+            var Branches = (from branch in db.AspNetBranches
+                            select new
+                            {
+                                branch.Id,
+                                branch.Name,
+                            }).Distinct();
+
+            var Classes = db.AspNetBranch_Class.Where(x => x.BranchId == classFee.AspNetBranch_Class.BranchId).ToList().Select(x => new { x.AspNetClass.Id, x.AspNetClass.Name });
+
+            ViewBag.BranchId = new SelectList(Branches, "Id", "Name", classFee.AspNetBranch_Class.AspNetBranch.Id);
+
+            ViewBag.ClassId = new SelectList(Classes, "Id", "Name", classFee.AspNetBranch_Class.AspNetClass.Id);
+
+            var Sessions = (from Session in db.AspNetSessions
+
+                            select new
+                            {
+                                Session.Id,
+                                Session.Year,
+
+                            });
+
+            ViewBag.SessionID = new SelectList(Sessions, "Id", "Year", classFee.SessionID);
+
+
+            return View(classFee);
         }
 
         // POST: StudentRecurringFees/Edit/5
@@ -155,60 +190,58 @@ namespace SEA_Application.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,ClassId,ComputerFee,SecurityServices,LabCharges,Transportation,SportsShirt,ChineseClassFee,AdvanceTax,Other,TutionFee,TotalFee")] StudentRecurringFee studentRecurringFee)
+        public ActionResult Edit(ClassFee classFee)
         {
-
-            if (ModelState.IsValid)
+            try
             {
-                db.Entry(studentRecurringFee).State = EntityState.Modified;
-                if(db.SaveChanges()>0)
-                {
+
+                var BranchId = Convert.ToInt32(Request.Form["BranchId"]);
+                var ClassId = Convert.ToInt32(Request.Form["ClassId"]);
+
+                int BranchClassId = db.AspNetBranch_Class.Where(x => x.BranchId == BranchId && x.ClassId == ClassId).FirstOrDefault().Id;
+
+                classFee.BranchClassID = BranchClassId;
 
 
-
-                    List<AspNetStudent> list = db.AspNetStudents.Where(x => x.ClassId == studentRecurringFee.ClassId).ToList();
-                    foreach (var std in list)
-                    {
-
-                        var tdfee = db.StudentFeeMonths.Where(x => x.StudentId == std.Id ).ToList();
-                        foreach (var item in tdfee)
-                        {
-                            StudentFeeMonth student = db.StudentFeeMonths.Where(x => x.Id == item.Id).FirstOrDefault();
-                            db.StudentFeeMonths.Remove(student);
-                            db.SaveChanges();
-                        }
-
-                        var classid = db.AspNetStudents.Where(x => x.Id == std.Id).Select(x => x.ClassId).FirstOrDefault();
-                        var totalfee = db.StudentRecurringFees.Where(x => x.ClassId == std.ClassId).FirstOrDefault();
-                        var installment = totalfee.TotalFee / 12;
-                        string[] Months = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
-                        for (int i = 0; i < Months.Count(); i++)
-                        {
-                            StudentFeeMonth stdfeemonth = new StudentFeeMonth();
-                            stdfeemonth.StudentId = std.Id;
-                            stdfeemonth.Status = "Pending";
-                            stdfeemonth.InstalmentAmount = installment;
-                            stdfeemonth.FeePayable = installment;
-                            var dddd = DateTime.Now;
-                            var d = dddd.ToString("yyyy-MM-dd");
-                            stdfeemonth.IssueDate = dddd;
-                            stdfeemonth.Months = Months[i];
-                            db.StudentFeeMonths.Add(stdfeemonth);
-                            db.SaveChanges();
-
-                        }
+                ClassFee classFeeToUpdate = db.ClassFees.Where(x => x.Id == classFee.Id).FirstOrDefault();
 
 
-                    }
+                classFeeToUpdate.LabCharges = classFee.LabCharges;
+                classFeeToUpdate.OtherServices = classFee.OtherServices;
+                classFeeToUpdate.SessionID = classFee.SessionID;
+                classFeeToUpdate.BranchClassID = BranchClassId;
+                classFeeToUpdate.ComputerFee = classFee.ComputerFee;
+                classFeeToUpdate.AdmissionFee = classFee.AdmissionFee;
+                classFeeToUpdate.Total = classFee.Total;
+                classFeeToUpdate.TutionFee = classFee.TutionFee;
 
-                }
-
-
-
+                db.SaveChanges();
                 return RedirectToAction("Index");
+
             }
-            ViewBag.ClassId = new SelectList(db.AspNetClasses, "Id", "Name", studentRecurringFee.ClassId);
-            return View(studentRecurringFee);
+            catch (Exception ex)
+            {
+                return View(classFee);
+            }
+
+            //  return View(classFee);
+        }
+        public ActionResult checkRecurringFeeExist(int BranchId, int ClassId)
+        {
+            var Msg = "";
+            AspNetBranch_Class branchClass = db.AspNetBranch_Class.Where(x => x.BranchId == BranchId && x.ClassId == ClassId).FirstOrDefault();
+
+            ClassFee classFee = db.ClassFees.Where(x => x.BranchClassID == branchClass.Id).FirstOrDefault();
+
+            if (classFee != null)
+            {
+
+                Msg = "Class fee is already created of selected branch and class";
+
+            }
+
+
+            return Json(Msg, JsonRequestBehavior.AllowGet);
         }
 
         // GET: StudentRecurringFees/Delete/5

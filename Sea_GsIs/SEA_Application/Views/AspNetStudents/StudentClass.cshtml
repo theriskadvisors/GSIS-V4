@@ -3,18 +3,20 @@
     ViewBag.Title = "StudentClass";
     Layout = "~/Views/Shared/_BranchAdminDashboardLayout.cshtml";
 }
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<style>
 
+    select.form-control option:first-child {
+        color: black !important;
+    }
+</style>
 
-@using (Html.BeginForm("StudentEntrollment", "AspNetStudents", FormMethod.Post))
+@using (Html.BeginForm("StudentEntrollment", "AspnetStudents", FormMethod.Post))
 {
     <div class="row">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-body p-5">
-
-
-
-
 
                     @Html.AntiForgeryToken()
 
@@ -23,18 +25,12 @@
 
                         <div class="form-group bmd-form-group my-3 is-filled">
                             <label class="bmd-label-floating">Select Student <span class="red-mark">*</span> </label>
-
-
-                            @Html.DropDownList("StudentList", null, "Select Student", htmlAttributes: new { @class = "form-control", @required = true })
-
+                            @Html.DropDownList("StudentList", null, "Select Student", htmlAttributes: new { @class = "form-control select2dropdown", @required = true })
                         </div>
-
 
                         <div class="form-group bmd-form-group my-3 is-filled">
                             <label class="bmd-label-floating">Select Class <span class="red-mark">*</span> </label>
-
-
-                            @Html.DropDownList("ClassId", null, "Select Class", htmlAttributes: new { @class = "form-control", @required = true })
+                            @Html.DropDownList("ClassId", null, "Select Class", htmlAttributes: new { @class = "form-control",@disabled ="disabled", @required = true })
 
                         </div>
 
@@ -43,7 +39,7 @@
                         <div class="form-row mt-3">
                             <div class="form-group col-md-12 bmd-form-group">
                                 <label for="" class="bmd-label-static pl-2">Select Section*</label>
-                                <select class="form-control" id="SectionId" name="SectionId" required></select>
+                                <select class="form-control" id="SectionId" name="SectionId"  required></select>
                             </div>
                         </div>
 
@@ -75,7 +71,7 @@
                                     <div class="box-body">
 
                                         @*@Html.ListBox("TopicId", null, htmlAttributes: new { @class = "form-control", @style = "height:400px;" })*@
-                                        <select multiple style="height:400px;overflow-x:scroll" class="form-control" id="Courses" name="Courses" required></select>
+                                        <select multiple style="height: 400px; overflow-x: scroll" class="form-control" id="Courses" name="Courses" required></select>
 
 
                                     </div>
@@ -125,6 +121,8 @@
             var Student = $(this).val();
             //    alert(Student);
 
+            var StudentClassId = "";
+
             if (Student != "") {
 
                 $.ajax({
@@ -134,17 +132,22 @@
 
                     //data: { "SubjectId": SubjectId },
                     success: function (data) {
+                        debugger
                         $("#Error").html("");
 
-                        if (data == "No") {
+                        StudentClassId = data.ClassId;
+
+                        if (data.IsStudentEntroll == "No") {
                             //$("#Error").html("Selected Student is Already Enrolled");
-                            //$("#submit").prop('disabled', true);
+                            $("#submit").prop('disabled', false);
                         } else {
-                            //$("#submit").prop('disabled', false);
-                            $("#Error").html("Selected Student is Already Enrolled in " + data);
+                            $("#submit").prop('disabled', true);
+                            $("#Error").html("Selected Student is Already Enrolled in " + data.IsStudentEntroll);
                         }
+                        $('#ClassId option[value="' + StudentClassId + '"]').prop('selected', true);
+                        getSections(StudentClassId);
 
-
+                        getCourses(StudentClassId);
 
                     }
                 })
@@ -155,111 +158,14 @@
 
 
 
-        $('#ClassId').change(function () {
-
-            var classId = $(this).val();
+        //$('#ClassId').change(function () {
 
 
-            //console.log(subid);
+        //});
 
-            if (classId != "") {
+        //$("#ClassId").change(function () {
 
-                $.ajax({
-                    type: "POST",
-                    cache: false,
-                    url: "/AspNetStudents/GetSections?ClassId=" + classId,
-                    processData: false,
-                    contentType: false,
-                    success: function (data) {
-                        var sch = JSON.parse(data);
-                        console.log(sch);
-                        var $el = $("#SectionId");
-                        $el.empty();
-                        if (sch.length > 0) {
-                            $el.append($("<option></option>")
-                                .attr("value", "").text('Select Section'));
-                            for (i = 0; i < sch.length; i++) {
-
-                                $el.append($("<option></option>")
-                                    .attr("value", sch[i].branchClassSectionId).text(sch[i].sectionName));
-                            }
-                        }
-                        else {
-                            $el.append($("<option></option>")
-                                .attr("value", '').text('Select'));
-                        }
-                    }
-                });
-
-            }
-            else {
-
-                var $el = $("#SectionId");
-                $el.empty();
-            }
-
-        });
-
-
-
-
-
-
-        $("#ClassId").change(function () {
-
-            var ClassId = $(this).val();
-
-
-            if (ClassId != "") {
-
-                $.ajax({
-
-                    type: "POST",
-                    url: "/AspNetStudents/GetCourses?ClassId=" + ClassId,
-                    processData: false,
-                    contentType: false,
-                    //data: { "SubjectId": SubjectId },
-                    success: function (data) {
-                        // $('#TopicId').html('');
-                        //$('#QuestionID').html('');
-                        var sch = JSON.parse(data);
-                        //$.each(data, function (i, item) {
-
-                        //    debugger
-                        //    // var classname = $("#ClassID option[value='" + item.ClassID + "']").text();
-                        //    $('#TopicId').append('<option value=' + item.Id + '>' + item.Name + ' </option>');
-
-                        //});
-                        var $el = $("#Courses");
-                        $el.empty();
-
-                        if (sch.length > 0) {
-                            for (i = 0; i < sch.length; i++) {
-
-                                $el.append($("<option></option>")
-                                    .attr("value", sch[i].Id).text(sch[i].Name));
-                            }
-                        }
-                        else {
-                            $el.append($("<option></option>")
-                                .attr("value", '').text('Select Subjects'));
-                        }
-
-                    }
-
-
-                })
-            }
-            else {
-
-                //  var $el = $("#TopicId");
-                //$el.empty();
-
-                var $e2 = $("#Courses");
-                $e2.empty();
-            }
-
-        })
+        //})
 
 
         //$("#saveBtn").click(function () {
@@ -289,8 +195,116 @@
 
 
         //})
-
+        $('.select2dropdown option[value=""]').removeAttr("selected");
+        var data1 = $('.select2dropdown').select2()
+            .on("select2:select", function (e) {
+                var selected_element = $(e.currentTarget);
+                var select_val = selected_element.val();
+                var id = $(this).children(".select2-hidden-accessible").context.id;
+            });
 
     })
 
+
+    function getSections(id) {
+
+        var classId = id;
+
+
+        //console.log(subid);
+
+        if (classId != "") {
+
+            $.ajax({
+                type: "POST",
+                cache: false,
+                url: "/AspNetStudents/GetSections?ClassId=" + classId,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    var sch = JSON.parse(data);
+                    console.log(sch);
+                    var $el = $("#SectionId");
+                    $el.empty();
+                    if (sch.length > 0) {
+                        $el.append($("<option></option>")
+                            .attr("value", "").text('Select Section'));
+                        for (i = 0; i < sch.length; i++) {
+
+                            $el.append($("<option></option>")
+                                .attr("value", sch[i].branchClassSectionId).text(sch[i].sectionName));
+                        }
+                    }
+                    else {
+                        $el.append($("<option></option>")
+                            .attr("value", '').text('Select'));
+                    }
+                }
+            });
+
+        }
+        else {
+
+            var $el = $("#SectionId");
+            $el.empty();
+        }
+
+    }
+
+    function getCourses(id) {
+
+        var ClassId = id;
+
+
+        if (ClassId != "") {
+
+            $.ajax({
+
+                type: "POST",
+                url: "/AspNetStudents/GetCourses?ClassId=" + ClassId,
+                processData: false,
+                contentType: false,
+                //data: { "SubjectId": SubjectId },
+                success: function (data) {
+                    // $('#TopicId').html('');
+                    //$('#QuestionID').html('');
+                    var sch = JSON.parse(data);
+                    //$.each(data, function (i, item) {
+
+                    //    debugger
+                    //    // var classname = $("#ClassID option[value='" + item.ClassID + "']").text();
+                    //    $('#TopicId').append('<option value=' + item.Id + '>' + item.Name + ' </option>');
+
+                    //});
+                    var $el = $("#Courses");
+                    $el.empty();
+
+                    if (sch.length > 0) {
+                        for (i = 0; i < sch.length; i++) {
+
+                            $el.append($("<option></option>")
+                                .attr("value", sch[i].Id).text(sch[i].Name));
+                        }
+                    }
+                    else {
+                        $el.append($("<option></option>")
+                            .attr("value", '').text('Select Subjects'));
+                    }
+
+                }
+
+
+            })
+        }
+        else {
+
+            var $e2 = $("#Courses");
+            $e2.empty();
+        }
+
+    }
 </script>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>

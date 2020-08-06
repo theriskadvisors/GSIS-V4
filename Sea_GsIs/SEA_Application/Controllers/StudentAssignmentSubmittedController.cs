@@ -433,159 +433,159 @@ namespace SEA_Application.Controllers
         }
 
 
-        //public ActionResult DownloadFileOfAssignment(int id, string Name)
-        //{
-        //    AspnetStudentAssignmentSubmission studentAssignment = db.AspnetStudentAssignmentSubmissions.Find(id);
-
-        //    var filepath = System.IO.Path.Combine(Server.MapPath("~/Content/StudentAssignments/"), Name);
-
-        //    return File(filepath, MimeMapping.GetMimeMapping(filepath), Name);
-        //}
-
-        //public ActionResult DownloadResubmittedFileOfAssignment(int id, string Name)
-        //{
-        //    AspnetStudentAssignmentSubmission studentAssignment = db.AspnetStudentAssignmentSubmissions.Find(id);
-        //    var filepath = System.IO.Path.Combine(Server.MapPath("~/Content/StudentAssignments/"), Name);
-        //    return File(filepath, MimeMapping.GetMimeMapping(filepath), Name);
-        //}
-
-        public ActionResult DownloadFileOfAssignment(int id, string[] Name)
+        public ActionResult DownloadFileOfAssignment(int id, string Name)
         {
-            try
-            {
-                var list = new List<string>();
-                list.Add(".jpg");
-                list.Add(".png");
-                list.Add(".bmp");
-                list.Add(".gif");
-                list.Add(".jpeg");
-                list.Add(".tiff");
-                var filename = Name[0].ToLower();
-                bool isThere = false;
-                foreach (var item in list)
-                {
-                    if (filename.EndsWith(item))
-                    {
-                        isThere = true;
-                        break;
-                    }
-                }
-                if (isThere == true)
-                {
-                    iTextSharp.text.Rectangle pageSize = null;
-                    using (var srcImage = new Bitmap(new FileStream(Server.MapPath("~/Content/StudentAssignments/") + Name[0], FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
-                    {
-                        pageSize = new iTextSharp.text.Rectangle(0, 0, srcImage.Width, srcImage.Height);
-                    }
-                    using (var ms = new MemoryStream())
-                    {
-                        var document = new iTextSharp.text.Document(pageSize, 0, 0, 0, 0);
-                        iTextSharp.text.pdf.PdfWriter.GetInstance(document, ms).SetFullCompression();
-                        document.Open();
-                        var image = iTextSharp.text.Image.GetInstance(new FileStream(Server.MapPath("~/Content/StudentAssignments/") + Name[0], FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
-                        document.Add(image);
-                        document.Close();
-                        string fileName = Name[0];
-                        int fileExtPos = fileName.LastIndexOf(".");
-                        // if (fileExtPos >= 0)	
+            AspnetStudentAssignmentSubmission studentAssignment = db.AspnetStudentAssignmentSubmissions.Find(id);
 
-                        fileName = fileName.Substring(0, fileExtPos);
-                        fileName = fileName + ".pdf";
-                        System.IO.File.WriteAllBytes(Server.MapPath("~/Content/DownloadedAssignments/") + fileName, ms.ToArray());
+            var filepath = System.IO.Path.Combine(Server.MapPath("~/Content/StudentAssignments/"), Name);
 
-                        var filepath1 = System.IO.Path.Combine(Server.MapPath("~/Content/DownloadedAssignments/"), fileName);
-                        return File(filepath1, MimeMapping.GetMimeMapping(filepath1), fileName);
-                    }
-                }
-                else
-                {
-                    AspnetStudentAssignmentSubmission studentAssignment = db.AspnetStudentAssignmentSubmissions.Find(id);
-                    var filepath1 = System.IO.Path.Combine(Server.MapPath("~/Content/StudentAssignments/"), Name[0]);
-                    return File(filepath1, MimeMapping.GetMimeMapping(filepath1), Name[0]);
-                }
-            }
-            catch (Exception ex)
-            {
-                AspnetStudentAssignmentSubmission studentAssignment = db.AspnetStudentAssignmentSubmissions.Find(id);
-                var filepath1 = System.IO.Path.Combine(Server.MapPath("~/Content/StudentAssignments/"), Name[0]);
-                return File(filepath1, MimeMapping.GetMimeMapping(filepath1), Name[0]);
-                //return RedirectToAction("TeacherComments", new { id = id });
-            }
-            //Name = "test.pdf";	
-            //var filepath = System.IO.Path.Combine(Server.MapPath("~/Content/DownloadedAssignments/"), Name);	
-            //return File(filepath, MimeMapping.GetMimeMapping(filepath), Name);	
-            //AspnetStudentAssignmentSubmission studentAssignment = db.AspnetStudentAssignmentSubmissions.Find(id);	
-            //var filepath1 = System.IO.Path.Combine(Server.MapPath("~/Content/StudentAssignments/"), Name[0]);	
-            //return File(filepath1, MimeMapping.GetMimeMapping(filepath1), Name[0]);	
+            return File(filepath, MimeMapping.GetMimeMapping(filepath), Name);
         }
-        //public ActionResult DownloadResubmittedFileOfAssignment(int id, string Name)	
-        //{	
-        //    AspnetStudentAssignmentSubmission studentAssignment = db.AspnetStudentAssignmentSubmissions.Find(id);	
-        //    var filepath = System.IO.Path.Combine(Server.MapPath("~/Content/StudentAssignments/"), Name);	
-        //    return File(filepath, MimeMapping.GetMimeMapping(filepath), Name);	
-        //}	
-        public ActionResult DownloadResubmittedFileOfAssignment(int id, string[] Name)
+
+        public ActionResult DownloadResubmittedFileOfAssignment(int id, string Name)
         {
-            try
-            {
-                var list = new List<string>();
-                list.Add(".jpg");
-                list.Add(".png");
-                list.Add(".bmp");
-                list.Add(".gif");
-                list.Add(".jpeg");
-                list.Add(".tiff");
-                var filename = Name[0].ToLower();
-                bool isThere = false;
-                foreach (var item in list)
-                {
-                    if (filename.EndsWith(item))
-                    {
-                        isThere = true;
-                        break;
-                    }
-                }
-                if (isThere == true)
-                {
-                    iTextSharp.text.Rectangle pageSize = null;
-                    using (var srcImage = new Bitmap(new FileStream(Server.MapPath("~/Content/StudentAssignments/") + Name[0], FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
-                    {
-                        pageSize = new iTextSharp.text.Rectangle(0, 0, srcImage.Width, srcImage.Height);
-                    }
-                    using (var ms = new MemoryStream())
-                    {
-                        var document = new iTextSharp.text.Document(pageSize, 0, 0, 0, 0);
-                        iTextSharp.text.pdf.PdfWriter.GetInstance(document, ms).SetFullCompression();
-                        document.Open();
-                        var image = iTextSharp.text.Image.GetInstance(new FileStream(Server.MapPath("~/Content/StudentAssignments/") + Name[0], FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
-                        document.Add(image);
-                        document.Close();
-                        string fileName = Name[0];
-                        int fileExtPos = fileName.LastIndexOf(".");
-                        // if (fileExtPos >= 0)	
-                        fileName = fileName.Substring(0, fileExtPos);
-                        fileName = fileName + ".pdf";
-                        System.IO.File.WriteAllBytes(Server.MapPath("~/Content/DownloadedAssignments/") + fileName, ms.ToArray());
-                        //System.IO.File.WriteAllBytes("C:/Users/TRA/Documents/GitHub/GSIS_V3/Sea_GsIs/SEA_Application/Content/DownloadedAssignments/" + fileName, ms.ToArray());
-                        var filepath1 = System.IO.Path.Combine(Server.MapPath("~/Content/DownloadedAssignments/"), fileName);
-                        return File(filepath1, MimeMapping.GetMimeMapping(filepath1), fileName);
-                    }
-                }
-                else
-                {
-                    AspnetStudentAssignmentSubmission studentAssignment = db.AspnetStudentAssignmentSubmissions.Find(id);
-                    var filepath1 = System.IO.Path.Combine(Server.MapPath("~/Content/StudentAssignments/"), Name[0]);
-                    return File(filepath1, MimeMapping.GetMimeMapping(filepath1), Name[0]);
-                }
-            }
-            catch (Exception ex)
-            {
-                AspnetStudentAssignmentSubmission studentAssignment = db.AspnetStudentAssignmentSubmissions.Find(id);
-                var filepath1 = System.IO.Path.Combine(Server.MapPath("~/Content/StudentAssignments/"), Name[0]);
-                return File(filepath1, MimeMapping.GetMimeMapping(filepath1), Name[0]);
-                //return RedirectToAction("TeacherComments", new { id = id });
-            }
+            AspnetStudentAssignmentSubmission studentAssignment = db.AspnetStudentAssignmentSubmissions.Find(id);
+            var filepath = System.IO.Path.Combine(Server.MapPath("~/Content/StudentAssignments/"), Name);
+            return File(filepath, MimeMapping.GetMimeMapping(filepath), Name);
         }
+
+        //public ActionResult DownloadFileOfAssignment(int id, string[] Name)
+        //{
+        //    try
+        //    {
+        //        var list = new List<string>();
+        //        list.Add(".jpg");
+        //        list.Add(".png");
+        //        list.Add(".bmp");
+        //        list.Add(".gif");
+        //        list.Add(".jpeg");
+        //        list.Add(".tiff");
+        //        var filename = Name[0].ToLower();
+        //        bool isThere = false;
+        //        foreach (var item in list)
+        //        {
+        //            if (filename.EndsWith(item))
+        //            {
+        //                isThere = true;
+        //                break;
+        //            }
+        //        }
+        //        if (isThere == true)
+        //        {
+        //            iTextSharp.text.Rectangle pageSize = null;
+        //            using (var srcImage = new Bitmap(new FileStream(Server.MapPath("~/Content/StudentAssignments/") + Name[0], FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+        //            {
+        //                pageSize = new iTextSharp.text.Rectangle(0, 0, srcImage.Width, srcImage.Height);
+        //            }
+        //            using (var ms = new MemoryStream())
+        //            {
+        //                var document = new iTextSharp.text.Document(pageSize, 0, 0, 0, 0);
+        //                iTextSharp.text.pdf.PdfWriter.GetInstance(document, ms).SetFullCompression();
+        //                document.Open();
+        //                var image = iTextSharp.text.Image.GetInstance(new FileStream(Server.MapPath("~/Content/StudentAssignments/") + Name[0], FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
+        //                document.Add(image);
+        //                document.Close();
+        //                string fileName = Name[0];
+        //                int fileExtPos = fileName.LastIndexOf(".");
+        //                // if (fileExtPos >= 0)	
+
+        //                fileName = fileName.Substring(0, fileExtPos);
+        //                fileName = fileName + ".pdf";
+        //                System.IO.File.WriteAllBytes(Server.MapPath("~/Content/DownloadedAssignments/") + fileName, ms.ToArray());
+
+        //                var filepath1 = System.IO.Path.Combine(Server.MapPath("~/Content/DownloadedAssignments/"), fileName);
+        //                return File(filepath1, MimeMapping.GetMimeMapping(filepath1), fileName);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            AspnetStudentAssignmentSubmission studentAssignment = db.AspnetStudentAssignmentSubmissions.Find(id);
+        //            var filepath1 = System.IO.Path.Combine(Server.MapPath("~/Content/StudentAssignments/"), Name[0]);
+        //            return File(filepath1, MimeMapping.GetMimeMapping(filepath1), Name[0]);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        AspnetStudentAssignmentSubmission studentAssignment = db.AspnetStudentAssignmentSubmissions.Find(id);
+        //        var filepath1 = System.IO.Path.Combine(Server.MapPath("~/Content/StudentAssignments/"), Name[0]);
+        //        return File(filepath1, MimeMapping.GetMimeMapping(filepath1), Name[0]);
+        //        //return RedirectToAction("TeacherComments", new { id = id });
+        //    }
+        //    //Name = "test.pdf";	
+        //    //var filepath = System.IO.Path.Combine(Server.MapPath("~/Content/DownloadedAssignments/"), Name);	
+        //    //return File(filepath, MimeMapping.GetMimeMapping(filepath), Name);	
+        //    //AspnetStudentAssignmentSubmission studentAssignment = db.AspnetStudentAssignmentSubmissions.Find(id);	
+        //    //var filepath1 = System.IO.Path.Combine(Server.MapPath("~/Content/StudentAssignments/"), Name[0]);	
+        //    //return File(filepath1, MimeMapping.GetMimeMapping(filepath1), Name[0]);	
+        //}
+        ////public ActionResult DownloadResubmittedFileOfAssignment(int id, string Name)	
+        ////{	
+        ////    AspnetStudentAssignmentSubmission studentAssignment = db.AspnetStudentAssignmentSubmissions.Find(id);	
+        ////    var filepath = System.IO.Path.Combine(Server.MapPath("~/Content/StudentAssignments/"), Name);	
+        ////    return File(filepath, MimeMapping.GetMimeMapping(filepath), Name);	
+        ////}	
+        //public ActionResult DownloadResubmittedFileOfAssignment(int id, string[] Name)
+        //{
+        //    try
+        //    {
+        //        var list = new List<string>();
+        //        list.Add(".jpg");
+        //        list.Add(".png");
+        //        list.Add(".bmp");
+        //        list.Add(".gif");
+        //        list.Add(".jpeg");
+        //        list.Add(".tiff");
+        //        var filename = Name[0].ToLower();
+        //        bool isThere = false;
+        //        foreach (var item in list)
+        //        {
+        //            if (filename.EndsWith(item))
+        //            {
+        //                isThere = true;
+        //                break;
+        //            }
+        //        }
+        //        if (isThere == true)
+        //        {
+        //            iTextSharp.text.Rectangle pageSize = null;
+        //            using (var srcImage = new Bitmap(new FileStream(Server.MapPath("~/Content/StudentAssignments/") + Name[0], FileMode.Open, FileAccess.Read, FileShare.ReadWrite)))
+        //            {
+        //                pageSize = new iTextSharp.text.Rectangle(0, 0, srcImage.Width, srcImage.Height);
+        //            }
+        //            using (var ms = new MemoryStream())
+        //            {
+        //                var document = new iTextSharp.text.Document(pageSize, 0, 0, 0, 0);
+        //                iTextSharp.text.pdf.PdfWriter.GetInstance(document, ms).SetFullCompression();
+        //                document.Open();
+        //                var image = iTextSharp.text.Image.GetInstance(new FileStream(Server.MapPath("~/Content/StudentAssignments/") + Name[0], FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
+        //                document.Add(image);
+        //                document.Close();
+        //                string fileName = Name[0];
+        //                int fileExtPos = fileName.LastIndexOf(".");
+        //                // if (fileExtPos >= 0)	
+        //                fileName = fileName.Substring(0, fileExtPos);
+        //                fileName = fileName + ".pdf";
+        //                System.IO.File.WriteAllBytes(Server.MapPath("~/Content/DownloadedAssignments/") + fileName, ms.ToArray());
+        //                //System.IO.File.WriteAllBytes("C:/Users/TRA/Documents/GitHub/GSIS_V3/Sea_GsIs/SEA_Application/Content/DownloadedAssignments/" + fileName, ms.ToArray());
+        //                var filepath1 = System.IO.Path.Combine(Server.MapPath("~/Content/DownloadedAssignments/"), fileName);
+        //                return File(filepath1, MimeMapping.GetMimeMapping(filepath1), fileName);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            AspnetStudentAssignmentSubmission studentAssignment = db.AspnetStudentAssignmentSubmissions.Find(id);
+        //            var filepath1 = System.IO.Path.Combine(Server.MapPath("~/Content/StudentAssignments/"), Name[0]);
+        //            return File(filepath1, MimeMapping.GetMimeMapping(filepath1), Name[0]);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        AspnetStudentAssignmentSubmission studentAssignment = db.AspnetStudentAssignmentSubmissions.Find(id);
+        //        var filepath1 = System.IO.Path.Combine(Server.MapPath("~/Content/StudentAssignments/"), Name[0]);
+        //        return File(filepath1, MimeMapping.GetMimeMapping(filepath1), Name[0]);
+        //        //return RedirectToAction("TeacherComments", new { id = id });
+        //    }
+        //}
     }
 
     //public class AssignmentViewModel
