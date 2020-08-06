@@ -302,6 +302,7 @@
     <Compile Include="Controllers\LedgerGroupsController.cs" />
     <Compile Include="Controllers\LedgersController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\NonRecurringFeeController.cs" />
     <Compile Include="Controllers\NonRecurringFeeMultipliersController.cs" />
     <Compile Include="Controllers\NonRecurringMonthsController.cs" />
     <Compile Include="Controllers\NotificationController.cs" />
@@ -310,6 +311,7 @@
     <Compile Include="Controllers\StudentAnnouncementsController.cs" />
     <Compile Include="Controllers\StudentAssignmentSubmittedController.cs" />
     <Compile Include="Controllers\StudentAttendanceReportController.cs" />
+    <Compile Include="Controllers\StudentChallanController.cs" />
     <Compile Include="Controllers\StudentController.cs" />
     <Compile Include="Controllers\StudentCoursesController.cs" />
     <Compile Include="Controllers\StudentDiscountsController.cs" />
@@ -333,6 +335,9 @@
     </Compile>
     <Compile Include="Models\AccountantUserEmployeeViewModel.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AllStudentsList_Result.cs">
+      <DependentUpon>SEA_Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\AspNetAccountant.cs">
       <DependentUpon>SEA_Model.tt</DependentUpon>
     </Compile>
@@ -640,6 +645,9 @@
     <Compile Include="Models\NonRecurringMonth.cs">
       <DependentUpon>SEA_Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\NonRecurringType.cs">
+      <DependentUpon>SEA_Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Order.cs">
       <DependentUpon>SEA_Model.tt</DependentUpon>
     </Compile>
@@ -682,7 +690,12 @@
     <Compile Include="Models\StudentDiscount.cs">
       <DependentUpon>SEA_Model.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\StudentFeeDetail.cs" />
+    <Compile Include="Models\StudentFee.cs">
+      <DependentUpon>SEA_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StudentFeeDetail.cs">
+      <DependentUpon>SEA_Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\StudentFeeMonth.cs">
       <DependentUpon>SEA_Model.tt</DependentUpon>
     </Compile>
@@ -690,6 +703,12 @@
       <DependentUpon>SEA_Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\StudentLessonTracking.cs">
+      <DependentUpon>SEA_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StudentNonRecurringFee.cs">
+      <DependentUpon>SEA_Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\StudentNonRecurringFeesList_Result.cs">
       <DependentUpon>SEA_Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\StudentPenalty.cs">
@@ -700,6 +719,7 @@
       <DependentUpon>SEA_Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\StudentRegisterViewModel.cs" />
+    <Compile Include="Models\StudentRegistrationViewModel.cs" />
     <Compile Include="Models\StudentTestSubject.cs">
       <DependentUpon>SEA_Model.tt</DependentUpon>
     </Compile>
@@ -3543,6 +3563,10 @@
     <Content Include="Views\AspNetStudents\QuizDetails.cshtml" />
     <Content Include="Views\AspnetQuestions\ViewQuestionAndQuizByAdmin.cshtml" />
     <Content Include="Views\AspNetStudents\QuizDetailsByAdmin.cshtml" />
+    <Content Include="Views\NonRecurringFee\Create.cshtml" />
+    <Content Include="Views\NonRecurringFee\Edit.cshtml" />
+    <Content Include="Views\NonRecurringFee\Index.cshtml" />
+    <Content Include="Views\StudentChallan\GetChallan.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AdminLTE\documentation\css\" />
