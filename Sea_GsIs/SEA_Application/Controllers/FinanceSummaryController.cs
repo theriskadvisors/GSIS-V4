@@ -474,6 +474,7 @@ namespace SEA_Application.Controllers
                     voucherrecord.VoucherId = db.Vouchers.Select(x => x.Id).Max();
                     var amount = Int32.Parse(item.Credit);
                     voucherrecord.Amount = amount;
+
                     if (item.BranchId == 0)
                     {
                         voucherrecord.BranchId = null;

@@ -83,7 +83,7 @@ namespace SEA_Application.Controllers
 
                 if (countStudentFeeDetails != 0)
                 {
-                    ErrorMsg = "challan is already created of selected branch,class,section,month and students";
+                    ErrorMsg = "Selected challan is already created ";
                 }
                 else if (count != 0)
                 {
@@ -120,7 +120,7 @@ namespace SEA_Application.Controllers
                     }
                     else
                     {
-                        ErrorMsg = "Students are not exists in selected branch,class,section";
+                        ErrorMsg = "There are no students entrolled";
                     }
 
 

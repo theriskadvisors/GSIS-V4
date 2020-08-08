@@ -38,14 +38,14 @@ namespace SEA_Application.Controllers
 
                 List<int> AllStudentsIds = db.AspNetStudent_Enrollments.Where(x => x.SectionId == SectionId).Select(x => x.StudentId).Distinct().ToList();
 
-              ///  List<int> ids  = new List<int> {  1835,1757 };
-                
+               // List<int> ids  = new List<int> {  1835,1757 };
+
 
                 var count = db.StudentFeeDetails.Where(x => AllStudentsIds.Contains(x.StudentFee.AspNetStudent.Id) && x.Month == MonthId).Count();
 
                 if (count != 0)
                 {
-                    errorMsg = "challan is already created of selected branch,class,section,month and students";
+                    errorMsg = "Selected challan is already created.";
                 }
                 else
                 {
@@ -53,20 +53,22 @@ namespace SEA_Application.Controllers
                     {
 
                         List<StudentFeeDetail> listStudentFeeDetails = new List<StudentFeeDetail>();
+                        foreach (var StudentId in AllStudentsIds)
+                        {
+                            var StudentFee = db.StudentFees.Where(x => x.StudentID == StudentId).FirstOrDefault();
+                            if (StudentFee == null)
+                            {
+                                FeeExist = false;
+
+                                throw new System.ArgumentException("Parameter cannot be null", "original");
+                            }
+                        }
 
                         foreach (var StudentId in AllStudentsIds)
                         {
                             StudentFeeDetail studentfeeDetails = new StudentFeeDetail();
 
                             var StudentFee = db.StudentFees.Where(x => x.StudentID == StudentId).FirstOrDefault();
-
-                            if (StudentFee == null)
-                            {
-                                FeeExist = false;
-
-                                break;
-
-                            }
 
                             studentfeeDetails.StudentFeeID = StudentFee.Id;
                             studentfeeDetails.ChallanSubmissionDate = null;
@@ -271,29 +273,19 @@ namespace SEA_Application.Controllers
 
                         } ///end loop
 
-                        if (FeeExist == true)
-                        {
+                        db.StudentFeeDetails.AddRange(listStudentFeeDetails);
+                        db.SaveChanges();
+                        TempData["ClassChallanFormCreated"] = "Created";
+                        dbTransaction.Commit();
 
-                            db.StudentFeeDetails.AddRange(listStudentFeeDetails);
-                            db.SaveChanges();
-                            TempData["ClassChallanFormCreated"] = "Created";
-                            dbTransaction.Commit();
-                        }
-                        else
-                        {
-                            errorMsg = "Fee is not created of all students selected branch class students .";
-                            dbTransaction.Dispose();
-                        }
 
                     }
                     else
                     {
-                        errorMsg = "Students are not exists in selected branch,class,section";
+                        errorMsg = "There are no students enrolled. ";
                         dbTransaction.Dispose();
                     }
                 }
-
-             
 
                 if (errorMsg == "")
                 {
@@ -305,10 +297,26 @@ namespace SEA_Application.Controllers
 
             catch (Exception ex)
             {
+
                 var msg = ex.Message;
+                
                 dbTransaction.Dispose();
 
-                errorMsg = "Exception";
+                if (FeeExist == true)
+                {
+                    errorMsg = "Exception";
+
+                }
+                else if (FeeExist == false)
+                {
+                    errorMsg = "Fee is not created for all students of the selected branch class";
+                }
+                else
+                {
+                    errorMsg = "Exception";
+                }
+
+
 
                 return Json(errorMsg, JsonRequestBehavior.AllowGet);
 
