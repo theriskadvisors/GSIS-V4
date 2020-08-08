@@ -28,11 +28,11 @@ namespace SEA_Application.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         private Sea_Entities db = new Sea_Entities();
-       // private string StudentID;
+        // private string StudentID;
 
         public AspNetStudentsController()
         {
-         //   StudentID = Convert.ToString(System.Web.HttpContext.Current.Session["StudentID"]);
+            //   StudentID = Convert.ToString(System.Web.HttpContext.Current.Session["StudentID"]);
         }
 
         public AspNetStudentsController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
@@ -81,20 +81,21 @@ namespace SEA_Application.Controllers
                 branchId = db.AspNetBranch_Admins
                 .Where(branchAdmin => branchAdmin.AdminId.Equals(loggedInUserId, StringComparison.OrdinalIgnoreCase))
                 .Select(branchAdmin => branchAdmin.BranchId).FirstOrDefault();
-            }else
+            }
+            else
             {
                 branchId = db.AspNetBranches.Where(x => x.BranchPrincipalId == loggedInUserId).Select(x => x.Id).FirstOrDefault();
-            }               
+            }
 
             if (User.IsInRole("Accountant"))
             {
-                ViewBag.ClassID = new SelectList(db.AspNetClasses , "Id", "Name");
+                ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "Name");
             }
             else
             {
                 ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.AspNetBranch_Class.Any(y => y.BranchId == branchId)), "Id", "Name");
             }
-                return View();
+            return View();
         }
         public JsonResult GetStudents()
         {
@@ -103,25 +104,27 @@ namespace SEA_Application.Controllers
 
             if (User.IsInRole("Accountant"))
             {
-                var studentList = (from stdnt in db.AspNetStudents
-                                join usr in db.AspNetUsers on stdnt.UserId equals usr.Id
-                                join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
-                                where stdnt.UserId == usr.Id && usr.StatusId != 2 // && stdnt.BranchId == branchId
-                                select new { stdnt.Name, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetClass.Name }).Distinct().ToList();
+                //var studentList = (from stdnt in db.AspNetStudents
+                //                join usr in db.AspNetUsers on stdnt.UserId equals usr.Id
+                //                join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
+                //                where stdnt.UserId == usr.Id && usr.StatusId != 2 // && stdnt.BranchId == branchId
+                //                select new { stdnt.Name, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetClass.Name }).Distinct().ToList();
 
-                List<Students> stdList = new List<Students>();
-                foreach (var item in studentList)
-                {
-                    Students s = new Students();
-                    s.Name = item.Name;
-                    s.RollNo = item.RollNo;
-                    s.PhoneNo = item.CellNo;
-                    s.JoiningDate = item.JoiningDate.ToString();
-                    s.ClassName = item.ClassName;
-                    stdList.Add(s);
-                }
+                //List<Students> stdList = new List<Students>();
+                //foreach (var item in studentList)
+                //{
+                //    Students s = new Students();
+                //    s.Name = item.Name;
+                //    s.RollNo = item.RollNo;
+                //    s.PhoneNo = item.CellNo;
+                //    s.JoiningDate = item.JoiningDate.ToString();
+                //    s.ClassName = item.ClassName;
+                //    stdList.Add(s);
+                //}
 
-                return Json(stdList, JsonRequestBehavior.AllowGet);
+                var studentList = db.AllStudentsList().ToList();
+
+                return Json(studentList, JsonRequestBehavior.AllowGet);
 
             }
 
@@ -135,31 +138,31 @@ namespace SEA_Application.Controllers
             {
                 branchId = db.AspNetBranches.Where(x => x.BranchPrincipalId == loggedInUserId).Select(x => x.Id).FirstOrDefault();
             }
-                
 
-                var students = (from stdnt in db.AspNetStudents
-                                join usr in db.AspNetUsers on stdnt.UserId equals usr.Id
-                                join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
-                                where stdnt.UserId == usr.Id && usr.StatusId != 2 && stdnt.BranchId == branchId
-                                select new { stdnt.Name, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetClass.Name }).Distinct().ToList();
 
-                //  var students = db.AspNetStudents.ToList();
+            var students = (from stdnt in db.AspNetStudents
+                            join usr in db.AspNetUsers on stdnt.UserId equals usr.Id
+                            join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
+                            where stdnt.UserId == usr.Id && usr.StatusId != 2 && stdnt.BranchId == branchId
+                            select new { stdnt.Name, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetClass.Name }).Distinct().ToList();
 
-                List<Students> std = new List<Students>();
-                foreach (var item in students)
-                {
-                    Students s = new Students();
-                    s.Name = item.Name;
-                    s.RollNo = item.RollNo;
-                    s.PhoneNo = item.CellNo;
-                    s.JoiningDate = item.JoiningDate.ToString();
-                    s.ClassName = item.ClassName;
-                    std.Add(s);
-                }
+            //  var students = db.AspNetStudents.ToList();
 
-                return Json(std, JsonRequestBehavior.AllowGet);
+            List<Students> std = new List<Students>();
+            foreach (var item in students)
+            {
+                Students s = new Students();
+                s.Name = item.Name;
+                s.RollNo = item.RollNo;
+                s.PhoneNo = item.CellNo;
+                s.JoiningDate = item.JoiningDate.ToString();
+                s.ClassName = item.ClassName;
+                std.Add(s);
+            }
 
-            
+            return Json(std, JsonRequestBehavior.AllowGet);
+
+
 
 
         }
@@ -182,19 +185,19 @@ namespace SEA_Application.Controllers
             //  var students = db.AspNetStudents.ToList();
 
             List<Students> std = new List<Students>();
-                foreach (var item in students)
-                {
-                    Students s = new Students();
-                    s.Name = item.Name;
-                    s.RollNo = item.RollNo;
-                    s.PhoneNo = item.CellNo;
-                    s.JoiningDate = item.JoiningDate.ToString();
-                    s.ClassName = item.ClassName;
-                    std.Add(s);
-                }
+            foreach (var item in students)
+            {
+                Students s = new Students();
+                s.Name = item.Name;
+                s.RollNo = item.RollNo;
+                s.PhoneNo = item.CellNo;
+                s.JoiningDate = item.JoiningDate.ToString();
+                s.ClassName = item.ClassName;
+                std.Add(s);
+            }
 
-                return Json(std, JsonRequestBehavior.AllowGet);
-          }
+            return Json(std, JsonRequestBehavior.AllowGet);
+        }
         public class Students
         {
             public string Name { get; set; }
@@ -328,15 +331,15 @@ namespace SEA_Application.Controllers
                             join usr in db.AspNetUsers
                             on stdnt.UserId equals usr.Id
                             where stdnt.UserId == usr.Id && usr.StatusId != 2 && stdnt.BranchId == branchId
-                            select new { usr.Id, Name = stdnt.Name + "(" + usr.UserName + ")", stdnt.RollNo, stdnt.CellNo, usr.Image }).OrderBy(x=> x.Name).ToList();
+                            select new { usr.Id, Name = stdnt.Name + "(" + usr.UserName + ")", stdnt.RollNo, stdnt.CellNo, usr.Image }).OrderBy(x => x.Name).ToList();
 
             ViewBag.StudentList = new SelectList(students, "Id", "Name");
 
 
-             var AllBranchClasses = (from clas in db.AspNetClasses
-                                   join branchClass in db.AspNetBranch_Class on clas.Id equals branchClass.ClassId
-                                   where branchClass.BranchId == branchId && branchClass.IsActive == true
-                                   select new { classId = clas.Id, className = clas.Name, branchClassId = branchClass.Id }).OrderBy(x=> x.className) ;
+            var AllBranchClasses = (from clas in db.AspNetClasses
+                                    join branchClass in db.AspNetBranch_Class on clas.Id equals branchClass.ClassId
+                                    where branchClass.BranchId == branchId && branchClass.IsActive == true
+                                    select new { classId = clas.Id, className = clas.Name, branchClassId = branchClass.Id }).OrderBy(x => x.className);
 
             ViewBag.ClassId = new SelectList(AllBranchClasses, "classId", "className");
 
@@ -363,7 +366,7 @@ namespace SEA_Application.Controllers
                 //}
 
                 var AllStudents = db.AspNetStudent_Enrollments.Where(x => x.StudentId == Student.Id).FirstOrDefault();
-                var className = db.AspNetStudent_Enrollments.Where(x => x.StudentId == Student.Id).Select(x=> x.AspNetClass_Courses.AspNetClass.Name).FirstOrDefault();
+                var className = db.AspNetStudent_Enrollments.Where(x => x.StudentId == Student.Id).Select(x => x.AspNetClass_Courses.AspNetClass.Name).FirstOrDefault();
                 ClassId = Student.ClassId.ToString();
                 var SectionName = db.AspNetStudent_Enrollments.Where(x => x.StudentId == Student.Id).Select(x => x.AspNetBranchClass_Sections.AspNetSection.Name).FirstOrDefault();
                 if (AllStudents != null)
@@ -401,7 +404,7 @@ namespace SEA_Application.Controllers
             //                  where classCourses.ClassId == ClassId && classCourses.IsMandatory == false && classCourses.IsActive == true
             //                  select new { classCourses.Id, course.Name };
 
-            var CoursesList = db.AspNetClass_Courses.Where(x => x.ClassId == ClassId).Select(x => new { x.Id, x.AspNetCours.Name }).OrderBy(x=> x.Name).Distinct();
+            var CoursesList = db.AspNetClass_Courses.Where(x => x.ClassId == ClassId).Select(x => new { x.Id, x.AspNetCours.Name }).OrderBy(x => x.Name).Distinct();
 
             string status = Newtonsoft.Json.JsonConvert.SerializeObject(CoursesList);
 
@@ -925,7 +928,7 @@ namespace SEA_Application.Controllers
             //string Password5 = "talha@123";
             //SendMail(user5.Email, "GSIS VLEP Login Created", "" + EmailDesign.SignupEmailTemplate(user5.Name, user5.UserName, Password5));
 
-          
+
 
             return RedirectToAction("Index");
         }
@@ -1014,7 +1017,7 @@ namespace SEA_Application.Controllers
         }
 
         public JsonResult Quiz_student_check()
-       {
+        {
             TimeZoneInfo PK_ZONE = TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time");
             DateTime PKTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, PK_ZONE);
             //var fiveMins = System.Data.Entity.DbFunctions.AddMinutes()
@@ -1022,7 +1025,7 @@ namespace SEA_Application.Controllers
             var StdID = User.Identity.GetUserId();
             var student_id = db.AspNetStudents.Where(x => x.UserId == StdID).Select(x => x.Id).FirstOrDefault();
             var student_performed_quizes = db.Student_Quiz_Scoring.Where(x => x.StudentId == student_id && x.AspnetQuiz.IsPublished == true).Select(x => x.AspnetQuiz.Id).Distinct().ToList();
-            var all_quizes = db.AspnetQuizs.Where(x=> x.IsPublished == true && ( x.StartTime <= PKTime && PKTime <= System.Data.Entity.DbFunctions.AddMinutes(x.StartTime, 15))).Select(x => x.Id).ToList();
+            var all_quizes = db.AspnetQuizs.Where(x => x.IsPublished == true && (x.StartTime <= PKTime && PKTime <= System.Data.Entity.DbFunctions.AddMinutes(x.StartTime, 15))).Select(x => x.Id).ToList();
             var Unperformed_quizes = all_quizes.Except(student_performed_quizes).ToList();
 
             return Json(Unperformed_quizes, JsonRequestBehavior.AllowGet);
@@ -1055,7 +1058,7 @@ namespace SEA_Application.Controllers
         public ActionResult QuizDetailsByAdmin(int Id)
         {
 
-            ViewBag.QuizTime = db.AspnetQuizs.Where(x => x.Id == Id).Select(x=> x.QuizTime).FirstOrDefault();
+            ViewBag.QuizTime = db.AspnetQuizs.Where(x => x.Id == Id).Select(x => x.QuizTime).FirstOrDefault();
             var questionList_MCQS = new List<question>();
             var Quiz_Questions = db.Quiz_Topic_Questions.Where(x => x.QuizId == Id).ToList();
 
@@ -1123,11 +1126,11 @@ namespace SEA_Application.Controllers
                               Subject = Q.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
                           }).Distinct().ToList();
 
-          
+
             return Json(quizes, JsonRequestBehavior.AllowGet);
 
         }
-        public ActionResult QuizDetails(int Id ,int StudentId )
+        public ActionResult QuizDetails(int Id, int StudentId)
         {
             ViewBag.QuizTime = db.AspnetQuizs.Where(x => x.Id == Id).Select(x => x.QuizTime).FirstOrDefault();
             var questionList_MCQS = new List<question>();
@@ -1243,7 +1246,7 @@ namespace SEA_Application.Controllers
                 {
                     status = "You've already started the Quiz";
                 }
-                
+
                 //db.SaveChanges();
                 return Json(status, JsonRequestBehavior.AllowGet);
             }
@@ -1318,52 +1321,103 @@ namespace SEA_Application.Controllers
 
             var studentFee = db.StudentFees.Where(x => x.StudentID == aspNetStudent.Id).FirstOrDefault();
             var studentFeeMultiplier = db.StudentFeeMultipliers.Where(x => x.StudentId == aspNetStudent.Id).FirstOrDefault();
-
             StudentRegistrationViewModel studentRegistrationViewModel = new StudentRegistrationViewModel();
-            studentRegistrationViewModel.TutionFee = studentFee.TutionFee.Value;
-            studentRegistrationViewModel.ComputerFee = studentFee.ComputerFee.Value;
-            studentRegistrationViewModel.LabCharges = studentFee.LabCharges.Value;
-            studentRegistrationViewModel.OtherServices = studentFee.OtherServices.Value;
-            studentRegistrationViewModel.AdmissionFee = studentFee.AdmissionFee.Value;
-            studentRegistrationViewModel.TotalFee = studentFee.Total.Value;
-            studentRegistrationViewModel.DiscountTutionFee = studentFee.DiscountTutionFee.Value;
-            studentRegistrationViewModel.DiscountLabCharges = studentFee.DiscountLabCharges.Value;
-            studentRegistrationViewModel.DiscountOtherServices = studentFee.DiscountOtherServices.Value;
-            studentRegistrationViewModel.DiscountAdmissionFee = studentFee.DiscountAdmissionFee.Value;
-            studentRegistrationViewModel.DiscountComputerFee = studentFee.DiscountComputerFee.Value;
-            studentRegistrationViewModel.DiscountTotal = studentFee.DiscountTotal.Value;
-            studentRegistrationViewModel.DiscountTutionFeeAmount = studentFee.DiscountTutionFeeAmount.Value;
-            studentRegistrationViewModel.DiscountComputerFeeAmount = studentFee.DiscountComputerFeeAmount.Value;
-            studentRegistrationViewModel.DiscountLabChargesAmount = studentFee.DiscountLabChargesAmount.Value;
-            studentRegistrationViewModel.DiscountOtherServicesAmount = studentFee.DiscountOtherServicesAmount.Value;
-            studentRegistrationViewModel.DiscountAdmissionFeeAmount = studentFee.DiscountAdmissionFeeAmount.Value;
-            studentRegistrationViewModel.DiscountTotalAmount = studentFee.DiscountTotalAmount.Value;
-            studentRegistrationViewModel.StudentID = aspNetStudent.Id;
 
-            studentRegistrationViewModel.Jan_Multiplier = studentFeeMultiplier.Jan_Multiplier.Value;
-            studentRegistrationViewModel.Feb_Multiplier = studentFeeMultiplier.Feb_Multiplier.Value;
-            studentRegistrationViewModel.Mar_Multiplier = studentFeeMultiplier.Mar_Multiplier.Value;
-            studentRegistrationViewModel.April__Multiplier = studentFeeMultiplier.April__Multiplier.Value;
-            studentRegistrationViewModel.May_Multiplier = studentFeeMultiplier.May_Multiplier.Value;
-            studentRegistrationViewModel.June_Multiplier = studentFeeMultiplier.June_Multiplier.Value;
-            studentRegistrationViewModel.July__Multiplier = studentFeeMultiplier.July__Multiplier.Value;
-            studentRegistrationViewModel.Aug_Multiplier = studentFeeMultiplier.Aug_Multiplier.Value;
-            studentRegistrationViewModel.Sep_Multiplier = studentFeeMultiplier.Sep_Multiplier.Value;
-            studentRegistrationViewModel.Oct_Multiplier = studentFeeMultiplier.Oct_Multiplier.Value;
-            studentRegistrationViewModel.Nov_Multiplier = studentFeeMultiplier.Nov_Multiplier.Value;
-            studentRegistrationViewModel.Dec__Multiplier = studentFeeMultiplier.Dec__Multiplier.Value;
+            if (studentFee != null && studentFeeMultiplier != null)
+            {
+                studentRegistrationViewModel.TutionFee = studentFee.TutionFee.Value;
+                studentRegistrationViewModel.ComputerFee = studentFee.ComputerFee.Value;
+                studentRegistrationViewModel.LabCharges = studentFee.LabCharges.Value;
+                studentRegistrationViewModel.OtherServices = studentFee.OtherServices.Value;
+                studentRegistrationViewModel.AdmissionFee = studentFee.AdmissionFee.Value;
+                studentRegistrationViewModel.TotalFee = studentFee.Total.Value;
+                studentRegistrationViewModel.DiscountTutionFee = studentFee.DiscountTutionFee.Value;
+                studentRegistrationViewModel.DiscountLabCharges = studentFee.DiscountLabCharges.Value;
+                studentRegistrationViewModel.DiscountOtherServices = studentFee.DiscountOtherServices.Value;
+                studentRegistrationViewModel.DiscountAdmissionFee = studentFee.DiscountAdmissionFee.Value;
+                studentRegistrationViewModel.DiscountComputerFee = studentFee.DiscountComputerFee.Value;
+                studentRegistrationViewModel.DiscountTotal = studentFee.DiscountTotal.Value;
+                studentRegistrationViewModel.DiscountTutionFeeAmount = studentFee.DiscountTutionFeeAmount.Value;
+                studentRegistrationViewModel.DiscountComputerFeeAmount = studentFee.DiscountComputerFeeAmount.Value;
+                studentRegistrationViewModel.DiscountLabChargesAmount = studentFee.DiscountLabChargesAmount.Value;
+                studentRegistrationViewModel.DiscountOtherServicesAmount = studentFee.DiscountOtherServicesAmount.Value;
+                studentRegistrationViewModel.DiscountAdmissionFeeAmount = studentFee.DiscountAdmissionFeeAmount.Value;
+                studentRegistrationViewModel.DiscountTotalAmount = studentFee.DiscountTotalAmount.Value;
+                studentRegistrationViewModel.StudentID = aspNetStudent.Id;
+
+                studentRegistrationViewModel.Jan_Multiplier = studentFeeMultiplier.Jan_Multiplier.Value;
+                studentRegistrationViewModel.Feb_Multiplier = studentFeeMultiplier.Feb_Multiplier.Value;
+                studentRegistrationViewModel.Mar_Multiplier = studentFeeMultiplier.Mar_Multiplier.Value;
+                studentRegistrationViewModel.April__Multiplier = studentFeeMultiplier.April__Multiplier.Value;
+                studentRegistrationViewModel.May_Multiplier = studentFeeMultiplier.May_Multiplier.Value;
+                studentRegistrationViewModel.June_Multiplier = studentFeeMultiplier.June_Multiplier.Value;
+                studentRegistrationViewModel.July__Multiplier = studentFeeMultiplier.July__Multiplier.Value;
+                studentRegistrationViewModel.Aug_Multiplier = studentFeeMultiplier.Aug_Multiplier.Value;
+                studentRegistrationViewModel.Sep_Multiplier = studentFeeMultiplier.Sep_Multiplier.Value;
+                studentRegistrationViewModel.Oct_Multiplier = studentFeeMultiplier.Oct_Multiplier.Value;
+                studentRegistrationViewModel.Nov_Multiplier = studentFeeMultiplier.Nov_Multiplier.Value;
+                studentRegistrationViewModel.Dec__Multiplier = studentFeeMultiplier.Dec__Multiplier.Value;
+
+                if (aspNetStudent.Birthdate != null)
+                {
+
+                    DateTime Date = Convert.ToDateTime(aspNetStudent.Birthdate);
+
+                    string date = Date.ToString("yyyy-MM-dd");
+
+                    ViewBag.BirthDate = date;
+                }
+                else
+                {
+                    ViewBag.BirthDate = null;
+                }
+            }
+            else
+            {
+
+                studentRegistrationViewModel.TutionFee = 0;
+                studentRegistrationViewModel.ComputerFee = 0;
+                studentRegistrationViewModel.LabCharges = 0;
+                studentRegistrationViewModel.OtherServices = 0;
+                studentRegistrationViewModel.AdmissionFee = 0;
+                studentRegistrationViewModel.TotalFee = 0;
+                studentRegistrationViewModel.DiscountTutionFee = 0;
+                studentRegistrationViewModel.DiscountLabCharges = 0;
+                studentRegistrationViewModel.DiscountOtherServices = 0;
+                studentRegistrationViewModel.DiscountAdmissionFee = 0;
+                studentRegistrationViewModel.DiscountComputerFee = 0;
+                studentRegistrationViewModel.DiscountTotal = 0;
+                studentRegistrationViewModel.DiscountTutionFeeAmount = 0;
+                studentRegistrationViewModel.DiscountComputerFeeAmount = 0;
+                studentRegistrationViewModel.DiscountLabChargesAmount = 0;
+                studentRegistrationViewModel.DiscountOtherServicesAmount = 0;
+                studentRegistrationViewModel.DiscountAdmissionFeeAmount = 0;
+                studentRegistrationViewModel.DiscountTotalAmount = 0;
+                studentRegistrationViewModel.StudentID = aspNetStudent.Id;
+
+                studentRegistrationViewModel.Jan_Multiplier = 0;
+                studentRegistrationViewModel.Feb_Multiplier = 0;
+                studentRegistrationViewModel.Mar_Multiplier = 0;
+                studentRegistrationViewModel.April__Multiplier = 0;
+                studentRegistrationViewModel.May_Multiplier = 0;
+                studentRegistrationViewModel.June_Multiplier = 0;
+                studentRegistrationViewModel.July__Multiplier = 0;
+                studentRegistrationViewModel.Aug_Multiplier = 0;
+                studentRegistrationViewModel.Sep_Multiplier = 0;
+                studentRegistrationViewModel.Oct_Multiplier = 0;
+                studentRegistrationViewModel.Nov_Multiplier = 0;
+                studentRegistrationViewModel.Dec__Multiplier = 0;
+                ViewBag.BirthDate = null;
+
+            }
+
             studentRegistrationViewModel.FName = aspNetStudent.Name;
             studentRegistrationViewModel.Email = aspNetStudent.AspNetUser.Email;
             studentRegistrationViewModel.RollNo = aspNetStudent.RollNo;
             studentRegistrationViewModel.CellNo = aspNetStudent.CellNo;
 
             studentRegistrationViewModel.Birthdate = aspNetStudent.Birthdate;
-
-            DateTime Date = Convert.ToDateTime(aspNetStudent.Birthdate);
-
-            string date = Date.ToString("yyyy-MM-dd");
-
-            ViewBag.BirthDate = date;
+       
 
             if (aspNetStudent == null)
             {
@@ -1408,6 +1462,8 @@ namespace SEA_Application.Controllers
             var dbTransaction = db.Database.BeginTransaction();
             try
             {
+                int ActiveSessionId = db.AspNetSessions.Where(x => x.IsActive == true).FirstOrDefault().Id;
+
                 AspNetStudent aspNetStudent = db.AspNetStudents.Where(x => x.Id == studentRegistrationViewModel.StudentID).FirstOrDefault();
 
                 aspNetStudent.Name = studentRegistrationViewModel.Name;
@@ -1441,44 +1497,127 @@ namespace SEA_Application.Controllers
 
                 StudentFee studentFee = db.StudentFees.Where(x => x.StudentID == studentRegistrationViewModel.StudentID).FirstOrDefault();
 
+                if (studentFee != null)
 
-                studentFee.TutionFee = studentRegistrationViewModel.TutionFee;
-                studentFee.ComputerFee = studentRegistrationViewModel.ComputerFee;
-                studentFee.LabCharges = studentRegistrationViewModel.LabCharges;
-                studentFee.OtherServices = studentRegistrationViewModel.OtherServices;
-                studentFee.AdmissionFee = studentRegistrationViewModel.AdmissionFee;
-                studentFee.Total = studentRegistrationViewModel.TotalFee;
-                studentFee.DiscountTutionFee = studentRegistrationViewModel.DiscountTutionFee;
-                studentFee.DiscountLabCharges = studentRegistrationViewModel.DiscountLabCharges;
-                studentFee.DiscountOtherServices = studentRegistrationViewModel.DiscountOtherServices;
-                studentFee.DiscountAdmissionFee = studentRegistrationViewModel.DiscountAdmissionFee;
-                studentFee.DiscountComputerFee = studentRegistrationViewModel.DiscountComputerFee;
-                studentFee.DiscountTotal = studentRegistrationViewModel.DiscountTotal;
-                studentFee.DiscountTutionFeeAmount = studentRegistrationViewModel.DiscountTutionFeeAmount;
-                studentFee.DiscountComputerFeeAmount = studentRegistrationViewModel.DiscountComputerFeeAmount;
-                studentFee.DiscountLabChargesAmount = studentRegistrationViewModel.DiscountLabChargesAmount;
-                studentFee.DiscountOtherServicesAmount = studentRegistrationViewModel.DiscountOtherServicesAmount;
-                studentFee.DiscountAdmissionFeeAmount = studentRegistrationViewModel.DiscountAdmissionFeeAmount;
-                studentFee.DiscountTotalAmount = studentRegistrationViewModel.DiscountTotalAmount;
-                studentFee.TotalWithoutAdmission = studentFee.DiscountTotalAmount - studentFee.DiscountAdmissionFeeAmount;
+                {
 
-                db.SaveChanges();
+
+                    studentFee.TutionFee = studentRegistrationViewModel.TutionFee;
+                    studentFee.ComputerFee = studentRegistrationViewModel.ComputerFee;
+                    studentFee.LabCharges = studentRegistrationViewModel.LabCharges;
+                    studentFee.OtherServices = studentRegistrationViewModel.OtherServices;
+                    studentFee.AdmissionFee = studentRegistrationViewModel.AdmissionFee;
+                    studentFee.Total = studentRegistrationViewModel.TotalFee;
+                    studentFee.DiscountTutionFee = studentRegistrationViewModel.DiscountTutionFee;
+                    studentFee.DiscountLabCharges = studentRegistrationViewModel.DiscountLabCharges;
+                    studentFee.DiscountOtherServices = studentRegistrationViewModel.DiscountOtherServices;
+                    studentFee.DiscountAdmissionFee = studentRegistrationViewModel.DiscountAdmissionFee;
+                    studentFee.DiscountComputerFee = studentRegistrationViewModel.DiscountComputerFee;
+                    studentFee.DiscountTotal = studentRegistrationViewModel.DiscountTotal;
+                    studentFee.DiscountTutionFeeAmount = studentRegistrationViewModel.DiscountTutionFeeAmount;
+                    studentFee.DiscountComputerFeeAmount = studentRegistrationViewModel.DiscountComputerFeeAmount;
+                    studentFee.DiscountLabChargesAmount = studentRegistrationViewModel.DiscountLabChargesAmount;
+                    studentFee.DiscountOtherServicesAmount = studentRegistrationViewModel.DiscountOtherServicesAmount;
+                    studentFee.DiscountAdmissionFeeAmount = studentRegistrationViewModel.DiscountAdmissionFeeAmount;
+                    studentFee.DiscountTotalAmount = studentRegistrationViewModel.DiscountTotalAmount;
+                    studentFee.TotalWithoutAdmission = studentFee.DiscountTotalAmount - studentFee.DiscountAdmissionFeeAmount;
+
+                    db.SaveChanges();
+
+                }
 
 
                 StudentFeeMultiplier studentFeeMultiplier = db.StudentFeeMultipliers.Where(x => x.StudentId == studentRegistrationViewModel.StudentID).FirstOrDefault();
-                studentFeeMultiplier.Jan_Multiplier = studentRegistrationViewModel.Jan_Multiplier;
-                studentFeeMultiplier.Feb_Multiplier = studentRegistrationViewModel.Feb_Multiplier;
-                studentFeeMultiplier.Mar_Multiplier = studentRegistrationViewModel.Mar_Multiplier;
-                studentFeeMultiplier.April__Multiplier = studentRegistrationViewModel.April__Multiplier;
-                studentFeeMultiplier.May_Multiplier = studentRegistrationViewModel.May_Multiplier;
-                studentFeeMultiplier.June_Multiplier = studentRegistrationViewModel.June_Multiplier;
-                studentFeeMultiplier.July__Multiplier = studentRegistrationViewModel.July__Multiplier;
-                studentFeeMultiplier.Aug_Multiplier = studentRegistrationViewModel.Aug_Multiplier;
-                studentFeeMultiplier.Sep_Multiplier = studentRegistrationViewModel.Sep_Multiplier;
-                studentFeeMultiplier.Oct_Multiplier = studentRegistrationViewModel.Oct_Multiplier;
-                studentFeeMultiplier.Nov_Multiplier = studentRegistrationViewModel.Nov_Multiplier;
-                studentFeeMultiplier.Dec__Multiplier = studentRegistrationViewModel.Dec__Multiplier;
-                db.SaveChanges();
+
+                if (studentFeeMultiplier != null)
+                {
+
+                    studentFeeMultiplier.Jan_Multiplier = studentRegistrationViewModel.Jan_Multiplier;
+                    studentFeeMultiplier.Feb_Multiplier = studentRegistrationViewModel.Feb_Multiplier;
+                    studentFeeMultiplier.Mar_Multiplier = studentRegistrationViewModel.Mar_Multiplier;
+                    studentFeeMultiplier.April__Multiplier = studentRegistrationViewModel.April__Multiplier;
+                    studentFeeMultiplier.May_Multiplier = studentRegistrationViewModel.May_Multiplier;
+                    studentFeeMultiplier.June_Multiplier = studentRegistrationViewModel.June_Multiplier;
+                    studentFeeMultiplier.July__Multiplier = studentRegistrationViewModel.July__Multiplier;
+                    studentFeeMultiplier.Aug_Multiplier = studentRegistrationViewModel.Aug_Multiplier;
+                    studentFeeMultiplier.Sep_Multiplier = studentRegistrationViewModel.Sep_Multiplier;
+                    studentFeeMultiplier.Oct_Multiplier = studentRegistrationViewModel.Oct_Multiplier;
+                    studentFeeMultiplier.Nov_Multiplier = studentRegistrationViewModel.Nov_Multiplier;
+                    studentFeeMultiplier.Dec__Multiplier = studentRegistrationViewModel.Dec__Multiplier;
+                    db.SaveChanges();
+
+
+                }
+
+                if(studentFee ==null && studentFeeMultiplier ==null)
+                {
+
+
+                    StudentFee studentFee1 = new StudentFee();
+
+                    studentFee1.StudentID = aspNetStudent.Id;
+                    studentFee1.TutionFee = studentRegistrationViewModel.TutionFee;
+                    studentFee1.ComputerFee = studentRegistrationViewModel.ComputerFee;
+                    studentFee1.LabCharges = studentRegistrationViewModel.LabCharges;
+                    studentFee1.OtherServices = studentRegistrationViewModel.OtherServices;
+                    studentFee1.AdmissionFee = studentRegistrationViewModel.AdmissionFee;
+                    studentFee1.Total = studentRegistrationViewModel.TotalFee;
+                    studentFee1.DiscountTutionFee = studentRegistrationViewModel.DiscountTutionFee;
+                    studentFee1.DiscountLabCharges = studentRegistrationViewModel.DiscountLabCharges;
+                    studentFee1.DiscountOtherServices = studentRegistrationViewModel.DiscountOtherServices;
+                    studentFee1.DiscountAdmissionFee = studentRegistrationViewModel.DiscountAdmissionFee;
+                    studentFee1.DiscountComputerFee = studentRegistrationViewModel.DiscountComputerFee;
+                    studentFee1.DiscountTotal = studentRegistrationViewModel.DiscountTotal;
+                    studentFee1.SessionID = ActiveSessionId;
+                    studentFee1.DiscountTutionFeeAmount = studentRegistrationViewModel.DiscountTutionFeeAmount;
+                    studentFee1.DiscountComputerFeeAmount = studentRegistrationViewModel.DiscountComputerFeeAmount;
+                    studentFee1.DiscountLabChargesAmount = studentRegistrationViewModel.DiscountLabChargesAmount;
+                    studentFee1.DiscountOtherServicesAmount = studentRegistrationViewModel.DiscountOtherServicesAmount;
+                    studentFee1.DiscountAdmissionFeeAmount = studentRegistrationViewModel.DiscountAdmissionFeeAmount;
+                    studentFee1.DiscountTotalAmount = studentRegistrationViewModel.DiscountTotalAmount;
+                    studentFee1.TotalWithoutAdmission = studentFee1.DiscountTotalAmount - studentFee1.DiscountAdmissionFeeAmount;
+
+                    studentFee1.CreationDate = DateTime.Now;
+
+                    db.StudentFees.Add(studentFee1);
+                    db.SaveChanges();
+
+                    StudentFeeMultiplier studentFeeMultiplier1 = new StudentFeeMultiplier();
+                    studentFeeMultiplier1.Jan_Multiplier = studentRegistrationViewModel.Jan_Multiplier;
+                    studentFeeMultiplier1.Feb_Multiplier = studentRegistrationViewModel.Feb_Multiplier;
+                    studentFeeMultiplier1.Mar_Multiplier = studentRegistrationViewModel.Mar_Multiplier;
+                    studentFeeMultiplier1.April__Multiplier = studentRegistrationViewModel.April__Multiplier;
+                    studentFeeMultiplier1.May_Multiplier = studentRegistrationViewModel.May_Multiplier;
+                    studentFeeMultiplier1.June_Multiplier = studentRegistrationViewModel.June_Multiplier;
+                    studentFeeMultiplier1.July__Multiplier = studentRegistrationViewModel.July__Multiplier;
+                    studentFeeMultiplier1.Aug_Multiplier = studentRegistrationViewModel.Aug_Multiplier;
+                    studentFeeMultiplier1.Sep_Multiplier = studentRegistrationViewModel.Sep_Multiplier;
+                    studentFeeMultiplier1.Oct_Multiplier = studentRegistrationViewModel.Oct_Multiplier;
+                    studentFeeMultiplier1.Nov_Multiplier = studentRegistrationViewModel.Nov_Multiplier;
+                    studentFeeMultiplier1.Dec__Multiplier = studentRegistrationViewModel.Dec__Multiplier;
+                    studentFeeMultiplier1.SesisonID = ActiveSessionId;
+
+
+                    studentFeeMultiplier1.Jan_StatusPaid = false;
+                    studentFeeMultiplier1.Feb_StatusPaid = false;
+                    studentFeeMultiplier1.Mar_StatusPaid = false;
+                    studentFeeMultiplier1.April_StatusPaid = false;
+                    studentFeeMultiplier1.May_StatusPaid = false;
+                    studentFeeMultiplier1.June_StatusPaid = false;
+                    studentFeeMultiplier1.July_StatusPaid = false;
+                    studentFeeMultiplier1.Aug_StatusPaid = false;
+                    studentFeeMultiplier1.Sep_StatusPaid = false;
+                    studentFeeMultiplier1.Oct_StatusPaid = false;
+                    studentFeeMultiplier1.Nov_StatusPaid = false;
+                    studentFeeMultiplier1.Dec_StatusPaid = false;
+                    studentFeeMultiplier1.CreationDate = DateTime.Now;
+                    studentFeeMultiplier1.StudentId = aspNetStudent.Id;
+
+                    db.StudentFeeMultipliers.Add(studentFeeMultiplier1);
+                    db.SaveChanges();
+
+
+                }
 
                 IsStudentUpdated = "Yes";
                 UserId = user.Id;

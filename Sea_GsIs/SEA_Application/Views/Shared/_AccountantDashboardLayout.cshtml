@@ -117,13 +117,13 @@
                         </a>
                     </li>
                     @*<li class="nav-item">
-                <a href="@Url.Action("JournalEntry", "FinanceSummary")" class="nav-link nav-toggle">
-                    <i class="sea-dash">
-                        <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
-                    </i>
-                    <p id="">Journal Entry </p>
-                </a>
-            </li>*@
+            <a href="@Url.Action("JournalEntry", "FinanceSummary")" class="nav-link nav-toggle">
+                <i class="sea-dash">
+                    <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
+                </i>
+                <p id="">Journal Entry </p>
+            </a>
+        </li>*@
                     <li class="nav-item">
                         <a href="@Url.Action("LedgerList", "Ledgers")" class="nav-link nav-toggle">
                             <i class="sea-dash">
@@ -182,12 +182,12 @@
 
                     @*<li class="header">Grand Total</li>
 
-            <li id="left-sidebar-menu-calendar">
-                <a href="@(Url.Action("Index", "GrandTotal"))">
-                    <i style="color:black;font-size:13px" class="fa fa-newspaper-o"></i>
-                    <span style="color:#000000 !important">Total Fee</span>
-                </a>
-            </li>*@
+        <li id="left-sidebar-menu-calendar">
+            <a href="@(Url.Action("Index", "GrandTotal"))">
+                <i style="color:black;font-size:13px" class="fa fa-newspaper-o"></i>
+                <span style="color:#000000 !important">Total Fee</span>
+            </a>
+        </li>*@
                     <li class="nav-item">
                         <a href="@Url.Action("Index", "StudentRecurringFees")" class="nav-link nav-toggle">
 
@@ -195,6 +195,15 @@
                                 <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
                             </i>
                             <p>Recurring Fee</p>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+
+                        <a href="@Url.Action("Index", "NonRecurringFee")" class="nav-link nav-toggle">
+                            <i class="sea-dash">
+                                <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
+                            </i>
+                            <p id="">Non Recurring Fee  </p>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -1925,6 +1934,24 @@
 
 
         });//end of document ready
+
+
+
+                function showNotification(from, align, msg, type) {
+            //type = ['', 'info', 'danger', 'success', 'warning', 'rose', 'primary'];
+            color = Math.floor((Math.random() * 6) + 1);
+            $.notify({
+                icon: "add_alert",
+                message: msg
+            }, {
+                type: type,
+                timer: 3000,
+                placement: {
+                    from: from,
+                    align: align
+                }
+            });
+        }
     </script>
 
     @*<script>

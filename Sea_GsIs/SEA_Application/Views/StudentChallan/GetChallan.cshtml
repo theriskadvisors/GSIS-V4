@@ -11,9 +11,9 @@
     .error {
         color: red !important;
     }
-      span.select2 
-    {
-        width:100% !important;
+
+    span.select2 {
+        width: 100% !important;
     }
 </style>
 
@@ -564,9 +564,6 @@
 
 
 
-
-
-
         $.ajax({
             type: "POST",
             cache: false,
@@ -596,12 +593,12 @@
             }
         });
 
-                 $('.select2dropdown option[value=""]').removeAttr("selected");
+        $('.select2dropdown option[value=""]').removeAttr("selected");
         var data1 = $('.select2dropdown').select2()
             .on("select2:select", function (e) {
                 var selected_element = $(e.currentTarget);
                 var select_val = selected_element.val();
-             //   var id = $(this).children(".select2-hidden-accessible").context.id;
+                //   var id = $(this).children(".select2-hidden-accessible").context.id;
             });
 
 
@@ -621,18 +618,18 @@
 
         //})
         $('#StudentId').change(function () {
+            $("#error1").html("");
 
             $("#FurtherDiscount").val(0);
             getTotalFee();
-            $("#error1").html("");
             checkStudentChallan();
 
         })
         $('#Month1').change(function () {
+            $("#error1").html("");
 
             $("#FurtherDiscount").val(0);
             getTotalFee();
-            $("#error1").html("");
 
             checkStudentChallan();
         })
@@ -676,6 +673,8 @@
 
                         else {
                             $("#error").html(data);
+
+                            $("#SaveButton").prop("disabled", false);
                         }
 
                     }
@@ -750,12 +749,35 @@
                 success: function (data) {
                     debugger
 
-                    $("#TotalFee").val(data.paidAmount);
-                    $("#HiddenTotalFee").val(data.paidAmount);
-                    $("#Multiplier").val(data.MonthMultiplier);
-                    $("#HiddenTutionFee").val(data.tutionFee);
-                    $("#TutionFee").val(data.tutionFee);
 
+                    if (data.Msg == "") {
+
+
+                        $("#TotalFee").val(data.paidAmount);
+                        $("#HiddenTotalFee").val(data.paidAmount);
+                        $("#Multiplier").val(data.MonthMultiplier);
+                        $("#HiddenTutionFee").val(data.tutionFee);
+                        $("#TutionFee").val(data.tutionFee);
+
+                        $("#error1").html(data.Msg);
+                        $('#SaveButton1').prop('disabled', false);
+                        $('#FurtherDiscount').attr('readonly', false);
+                        $('#DiscountComments').attr('readonly', false);
+
+                    }
+                    else {
+                        $("#TotalFee").val(0);
+                        $("#HiddenTotalFee").val(0);
+                        $("#Multiplier").val(0);
+                        $("#HiddenTutionFee").val(0);
+                        $("#TutionFee").val(0);
+
+                        $('#FurtherDiscount').attr('readonly', true);
+                        $('#DiscountComments').attr('readonly', true);
+                        $("#error1").html(data.Msg);
+                        $('#SaveButton1').prop('disabled', true);
+
+                    }
                 }
             })
 

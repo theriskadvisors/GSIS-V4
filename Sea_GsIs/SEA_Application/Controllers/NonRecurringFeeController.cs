@@ -87,31 +87,42 @@ namespace SEA_Application.Controllers
                 }
                 else if (count != 0)
                 {
-                    ErrorMsg = "Fee is already created of selected branch class and section students.";
+                    ErrorMsg = "Fee is already created of selected branch class students";
                 }
                 else
                 {
 
                     List<StudentNonRecurringFee> studentNonRecurringFeeList = new List<StudentNonRecurringFee>();
 
-                    foreach (var stuId in AllStudentsIds)
+                    if (AllStudentsIds.Count() != 0)
                     {
-                        foreach (var feeTypeAmount in FeeTypeAmount)
+
+                        foreach (var stuId in AllStudentsIds)
                         {
 
-                            StudentNonRecurringFee studentNonRecurringFee = new StudentNonRecurringFee();
-                            studentNonRecurringFee.NonRecTypeID = feeTypeAmount.TypeId;
-                            studentNonRecurringFee.Amount = feeTypeAmount.Amount;
-                            studentNonRecurringFee.StudentFeeID = stuId;
-                            studentNonRecurringFee.Month = NonRecurringFee.MonthId;
-                            studentNonRecurringFeeList.Add(studentNonRecurringFee);
+                            foreach (var feeTypeAmount in FeeTypeAmount)
+                            {
+
+                                StudentNonRecurringFee studentNonRecurringFee = new StudentNonRecurringFee();
+                                studentNonRecurringFee.NonRecTypeID = feeTypeAmount.TypeId;
+                                studentNonRecurringFee.Amount = feeTypeAmount.Amount;
+                                studentNonRecurringFee.StudentFeeID = stuId;
+                                studentNonRecurringFee.Month = NonRecurringFee.MonthId;
+                                studentNonRecurringFeeList.Add(studentNonRecurringFee);
+
+                            }
 
                         }
-                    }
-
+                   
                     db.StudentNonRecurringFees.AddRange(studentNonRecurringFeeList);
                     db.SaveChanges();
                     TempData["ClassNonRecurringFeeCreated"] = "Created";
+                    }
+                    else
+                    {
+                        ErrorMsg = "Students are not exists in selected branch,class,section";
+                    }
+
 
                 }
 
