@@ -1319,6 +1319,9 @@ namespace SEA_Application.Controllers
             // AspNetStudent aspNetStudent = db.AspNetStudents.Find(userName);
             AspNetStudent aspNetStudent = db.AspNetStudents.Where(x => x.RollNo == userName).FirstOrDefault();
 
+
+
+
             var studentFee = db.StudentFees.Where(x => x.StudentID == aspNetStudent.Id).FirstOrDefault();
             var studentFeeMultiplier = db.StudentFeeMultipliers.Where(x => x.StudentId == aspNetStudent.Id).FirstOrDefault();
             StudentRegistrationViewModel studentRegistrationViewModel = new StudentRegistrationViewModel();
