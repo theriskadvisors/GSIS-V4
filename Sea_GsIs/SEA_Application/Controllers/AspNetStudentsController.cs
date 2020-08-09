@@ -98,7 +98,7 @@ namespace SEA_Application.Controllers
             return View();
         }
         public JsonResult GetStudents()
-        {
+         {
             var loggedInUserId = User.Identity.GetUserId();
             int branchId;
 
@@ -142,25 +142,27 @@ namespace SEA_Application.Controllers
 
             var students = (from stdnt in db.AspNetStudents
                             join usr in db.AspNetUsers on stdnt.UserId equals usr.Id
+                            join  stufee in db.StudentFees
+                            on  stdnt.Id equals stufee.StudentID into egroup from stufee  in egroup.DefaultIfEmpty()
                             join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
                             where stdnt.UserId == usr.Id && usr.StatusId != 2 && stdnt.BranchId == branchId
-                            select new { stdnt.Name, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetClass.Name }).Distinct().ToList();
-
+                            select new { stdnt.Name,stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name     }).Distinct().ToList();
+                
             //  var students = db.AspNetStudents.ToList();
 
-            List<Students> std = new List<Students>();
-            foreach (var item in students)
-            {
-                Students s = new Students();
-                s.Name = item.Name;
-                s.RollNo = item.RollNo;
-                s.PhoneNo = item.CellNo;
-                s.JoiningDate = item.JoiningDate.ToString();
-                s.ClassName = item.ClassName;
-                std.Add(s);
-            }
+            //List<Students> std = new List<Students>();
+            //foreach (var item in students)
+            //{
+            //    Students s = new Students();
+            //    s.Name = item.Name;
+            //    s.RollNo = item.RollNo;
+            //    s.PhoneNo = item.CellNo;
+            //    s.JoiningDate = item.JoiningDate.ToString();
+            //    s.ClassName = item.ClassName;
+            //    std.Add(s);
+            //}
 
-            return Json(std, JsonRequestBehavior.AllowGet);
+            return Json(students, JsonRequestBehavior.AllowGet);
 
 
 
@@ -1318,9 +1320,6 @@ namespace SEA_Application.Controllers
             }
             // AspNetStudent aspNetStudent = db.AspNetStudents.Find(userName);
             AspNetStudent aspNetStudent = db.AspNetStudents.Where(x => x.RollNo == userName).FirstOrDefault();
-
-
-
 
             var studentFee = db.StudentFees.Where(x => x.StudentID == aspNetStudent.Id).FirstOrDefault();
             var studentFeeMultiplier = db.StudentFeeMultipliers.Where(x => x.StudentId == aspNetStudent.Id).FirstOrDefault();
