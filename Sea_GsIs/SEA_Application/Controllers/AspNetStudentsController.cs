@@ -1313,7 +1313,7 @@ namespace SEA_Application.Controllers
 
         // GET: AspNetStudents/Edit/5
         public ActionResult Edit(string userName)
-        {
+         {
             if (userName == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -1428,14 +1428,17 @@ namespace SEA_Application.Controllers
             ViewBag.StudentImage = aspNetStudent.AspNetUser.Image;
             ViewBag.BranchId = new SelectList(db.AspNetBranches, "Id", "Name", aspNetStudent.BranchId);
 
-            var Classes = (from classs in db.AspNetClasses
-                           join branchclasssubject in db.AspnetGenericBranchClassSubjects on classs.Id equals branchclasssubject.ClassId
-                           where branchclasssubject.BranchId == aspNetStudent.BranchId
-                           select new
-                           {
-                               classs.Id,
-                               classs.Name,
-                           }).Distinct();
+            //var Classes = (from classs in db.AspNetClasses
+            //               join branchclasssubject in db.AspnetGenericBranchClassSubjects on classs.Id equals branchclasssubject.ClassId
+            //               where branchclasssubject.BranchId == aspNetStudent.BranchId
+            //               select new
+            //               {
+            //                   classs.Id,
+            //                   classs.Name,
+            //               }).Distinct();
+
+
+            var Classes = db.AspNetBranch_Class.Where(x => x.BranchId == aspNetStudent.BranchId).ToList().Select(x => new { x.AspNetClass.Id, x.AspNetClass.Name });
 
 
             ViewBag.ClassId = new SelectList(Classes, "Id", "Name", aspNetStudent.ClassId);
