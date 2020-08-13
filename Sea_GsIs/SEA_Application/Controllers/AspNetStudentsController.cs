@@ -703,7 +703,7 @@ namespace SEA_Application.Controllers
                 {
                     AllBranchClass obj = new AllBranchClass();
 
-                    obj.ClassId = branchClass.ClassId;
+                    obj.BranchClassId = branchClass.Id;
                     obj.BranchClassName = branchClass.AspNetBranch.Name + "-" + branchClass.AspNetClass.Name;
 
                     AllBranchClasses.Add(obj);
@@ -719,14 +719,14 @@ namespace SEA_Application.Controllers
             //                        where branchClass.BranchId == branchId && branchClass.IsActive == true
             //                        select new { classId = clas.Id, className = clas.Name, branchClassId = branchClass.Id }).OrderBy(x => x.className);
 
-            ViewBag.ClassId = new SelectList(AllBranchClasses, "ClassId", "BranchClassName");
+            ViewBag.ClassId = new SelectList(AllBranchClasses, "BranchClassId", "BranchClassName");
 
             return View();
 
         }
         public class AllBranchClass
         {
-            public int ClassId { get; set; }
+            public int BranchClassId { get; set; }
             public string BranchClassName  { get; set; }
         }
 
@@ -764,18 +764,34 @@ namespace SEA_Application.Controllers
 
         public ActionResult GetSections(int ClassId)
         {
-            var loggedInUserId = User.Identity.GetUserId();
+            //var loggedInUserId = User.Identity.GetUserId();
 
-            var branchIds = db.AspNetBranch_Admins
-            .Where(branchAdmin => branchAdmin.AdminId.Equals(loggedInUserId, StringComparison.OrdinalIgnoreCase))
-            .Select(branchAdmin => branchAdmin.BranchId).ToList();
+            //var branchIds = db.AspNetBranch_Admins
+            //.Where(branchAdmin => branchAdmin.AdminId.Equals(loggedInUserId, StringComparison.OrdinalIgnoreCase))
+            //.Select(branchAdmin => branchAdmin.BranchId).ToList();
 
-            List<int> AllBranchClassIds = db.AspNetBranch_Class.Where(x => x.ClassId == ClassId && x.IsActive == true && branchIds.Contains(x.BranchId)).Select(x => x.Id).ToList();
-            var AllBranchClassSections = (from branchClassSection in db.AspNetBranchClass_Sections
-                                          join section in db.AspNetSections on branchClassSection.SectionId equals section.Id
-                                          where AllBranchClassIds.Contains(branchClassSection.BranchClassId) && branchClassSection.IsActive == true
-                                          select new { sectionName = section.Name, sectionId = section.Id, branchClassSectionId = branchClassSection.Id }).OrderBy(x => x.sectionName).Distinct(); ;
-            string status = Newtonsoft.Json.JsonConvert.SerializeObject(AllBranchClassSections);
+            //List<int> AllBranchClassIds = db.AspNetBranch_Class.Where(x => x.ClassId == ClassId && x.IsActive == true && branchIds.Contains(x.BranchId)).Select(x => x.Id).ToList();
+            //var AllBranchClassSections = (from branchClassSection in db.AspNetBranchClass_Sections
+            //                              join section in db.AspNetSections on branchClassSection.SectionId equals section.Id
+            //                              where AllBranchClassIds.Contains(branchClassSection.BranchClassId) && branchClassSection.IsActive == true
+            //                              select new { sectionName = section.Name, sectionId = section.Id, branchClassSectionId = branchClassSection.Id }).OrderBy(x => x.sectionName).Distinct(); ;
+
+            //string status = Newtonsoft.Json.JsonConvert.SerializeObject(AllBranchClassSections);
+            //return Content(status);
+
+
+            var Sections = db.AspNetBranchClass_Sections.Where(x => x.BranchClassId == ClassId).Select(x => new { x.Id, x.AspNetSection.Name });
+
+            //var Sections = (from section in db.AspNetSections
+            //                select new
+            //                {
+            //                    section.Id,
+            //                    section.Name,
+
+            //                }).Distinct();
+
+
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(Sections);
             return Content(status);
 
 
@@ -788,7 +804,8 @@ namespace SEA_Application.Controllers
             //                  where classCourses.ClassId == ClassId && classCourses.IsMandatory == false && classCourses.IsActive == true
             //                  select new { classCourses.Id, course.Name };
 
-            var CoursesList = db.AspNetClass_Courses.Where(x => x.ClassId == ClassId).Select(x => new { x.Id, x.AspNetCours.Name }).OrderBy(x => x.Name).Distinct();
+           var BranchClass =  db.AspNetBranch_Class.Where(x => x.Id == ClassId).FirstOrDefault().ClassId;
+            var CoursesList = db.AspNetClass_Courses.Where(x => x.ClassId == BranchClass).Select(x => new { x.Id, x.AspNetCours.Name }).OrderBy(x => x.Name).Distinct();
 
             string status = Newtonsoft.Json.JsonConvert.SerializeObject(CoursesList);
 
@@ -820,7 +837,7 @@ namespace SEA_Application.Controllers
             var SectionId = Request.Form["SectionId"];
             var Courses = Request.Form["Courses"];
 
-            int ClassIdInt = Convert.ToInt32(ClassId);
+            int BranchClassId = Convert.ToInt32(ClassId);
             int BranchClassSsectionID = Convert.ToInt32(SectionId);
 
             // this commented code get all mandatory sebjects and add in the coming subject list.
@@ -843,11 +860,11 @@ namespace SEA_Application.Controllers
             //}
 
             AspNetStudent aspNetStudent = db.AspNetStudents.Where(x => x.UserId == StudentId).FirstOrDefault();
+           var BranchClassObj =  db.AspNetBranch_Class.Where(x => x.Id == BranchClassId).FirstOrDefault();
 
-            aspNetStudent.ClassId = ClassIdInt;
+            aspNetStudent.ClassId = BranchClassObj.ClassId;
+            aspNetStudent.BranchId = BranchClassObj.BranchId;
             db.SaveChanges();
-
-
 
             List<AspNetStudent_Enrollments> StudentEntrollmentList = db.AspNetStudent_Enrollments.Where(x => x.StudentId == aspNetStudent.Id).ToList();
 
@@ -877,9 +894,6 @@ namespace SEA_Application.Controllers
             }
             return RedirectToAction("StudentClass", "AspNetStudents");
         }
-
-
-
 
         public JsonResult GetUserName(string userName)
         {

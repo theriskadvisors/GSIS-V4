@@ -40,7 +40,7 @@
                         <div class="form-row mt-3">
                             <div class="form-group col-md-12 bmd-form-group">
                                 <label for="" class="bmd-label-static pl-2">Select Section*</label>
-                                <select class="form-control" id="SectionId" name="SectionId"  required></select>
+                                <select class="form-control" id="SectionId" name="SectionId" required></select>
                             </div>
                         </div>
 
@@ -142,13 +142,13 @@
                             //$("#Error").html("Selected Student is Already Enrolled");
                             $("#submit").prop('disabled', false);
                         } else {
-                          //  $("#submit").prop('disabled', true);
+                            //  $("#submit").prop('disabled', true);
                             $("#Error").html("Selected Student is Already Enrolled in " + data.IsStudentEntroll);
                         }
-                        $('#ClassId option[value="' + StudentClassId + '"]').prop('selected', true);
-                        getSections(StudentClassId);
+                        //$('#ClassId option[value="' + StudentClassId + '"]').prop('selected', true);
+                        // getSections(StudentClassId);
 
-                        getCourses(StudentClassId);
+                        // getCourses(StudentClassId);
 
                     }
                 })
@@ -159,10 +159,13 @@
 
 
 
-        //$('#ClassId').change(function () {
+        $('#ClassId').change(function () {
 
+            var StudentClassId = $(this).val();
+            getSections(StudentClassId);
+            getCourses(StudentClassId);
 
-        //});
+        });
 
         //$("#ClassId").change(function () {
 
@@ -233,7 +236,7 @@
                         for (i = 0; i < sch.length; i++) {
 
                             $el.append($("<option></option>")
-                                .attr("value", sch[i].branchClassSectionId).text(sch[i].sectionName));
+                                .attr("value", sch[i].Id).text(sch[i].Name));
                         }
                     }
                     else {
