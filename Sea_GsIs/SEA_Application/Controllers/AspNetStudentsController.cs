@@ -690,6 +690,7 @@ namespace SEA_Application.Controllers
             ViewBag.StudentList = new SelectList(students, "Id", "Name");
 
 
+
             var AllBranchClasses = (from clas in db.AspNetClasses
                                     join branchClass in db.AspNetBranch_Class on clas.Id equals branchClass.ClassId
                                     where branchClass.BranchId == branchId && branchClass.IsActive == true
@@ -702,9 +703,7 @@ namespace SEA_Application.Controllers
         }
 
         public ActionResult CheckStudentClassAndCourses(string StudentId)
-        {
-
-
+        { 
             AspNetStudent Student = db.AspNetStudents.Where(x => x.UserId == StudentId).FirstOrDefault();
 
             string IsStudentEntroll = "No";
@@ -720,8 +719,11 @@ namespace SEA_Application.Controllers
                 //}
 
                 var AllStudents = db.AspNetStudent_Enrollments.Where(x => x.StudentId == Student.Id).FirstOrDefault();
-                var className = db.AspNetStudent_Enrollments.Where(x => x.StudentId == Student.Id).Select(x => x.AspNetClass_Courses.AspNetClass.Name).FirstOrDefault();
+               // var className = db.AspNetStudent_Enrollments.Where(x => x.StudentId == Student.Id).Select(x => x.AspNetClass_Courses.AspNetClass.Name).FirstOrDefault();
+
+                var className = db.AspNetClasses.Where(x => x.Id == Student.ClassId).FirstOrDefault().Name;
                 ClassId = Student.ClassId.ToString();
+
                 var SectionName = db.AspNetStudent_Enrollments.Where(x => x.StudentId == Student.Id).Select(x => x.AspNetBranchClass_Sections.AspNetSection.Name).FirstOrDefault();
                 if (AllStudents != null)
                 {
