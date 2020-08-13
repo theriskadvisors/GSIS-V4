@@ -97,8 +97,359 @@ namespace SEA_Application.Controllers
             }
             return View();
         }
+
+        public ActionResult StudentsLoader()
+        {
+
+            return View();
+        }
+
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> SaveStudentsFromFile(RegisterViewModel model)
+        {
+            // if (ModelState.IsValid)
+
+            var dbTransaction = db.Database.BeginTransaction();
+            int? RowNumber = null;
+            int? ColumnNumber = null;
+            var StudentFeeMsg = "";
+            try
+            {
+                HttpPostedFileBase file = Request.Files["StudentLoaderFile"];
+                if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
+                {
+                    string fileName = file.FileName;
+                    string fileContentType = file.ContentType;
+                    byte[] fileBytes = new byte[file.ContentLength];
+                    var data = file.InputStream.Read(fileBytes, 0, Convert.ToInt32(file.ContentLength));
+                }
+                var teacherList = new List<RegisterViewModel>();
+                using (var package = new ExcelPackage(file.InputStream))
+                {
+                    var currentSheet = package.Workbook.Worksheets;
+                    var workSheet = currentSheet.First();
+                    var noOfCol = workSheet.Dimension.End.Column;
+                    var noOfRow = workSheet.Dimension.End.Row;
+                    ApplicationDbContext context = new ApplicationDbContext();
+                    for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
+                    {
+                        RowNumber = rowIterator - 1;
+
+                        var Name = workSheet.Cells[rowIterator, 1].Value.ToString();
+                        var UserName = workSheet.Cells[rowIterator, 2].Value.ToString();
+                        var UserNameExist = (from user in db.AspNetUsers //db.AspNetUsers.Where(x=>x.AspNetUser.UserName ==UserName).FirstOrDefault();
+                                            join student in db.AspNetStudents on user.Id equals student.UserId
+                                            where user.UserName == UserName
+                                            select user).FirstOrDefault();
+                                           
+                        if (UserNameExist != null)
+                        {
+                            var AdmissionFee = workSheet.Cells[rowIterator, 3].Value;
+
+                            if (AdmissionFee == null)
+                            {
+                                AdmissionFee = 0;
+                            }
+
+                            var DiscountAdmissionFee = workSheet.Cells[rowIterator, 4].Value;
+
+                            if (DiscountAdmissionFee == null)
+                            {
+                                DiscountAdmissionFee = 0;
+                            }
+                            var DiscountedAdmissionFee = workSheet.Cells[rowIterator, 5].Value;
+
+                            if (DiscountedAdmissionFee == null)
+                            {
+                                DiscountedAdmissionFee = 0;
+                            }
+                            var TutionFee = workSheet.Cells[rowIterator, 6].Value;
+
+                            if (TutionFee == null)
+                            {
+                                TutionFee = 0;
+                            }
+                            var DiscountTutionFee = workSheet.Cells[rowIterator, 7].Value;
+
+                            if (DiscountTutionFee == null)
+                            {
+                                DiscountTutionFee = 0;
+                            }
+                            var DiscountedTutionFee = workSheet.Cells[rowIterator, 8].Value;
+
+                            if (DiscountedTutionFee == null)
+                            {
+                                DiscountedTutionFee = 0;
+                            }
+                            var LabFee = workSheet.Cells[rowIterator, 9].Value;
+
+                            if (LabFee == null)
+                            {
+                                LabFee = 0;
+                            }
+                            var DiscountLabFee = workSheet.Cells[rowIterator, 10].Value;
+
+                            if (DiscountLabFee == null)
+                            {
+                                DiscountLabFee = 0;
+                            }
+
+                            var DiscountedLabFee = workSheet.Cells[rowIterator, 11].Value;
+
+                            if (DiscountedLabFee == null)
+                            {
+                                DiscountedLabFee = 0;
+                            }
+                            var ComputerFee = workSheet.Cells[rowIterator, 12].Value;
+
+                            if (ComputerFee == null)
+                            {
+                                ComputerFee = 0;
+                            }
+                            var DiscountComputerFee = workSheet.Cells[rowIterator, 13].Value;
+
+                            if (DiscountComputerFee == null)
+                            {
+                                DiscountComputerFee = 0;
+                            }
+                            var DiscountedComputerFee = workSheet.Cells[rowIterator, 14].Value;
+
+                            if (DiscountedComputerFee == null)
+                            {
+                                DiscountedComputerFee = 0;
+                            }
+                            var OtherServices = workSheet.Cells[rowIterator, 15].Value;
+
+                            if (OtherServices == null)
+                            {
+                                OtherServices = 0;
+                            }
+                            var DiscountOtherServices = workSheet.Cells[rowIterator, 16].Value;
+
+                            if (DiscountOtherServices == null)
+                            {
+                                DiscountOtherServices = 0;
+                            }
+                            var DiscountedOtherServices = workSheet.Cells[rowIterator, 17].Value;
+
+                            if (DiscountedOtherServices == null)
+                            {
+                                DiscountedOtherServices = 0;
+                            }
+
+
+                            var TotalDiscountPercentage = workSheet.Cells[rowIterator, 18].Value;
+
+                            if (TotalDiscountPercentage == null)
+                            {
+                                TotalDiscountPercentage = 0;
+                            }
+
+                            var TotalFeeBeforeDiscount = workSheet.Cells[rowIterator, 19].Value;
+
+                            if (TotalFeeBeforeDiscount == null)
+                            {
+                                TotalFeeBeforeDiscount = 0;
+                            }
+                            var TotalFeeAfterDiscount = workSheet.Cells[rowIterator, 20].Value;
+
+                            if (TotalFeeAfterDiscount == null)
+                            {
+                                TotalFeeAfterDiscount = 0;
+                            }
+                            var TotalFeeAfterDiscountWithoutAdmission = workSheet.Cells[rowIterator, 21].Value;
+
+                            if (TotalFeeAfterDiscountWithoutAdmission == null)
+                            {
+                                TotalFeeAfterDiscountWithoutAdmission = 0;
+                            }
+
+                            var JanurayMultiplier = workSheet.Cells[rowIterator, 22].Value;
+
+                            if (JanurayMultiplier == null)
+                            {
+                                JanurayMultiplier = 0;
+                            }
+                            var FebruaryMultiplier = workSheet.Cells[rowIterator, 23].Value;
+
+                            if (FebruaryMultiplier == null)
+                            {
+                                FebruaryMultiplier = 0;
+                            }
+                            var MarchMultiplier = workSheet.Cells[rowIterator, 24].Value;
+
+                            if (MarchMultiplier == null)
+                            {
+                                MarchMultiplier = 0;
+                            }
+                            var AprilMultiplier = workSheet.Cells[rowIterator, 25].Value;
+
+                            if (AprilMultiplier == null)
+                            {
+                                AprilMultiplier = 0;
+                            }
+                            var MayMultiplier = workSheet.Cells[rowIterator, 26].Value;
+
+                            if (MayMultiplier == null)
+                            {
+                                MayMultiplier = 0;
+                            }
+                            var JuneMultiplier = workSheet.Cells[rowIterator, 27].Value;
+
+                            if (JuneMultiplier == null)
+                            {
+                                JuneMultiplier = 0;
+                            }
+                            var JulyMultiplier = workSheet.Cells[rowIterator, 28].Value;
+
+                            if (JulyMultiplier == null)
+                            {
+                                JulyMultiplier = 0;
+                            }
+                            var AugustMultiplier = workSheet.Cells[rowIterator, 29].Value;
+
+                            if (AugustMultiplier == null)
+                            {
+                                AugustMultiplier = 0;
+                            }
+                            var SeptemberMultiplier = workSheet.Cells[rowIterator, 30].Value;
+
+                            if (SeptemberMultiplier == null)
+                            {
+                                SeptemberMultiplier = 0;
+                            }
+                            var OctoberMultiplier = workSheet.Cells[rowIterator, 31].Value;
+
+                            if (OctoberMultiplier == null)
+                            {
+                                OctoberMultiplier = 0;
+                            }
+                            var NovemberMultiplier = workSheet.Cells[rowIterator, 32].Value;
+
+                            if (NovemberMultiplier == null)
+                            {
+                                NovemberMultiplier = 0;
+                            }
+                            var DecemberMultiplier = workSheet.Cells[rowIterator, 33].Value;
+
+                            if (DecemberMultiplier == null)
+                            {
+                                DecemberMultiplier = 0;
+                            }
+
+                            var StudentExist = db.AspNetStudents.Where(x => x.UserId == UserNameExist.Id).FirstOrDefault();
+
+                            if (StudentExist != null)
+                            {
+                                var StudentFeeExist = db.StudentFees.Where(x => x.StudentID == StudentExist.Id).FirstOrDefault();
+
+                                if (StudentFeeExist == null)
+                                {
+                                    StudentFee studentFee = new StudentFee();
+
+                                    studentFee.AdmissionFee = Convert.ToDouble(AdmissionFee);
+                                    studentFee.TutionFee = Convert.ToDouble(TutionFee);
+                                    studentFee.ComputerFee = Convert.ToDouble(ComputerFee);
+                                    studentFee.LabCharges = Convert.ToDouble(LabFee);
+                                    studentFee.OtherServices = Convert.ToDouble(OtherServices);
+                                    studentFee.Total = Convert.ToDouble(TotalFeeBeforeDiscount);
+                                    studentFee.DiscountAdmissionFee = Convert.ToDouble(DiscountAdmissionFee);
+                                    studentFee.DiscountTutionFee = Convert.ToDouble(DiscountTutionFee);
+                                    studentFee.DiscountLabCharges = Convert.ToDouble(DiscountLabFee);
+                                    studentFee.DiscountComputerFee = Convert.ToDouble(DiscountComputerFee);
+                                    studentFee.DiscountOtherServices = Convert.ToDouble(DiscountOtherServices);
+                                    studentFee.DiscountTotal = Convert.ToDouble(TotalDiscountPercentage);
+                                    studentFee.DiscountTutionFeeAmount = Convert.ToDouble(DiscountedTutionFee);
+                                    studentFee.DiscountComputerFeeAmount = Convert.ToDouble(DiscountedComputerFee);
+                                    studentFee.DiscountLabChargesAmount = Convert.ToDouble(DiscountedLabFee);
+                                    studentFee.DiscountOtherServicesAmount = Convert.ToDouble(DiscountedOtherServices);
+                                    studentFee.DiscountAdmissionFeeAmount = Convert.ToDouble(DiscountedAdmissionFee);
+                                    studentFee.DiscountTotalAmount = Convert.ToDouble(TotalFeeAfterDiscount);
+                                    studentFee.TotalWithoutAdmission = Convert.ToDouble(TotalFeeAfterDiscountWithoutAdmission);
+                                  
+                                    studentFee.StudentID =StudentExist.Id;
+                                    studentFee.CreationDate = GetLocalDateTime.GetLocalDateTimeFunction();
+                                    int ActiveSessionId = db.AspNetSessions.Where(x => x.IsActive == true).FirstOrDefault().Id;
+                                    studentFee.SessionID = ActiveSessionId;
+
+                                    db.StudentFees.Add(studentFee);
+                                    db.SaveChanges();
+
+
+                                    StudentFeeMultiplier studentFeeMultiplier = new StudentFeeMultiplier();
+
+                                    studentFeeMultiplier.Jan_Multiplier = Convert.ToDouble( JanurayMultiplier);
+                                    studentFeeMultiplier.Feb_Multiplier = Convert.ToDouble( FebruaryMultiplier);
+                                    studentFeeMultiplier.Mar_Multiplier = Convert.ToDouble(MarchMultiplier);
+                                    studentFeeMultiplier.April__Multiplier = Convert.ToDouble(AprilMultiplier);
+                                    studentFeeMultiplier.May_Multiplier = Convert.ToDouble(MayMultiplier);
+                                    studentFeeMultiplier.June_Multiplier = Convert.ToDouble(JuneMultiplier);
+                                    studentFeeMultiplier.July__Multiplier = Convert.ToDouble(JulyMultiplier);
+                                    studentFeeMultiplier.Aug_Multiplier = Convert.ToDouble(AugustMultiplier);
+                                    studentFeeMultiplier.Sep_Multiplier = Convert.ToDouble(SeptemberMultiplier);
+                                    studentFeeMultiplier.Oct_Multiplier = Convert.ToDouble(OctoberMultiplier);
+                                    studentFeeMultiplier.Nov_Multiplier = Convert.ToDouble(NovemberMultiplier);
+                                    studentFeeMultiplier.Dec__Multiplier = Convert.ToDouble(DecemberMultiplier);
+
+                                    studentFeeMultiplier.Jan_StatusPaid = false;
+                                    studentFeeMultiplier.Feb_StatusPaid = false;
+                                    studentFeeMultiplier.Mar_StatusPaid = false;
+                                    studentFeeMultiplier.April_StatusPaid = false;
+                                    studentFeeMultiplier.May_StatusPaid = false;
+                                    studentFeeMultiplier.June_StatusPaid = false;
+                                    studentFeeMultiplier.July_StatusPaid = false;
+                                    studentFeeMultiplier.Aug_StatusPaid = false;
+                                    studentFeeMultiplier.Sep_StatusPaid = false;
+                                    studentFeeMultiplier.Oct_StatusPaid = false;
+                                    studentFeeMultiplier.Nov_StatusPaid = false;
+                                    studentFeeMultiplier.Dec_StatusPaid = false;
+                                    studentFeeMultiplier.CreationDate = DateTime.Now;
+                                    studentFeeMultiplier.StudentId = StudentExist.Id;
+                                    studentFeeMultiplier.SesisonID = ActiveSessionId;
+
+
+                                    db.StudentFeeMultipliers.Add(studentFeeMultiplier);
+                                    db.SaveChanges();
+
+                                }
+                                else
+                                {
+                                    StudentFeeMsg = ":Fee is Already created of this student";
+
+                                    throw new System.ArgumentException(":Fee is Already created of this student");
+                                }
+
+                            }
+
+                        }
+                        else
+                        {
+                            ViewBag.Error = "Error in Row " + RowNumber + " Please Enter Valid UserName";
+                            dbTransaction.Dispose();
+
+                            return View("StudentsLoader");
+                        }
+
+                    }
+                    dbTransaction.Commit();
+                    return RedirectToAction("StudentIndex");
+                }
+            }
+            catch (Exception e)
+            {
+                //   ModelState.AddModelError("Error", e.InnerException);
+                dbTransaction.Dispose();
+
+                ViewBag.Error = "Error in Row " + RowNumber+ " "+ StudentFeeMsg;
+
+                return View("StudentsLoader");
+            }
+        }
         public JsonResult GetStudents()
-         {
+        {
             var loggedInUserId = User.Identity.GetUserId();
             int branchId;
 
@@ -142,12 +493,13 @@ namespace SEA_Application.Controllers
 
             var students = (from stdnt in db.AspNetStudents
                             join usr in db.AspNetUsers on stdnt.UserId equals usr.Id
-                            join  stufee in db.StudentFees
-                            on  stdnt.Id equals stufee.StudentID into egroup from stufee  in egroup.DefaultIfEmpty()
+                            join stufee in db.StudentFees
+                            on stdnt.Id equals stufee.StudentID into egroup
+                            from stufee in egroup.DefaultIfEmpty()
                             join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
                             where stdnt.UserId == usr.Id && usr.StatusId != 2 && stdnt.BranchId == branchId
-                            select new { stdnt.Name,stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name     }).Distinct().ToList();
-                
+                            select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name }).Distinct().ToList();
+
             //  var students = db.AspNetStudents.ToList();
 
             //List<Students> std = new List<Students>();
@@ -462,8 +814,8 @@ namespace SEA_Application.Controllers
 
             AspNetStudent aspNetStudent = db.AspNetStudents.Where(x => x.UserId == StudentId).FirstOrDefault();
 
-            //aspNetStudent.ClassId = ClassIdInt;
-            //db.SaveChanges();
+            aspNetStudent.ClassId = ClassIdInt;
+            db.SaveChanges();
 
 
 
@@ -473,7 +825,7 @@ namespace SEA_Application.Controllers
             {
                 db.AspNetStudent_Enrollments.RemoveRange(StudentEntrollmentList);
                 db.SaveChanges();
-
+                
             }
 
             if (aspNetStudent != null)
@@ -1313,7 +1665,7 @@ namespace SEA_Application.Controllers
 
         // GET: AspNetStudents/Edit/5
         public ActionResult Edit(string userName)
-         {
+        {
             if (userName == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -1419,7 +1771,7 @@ namespace SEA_Application.Controllers
             studentRegistrationViewModel.CellNo = aspNetStudent.CellNo;
 
             studentRegistrationViewModel.Birthdate = aspNetStudent.Birthdate;
-       
+
 
             if (aspNetStudent == null)
             {
@@ -1554,7 +1906,7 @@ namespace SEA_Application.Controllers
 
                 }
 
-                if(studentFee ==null && studentFeeMultiplier ==null)
+                if (studentFee == null && studentFeeMultiplier == null)
                 {
 
 

@@ -30,7 +30,7 @@
 
                         <div class="form-group bmd-form-group my-3 is-filled">
                             <label class="bmd-label-floating">Select Class <span class="red-mark">*</span> </label>
-                            @Html.DropDownList("ClassId", null, "Select Class", htmlAttributes: new { @class = "form-control",@disabled ="disabled", @required = true })
+                            @Html.DropDownList("ClassId", null, "Select Class", htmlAttributes: new { @class = "form-control", @required = true })
 
                         </div>
 
@@ -141,7 +141,7 @@
                             //$("#Error").html("Selected Student is Already Enrolled");
                             $("#submit").prop('disabled', false);
                         } else {
-                            $("#submit").prop('disabled', true);
+                          //  $("#submit").prop('disabled', true);
                             $("#Error").html("Selected Student is Already Enrolled in " + data.IsStudentEntroll);
                         }
                         $('#ClassId option[value="' + StudentClassId + '"]').prop('selected', true);
