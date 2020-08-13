@@ -689,17 +689,45 @@ namespace SEA_Application.Controllers
 
             ViewBag.StudentList = new SelectList(students, "Id", "Name");
 
+            List<AllBranchClass> AllBranchClasses = new List<AllBranchClass>();
+
+            var AllBranches =  db.AspNetBranches.ToList();
+            var AllClasses = db.AspNetClasses.ToList();
 
 
-            var AllBranchClasses = (from clas in db.AspNetClasses
-                                    join branchClass in db.AspNetBranch_Class on clas.Id equals branchClass.ClassId
-                                    where branchClass.BranchId == branchId && branchClass.IsActive == true
-                                    select new { classId = clas.Id, className = clas.Name, branchClassId = branchClass.Id }).OrderBy(x => x.className);
+            foreach(var branch in AllBranches)
+            {
+                var BranchClasses = db.AspNetBranch_Class.Where(x => x.BranchId == branch.Id).ToList() ;
 
-            ViewBag.ClassId = new SelectList(AllBranchClasses, "classId", "className");
+                foreach(var branchClass in BranchClasses)
+                {
+                    AllBranchClass obj = new AllBranchClass();
+
+                    obj.ClassId = branchClass.ClassId;
+                    obj.BranchClassName = branchClass.AspNetBranch.Name + "-" + branchClass.AspNetClass.Name;
+
+                    AllBranchClasses.Add(obj);
+
+                }
+
+
+            }
+                    
+
+            //var AllBranchClasses = (from clas in db.AspNetClasses
+            //                        join branchClass in db.AspNetBranch_Class on clas.Id equals branchClass.ClassId
+            //                        where branchClass.BranchId == branchId && branchClass.IsActive == true
+            //                        select new { classId = clas.Id, className = clas.Name, branchClassId = branchClass.Id }).OrderBy(x => x.className);
+
+            ViewBag.ClassId = new SelectList(AllBranchClasses, "ClassId", "BranchClassName");
 
             return View();
 
+        }
+        public class AllBranchClass
+        {
+            public int ClassId { get; set; }
+            public string BranchClassName  { get; set; }
         }
 
         public ActionResult CheckStudentClassAndCourses(string StudentId)
