@@ -79,9 +79,10 @@ namespace SEA_Application.Controllers
                             studentfeeDetails.DiscountComments = null;
                             studentfeeDetails.Month = MonthId;
 
+                            int StudentTotalChallan = db.StudentFeeDetails.Where(x => x.StudentFee.AspNetStudent.Id == StudentId).Count();
+                            studentfeeDetails.InvoiceNo = StudentTotalChallan + 1;
+
                             double TotalWithoutAdminssion = StudentFee.TotalWithoutAdmission.Value;
-
-
                             var StudentChallanExist = db.StudentFeeDetails.Where(x => x.StudentFee.AspNetStudent.Id == StudentId).ToList();
 
                             var NonRecurringFeeExist = db.StudentNonRecurringFees.Where(x => x.StudentFeeID == StudentId).ToList();
@@ -349,6 +350,19 @@ namespace SEA_Application.Controllers
                     studentfeeDetails.DiscountComments = DiscountComments;
                     studentfeeDetails.Month = Month1;
 
+                   int StudentTotalChallan =  db.StudentFeeDetails.Where(x => x.StudentFee.AspNetStudent.Id == StudentId).Count();
+
+                    studentfeeDetails.InvoiceNo = StudentTotalChallan + 1;
+
+                    //if (StudentTotalChallan ==0)
+                    //{
+
+                    //}
+                    //else
+                    //{
+                    //    studentfeeDetails.InvoiceNo = StudentTotalChallan + 1;
+
+                    //}
 
                     var StudentChallanExist = db.StudentFeeDetails.Where(x => x.StudentFee.AspNetStudent.Id == StudentId).ToList();
 

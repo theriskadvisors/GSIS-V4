@@ -30,12 +30,36 @@
 <script>
     $(document).ready(function () {
 
+
         $("#PageHeader").html("Non Recurring Fee");
 
         $("#BreadCrumbs").append(' <li> <a href="/Teacher/Index"> Home </a> <span>&gt;</span></li>');
         $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Non Recurring Fee</a></li>');
 
+        $('#datatable tfoot th').each(function () {
+            var title = $(this).text();
+            $(this).html('<input type="text" class="round-border" style="border-color:#00b8ec; border-radius:5px;width:100%" placeholder="Search" />');
+        });
+
         var table = $('#datatable').dataTable({
+
+            initComplete: function () {
+                // Apply the search
+                this.api().columns().every(function () {
+                    var that = this;
+
+                    $('input', this.footer()).on('keyup change clear', function () {
+                        //if (that.search() !== this.value) {
+                        //    that
+                        //        .search(this.value)
+                        //        .draw();
+                        //}
+                        if (that.search() !== this.value) {
+                            that.search(this.value).draw();
+                        }
+                    });
+                });
+            },
             buttons: [
                 {
                     text: '<span class="datatableButtonsReset"> <img src="/Content/assets/assets/icons/Icon-Reset2.png" alt=""> Reset</span>'
@@ -75,7 +99,7 @@
             var StudentId = $(td[0]).children("input").val();
             var Month = $(td[0]).children("input").attr('name');
 
-           // window.location.href = "/NonRecurringFee/Edit?StudentId=" + StudentId +"&MonthId="+Month ;
+            // window.location.href = "/NonRecurringFee/Edit?StudentId=" + StudentId +"&MonthId="+Month ;
         });
 
         $.ajax({
@@ -87,68 +111,95 @@
                 table.fnClearTable();
                 $.each(data, function (index) {
 
-                    table.fnAddData([data[index].Name+"<input name ="+ data[index].Month+"  type=hidden value=" + data[index].StudentFeeID + ">", data[index].TotalAmount,data[index].MonthName ]);
+                    table.fnAddData([data[index].Name + "<input name =" + data[index].Month + "  type=hidden value=" + data[index].StudentFeeID + ">", data[index].UserName, data[index].TotalAmount, data[index].MonthName]);
 
                 })
                 table.fnDraw();
             }
         })
 
-         if ($("#StudentNonRecurringFeeMsg").val() != "") {
+        if ($("#StudentNonRecurringFeeMsg").val() != "") {
             var type = 'success';
             var msg = "Fee Created Successfully";
             showNotification('top', 'center', msg, type);
             //toastr.info('Lesson updated successfully');
         }
-         if ($("#ClassNonRecurringFeeMsg").val() != "") {
+        if ($("#ClassNonRecurringFeeMsg").val() != "") {
             var type = 'success';
             var msg = "Fee Created Successfully";
             showNotification('top', 'center', msg, type);
             //toastr.info('Lesson updated successfully');
         }
 
+
+           $("#datatable_filter").hide();
+        $('#datatable tfoot tr').appendTo('#datatable thead');
     })
 </script>
 
-    <div class="card">
-        <div class="card-body p-4">
-            <div class="tab-content" style="padding: 10px 0px 0px 0px;">
+<div class="card">
+    <div class="card-body p-4">
+        <div class="tab-content" style="padding: 10px 0px 0px 0px;">
 
-                <div class="tab-pane active show" id="Topics-attr" role="tabpanel" aria-labelledby="Topics-tab-attr">
-                    <div class="box box-primary">
-                        <div class="box-body">
-                            <div class="box-title"></div>
-                            <div class="table-responsive">
+            <div class="tab-pane active show" id="Topics-attr" role="tabpanel" aria-labelledby="Topics-tab-attr">
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <div class="box-title"></div>
+                        <div class="table-responsive">
 
-                                <input type="hidden" id="StudentNonRecurringFeeMsg" name="name" value="@TempData["StudentNonRecurringFeeCreated"]" />
-                                <input type="hidden" id="ClassNonRecurringFeeMsg" name="name" value="@TempData["ClassNonRecurringFeeCreated"]" />
+                            <input type="hidden" id="StudentNonRecurringFeeMsg" name="name" value="@TempData["StudentNonRecurringFeeCreated"]" />
+                            <input type="hidden" id="ClassNonRecurringFeeMsg" name="name" value="@TempData["ClassNonRecurringFeeCreated"]" />
 
-                                <table class="table hover  table-striped table-bordered" id="datatable">
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                Student
-                                            </th>
-                                            <th>
-                                                Total Amount
-                                            </th>
-                                            <th>
-                                                Month
-                                            </th>
-                                            
-                                        </tr>
+                            <table class="table hover  table-striped table-bordered" id="datatable">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Name
+                                        </th>
+                                        <th>
+                                            Roll No
+                                        </th>
+                                        <th>
+                                            Total Amount
+                                        </th>
+                                        <th>
+                                            Month
+                                        </th>
 
-                                    </thead>
+                                    </tr>
+
+                                </thead>
 
 
 
-                                    <tbody id="NonRecurringLists">
-                                    </tbody>
-                                </table>
-                            </div>
+                                <tbody id="NonRecurringLists">
+                                </tbody>
+
+                                <tfoot>
+
+                                    <tr>
+                                        <th>
+                                            Name
+                                        </th>
+                                        <th>
+                                            Roll No
+                                        </th>
+                                        <th>
+                                            Total Amount
+                                        </th>
+                                        <th>
+                                            Month
+                                        </th>
+
+                                    </tr>
+
+
+                                </tfoot>
+                            </table>
                         </div>
                     </div>
                 </div>
+            </div>
 
         </div>
     </div>

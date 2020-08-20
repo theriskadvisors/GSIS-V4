@@ -432,10 +432,11 @@ namespace SEA_Application.Controllers
         {
             var StudentFeeDetailIds = idlist.Split(',');
             List<challanform> listChallanForm = new List<challanform>();
+        
 
             foreach (var listitem in StudentFeeDetailIds)
             {
-
+                int? countTotalMultipliers = 0;
                 int item = Convert.ToInt32(listitem);
                 StudentFeeDetail studentFeeDetail = db.StudentFeeDetails.Where(x => x.Id == item).FirstOrDefault();
                 int? StudentFeeId = db.StudentFeeDetails.Where(x => x.Id == item).FirstOrDefault().StudentFeeID;
@@ -477,6 +478,72 @@ namespace SEA_Application.Controllers
                 else
                 { }
 
+                if (multiplier.Jan_Multiplier.Value != 0)
+                {
+                    countTotalMultipliers = countTotalMultipliers + 1;
+                }
+
+                if (multiplier.Feb_Multiplier.Value != 0)
+                {
+                    countTotalMultipliers = countTotalMultipliers + 1;
+
+                }
+                if (multiplier.Mar_Multiplier.Value != 0)
+                {
+                    countTotalMultipliers = countTotalMultipliers + 1;
+
+                }
+                if (multiplier.April__Multiplier.Value != 0)
+                {
+                    countTotalMultipliers = countTotalMultipliers + 1;
+
+                }
+                if (multiplier.May_Multiplier.Value != 0)
+                {
+                    countTotalMultipliers = countTotalMultipliers + 1;
+
+                }
+                if (multiplier.June_Multiplier.Value != 0)
+                {
+                    countTotalMultipliers = countTotalMultipliers + 1;
+
+                }
+                if (multiplier.July__Multiplier.Value != 0)
+                {
+                    countTotalMultipliers = countTotalMultipliers + 1;
+
+                }
+                if (multiplier.Aug_Multiplier.Value != 0)
+                {
+                    countTotalMultipliers = countTotalMultipliers + 1;
+
+                }
+                if (multiplier.Sep_Multiplier.Value != 0)
+                {
+                    countTotalMultipliers = countTotalMultipliers + 1;
+
+                }
+                if (multiplier.Oct_Multiplier.Value != 0)
+                {
+                    countTotalMultipliers = countTotalMultipliers + 1;
+
+                }
+                if (multiplier.Nov_Multiplier.Value != 0)
+                {
+                    countTotalMultipliers = countTotalMultipliers + 1;
+
+                }
+                if (multiplier.Dec__Multiplier.Value != 0)
+                {
+                    countTotalMultipliers = countTotalMultipliers + 1;
+
+                }
+                else
+                {
+
+                }
+                int ChallanFormNumber = db.StudentFeeDetails.Where(x => x.StudentFee.AspNetStudent.Id == StudentId).Count();
+
                 string monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(Month1);
                 double? TutionFeeDiscounted = ((studentFee.DiscountTutionFeeAmount * MonthMultiplier) - (studentFeeDetail.FurtherDiscount));
 
@@ -490,7 +557,7 @@ namespace SEA_Application.Controllers
                 challan.Lab_Charges = Convert.ToInt32(LabCharges);
                 challan.Others = Convert.ToInt32(OtherServices);
                 challan.DiscountTutionFee = Convert.ToInt32(TutionFeeDiscounted); //+ (studentFeeDetail.FurtherDiscount.Value)* MonthMultiplier;
-               
+
                 if (MonthMultiplier == 0)
                 {
                     challan.MonthlyTutionFee = 0;
@@ -519,9 +586,12 @@ namespace SEA_Application.Controllers
                 challan.DueDate = studentFeeDetail.ChallanDueDate.ToString();
                 challan.IssueDate = studentFeeDetail.ChallanIssueDate.ToString();
                 //   challan.FeeMonth = MonthMultiplier.ToString();
-                challan.InvoiceNumber = studentFeeDetail.Id;
+                challan.InvoiceNumber = "Invoice no." + studentFeeDetail.InvoiceNo + " of " + countTotalMultipliers;
+
+
+
                 challan.FeeMonth = monthName;
-                challan.BillingMonth = monthName + " " +studentFeeDetail.ChallanDueDate.Value.Year.ToString();
+                challan.BillingMonth = monthName + " " + studentFeeDetail.ChallanDueDate.Value.Year.ToString();
 
 
                 challan.Branch = Student.AspNetBranch.Name;
@@ -749,7 +819,7 @@ namespace SEA_Application.Controllers
 
         public class challanform
         {
-            public int InvoiceNumber { get; set; }
+            public string InvoiceNumber { get; set; }
             public string SchoolName { get; set; }
             public string BranchName { get; set; }
             public List<string> ChallanCopy { get; set; }
