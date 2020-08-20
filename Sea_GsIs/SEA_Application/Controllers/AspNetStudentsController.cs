@@ -89,10 +89,13 @@ namespace SEA_Application.Controllers
 
             if (User.IsInRole("Accountant"))
             {
+                ViewBag.UserRole = "Accountant";
+
                 ViewBag.ClassID = new SelectList(db.AspNetClasses, "Id", "Name");
             }
             else
             {
+                ViewBag.UserRole = "NotAccountant";
                 ViewBag.ClassID = new SelectList(db.AspNetClasses.Where(x => x.AspNetBranch_Class.Any(y => y.BranchId == branchId)), "Id", "Name");
             }
             return View();
@@ -111,7 +114,7 @@ namespace SEA_Application.Controllers
         public async Task<ActionResult> SaveStudentsFromFile(RegisterViewModel model)
         {
             // if (ModelState.IsValid)
-
+            
             var dbTransaction = db.Database.BeginTransaction();
             int? RowNumber = null;
             int? ColumnNumber = null;
@@ -406,7 +409,7 @@ namespace SEA_Application.Controllers
                                     studentFeeMultiplier.Oct_StatusPaid = false;
                                     studentFeeMultiplier.Nov_StatusPaid = false;
                                     studentFeeMultiplier.Dec_StatusPaid = false;
-                                    studentFeeMultiplier.CreationDate = DateTime.Now;
+                                    studentFeeMultiplier.CreationDate = GetLocalDateTime.GetLocalDateTimeFunction();
                                     studentFeeMultiplier.StudentId = StudentExist.Id;
                                     studentFeeMultiplier.SesisonID = ActiveSessionId;
 
@@ -448,7 +451,7 @@ namespace SEA_Application.Controllers
                 return View("StudentsLoader");
             }
         }
-        public JsonResult GetStudents()
+        public JsonResult GetStudents(DataTablesParam param)
         {
             var loggedInUserId = User.Identity.GetUserId();
             int branchId;
@@ -473,9 +476,50 @@ namespace SEA_Application.Controllers
                 //    stdList.Add(s);
                 //}
 
-                var studentList = db.AllStudentsList().ToList();
+                //  var studentList = db.AllStudentsList().ToList();
 
-                return Json(studentList, JsonRequestBehavior.AllowGet);
+
+                int pageNo = 1;
+
+                if (param.iDisplayStart >= param.iDisplayLength)
+                {
+
+                    pageNo = (param.iDisplayStart / param.iDisplayLength) + 1;
+
+                }
+
+                int totalCount = 0;
+
+                if (param.sSearch != null) 
+                {
+                    totalCount = db.AllStudentsList().Where(x => x.RollNo.Contains(param.sSearch) || x.Name.Contains(param.sSearch) || x.ClassName.Contains(param.sSearch) || x.CellNo.Contains(param.sSearch)).Count();
+
+                    var studentList = db.AllStudentsList().Where(x => x.RollNo.Contains(param.sSearch) || x.Name.Contains(param.sSearch) || x.ClassName.Contains(param.sSearch) || x.CellNo.Contains(param.sSearch) ).Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
+                    return Json(new
+                    {
+                        aaData = studentList,
+                        sEcho = param.sEcho,
+                        iTotalDisplayRecords = totalCount,
+                        iTotalRecords = totalCount
+
+                    }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    totalCount = db.AllStudentsList().Count();
+                    var studentList = db.AllStudentsList().Skip((pageNo-1)*param.iDisplayLength).Take(param.iDisplayLength).ToList();
+                    return Json(new
+                    {
+                        aaData = studentList,
+                        sEcho = param.sEcho,
+                        iTotalDisplayRecords = totalCount,
+                        iTotalRecords = totalCount
+
+                    }, JsonRequestBehavior.AllowGet);
+                }
+
+
+              
 
             }
 
@@ -490,15 +534,83 @@ namespace SEA_Application.Controllers
                 branchId = db.AspNetBranches.Where(x => x.BranchPrincipalId == loggedInUserId).Select(x => x.Id).FirstOrDefault();
             }
 
+            int pageNo1 = 1;
 
-            var students = (from stdnt in db.AspNetStudents
-                            join usr in db.AspNetUsers on stdnt.UserId equals usr.Id
-                            join stufee in db.StudentFees
-                            on stdnt.Id equals stufee.StudentID into egroup
-                            from stufee in egroup.DefaultIfEmpty()
-                            join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
-                            where stdnt.UserId == usr.Id && usr.StatusId != 2 && stdnt.BranchId == branchId
-                            select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name }).Distinct().ToList();
+            if (param.iDisplayStart >= param.iDisplayLength)
+            {
+
+                pageNo1 = (param.iDisplayStart / param.iDisplayLength) + 1;
+
+            }
+            int totalCount1 = 0;
+
+            if (param.sSearch != null)
+            {
+                
+
+                totalCount1 = (from stdnt in db.AspNetStudents
+                               join usr in db.AspNetUsers on stdnt.UserId equals usr.Id
+                               join stufee in db.StudentFees
+                               on stdnt.Id equals stufee.StudentID into egroup
+                               from stufee in egroup.DefaultIfEmpty()
+                               join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
+                               where stdnt.UserId == usr.Id && usr.StatusId != 2 && stdnt.BranchId == branchId
+                               select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name }).Where(x => x.RollNo.Contains(param.sSearch) || x.Name.Contains(param.sSearch) || x.ClassName.Contains(param.sSearch) || x.CellNo.Contains(param.sSearch)).Distinct().Count();
+
+                var studentList = (from stdnt in db.AspNetStudents
+                                   join usr in db.AspNetUsers on stdnt.UserId equals usr.Id
+                                   join stufee in db.StudentFees
+                                   on stdnt.Id equals stufee.StudentID into egroup
+                                   from stufee in egroup.DefaultIfEmpty()
+                                   join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
+                                   where stdnt.UserId == usr.Id && usr.StatusId != 2 && stdnt.BranchId == branchId
+                                   select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name }).Where(x => x.RollNo.Contains(param.sSearch) || x.Name.Contains(param.sSearch) || x.ClassName.Contains(param.sSearch) || x.CellNo.Contains(param.sSearch)).Distinct().OrderBy(x => x.Name).Skip((pageNo1 - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
+                return Json(new
+                {
+                    aaData = studentList,
+                    sEcho = param.sEcho,
+                    iTotalDisplayRecords = totalCount1,
+                    iTotalRecords = totalCount1
+
+                }, JsonRequestBehavior.AllowGet);
+
+            }
+
+            else
+            {
+               
+                totalCount1 = (from stdnt in db.AspNetStudents
+                               join usr in db.AspNetUsers on stdnt.UserId equals usr.Id
+                               join stufee in db.StudentFees
+                               on stdnt.Id equals stufee.StudentID into egroup
+                               from stufee in egroup.DefaultIfEmpty()
+                               join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
+                               where stdnt.UserId == usr.Id && usr.StatusId != 2 && stdnt.BranchId == branchId
+                               select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name }).Distinct().Count();
+              
+
+                var studentList = (from stdnt in db.AspNetStudents
+                                   join usr in db.AspNetUsers on stdnt.UserId equals usr.Id
+                                   join stufee in db.StudentFees
+                                   on stdnt.Id equals stufee.StudentID into egroup
+                                   from stufee in egroup.DefaultIfEmpty()
+                                   join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
+                                   where stdnt.UserId == usr.Id && usr.StatusId != 2 && stdnt.BranchId == branchId
+                                   select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name }).Distinct().OrderBy(x=>x.Name).Skip((pageNo1 - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
+             
+
+                return Json(new
+                {
+                    aaData = studentList,
+                    sEcho = param.sEcho,
+                    iTotalDisplayRecords = totalCount1,
+                    iTotalRecords = totalCount1
+
+                }, JsonRequestBehavior.AllowGet);
+            }
+
+
+
 
             //  var students = db.AspNetStudents.ToList();
 
@@ -514,7 +626,7 @@ namespace SEA_Application.Controllers
             //    std.Add(s);
             //}
 
-            return Json(students, JsonRequestBehavior.AllowGet);
+            //return Json(students, JsonRequestBehavior.AllowGet);
 
 
 
@@ -1076,7 +1188,7 @@ namespace SEA_Application.Controllers
                         studentFee.DiscountTotalAmount = studentRegistrationViewModel.DiscountTotalAmount;
                         studentFee.TotalWithoutAdmission = studentFee.DiscountTotalAmount - studentFee.DiscountAdmissionFeeAmount;
 
-                        studentFee.CreationDate = DateTime.Now;
+                        studentFee.CreationDate = GetLocalDateTime.GetLocalDateTimeFunction();
 
                         db.StudentFees.Add(studentFee);
                         db.SaveChanges();
@@ -1111,7 +1223,7 @@ namespace SEA_Application.Controllers
                         studentFeeMultiplier.Oct_StatusPaid = false;
                         studentFeeMultiplier.Nov_StatusPaid = false;
                         studentFeeMultiplier.Dec_StatusPaid = false;
-                        studentFeeMultiplier.CreationDate = DateTime.Now;
+                        studentFeeMultiplier.CreationDate = GetLocalDateTime.GetLocalDateTimeFunction();
                         studentFeeMultiplier.StudentId = aspNetStudent.Id;
 
 
