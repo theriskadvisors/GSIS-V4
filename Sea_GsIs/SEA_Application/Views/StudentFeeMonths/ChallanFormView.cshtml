@@ -38,23 +38,20 @@
                     debugger
 
 
-                         var value1 = new Date(item.DueDate.replace(/(^.*\()|([+-].*$)/g, ''));
-                          var dat1 = value1.getMonth() +
-                            1 +
-                            "/" + 
-                            value1.getDate() +
-                            "/" +
+                    var value1 = new Date(item.DueDate.replace(/(^.*\()|([+-].*$)/g, ''));
+                    var dat1 = value1.getDate() + "/" + ( value1.getMonth() + 1) + "/" + 
+                            
                         value1.getFullYear();// + " " +
 
 
 
 
                     var value1 = new Date(item.IssueDate.replace(/(^.*\()|([+-].*$)/g, ''));
-                          var issueDate = value1.getMonth() +
-                            1 +
-                            "/" + 
+                          var issueDate = 
                             value1.getDate() +
-                            "/" +
+                            "/" +(value1.getMonth() +
+                            1 )+
+                            "/" + 
                             value1.getFullYear();// + " " +
 
 
@@ -120,7 +117,7 @@
             html+='<div style="position:absolute;left:24.24px;top:174.74px" class="cls_004"><span class="cls_004">Stationery Fund</span></div>';
             html+='<div style="position:absolute;left:245.73px;top:175.82px" class="cls_004"><span class="cls_004">'+ item.Annual_Stationary_Fund +'</span></div>';
             html+='<div style="position:absolute;left:268.97px;top:175.10px" class="cls_009"><span class="cls_009">Invoice No.</span></div>';
-            html+='<div style="position:absolute;left:330.07px;top:174.38px" class="cls_018"><span class="cls_018">Invoice no. 10 of 11</span></div>';
+            html+='<div style="position:absolute;left:330.07px;top:174.38px" class="cls_018"><span class="cls_018">Invoice no '+item.InvoiceNumber+' </span></div>';
             html+='<div style="position:absolute;left:24.24px;top:185.06px" class="cls_004"><span class="cls_004">Annual Fund</span></div>';
             html+='<div style="position:absolute;left:245.73px;top:186.14px" class="cls_004"><span class="cls_004">'+ item.Annual_Fund +'</span></div>';
             html+='<div style="position:absolute;left:268.85px;top:186.14px" class="cls_004"><span class="cls_004">Fee Months</span></div>';
@@ -747,7 +744,8 @@ html += '<div style="position:absolute;left:87.24px;top:348.53px" class="cls_010
 </head>
 <body>
     <div class="box-header with-border">
-        <button id="Print" class="btn-primary">Take Print</button>
+        <button class="btn btn-primary" id="Print" >Take Print</button>
+        <button style="cursor:pointer" onclick="window.location.href = '/StudentFeeMonths/Index'" class="btn btn-danger" id="Print" >Back</button>
     </div>
     <div id="submit">
 

@@ -478,7 +478,6 @@ namespace SEA_Application.Controllers
                 { }
 
                 string monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(Month1);
-                challan.BillingMonth = monthName;
                 double? TutionFeeDiscounted = ((studentFee.DiscountTutionFeeAmount * MonthMultiplier) - (studentFeeDetail.FurtherDiscount));
 
                 double? ComputerFee = studentFee.DiscountComputerFeeAmount * MonthMultiplier;
@@ -491,7 +490,7 @@ namespace SEA_Application.Controllers
                 challan.Lab_Charges = Convert.ToInt32(LabCharges);
                 challan.Others = Convert.ToInt32(OtherServices);
                 challan.DiscountTutionFee = Convert.ToInt32(TutionFeeDiscounted); //+ (studentFeeDetail.FurtherDiscount.Value)* MonthMultiplier;
-
+               
                 if (MonthMultiplier == 0)
                 {
                     challan.MonthlyTutionFee = 0;
@@ -519,7 +518,12 @@ namespace SEA_Application.Controllers
                 challan.StudentClass = Student.AspNetClass.Name;
                 challan.DueDate = studentFeeDetail.ChallanDueDate.ToString();
                 challan.IssueDate = studentFeeDetail.ChallanIssueDate.ToString();
-                challan.FeeMonth = MonthMultiplier.ToString();
+                //   challan.FeeMonth = MonthMultiplier.ToString();
+                challan.InvoiceNumber = studentFeeDetail.Id;
+                challan.FeeMonth = monthName;
+                challan.BillingMonth = monthName + " " +studentFeeDetail.ChallanDueDate.Value.Year.ToString();
+
+
                 challan.Branch = Student.AspNetBranch.Name;
                 challan.TotalRecurring = Convert.ToInt32(TutionFeeDiscounted) + challan.Computer_Fee + challan.Lab_Charges + challan.Others;
 
@@ -745,6 +749,7 @@ namespace SEA_Application.Controllers
 
         public class challanform
         {
+            public int InvoiceNumber { get; set; }
             public string SchoolName { get; set; }
             public string BranchName { get; set; }
             public List<string> ChallanCopy { get; set; }
@@ -764,7 +769,7 @@ namespace SEA_Application.Controllers
             public double? TotalAmount { get; set; }
             public double? Penalty { get; set; }
             public string ValidDate { get; set; }
-            public int? Arrears { get; set; }
+            public int Arrears { get; set; }
             public string FeeMonth { get; set; }
             public string BillingMonth { get; set; }
             public double? TripCharges { get; set; }
