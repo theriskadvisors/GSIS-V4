@@ -15,6 +15,11 @@
 
         AllStudents();
 
+          type = "Dr";
+        $("#title").html("");
+        $("#title").html("New Receipt");
+      
+
         $("#PageHeader").html("New Bank Entry");
         $("#BreadCrumbs").append(' <li> <a  href="/FinanceSummary/Index"> Home </a> <span>&gt;</span></li>');
         $("#BreadCrumbs").append(' <li> <a href="/FinanceSummary/BankIndex"> Bank </a> <span>&gt;</span></li>');
@@ -246,18 +251,18 @@
             '<select id="students' + count + '" class="form-control drop" ></select>' +
             '</div>' +
 
-            '<div id="descriptionDiv' + count + '" class="col-md-2" style="padding-left:0px">' +
+            '<div id="descriptionDiv' + count + '" class="col-md-2 des" style="padding-left:0px">' +
             '<input  placeholder="Description" type="text" name="Name" id="description' + count + '" class="form-control" />' +
             '</div>' +
             '<div class="col-md-2" style="padding-left:0px">' +
             '<select id="branch' + count + '" class="form-control drop"  ></select>' +
             '</div>' +
             '<div class="col-md-1" style="padding:0px">' +
-            '<input placeholder = "Amount" type="text" name="cr" onkeyup="creditvalue()" onblur="NAN(this)" id="credit' + count + '" class="form-control cr" />' +
+            '<input placeholder = "Amount" type="text" name="cr" onkeyup="creditvalue()" onblur="NAN(this)" id="credit' + count + '" class="form-control cr amount" />' +
             '</div>' +
 
             '<div class="col-md-1">' +
-            '<button class="btn btn-sm btn-danger" class="btn btn-danger" onclick="Remove(' + count + ')"><i class="fa fa-window-close" aria-hidden="true" style="font-size:12px"></i></button>' +
+            '<button class="btn btn-sm btn-danger minusbutton"  onclick="Remove(' + count + ')"><i class="fa fa-window-close" aria-hidden="true" style="font-size:12px"></i></button>' +
             '</div>' +
             '</div>')
         var id = "#branch" + count;
@@ -447,6 +452,53 @@
         border-radius: 4px;
         height: 33px;
     }
+
+
+
+       @@media print {
+        #noPrint1 {
+            visibility: hidden;
+        }
+        #noPrint2
+        {
+            visibility: hidden;
+
+        }
+        #PageHeader
+
+        {
+            visibility: hidden;
+
+        }
+        #BreadCrumbs
+        {
+            visibility: hidden;
+
+        }
+        .des
+        {
+            margin-left:50px;
+        }
+        .amount
+        {
+             margin-left:50px;
+        }
+        .totaldiv
+        {
+         
+            margin-left:80px;
+        }
+        .plusbutton {
+            margin-left: 50px;
+        }
+         .minusbutton
+        {
+            margin-left:50px;
+
+        }
+    }
+
+
 </style>
 
 
@@ -554,7 +606,7 @@
                             <select id='students0' class='form-control drop'></select>
                         </div>
 
-                        <div class="col-md-2 descriptionDiv0" id="descriptionDiv0" style="padding-left:0px">
+                        <div class="col-md-2 descriptionDiv0 des" id="descriptionDiv0" style="padding-left:0px">
                             <label class="control-label"></label>
                             <input placeholder="Description" type="text" name="Name" id="description0" class="form-control" />
                         </div>
@@ -565,11 +617,11 @@
 
                         <div class="col-md-1" style="padding:0px">
                             <label class="control-label"></label>
-                            <input placeholder="Amount" type="text" name="cr" onkeyup="creditvalue(this)" onblur="NAN(this)" id="credit0" class="form-control cr" />
+                            <input placeholder="Amount" type="text" name="cr" onkeyup="creditvalue(this)" onblur="NAN(this)" id="credit0" class="form-control cr amount" />
                         </div>
                         <div class="col-md-1">
                             <br />
-                            <button style="background:#32CD32" class="btn btn-sm btn-default" onclick="journalentries()"><i class="fa fa-plus" style="font-size:12px"></i></button>
+                            <button style="background:#32CD32" class="btn btn-sm btn-default plusbutton" onclick="journalentries()"><i class="fa fa-plus" style="font-size:12px"></i></button>
                         </div>
                     </div>
 
@@ -599,7 +651,7 @@
 
                         </div>
 
-                        <div class="col-md-1 col-md-offset-8" style="padding:0px">
+                        <div class="col-md-1 col-md-offset-8 totaldiv" style="padding:0px">
                             <input style="background-color:white;text-align:right !important" type="text" name="total" onblur="NAN(this)" id="zero" class="form-control" readonly />
                         </div>
                         <span id="zero_Error" style="color:red;margin-top:5px !important;margin-left:20px"></span>
@@ -610,7 +662,7 @@
 
 
                         @*<button class="col-md-2 form-control color2" onclick="window.location.href = '/FinanceSummary/BankIndex'" style="border-radius:35px;border:hidden;margin-right:10px;background-color:red;color:white;font-size:11px;width:98px;height:38px;font-family:Montserrat" id="return"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Return</button>
-                            <input class="col-md-2 form-control color" id="submit" onclick="SaveVoucher()" type="submit" value="Save" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />*@
+        <input class="col-md-2 form-control color" id="submit" onclick="SaveVoucher()" type="submit" value="Save" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />*@
 
 
                         <button id="return" type="button" onclick="window.location.href = '/FinanceSummary/BankIndex'" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
@@ -619,6 +671,8 @@
 
                         <button type="submit" onclick="SaveVoucher()" id="submit" class="btn btn-primary rounded rounded-lg"> Save </button>
 
+
+                        <button class=" btn btn-default" onclick="window.print()">Print</button>
 
                     </div>
                     @*</div>*@

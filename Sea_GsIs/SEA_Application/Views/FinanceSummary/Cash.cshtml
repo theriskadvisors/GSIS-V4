@@ -18,6 +18,50 @@
     .color2:hover {
         background-color: #dc0000 !important;
     }
+    
+    @@media print {
+        #noPrint1 {
+            visibility: hidden;
+        }
+        #noPrint2
+        {
+            visibility: hidden;
+
+        }
+        #PageHeader
+
+        {
+            visibility: hidden;
+
+        }
+        #BreadCrumbs
+        {
+            visibility: hidden;
+
+        }
+        .des
+        {
+            margin-left:50px;
+        }
+        .amount
+        {
+             margin-left:50px;
+        }
+        .totaldiv
+        {
+         
+            margin-left:80px;
+        }
+        .plusbutton {
+            margin-left: 50px;
+        }
+         .minusbutton
+        {
+            margin-left:50px;
+
+        }
+    }
+
 </style>
 <script>
     count = 1;
@@ -28,6 +72,14 @@
     $(document).ready(function () {
         AllStudents();
 
+      //  accounttype = "New Receipt";
+        type = "Dr";
+        $("#title").html("");
+        $("#title").html("New Receipt");
+      
+
+      //  $(".receiptbtn").click();
+      // $("#rec").click();
         // alert("123");
         $("#PageHeader").html("Cash");
 
@@ -108,10 +160,8 @@
             Voucher.Time = $('#ddate').val();
             Voucher.uppercode = $('#uppercode').val();
             Voucher.upperdesc = $('#upperdesc').val();
-
             Voucher.accounttype = type;
             Voucher.uppertotal = $('#zero').val();
-
             Voucher.VoucherDetail = [];
 
             for (var i in row) {
@@ -160,10 +210,6 @@
                 else {
                     VoucherDetail.StudentId = StudentIdVal
                 }
-
-
-
-
                 if (isNaN(VoucherDetail.Credit)) {
                     $("#zero_Error").html("Enter only numbers");
                     t = false;
@@ -227,8 +273,7 @@
         })
 
     }
-
-    function AddBranch(rowNumber) {
+      function AddBranch(rowNumber) {
         var id = "#branch" + rowNumber;
         var node = $(id);
         $.ajax({
@@ -245,8 +290,7 @@
             }
         });
     }
-
-    function journalentries() {
+        function journalentries() {
         //var newDiv = document.createElement("div")
 
         $("#journaldiv").append('<div class="row" style="margin:0px" class="col-md-10" style="margin-top:3px" id="' + count + '">' +
@@ -257,18 +301,18 @@
             '<div class="col-md-2" id="studentsdiv' + count + '" >' +
             '<select id="students' + count + '" class="form-control drop" ></select>' +
             '</div>' +
-            '<div id="descriptionDiv' + count + '" class="col-md-2" style="padding-left:0px">' +
-            '<input type="text" name="Name" id="description' + count + '" class="form-control" />' +
+            '<div id="descriptionDiv' + count + '" class="col-md-2 des" style="padding-left:0px">' +
+            '<input type="text"  placeholder="Description" name="Name" id="description' + count + '" class="form-control" />' +
             '</div>' +
             '<div class="col-md-2" style="padding-left:0px">' +
             '<select id="branch' + count + '" class="form-control drop"  ></select>' +
             '</div>' +
             '<div class="col-md-1" style="padding:0px">' +
-            '<input placeholder="Amount" type="text" name="cr" onkeyup="creditvalue()" onblur="NAN(this)" id="credit' + count + '" class="form-control cr" />' +
+            '<input placeholder="Amount"   type="text" name="cr" onkeyup="creditvalue()" onblur="NAN(this)" id="credit' + count + '" class="form-control cr amount" />' +
             '</div>' +
 
             '<div class="col-md-1">' +
-            '<button  class="btn btn-sm btn-danger" onclick="Remove(' + count + ')"><i class="fa fa-window-close" aria-hidden="true" style="font-size:12px"></i></button>' +
+            '<button  class="btn btn-sm btn-danger minusbutton" onclick="Remove(' + count + ')"><i class="fa fa-window-close" aria-hidden="true" style="font-size:12px"></i></button>' +
             '</div>' +
             '</div>')
         var id = "#branch" + count;
@@ -386,18 +430,20 @@
 
         accounttype = "New Payment";
         type = "Cr";
-        $("#maindiv").prop("hidden", false);
         $("#title").html("");
         $("#title").html(accounttype);
+       // $("#container").css('display', 'inline-block');
+
+      
 
     }
     function Receivable() {
 
         accounttype = "New Receipt";
         type = "Dr";
-        $("#maindiv").prop("hidden", false);
         $("#title").html("");
         $("#title").html(accounttype);
+      
 
 
     }
@@ -455,6 +501,26 @@
             }
         })
     }
+
+    function PrintElem()
+    {
+        var elem = "container";
+    var mywindow = window.open('', 'PRINT', 'height=400,width=600');
+
+    mywindow.document.write('<html><head>  <link href="~/Content/assets/css/material-dashboard.css?v=2.1.2" rel="stylesheet" /><link rel="stylesheet" href="~/Content/assets/css/style.css"><link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" /><title>' + document.title  + '</title>');
+    mywindow.document.write('</head><body >');
+    mywindow.document.write('<h1>' + document.title  + '</h1>');
+    mywindow.document.write(document.getElementById(elem).innerHTML);
+    mywindow.document.write('</body></html>');
+
+    mywindow.document.close(); // necessary for IE >= 10
+    mywindow.focus(); // necessary for IE >= 10*/
+
+    mywindow.print();
+    mywindow.close();
+
+    return true;
+}
 </script>
 
 
@@ -465,14 +531,12 @@
 
                 <div class="col-md-12">
 
-                    <div>
+                    <div id="noPrint1">
                         <br />
-                        <span style="margin:15px"><b>Cash Account</b></span>
-                        <a href="#" id="rec" onclick="Receivable()">New Receipts /</a>
+                        <span style="margin: 15px "><b>Cash Account</b></span>
+                        <a href="#" id="rec" class="receiptbtn" onclick="Receivable()">New Receipts /</a>
                         <a href="#" id="pay" onclick="Payable()">New Payments</a>
                     </div>
-
-
 
 
                     <br />
@@ -480,195 +544,193 @@
                         <span id="title" style="color:#808080;font-size:15px;font-weight:600"></span>
                     </div>
 
-                    <br />
-                    <br />
+                    <div id="container"   >
 
-
-
-
-                    <div class="col-md-4">
-                        <br />
-                        <br />
-                        <div class="form-group">
-                            <label class="control-label">Date</label><br />
-                            <input type="date" class="form-control round-border" id="ddate" />
+                        <div class="col-md-4">
                             <br />
-                        </div>
-                    </div>
-
-
-                    <div class="row" style="margin:0">
-
-                        <div class="col-md-2 ">
-                            <label class="control-label">Voucher No</label>
-
-                            <div class="input-group">
-
-                                <input id="VoucherNo" type="text" class="form-control" readonly />
-                            </div>
-
-                        </div>
-
-
-
-                        <div class="col-md-3">
-
-                            <label class="control-label">Voucher</label><br />
-                            <input type="text" class="form-control round-border" id="voucher" />
-                            <span id="Error_Vocuher" style="color:red"></span>
                             <br />
-
-                        </div>
-
-                    </div>
-
-
-
-                    <div class="col-md-5">
-                        <label class="control-label" style="font-weight:600">Narration</label>
-                        <input type="text" name="Name" id="Naration" class="form-control " />
-                        <br />
-                    </div>
-
-
-
-                    @*<div class="col-md-10">
-                            <div class="col-md-6">
-                                <span>Cash Account</span>
-                                <select id='uppercode' style="width:110px" class='form-control drop'></select>
-                            </div>
-                            <div class="col-md-6" style="padding-left:0px">
-                                <span>Description</span>
-                                <input type="text" name="Name" id="upperdesc" class="form-control" />
+                            <div class="form-group">
+                                <label class="control-label">Date</label><br />
+                                <input type="date" class="form-control round-border" id="ddate" />
                                 <br />
                             </div>
+                        </div>
 
-                        </div>*@
 
-                    <div class="row" style="margin:0">
+                        <div class="row" style="margin:0">
 
-                        <div class="col-md-2">
-                            <label for="" class="control-label">Cash Account</label>
+                            <div class="col-md-2 ">
+                                <label class="control-label">Voucher No</label>
 
-                            <select class="form-control drop" id="uppercode" name="uppercode" required></select>
+                                <div class="input-group">
+
+                                    <input id="VoucherNo" type="text" class="form-control" readonly />
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-3">
+
+                                <label class="control-label">Voucher</label><br />
+                                <input type="text" class="form-control round-border" id="voucher" />
+                                <span id="Error_Vocuher" style="color:red"></span>
+                                <br />
+
+                            </div>
 
                         </div>
 
-                        <div class="col-md-3">
 
-                            <label class="control-label">Description</label>
-                            <input type="text" name="Name" id="upperdesc" class="form-control" />
 
+                        <div class="col-md-5">
+                            <label class="control-label" style="font-weight:600">Narration</label>
+                            <input type="text" name="Name" id="Naration" class="form-control " />
+                            <br />
                         </div>
-                    </div>
 
 
-                    @*<div class="col-md-10" id="top">
-                            <div class="col-md-6">
-                                <span>Account</span>
-                                <select id='code0' class='form-control drop' style="width:110px" onchange='Codedescription(this)'></select>
+
+                        @*<div class="col-md-10">
+                <div class="col-md-6">
+                    <span>Cash Account</span>
+                    <select id='uppercode' style="width:110px" class='form-control drop'></select>
+                </div>
+                <div class="col-md-6" style="padding-left:0px">
+                    <span>Description</span>
+                    <input type="text" name="Name" id="upperdesc" class="form-control" />
+                    <br />
+                </div>
+
+            </div>*@
+
+                        <div class="row" style="margin:0">
+
+                            <div class="col-md-2">
+                                <label for="" class="control-label">Cash Account</label>
+
+                                <select class="form-control drop" id="uppercode" name="uppercode" required></select>
+
                             </div>
-                            <div class="col-md-6" style="padding-left:0px">
-                                <span>Description</span>
-                                <input type="text" name="Name" id="description0" class="form-control" />
+
+                            <div class="col-md-3">
+
+                                <label class="control-label">Description</label>
+                                <input type="text" name="Name" id="upperdesc" class="form-control" />
+
                             </div>
-                            <div class="col-md-6" style="padding-left:0px">
-                                <span>Branch</span>
-                                <select id='branch0' style="width:135px" class='form-control drop' disabled></select>
+                        </div>
+
+
+                        @*<div class="col-md-10" id="top">
+                <div class="col-md-6">
+                    <span>Account</span>
+                    <select id='code0' class='form-control drop' style="width:110px" onchange='Codedescription(this)'></select>
+                </div>
+                <div class="col-md-6" style="padding-left:0px">
+                    <span>Description</span>
+                    <input type="text" name="Name" id="description0" class="form-control" />
+                </div>
+                <div class="col-md-6" style="padding-left:0px">
+                    <span>Branch</span>
+                    <select id='branch0' style="width:135px" class='form-control drop' disabled></select>
+                </div>
+                <div class="col-md-1" style="padding:0px">
+                    <span>Amount</span>
+                    <input type="text" name="cr" onkeyup="creditvalue()" onblur="NAN(this)" id="credit0" class="form-control cr" />
+                </div>
+                <div class="col-md-1">
+                    <br />
+                    <button class="btn btn-default" onclick="journalentries()"><span class="glyphicon glyphicon-plus" style="color:gray"></span></button>
+                </div>
+
+            </div>*@
+
+
+                        <br />
+                        <div class="row" style="margin:0">
+
+                            <div class="col-md-2">
+                                <label class="control-label"></label>
+                                <select onchange='Codedescription(this)' class="form-control code drop" id="code0" name="uppercode" required></select>
+
                             </div>
+
+                            <div id="studentsdiv0" class="col-md-2">
+                                <label class="control-label "></label>
+                                <select id='students0' class='form-control drop'></select>
+                            </div>
+
+                            <div class="col-md-2 descriptionDiv0 des" id="descriptionDiv0" style="padding-left:0px">
+                                <label class="control-label"></label>
+                                <input placeholder="Description" type="text" name="Name" id="description0" class="form-control" />
+                            </div>
+                            <div class="col-md-2" style="padding-left:0px">
+                                <label class="control-label"></label>
+                                <select id='branch0' class='form-control drop'></select>
+                            </div>
+
                             <div class="col-md-1" style="padding:0px">
-                                <span>Amount</span>
-                                <input type="text" name="cr" onkeyup="creditvalue()" onblur="NAN(this)" id="credit0" class="form-control cr" />
+                                <label class="control-label"></label>
+                                <input placeholder="Amount" type="text" name="cr" onkeyup="creditvalue(this)" onblur="NAN(this)" id="credit0" class="form-control cr amount" />
                             </div>
                             <div class="col-md-1">
                                 <br />
-                                <button class="btn btn-default" onclick="journalentries()"><span class="glyphicon glyphicon-plus" style="color:gray"></span></button>
+                                <button style="background:#32CD32" class="btn btn-sm btn-default plusbutton" onclick="journalentries()"><i class="fa fa-plus" style="font-size:12px"></i></button>
+                            </div>
+                        </div>
+
+
+                        <div id="journaldiv">
+
+                        </div>
+
+                        @*<div class="col-md-10">
+                <br />
+                <div class="col-md-1 col-md-offset-8" style="padding:0px">
+                    <input type="text" name="total" onblur="NAN(this)" id="zero" class="form-control" readonly />
+                </div>
+
+                <span id="zero_Error" style="color:red;margin-top:5px !important;margin-left:20px"></span>
+
+                <div class="col-md-1 col-md-offset-6" style="padding:0px">
+                </div>
+            </div>*@
+
+
+                        <div class="row">
+                            <div class="col-md-8">
+
                             </div>
 
-                        </div>*@
-
-
-                    <br />
-                    <div class="row" style="margin:0">
-
-                        <div class="col-md-2">
-                            <label class="control-label"></label>
-                            <select onchange='Codedescription(this)' class="form-control code drop" id="code0" name="uppercode" required></select>
-
-                        </div>
-
-                        <div id="studentsdiv0" class="col-md-2">
-                            <label class="control-label "></label>
-                            <select id='students0' class='form-control drop'></select>
-                        </div>
-
-                        <div class="col-md-2 descriptionDiv0" id="descriptionDiv0" style="padding-left:0px">
-                            <label class="control-label"></label>
-                            <input placeholder="Description" type="text" name="Name" id="description0" class="form-control" />
-                        </div>
-                        <div class="col-md-2" style="padding-left:0px">
-                            <label class="control-label"></label>
-                            <select id='branch0' class='form-control drop'></select>
-                        </div>
-
-                        <div class="col-md-1" style="padding:0px">
-                            <label class="control-label"></label>
-                            <input placeholder="Amount" type="text" name="cr" onkeyup="creditvalue(this)" onblur="NAN(this)" id="credit0" class="form-control cr" />
-                        </div>
-                        <div class="col-md-1">
-                            <br />
-                            <button style="background:#32CD32" class="btn btn-sm btn-default" onclick="journalentries()"><i class="fa fa-plus" style="font-size:12px"></i></button>
-                        </div>
-                    </div>
-
-
-                    <div id="journaldiv">
-
-                    </div>
-
-                    @*<div class="col-md-10">
-                            <br />
-                            <div class="col-md-1 col-md-offset-8" style="padding:0px">
-                                <input type="text" name="total" onblur="NAN(this)" id="zero" class="form-control" readonly />
+                            <div class="col-md-1 col-md-offset-8 totaldiv" style="padding:0px">
+                                <input style="background-color:white;text-align:right !important" type="text" name="total" onblur="NAN(this)" id="zero" class="form-control" readonly />
                             </div>
-
                             <span id="zero_Error" style="color:red;margin-top:5px !important;margin-left:20px"></span>
-
-                            <div class="col-md-1 col-md-offset-6" style="padding:0px">
-                            </div>
-                        </div>*@
+                        </div>
 
 
-                    <div class="row">
-                        <div class="col-md-8">
+
+                        <div class="col-md-12" id="noPrint2">
+                            <hr />
+                            @*<button class="col-md-2 form-control color2" onclick="window.location.href = '/FinanceSummary/CashIndex'" style="border-radius:35px;border:hidden;margin-right:10px;background-color:red;color:white;font-size:11px;width:98px;height:38px;font-family:Montserrat" id="return"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Return</button>
+
+                <input class="col-md-2 form-control color" id="submit" onclick="SaveVoucher()" type="submit" value="Save" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />*@
+
+
+                            <button id="return" type="button" onclick="window.location.href = '/FinanceSummary/CashIndex'" id="return" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                                <i class="material-icons mr-2">cached</i>  Return
+                            </button>
+
+                            <button type="submit" onclick="SaveVoucher()" id="submit" class="btn btn-primary rounded rounded-lg"> Save </button>
+
+                            <button  class=" btn btn-default" onclick="window.print()" >Print</button>
+
 
                         </div>
 
-                        <div class="col-md-1 col-md-offset-8" style="padding:0px">
-                            <input style="background-color:white;text-align:right !important" type="text" name="total" onblur="NAN(this)" id="zero" class="form-control" readonly />
-                        </div>
-                        <span id="zero_Error" style="color:red;margin-top:5px !important;margin-left:20px"></span>
-                    </div>
-
-
-
-                    <div class="col-md-12">
-                        <hr />
-                        @*<button class="col-md-2 form-control color2" onclick="window.location.href = '/FinanceSummary/CashIndex'" style="border-radius:35px;border:hidden;margin-right:10px;background-color:red;color:white;font-size:11px;width:98px;height:38px;font-family:Montserrat" id="return"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Return</button>
-
-                            <input class="col-md-2 form-control color" id="submit" onclick="SaveVoucher()" type="submit" value="Save" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />*@
-
-
-                        <button id="return" type="button" onclick="window.location.href = '/FinanceSummary/CashIndex'" id="return" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
-                            <i class="material-icons mr-2">cached</i>  Return
-                        </button>
-
-                        <button type="submit" onclick="SaveVoucher()" id="submit" class="btn btn-primary rounded rounded-lg"> Save </button>
-
-
-
 
                     </div>
+
                 </div>
             </div>
         </div>

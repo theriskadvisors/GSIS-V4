@@ -829,6 +829,13 @@ namespace SEA_Application.Controllers
 
         }
 
+        public ActionResult GetLedgerAmount(int LedgerId)
+        {
+          var CurrentBalance =   db.Ledgers.Where(x => x.Id == LedgerId).FirstOrDefault().CurrentBalance;
+
+            return Json(CurrentBalance, JsonRequestBehavior.AllowGet);
+        }
+
         public JsonResult SelectListLedgersBank()
         {
 
@@ -862,7 +869,7 @@ namespace SEA_Application.Controllers
         public JsonResult SelectAllLedgers()
         {
 
-            var headlist = db.LedgerHeads.ToList();
+            var headlist = db.LedgerHeads.Where(x=>x.Name == "Assets" || x.Name == "Expense").ToList();
 
             List<HeadList> Head_list = new List<HeadList>();
             foreach (var item in headlist)
