@@ -151,6 +151,14 @@
 
                                     }
 
+                                    <div class="form-group">
+
+                                        <label class="control-label">Total</label>
+
+                                        <input readonly min="0" required class="form-control" type="number" value="0" id="Total" />
+
+                                    </div>
+
                                     <br />
 
                                     <div class="col-md-12 pl-12 pr-5 ">
@@ -175,31 +183,31 @@
                                 <form id="tab2Form">
 
                                     @*<div class="form-row mt-4">
-                                        <div class="form-group col-md-12 bmd-form-group">
-                                            <label for="" class="control-label"> Branch</label>
+            <div class="form-group col-md-12 bmd-form-group">
+                <label for="" class="control-label"> Branch</label>
 
-                                            <select class="form-control" id="BranchId1" name="BranchId1" required></select>
+                <select class="form-control" id="BranchId1" name="BranchId1" required></select>
 
-                                        </div>
-                                    </div>*@
-
-                                    @*<div class="form-row mt-4">
-                                        <div class="form-group col-md-12 bmd-form-group">
-                                            <label for="" class="control-label"> class </label>
-
-                                            <select class="form-control" id="ClassId1" name="ClassId1" required></select>
-
-                                        </div>
-                                    </div>*@
-
+            </div>
+        </div>*@
 
                                     @*<div class="form-row mt-4">
-                                        <div class="form-group col-md-12 bmd-form-group">
-                                            <label for="" class="control-label"> Section *</label>
+            <div class="form-group col-md-12 bmd-form-group">
+                <label for="" class="control-label"> class </label>
 
-                                            <select class="form-control" id="SectionId1" name="SectionId1" required></select>
-                                        </div>
-                                    </div>*@
+                <select class="form-control" id="ClassId1" name="ClassId1" required></select>
+
+            </div>
+        </div>*@
+
+
+                                    @*<div class="form-row mt-4">
+            <div class="form-group col-md-12 bmd-form-group">
+                <label for="" class="control-label"> Section *</label>
+
+                <select class="form-control" id="SectionId1" name="SectionId1" required></select>
+            </div>
+        </div>*@
 
 
                                     <div class="form-row mt-4">
@@ -253,6 +261,15 @@
 
                                         }
                                     </div>
+
+                                    <div class="form-group" >
+
+                                        <label class="control-label">Total</label>
+
+                                        <input readonly min="0" required class="form-control" type="number"  value="0" id="Total1" />
+
+                                    </div>
+
 
                                     <br />
                                     <div class="col-md-12 pl-12 pr-5 ">
@@ -328,6 +345,33 @@
             }
         });
 
+          $(".tab1NumberFields").keyup(function () {
+
+            var Total = 0;
+            $(".tab1NumberFields").each(function () {
+
+               
+
+                Total = Total + parseInt( $(this).val());
+
+            })
+            $("#Total").val(Total);
+
+        })
+
+        $(".tab2NumberFields").keyup(function () {
+
+            var Total = 0;
+            $(".tab2NumberFields").each(function () {
+
+               
+
+                Total = Total + parseInt( $(this).val());
+
+            })
+            $("#Total1").val(Total);
+
+        })
 
 
         $('#BranchId').change(function () {
@@ -971,7 +1015,7 @@
                         $("#error1").html(data.ErrorMsg);
 
                          var FeeTypeAmountList = data.FeeTypeAmontList
-                        GetAmountofNonRecurring(FeeTypeAmountList);
+                          GetAmountofNonRecurring(FeeTypeAmountList);
                     }
 
                     else if (data.ErrorMsg1 == "FeeCreated") {
@@ -1000,6 +1044,8 @@
 
             $(this).val(0);
         })
+            $("#Total1").val(0);
+
     }
      function GetAmountofNonRecurring(values) {
 
@@ -1025,8 +1071,20 @@
                 }
             })
 
-
+            
         })
+
+            var Total = 0;
+            $(".tab2NumberFields").each(function () {
+
+                if ($(this).attr('name') != "Admission Fee") {
+
+
+                Total = Total + parseInt( $(this).val());
+                }
+
+            })
+            $("#Total1").val(Total);
 
     }
 
