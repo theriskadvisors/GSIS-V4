@@ -492,9 +492,9 @@ namespace SEA_Application.Controllers
 
                 if (param.sSearch != null) 
                 {
-                    totalCount = db.AllStudentsList().Where(x => x.RollNo.Contains(param.sSearch) || x.Name.Contains(param.sSearch) || x.ClassName.Contains(param.sSearch) || x.CellNo.Contains(param.sSearch)).Count();
+                    totalCount = db.AllStudentsList().Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Count();
 
-                    var studentList = db.AllStudentsList().Where(x => x.RollNo.Contains(param.sSearch) || x.Name.Contains(param.sSearch) || x.ClassName.Contains(param.sSearch) || x.CellNo.Contains(param.sSearch) ).Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
+                    var studentList = db.AllStudentsList().Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch) ).Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
                     return Json(new
                     {
                         aaData = studentList,
@@ -555,7 +555,7 @@ namespace SEA_Application.Controllers
                                from stufee in egroup.DefaultIfEmpty()
                                join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
                                where stdnt.UserId == usr.Id && usr.StatusId != 2 && stdnt.BranchId == branchId
-                               select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name }).Where(x => x.RollNo.Contains(param.sSearch) || x.Name.Contains(param.sSearch) || x.ClassName.Contains(param.sSearch) || x.CellNo.Contains(param.sSearch)).Distinct().Count();
+                               select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name }).Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Distinct().Count();
 
                 var studentList = (from stdnt in db.AspNetStudents
                                    join usr in db.AspNetUsers on stdnt.UserId equals usr.Id
@@ -564,7 +564,7 @@ namespace SEA_Application.Controllers
                                    from stufee in egroup.DefaultIfEmpty()
                                    join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
                                    where stdnt.UserId == usr.Id && usr.StatusId != 2 && stdnt.BranchId == branchId
-                                   select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name }).Where(x => x.RollNo.Contains(param.sSearch) || x.Name.Contains(param.sSearch) || x.ClassName.Contains(param.sSearch) || x.CellNo.Contains(param.sSearch)).Distinct().OrderBy(x => x.Name).Skip((pageNo1 - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
+                                   select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name }).Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Distinct().OrderBy(x => x.Name).Skip((pageNo1 - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
                 return Json(new
                 {
                     aaData = studentList,
@@ -608,9 +608,6 @@ namespace SEA_Application.Controllers
 
                 }, JsonRequestBehavior.AllowGet);
             }
-
-
-
 
             //  var students = db.AspNetStudents.ToList();
 
