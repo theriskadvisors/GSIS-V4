@@ -1,0 +1,139 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+}
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body p-5">
+
+                <div class="table-responsive">
+                    <input type="hidden" id="StudentCreatedMsg" name="name" value="@TempData["StudentCreated"]" />
+                    <input type="hidden" id="StudentUpdatedMsg" name="name" value="@TempData["StudentUpdated"]" />
+
+                    <table class="table hover table-bordered" id="example">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    Start Date
+                                </th>
+                                <th>
+                                    End Date
+                                </th>
+                                <th>
+                                    Class
+                                </th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#PageHeader").html("Class Session");
+
+        $("#BreadCrumbs").append(' <li> <a href="/FinanceSummary/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Class Session</a></li>');
+
+
+       var table =  $("#example").dataTable({
+
+            buttons: [
+                {
+                    // text: '<span class="datatableButtonsReset"> <img src="/Content/assets/assets/icons/Icon-Reset2.png" alt=""> Reset</span>'
+                },
+                {
+                    text: '<span class="datatableButtonsEdit"> <img src="/Content/assets/assets/icons/Icon-edit.png" alt=""> Create</span>',
+                    action: function (e, dt, button, config) {
+                        window.location.href = '/Class_Session/create';
+                    }
+                },
+                {
+                    //   text: '<span class="datatableButtonsDownload"> <img src="/Content/assets/assets/icons/Icon-download.png" alt=""> Download</span>'
+                }
+            ],
+            "language": {
+                "lengthMenu": "<div class=\"d-flex showEntriesCon\">\n" +
+                    "  <div class=\"p-2\">Show </div> <div class=\"showEntries\"> _MENU_\n" +
+                    "  </div>\n" +
+                    "  </div>",
+                "info": "<div class='showingEntriesOfTotal'>Showing <span class=\"text-info\">_START_ to _END_</span> of _TOTAL_ entries</div>",
+                "paginate": {
+                    "first": "Firstt",
+                    "last": "Lastt",
+                    "next": ' <img src="~/Content/assets/assets/icons/Arrow2.png" alt=""> ',
+                    "previous": ' <img src="~/Content/assets/assets/icons/Arrow1.png" alt=""> '
+                }
+            },
+            "searching": true,
+            // dom: '<"class">Blfrtip',
+            dom: "<'row mb-3'<'col-sm-12 col-md-2 col-lg-2'l><'col-sm-12 col-md-10 col-lg-10 datatableButtonsCon text-right'Bf>>" +
+                "<'row'<'col-sm-12 datatablesData'tr>>" +
+                "<'row mt-4'<'col-sm-12 col-md-4 col-lg-6 infoCon'i><'col-sm-12 col-md-8 col-lg-6 pagCon'p>>",
+
+        });
+
+
+
+        $.ajax({
+            type: "POST",
+            url: "/Class_Session/AllClassSession",
+            data: {},
+
+            success: function (data) {
+                table.fnClearTable();
+                debugger
+                $.each(data, function (index) {
+
+                    
+                    var value = new Date(parseInt(data[index].Start_Date.replace(/(^.*\()|([+-].*$)/g, '')));
+                    var StartDate = value.getMonth() +
+                        1 +
+                        "/" +
+                        value.getDate() +
+                        "/" +
+                        value.getFullYear();// + " " +
+
+                    
+                    var value1 = new Date(parseInt(data[index].End_Date.replace(/(^.*\()|([+-].*$)/g, '')));
+                    var EndDate = value1.getMonth() +
+                        1 +
+                        "/" +
+                        value1.getDate() +
+                        "/" +
+                        value1.getFullYear();// + " " +
+
+                    table.fnAddData([data[index].ClassSessionName + "<input  type=hidden value=" + data[index].Id + ">", StartDate, EndDate, data[index].Name]);
+                })
+                table.fnDraw();
+            }
+        })
+
+         $('#example').on('click', 'tbody tr', function () {
+            var td = $(this).children("td");
+            var Id = $(td[0]).children("input").val();
+
+            window.location.href = "/Class_Session/Edit?id=" + Id;
+        });
+
+    })
+
+</script>

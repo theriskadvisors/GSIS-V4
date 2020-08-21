@@ -565,6 +565,7 @@ namespace SEA_Application.Controllers
                                    join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
                                    where stdnt.UserId == usr.Id && usr.StatusId != 2 && stdnt.BranchId == branchId
                                    select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name }).Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Distinct().OrderBy(x => x.Name).Skip((pageNo1 - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
+              
                 return Json(new
                 {
                     aaData = studentList,
