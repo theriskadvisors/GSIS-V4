@@ -1,0 +1,141 @@
+﻿@model SEA_Application.Models.Class_Session
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+
+            <div class="card-body p-5">
+                <div class="col-md-6 pl-5 pr-5 ">
+
+                    @using (Html.BeginForm())
+                    {
+
+                        <div class="form-group bmd-form-group">
+                            <label class="bmd-label-floating">Name <span class="red-mark"></span></label>
+
+                            <input type="text" name="ClassSessionName" class="form-control round-border" required />
+
+                        </div>
+
+                        <div class="form-row mt-4">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <label class="control-label">Select class *</label>
+
+                                <select class="form-control" id="ClassId" name="ClassId" required></select>
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-row mt-4">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <label for="" class="control-label pl-2">Start Date*</label>
+
+                                <input required class="form-control" type="date" name="Start_Date" id="Start_Date" />
+                            </div>
+                        </div>
+
+                        <div class="form-row mt-4">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <label for="" class="control-label pl-2">Due Date*</label>
+
+                                <input required class="form-control" type="date" name="End_Date" id="End_Date" />
+                            </div>
+                        </div>
+
+                        <div>
+                            <span style="color:red" id="Error"></span>
+                        </div>
+
+                        <br />
+                        <br />
+
+                        <div class="col-md-12">
+                            <button type="submit" id="SaveButton" class="btn btn-primary rounded rounded-lg"> Save </button>
+
+
+                            <button type="button" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                                <i class="material-icons mr-2">cached</i>  Cancel
+                            </button>
+
+                        </div>
+
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    $(document).ready(function () {
+
+        $("#PageHeader").html("Add Class Session");
+
+        $("#BreadCrumbs").append(' <li> <a  href="/FinanceSummary/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li> <a href="/Class_Session/Index"> Class Session  </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Create</a></li>');
+
+
+
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "/Class_Session/AllClasses",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#ClassId");
+                $el.empty();
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").text('Select Class'));
+                    for (i = 0; i < sch.length; i++) {
+
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i].Id).text(sch[i].Name));
+                    }
+                }
+                else {
+                    $el.append($("<option></option>")
+                        .attr("value", '').text('Select Branch'));
+                }
+            }
+        });
+
+        $("#ClassId").change(function () {
+
+            var ClassId = $(this).val();
+
+            $.ajax({
+                type: "POST",
+                url: "/Class_Session/CheckClassSessionExist",
+                data: { "ClassId": ClassId },
+                success: function (data) {
+
+                    if (data == "") {
+
+                        $("#Error").html(data);
+                        $("#SaveButton").attr('disabled', false);
+
+                    }
+                    else {
+
+                        $("#Error").html(data);
+                        $("#SaveButton").attr('disabled', true);
+
+                    }
+
+                }
+
+            })
+
+        })
+    })
+</script>

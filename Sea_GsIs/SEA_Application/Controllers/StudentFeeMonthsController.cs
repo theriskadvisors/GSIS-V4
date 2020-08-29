@@ -432,7 +432,7 @@ namespace SEA_Application.Controllers
         {
             var StudentFeeDetailIds = idlist.Split(',');
             List<challanform> listChallanForm = new List<challanform>();
-        
+
 
             foreach (var listitem in StudentFeeDetailIds)
             {
@@ -588,7 +588,18 @@ namespace SEA_Application.Controllers
                 //   challan.FeeMonth = MonthMultiplier.ToString();
                 challan.InvoiceNumber = "Invoice no." + studentFeeDetail.InvoiceNo + " of " + countTotalMultipliers;
 
+                Class_Session classSession = db.Class_Session.Where(x => x.ClassId == Student.AspNetClass.Id).FirstOrDefault();
 
+
+                if(classSession == null)
+                {
+                    challan.ClassSession = "";
+                }
+                else
+                {
+                    challan.ClassSession = classSession.ClassSessionName;
+
+                }
 
                 challan.FeeMonth = monthName;
                 challan.BillingMonth = monthName + " " + studentFeeDetail.ChallanDueDate.Value.Year.ToString();
@@ -670,7 +681,6 @@ namespace SEA_Application.Controllers
                 challan.Nov_PaidAmount = Convert.ToInt32(multiplier.Nov_PaidAmount);
                 challan.Dec_PaidAmount = Convert.ToInt32(multiplier.Dec_PaidAmount);
 
-
                 var TotalNonRecurringFee = 0;
 
                 List<StudentNonRecurringFee> listStudentNonRecurringFee = db.StudentNonRecurringFees.Where(x => x.StudentFeeID == StudentId && x.Month == studentFeeDetail.Month).ToList();
@@ -699,8 +709,6 @@ namespace SEA_Application.Controllers
                             //   challan.AdmissionFee_NonRef = 0;
                             // TotalNonRecurringFee = TotalNonRecurringFee + Convert.ToInt32(0);
 
-
-
                         }
                         else if (type == "Security (Ref)")
                         {
@@ -720,7 +728,6 @@ namespace SEA_Application.Controllers
                         {
                             challan.SLC_Charges = nonRecurring.Amount.Value;
                             TotalNonRecurringFee = TotalNonRecurringFee + Convert.ToInt32(nonRecurring.Amount);
-
 
                         }
                         else if (type == "Arrears")
@@ -788,7 +795,6 @@ namespace SEA_Application.Controllers
                 //    TotalNonRecurringFee = TotalNonRecurringFee + Convert.ToInt32(studentFee.DiscountAdmissionFeeAmount.Value);
                 //}
 
-
                 challan.Rec_NonRec_Total = TotalNonRecurringFee;
 
                 listChallanForm.Add(challan);
@@ -844,6 +850,7 @@ namespace SEA_Application.Controllers
             public string BillingMonth { get; set; }
             public double? TripCharges { get; set; }
 
+            public string ClassSession { get; set; }
             public string JanMonth { get; set; }
             public string FebMonth { get; set; }
             public string MarMonth { get; set; }
