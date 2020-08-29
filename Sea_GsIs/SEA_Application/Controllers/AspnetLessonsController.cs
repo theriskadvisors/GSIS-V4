@@ -194,7 +194,7 @@ namespace SEA_Application.Controllers
                     var ClassName = db.AspnetLessons.Where(x => x.Id == Lesson.Id).Select(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name).FirstOrDefault();
                     var SectionName = db.AspnetLessons.Where(x => x.Id == Lesson.Id).Select(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name).FirstOrDefault();
 
-                    var eventList = db.Events.Where(x => x.LessonID == id).ToList();
+                    var eventList = db.Events.Where(x => x.LessonID == id).FirstOrDefault();
 
                     if(eventList == null)
                     {
@@ -221,15 +221,23 @@ namespace SEA_Application.Controllers
                         event_user.userid = User.Identity.GetUserId();
                         db.AspnetEvent_User.Add(event_user);
                         db.SaveChanges();
+
+                        var teacher = db.AspNetTeacher_Enrollments.Where(x => x.SectionId == BCSId && x.CourseId == CSId).Select(x => x.AspNetEmployee.UserId).ToList();
+
+                        foreach (var item in teacher)
+                        {
+                            var event_teacher = new AspnetEvent_User();
+                            event_teacher.eventid = events.EventID;
+                            event_teacher.userid = item;
+                            db.AspnetEvent_User.Add(event_teacher);
+                            db.SaveChanges();
+                        }
                     }
                     else
                     {
-                        foreach (var item in eventList)
-                        {
-                            item.SubjectClass = Lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name;
-                            item.ThemeColor = "Green";
-                            db.SaveChanges();
-                        }
+                        eventList.SubjectClass = Lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name;
+                        eventList.ThemeColor = "Green";
+                        db.SaveChanges();   
                     }
 
                     var events1 = new Event();
@@ -256,6 +264,7 @@ namespace SEA_Application.Controllers
                         event_user.eventid = events1.EventID;
                         event_user.userid = item;
                         db.AspnetEvent_User.Add(event_user);
+                        db.SaveChanges();
                     }
 
                     //var teacher = db.AspNetTeacher_Enrollments.Where(x => x.SectionId == BCSId && x.CourseId == CSId).Select(x => x.AspNetEmployee.UserId).ToList();
@@ -265,12 +274,7 @@ namespace SEA_Application.Controllers
                     //    var user = db.AspNetUsers.Where(x => x.Id == item).FirstOrDefault();
                     //    SendMail(user.SecondaryEmail, "Lesson Published", "" + CustomModel.EmailDesign.TecherLessonTemplate (user.Name, loggedUser.Name, Lesson.Name));
                     //}
-                }
-
-                
-
-
-
+                }         
             }
             catch(Exception e)
             {
@@ -279,8 +283,6 @@ namespace SEA_Application.Controllers
                 logs.OperationStartTime = DateTime.Now;
                 logs.UserId = User.Identity.GetUserId();
             }
-
-
             return RedirectToAction("ViewLessonsToAdmin");
         }
 

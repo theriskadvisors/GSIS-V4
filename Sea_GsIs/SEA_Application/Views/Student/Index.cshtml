@@ -9,10 +9,10 @@
     var CurrentUserId = User.Identity.GetUserId();
 
     string name = db.AspNetUsers.Where(x => x.Id == CurrentUserId).Select(x => x.Name).FirstOrDefault();
-    var dt = DateTime.Now;
+    var dt = DateTime.Now.Date;
     DateTime Firstday = dt.AddDays(-(int)dt.DayOfWeek);
-    DateTime Endaday = Firstday.AddDays(6);
-    int countLesson = db.Events.Where(x => x.UserId == CurrentUserId && x.Start <= Endaday).Count();
+    DateTime Endaday = Firstday.AddDays(7);
+    int countLesson = db.AspnetEvent_User.Where(x => x.userid == CurrentUserId && x.Event.Start <= Endaday  && x.Event.Start >= Firstday).Count();
 }
 
 <span class="hidden" id="UserType">Student</span>
