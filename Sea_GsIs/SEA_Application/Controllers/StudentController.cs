@@ -94,7 +94,7 @@ namespace SEA_Application.Controllers
                         lessonobj.LessonDuration = Int32.Parse(lesson.DurationMinutes.ToString());
                         lessonobj.LessonExistInTrackingTable = LessonExist;
                         lessonobj.EncryptedID = lesson.EncryptedID;
-
+                        lessonobj.startDate = lesson.StartDate.ToString().Split(' ')[0];
 
                         DurationCount = DurationCount + lesson.DurationMinutes ?? 0;
 
@@ -394,7 +394,7 @@ namespace SEA_Application.Controllers
 
             public string LessonExistInTrackingTable { get; set; }
             public string EncryptedID { get; set; }
-
+            public string startDate { get; set; }
             public int OrderBy { get; set; }
             public int LessonCount { get; set; }
         }

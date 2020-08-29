@@ -180,13 +180,6 @@ namespace SEA_Application.Controllers
                     Lesson.Status = true;
                     db.SaveChanges();
 
-                    var events = db.Events.Where(x => x.LessonID == id).ToList();
-                    foreach (var item in events)
-                    {
-                        item.SubjectClass = Lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name;
-                        db.SaveChanges();
-                    }
-
                     var branchID = Lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.BranchId;
                     var ClassID = Lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.ClassId;
                     var SectionID = Lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SectionId;
@@ -201,36 +194,77 @@ namespace SEA_Application.Controllers
                     var ClassName = db.AspnetLessons.Where(x => x.Id == Lesson.Id).Select(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name).FirstOrDefault();
                     var SectionName = db.AspnetLessons.Where(x => x.Id == Lesson.Id).Select(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name).FirstOrDefault();
 
-                    foreach (var item in Students)
+                    var eventList = db.Events.Where(x => x.LessonID == id).ToList();
+
+                    if(eventList == null)
                     {
-                        var events1 = new Event();
-                        events1.UserId = item;
-                        events1.ThemeColor = "Green";
-                        events1.Subject = "";
-                        events1.Subject1 = subjectName + "-" + ClassName + "-" + SectionName;
-                        events1.Sec_Title = Lesson.Name;
-                        events1.Description1 = Lesson.Description;
-                        events1.Start = Lesson.StartTime.Value;
-                        events1.End = Lesson.EndTime;
-                        events1.LessonID = Lesson.Id;
-                        events1.IsFullDay = false;
-                        events1.IsPublic = false;
-                        events1.SubjectClass = Lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name;
-                        // Lesson.EncryptedID
-                        events1.Url = "/StudentCourses/StudentLessons/?id=" + Lesson.EncryptedID;
+                        var events = new Event();
+                        events.UserId = null;
+                        events.ThemeColor = "Green";
+                        events.Subject = "";
+                        events.Subject1 = subjectName + "-" + ClassName + "-" + SectionName;
+                        events.Sec_Title = Lesson.Name;
+                        events.Description1 = Lesson.Description;
+                        events.Start = Lesson.StartTime.Value;
+                        events.End = Lesson.EndTime;
+                        events.LessonID = Lesson.Id;
+                        events.IsFullDay = false;
+                        events.IsPublic = false;
+                        events.SubjectClass = Lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name;
+                        events.Url = "/TeacherCommentsOnCourses/StudentLessons/?id=" + Lesson.Id;
 
+                        db.Events.Add(events);
+                        db.SaveChanges();
 
-                        db.Events.Add(events1);
+                        var event_user = new AspnetEvent_User();
+                        event_user.eventid = events.EventID;
+                        event_user.userid = User.Identity.GetUserId();
+                        db.AspnetEvent_User.Add(event_user);
                         db.SaveChanges();
                     }
-
-                    var teacher = db.AspNetTeacher_Enrollments.Where(x => x.SectionId == BCSId && x.CourseId == CSId).Select(x => x.AspNetEmployee.UserId).ToList();
-
-                    foreach (var item in teacher)
+                    else
                     {
-                        var user = db.AspNetUsers.Where(x => x.Id == item).FirstOrDefault();
-                        SendMail(user.SecondaryEmail, "Lesson Published", "" + CustomModel.EmailDesign.TecherLessonTemplate (user.Name, loggedUser.Name, Lesson.Name));
+                        foreach (var item in eventList)
+                        {
+                            item.SubjectClass = Lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name;
+                            item.ThemeColor = "Green";
+                            db.SaveChanges();
+                        }
                     }
+
+                    var events1 = new Event();
+                    events1.UserId = null;
+                    events1.ThemeColor = "Green";
+                    events1.Subject = "";
+                    events1.Subject1 = subjectName + "-" + ClassName + "-" + SectionName;
+                    events1.Sec_Title = Lesson.Name;
+                    events1.Description1 = Lesson.Description;
+                    events1.Start = Lesson.StartTime.Value;
+                    events1.End = Lesson.EndTime;
+                    events1.LessonID = Lesson.Id;
+                    events1.IsFullDay = false;
+                    events1.IsPublic = false;
+                    events1.SubjectClass = Lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name;
+                    events1.Url = "/StudentCourses/StudentLessons/?id=" + Lesson.EncryptedID;
+
+                    db.Events.Add(events1);
+                    db.SaveChanges();
+
+                    foreach (var item in Students)
+                    {
+                        var event_user = new AspnetEvent_User();
+                        event_user.eventid = events1.EventID;
+                        event_user.userid = item;
+                        db.AspnetEvent_User.Add(event_user);
+                    }
+
+                    //var teacher = db.AspNetTeacher_Enrollments.Where(x => x.SectionId == BCSId && x.CourseId == CSId).Select(x => x.AspNetEmployee.UserId).ToList();
+
+                    //foreach (var item in teacher)
+                    //{
+                    //    var user = db.AspNetUsers.Where(x => x.Id == item).FirstOrDefault();
+                    //    SendMail(user.SecondaryEmail, "Lesson Published", "" + CustomModel.EmailDesign.TecherLessonTemplate (user.Name, loggedUser.Name, Lesson.Name));
+                    //}
                 }
 
                 
@@ -479,7 +513,7 @@ namespace SEA_Application.Controllers
             var SectionName = db.AspnetLessons.Where(x => x.Id == Lesson.Id).Select(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name).FirstOrDefault();
 
             var events = new Event();
-            events.UserId = User.Identity.GetUserId();
+            events.UserId = null;
             events.ThemeColor = "Gray";
             events.Subject = "";
             events.Subject1 = subjectName + "-" + ClassName + "-" + SectionName;
@@ -493,8 +527,14 @@ namespace SEA_Application.Controllers
             events.SubjectClass = "Not Published";
             events.Url = "/TeacherCommentsOnCourses/StudentLessons/?id=" + Lesson.Id;
 
-
             db.Events.Add(events);
+            db.SaveChanges();
+
+            var event_user = new AspnetEvent_User();
+            event_user.userid = User.Identity.GetUserId();
+            event_user.eventid = events.EventID;
+            db.AspnetEvent_User.Add(event_user);
+
             db.SaveChanges();
 
             var branchid = db.AspnetLessons.Where(x => x.Id == Lesson.Id).Select(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.BranchId).FirstOrDefault();
@@ -502,22 +542,10 @@ namespace SEA_Application.Controllers
 
             foreach (var item in branchAdmin)
             {
-                var events1 = new Event();
-                events1.UserId = item;
-                events1.ThemeColor = "Gray";
-                events1.Subject = "";
-                events1.Subject1 = subjectName + "-" + ClassName + "-" + SectionName;
-                events1.Sec_Title = Lesson.Name;
-                events1.Description1 = Lesson.Description;
-                events1.Start = Lesson.StartTime.Value;
-                events1.End = Lesson.EndTime;
-                events1.LessonID = Lesson.Id;
-                events1.IsFullDay = false;
-                events1.IsPublic = false;
-                events1.SubjectClass = "Not Published";
-                events1.Url = "/TeacherCommentsOnCourses/StudentLessons/?id=" + Lesson.Id;
-
-                db.Events.Add(events1);
+                var event_user1 = new AspnetEvent_User();
+                event_user1.userid = item;
+                event_user1.eventid = events.EventID;
+                db.AspnetEvent_User.Add(event_user1);
                 db.SaveChanges();
             }
 
@@ -1570,8 +1598,6 @@ namespace SEA_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(LessonViewModel LessonViewModel)
         {
-
-
             AspnetLesson Lesson = db.AspnetLessons.Where(x => x.Id == LessonViewModel.Id).FirstOrDefault();
             Lesson.Name = LessonViewModel.LessonName;
             Lesson.Video_Url = LessonViewModel.LessonVideoURL;
@@ -1594,21 +1620,57 @@ namespace SEA_Application.Controllers
 
             Lesson.EndTime = start.AddMinutes(60);
 
-            var events = db.Events.Where(x => x.LessonID == Lesson.Id).ToList();
-            foreach (var item in events)
+            var eventList = db.Events.Where(x => x.LessonID == Lesson.Id).ToList();
+
+            if(eventList == null)
             {
-                item.Subject = Lesson.Name;
-                item.Description = Lesson.Description;
-                item.Start = Lesson.StartTime.Value;
-                item.End = Lesson.EndTime;
-                db.SaveChanges();
+                // the below code creates event if it's not created or deleted 
+                //var subjectName = db.AspnetLessons.Where(x => x.Id == Lesson.Id).Select(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name).FirstOrDefault();
+                //var ClassName = db.AspnetLessons.Where(x => x.Id == Lesson.Id).Select(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name).FirstOrDefault();
+                //var SectionName = db.AspnetLessons.Where(x => x.Id == Lesson.Id).Select(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name).FirstOrDefault();
+
+                //var events = new Event();
+                //events.UserId = null;
+                //events.ThemeColor = "Red";
+                //events.Subject = "";
+                //events.Subject1 = subjectName + "-" + ClassName + "-" + SectionName;
+                //events.Sec_Title = Lesson.Name;
+                //events.Description1 = Lesson.Description;
+                //events.Start = Lesson.StartTime.Value;
+                //events.End = Lesson.EndTime;
+                //events.LessonID = Lesson.Id;
+                //events.IsFullDay = false;
+                //events.IsPublic = false;
+                //events.SubjectClass = ClassName;
+                //events.Url = "/TeacherCommentsOnCourses/StudentLessons/?id=" + Lesson.Id;
+
+                //db.Events.Add(events);
+                //db.SaveChanges();
+
+                //var event_user = new AspnetEvent_User();
+                //event_user.userid = User.Identity.GetUserId();
+                //event_user.eventid = events.EventID;
+                //db.AspnetEvent_User.Add(event_user);
+
+                //db.SaveChanges();
             }
+            else
+            {
+                foreach (var item in eventList)
+                {
+                    item.Subject = Lesson.Name;
+                    item.Description = Lesson.Description;
+                    item.Start = Lesson.StartTime.Value;
+                    item.End = Lesson.EndTime;
+                    db.SaveChanges();
+                }
+            }
+            
 
             if (LessonViewModel.ContentType == "Image")
             {
                 Lesson.MeetingLink = null;
                 Lesson.Video_Url = null;
-
             }
 
             if (LessonViewModel.ContentType == null)
