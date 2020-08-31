@@ -441,7 +441,7 @@ namespace SEA_Application.Controllers
             DateTime startDate = DateTime.Parse(LessonViewModel.StartDate.ToString());
             DateTime start = DateTime.Parse(LessonViewModel.StartTime.ToString());
             Lesson.StartTime = startDate.Date.Add(start.TimeOfDay);
-            Lesson.EndTime = start.AddMinutes(60);
+            Lesson.EndTime = Lesson.StartTime.Value.AddMinutes(60);
 
             TimeZoneInfo PK_ZONE = TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time");
             DateTime PKTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, PK_ZONE);
@@ -1619,8 +1619,11 @@ namespace SEA_Application.Controllers
             DateTime start = DateTime.Parse(LessonViewModel.StartTime.ToString());
 
             Lesson.StartTime = startDate.Date.Add(start.TimeOfDay);
+            Lesson.EndTime = Lesson.StartTime.Value.AddMinutes(60);
 
-            Lesson.EndTime = start.AddMinutes(60);
+            var subjectName = db.AspnetLessons.Where(x => x.Id == Lesson.Id).Select(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name).FirstOrDefault();
+            var ClassName = db.AspnetLessons.Where(x => x.Id == Lesson.Id).Select(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name).FirstOrDefault();
+            var SectionName = db.AspnetLessons.Where(x => x.Id == Lesson.Id).Select(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name).FirstOrDefault();
 
             var eventList = db.Events.Where(x => x.LessonID == Lesson.Id).ToList();
 
@@ -1660,8 +1663,9 @@ namespace SEA_Application.Controllers
             {
                 foreach (var item in eventList)
                 {
-                    item.Subject = Lesson.Name;
-                    item.Description = Lesson.Description;
+                    item.Subject1 = subjectName + "-" + ClassName + "-" + SectionName;
+                    item.Sec_Title = Lesson.Name;
+                    item.Description1 = Lesson.Description;
                     item.Start = Lesson.StartTime.Value;
                     item.End = Lesson.EndTime;
                     db.SaveChanges();
