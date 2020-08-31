@@ -2883,6 +2883,13 @@ namespace SEA_Application.Controllers
 
             List<Event> AllEvents = db.Events.Where(x => x.LessonID == LessonId).ToList();
 
+            foreach (var item in AllEvents)
+            {
+                var event_users = db.AspnetEvent_User.Where(x => x.eventid == item.EventID).ToList();
+                db.AspnetEvent_User.RemoveRange(event_users);
+                db.SaveChanges();
+            }
+
             db.Events.RemoveRange(AllEvents);
             db.SaveChanges();
 
