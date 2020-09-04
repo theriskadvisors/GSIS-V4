@@ -74,7 +74,21 @@ namespace SEA_Application.Controllers
 
                 // int BranchClassSectionId = db.AspNetBranchClass_Sections.Where(x => x.BranchClassId == BranchClassId && x.SectionId == NonRecurringFee.SectionId).FirstOrDefault().Id;
                 // var ErrorMsg = "";
-                var AllStudentsIds = db.AspNetStudent_Enrollments.Where(x => x.SectionId == NonRecurringFee.SectionId).Select(x => x.StudentId).Distinct().ToList();
+
+                int BId = NonRecurringFee.BranchId;
+
+                int BranchClassId = NonRecurringFee.ClassId;
+
+
+                AspNetBranch_Class BranchClass = db.AspNetBranch_Class.Where(x => x.Id == BranchClassId).FirstOrDefault();
+
+                int BranchId = BranchClass.BranchId;
+                int ClassId = BranchClass.ClassId;
+
+                var AllStudentsIds = db.AspNetStudents.Where(x => x.BranchId == BranchId && x.ClassId == ClassId).Select(x => x.Id).ToList();
+
+
+                //  var AllStudentsIds = db.AspNetStudent_Enrollments.Where(x => x.SectionId == NonRecurringFee.SectionId).Select(x => x.StudentId).Distinct().ToList();
 
                 var count = db.StudentNonRecurringFees.Where(x => AllStudentsIds.Contains(x.StudentFeeID.Value) && x.Month == NonRecurringFee.MonthId).Count();
 
@@ -113,10 +127,10 @@ namespace SEA_Application.Controllers
                             }
 
                         }
-                   
-                    db.StudentNonRecurringFees.AddRange(studentNonRecurringFeeList);
-                    db.SaveChanges();
-                    TempData["ClassNonRecurringFeeCreated"] = "Created";
+
+                        db.StudentNonRecurringFees.AddRange(studentNonRecurringFeeList);
+                        db.SaveChanges();
+                        TempData["ClassNonRecurringFeeCreated"] = "Created";
                     }
                     else
                     {
@@ -209,7 +223,7 @@ namespace SEA_Application.Controllers
             else if (studentNonRecurringFee != null)
             {
                 ErrorMsg1 = "FeeCreated";
-                ErrorMsg = "Fee is already created of selected Student and month ";
+                ErrorMsg = "Fee is already created of selected Student and month but Editable";
                 return Json(new { ErrorMsg = ErrorMsg, ErrorMsg1 = ErrorMsg1, FeeTypeAmontList = FeeTypeAmontList }, JsonRequestBehavior.AllowGet);
             }
             else

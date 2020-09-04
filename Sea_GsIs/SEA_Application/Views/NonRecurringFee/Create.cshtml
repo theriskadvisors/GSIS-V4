@@ -99,14 +99,14 @@
                                     </div>
 
 
-                                    <div class="form-row mt-4">
+                                    @*<div class="form-row mt-4">
                                         <div class="form-group col-md-12 bmd-form-group">
                                             <label for="" class="control-label"> Section *</label>
 
                                             <select class="form-control" id="SectionId" name="SectionId" required></select>
 
                                         </div>
-                                    </div>
+                                    </div>*@
 
 
                                     <div class="form-row mt-4">
@@ -394,8 +394,8 @@
                         $el.empty();
 
 
-                        var $e3 = $("#SectionId");
-                        $e3.empty();
+                     //   var $e3 = $("#SectionId");
+                       // $e3.empty();
                         if (sch.length > 0) {
                             $el.append($("<option></option>")
                                 .attr("value", "").text('Select Class'));
@@ -416,60 +416,60 @@
                 var $el = $("#ClassId");
                 $el.empty();
 
-                var $e3 = $("#SectionId");
-                $e3.empty();
+              //  var $e3 = $("#SectionId");
+           //     $e3.empty();
 
             }
 
         });
 
-        $('#ClassId').change(function () {
-            debugger
-            var ClassId = $(this).val();
-            //Class = UserName;
+        //$('#ClassId').change(function () {
+        //    debugger
+        //    var ClassId = $(this).val();
+        //    //Class = UserName;
 
-            if (ClassId != "") {
+        //    if (ClassId != "") {
 
-                $.ajax({
-                    type: "POST",
-                    cache: false,
-                    url: "/NonRecurringFee/SectionByClasses?ClassId=" + ClassId,
-                    processData: false,
-                    contentType: false,
-                    success: function (data) {
-                        var sch = JSON.parse(data);
-                        console.log(sch);
-                        var $el = $("#SectionId");
-                        $el.empty();
-
-
-                        if (sch.length > 0) {
-                            $el.append($("<option></option>")
-                                .attr("value", "").text('Select Section'));
-                            for (i = 0; i < sch.length; i++) {
-
-                                $el.append($("<option></option>")
-                                    .attr("value", sch[i].Id).text(sch[i].Name));
-                            }
-                        }
-                        else {
-                            $el.append($("<option></option>")
-                                .attr("value", '').text('Select Section'));
-                        }
-                    }
-                });
-            }
-
-            else {
-
-                var $el = $("#SectionId");
-                $el.empty();
+        //        $.ajax({
+        //            type: "POST",
+        //            cache: false,
+        //            url: "/NonRecurringFee/SectionByClasses?ClassId=" + ClassId,
+        //            processData: false,
+        //            contentType: false,
+        //            success: function (data) {
+        //                var sch = JSON.parse(data);
+        //                console.log(sch);
+        //             //   var $el = $("#SectionId");
+        //               // $el.empty();
 
 
+        //                if (sch.length > 0) {
+        //                    $el.append($("<option></option>")
+        //                        .attr("value", "").text('Select Section'));
+        //                    for (i = 0; i < sch.length; i++) {
 
-            }
+        //                        $el.append($("<option></option>")
+        //                            .attr("value", sch[i].Id).text(sch[i].Name));
+        //                    }
+        //                }
+        //                else {
+        //                    $el.append($("<option></option>")
+        //                        .attr("value", '').text('Select Section'));
+        //                }
+        //            }
+        //        });
+        //    }
 
-        });
+        //    else {
+
+        //    //    var $el = $("#SectionId");
+        //      //  $el.empty();
+
+
+
+        //    }
+
+        //});
 
 
 
@@ -817,7 +817,7 @@
 
                 var BranchId = $("#BranchId").val();
                 var ClassId = $("#ClassId").val();
-                var SectionId = $("#SectionId").val();
+                //var SectionId = $("#SectionId").val();
                 var Month = $("#Month").val();
 
                 var NonRecurringFee = {
@@ -842,7 +842,7 @@
 
                 NonRecurringFee.BranchId = BranchId;
                 NonRecurringFee.ClassId = ClassId;
-                NonRecurringFee.SectionId = SectionId;
+              //  NonRecurringFee.SectionId = SectionId;
                 NonRecurringFee.MonthId = Month;
 
                 ///  FeeTypeAmount = [1,123];

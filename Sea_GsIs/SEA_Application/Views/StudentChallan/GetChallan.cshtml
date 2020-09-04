@@ -61,14 +61,14 @@
                                     </div>
 
 
-                                    <div class="form-row mt-4">
-                                        <div class="form-group col-md-12 bmd-form-group">
-                                            <label for="" class="control-label"> Section *</label>
+                                    @*<div class="form-row mt-4">
+            <div class="form-group col-md-12 bmd-form-group">
+                <label for="" class="control-label"> Section *</label>
 
-                                            <select class="form-control" id="SectionId" name="SectionId" required></select>
+                <select class="form-control" id="SectionId" name="SectionId" required></select>
 
-                                        </div>
-                                    </div>
+            </div>
+        </div>*@
 
 
                                     <div class="form-row mt-4">
@@ -105,6 +105,13 @@
                                         </div>
                                     </div>
 
+                                    <br />
+
+                                    <div class="form-group bmd-form-group pt-4">
+                                        <label class="control-label" style="background: white;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Important Notice</label>
+                                        <textarea style="border-color:silver" class="form-control round-border Floating_text" name="ImportantNotice" id="ImportantNotice" rows="6"></textarea>
+                                    </div>
+
 
                                     <br />
                                     <br />
@@ -130,34 +137,34 @@
                                 <form id="tab2Form">
 
                                     @*<div class="form-row mt-4">
-                                            <div class="form-group col-md-12 bmd-form-group">
-                                                <label for="" class="control-label"> Branch</label>
+            <div class="form-group col-md-12 bmd-form-group">
+                <label for="" class="control-label"> Branch</label>
 
-                                                <select class="form-control" id="BranchId1" name="BranchId1" required></select>
+                <select class="form-control" id="BranchId1" name="BranchId1" required></select>
 
-                                            </div>
-                                        </div>*@
-
-
+            </div>
+        </div>*@
 
 
-                                    @*<div class="form-row mt-4">
-                                            <div class="form-group col-md-12 bmd-form-group">
-                                                <label for="" class="control-label"> class </label>
-
-                                                <select class="form-control" id="ClassId1" name="ClassId1" required></select>
-
-                                            </div>
-                                        </div>*@
 
 
                                     @*<div class="form-row mt-4">
-                                            <div class="form-group col-md-12 bmd-form-group">
-                                                <label for="" class="control-label"> Section *</label>
+            <div class="form-group col-md-12 bmd-form-group">
+                <label for="" class="control-label"> class </label>
 
-                                                <select class="form-control" id="SectionId1" name="SectionId1" required></select>
-                                            </div>
-                                        </div>*@
+                <select class="form-control" id="ClassId1" name="ClassId1" required></select>
+
+            </div>
+        </div>*@
+
+
+                                    @*<div class="form-row mt-4">
+            <div class="form-group col-md-12 bmd-form-group">
+                <label for="" class="control-label"> Section *</label>
+
+                <select class="form-control" id="SectionId1" name="SectionId1" required></select>
+            </div>
+        </div>*@
 
 
                                     <div class="form-row mt-4">
@@ -218,6 +225,12 @@
                                             <input class="form-control" type="text" name="DiscountComments" id="DiscountComments" />
                                         </div>
                                     </div>
+
+                                    <div class="form-group bmd-form-group pt-4">
+                                        <label class="control-label" style="background: white;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Important Notice</label>
+                                        <textarea style="border-color:silver" class="form-control round-border Floating_text" name="ImportantNotice1" id="ImportantNotice1" rows="6"></textarea>
+                                    </div>
+
                                     <div class="form-row mt-4">
                                         <div class="form-group col-md-12 bmd-form-group">
                                             <label for="" class="control-label pl-2">Tution Fee*</label>
@@ -264,6 +277,8 @@
 
     $(document).ready(function () {
 
+
+        var SelectedMonths = [];;
         $("#PageHeader").html("Challan");
         $("#BreadCrumbs").append(' <li> <a href="/FinanceSummary/Index"> Home </a> <span>&gt;</span></li>');
         $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Challan</a></li>');
@@ -356,8 +371,8 @@
                         console.log(sch);
                         var $el = $("#ClassId");
                         $el.empty();
-                        var $e3 = $("#SectionId");
-                        $e3.empty();
+                        //  var $e3 = $("#SectionId");
+                        //  $e3.empty();
                         if (sch.length > 0) {
                             $el.append($("<option></option>")
                                 .attr("value", "").text('Select Class'));
@@ -378,60 +393,60 @@
                 var $el = $("#ClassId");
                 $el.empty();
 
-                var $e3 = $("#SectionId");
-                $e3.empty();
+                //   var $e3 = $("#SectionId");
+                // $e3.empty();
 
             }
 
         });
 
-        $('#ClassId').change(function () {
+        //$('#ClassId').change(function () {
 
-            var ClassId = $(this).val();
-            //Class = UserName;
-            var SectionId = $("#SectionId").val();
-            if (ClassId != "") {
+        //    var ClassId = $(this).val();
+        //    //Class = UserName;
+        //    var SectionId = $("#SectionId").val();
+        //    if (ClassId != "") {
 
-                $.ajax({
-                    type: "POST",
-                    cache: false,
-                    url: "/NonRecurringFee/SectionByClasses?ClassId=" + ClassId + "&&SectionId=" + SectionId,
-                    processData: false,
-                    contentType: false,
-                    success: function (data) {
-                        var sch = JSON.parse(data);
-                        console.log(sch);
-                        var $el = $("#SectionId");
-                        $el.empty();
-
-
-                        if (sch.length > 0) {
-                            $el.append($("<option></option>")
-                                .attr("value", "").text('Select Section'));
-                            for (i = 0; i < sch.length; i++) {
-
-                                $el.append($("<option></option>")
-                                    .attr("value", sch[i].Id).text(sch[i].Name));
-                            }
-                        }
-                        else {
-                            $el.append($("<option></option>")
-                                .attr("value", '').text('Select Section'));
-                        }
-                    }
-                });
-            }
-
-            else {
-
-                var $el = $("#SectionId");
-                $el.empty();
+        //        $.ajax({
+        //            type: "POST",
+        //            cache: false,
+        //            url: "/NonRecurringFee/SectionByClasses?ClassId=" + ClassId + "&&SectionId=" + SectionId,
+        //            processData: false,
+        //            contentType: false,
+        //            success: function (data) {
+        //                var sch = JSON.parse(data);
+        //                console.log(sch);
+        //                var $el = $("#SectionId");
+        //                $el.empty();
 
 
+        //                if (sch.length > 0) {
+        //                    $el.append($("<option></option>")
+        //                        .attr("value", "").text('Select Section'));
+        //                    for (i = 0; i < sch.length; i++) {
 
-            }
+        //                        $el.append($("<option></option>")
+        //                            .attr("value", sch[i].Id).text(sch[i].Name));
+        //                    }
+        //                }
+        //                else {
+        //                    $el.append($("<option></option>")
+        //                        .attr("value", '').text('Select Section'));
+        //                }
+        //            }
+        //        });
+        //    }
 
-        });
+        //    else {
+
+        //        var $el = $("#SectionId");
+        //        $el.empty();
+
+
+
+        //    }
+
+        //});
 
         //$.ajax({
         //    type: "POST",
@@ -567,7 +582,8 @@
         $.ajax({
             type: "POST",
             cache: false,
-            url: "/NonRecurringFee/GetStudents?SectionId=" + SectionId,
+            url: "/NonRecurringFee/GetStudents",
+
 
             processData: false,
             contentType: false,
@@ -621,8 +637,9 @@
             $("#error1").html("");
 
             $("#FurtherDiscount").val(0);
+
             getTotalFee();
-            checkStudentChallan();
+            //checkStudentChallan();
 
         })
         $('#Month1').change(function () {
@@ -631,7 +648,7 @@
             $("#FurtherDiscount").val(0);
             getTotalFee();
 
-            checkStudentChallan();
+           // checkStudentChallan();
         })
 
 
@@ -652,27 +669,35 @@
                 $("#error").html("");
                 var BranchId = $("#BranchId").val();
                 var ClassId = $("#ClassId").val();
-                var SectionId = $("#SectionId").val();
+                //var SectionId = $("#SectionId").val();
                 var MonthId = $("#MonthId").val();
                 var DueDate = $("#DueDate").val();
+                var ImportantNotice = $("#ImportantNotice").val();
 
                 $.ajax({
                     type: "post",
                     url: "/StudentChallan/SaveChallanForm",
-                    data: { 'BranchId': BranchId, 'ClassId': ClassId, 'SectionId': SectionId, 'MonthId': MonthId, 'DueDate': DueDate },
+                    data: { 'BranchId': BranchId, 'ClassId': ClassId, 'MonthId': MonthId, 'DueDate': DueDate,'ImportantNotice':ImportantNotice },
 
                     success: function (data) {
                         debugger
-                        if (data == "Created") {
-                            window.location.href = "/StudentFeeMonths/Index";
+                        if (data.errorMsg == "Created") {
 
+                            SelectedMonths = null;
+
+                            SelectedMonths = data.StudentIds;
+
+                            var StdId = SelectedMonths.toString();
+
+                            //  window.location.href = "/StudentFeeMonths/Index";
+                            window.location.href = "/StudentFeeMonths/ChallanFormView?idlist=" + StdId;
                         }
-                        else if (data == "Exception") {
+                        else if (data.errorMsg == "Exception") {
 
                         }
 
                         else {
-                            $("#error").html(data);
+                            $("#error").html(data.errorMsg);
 
                             $("#SaveButton").prop("disabled", false);
                         }
@@ -715,8 +740,21 @@
 
                     success: function (data) {
 
+                        if (data.StatusMsg == "Created") {
 
-                        window.location.href = "/StudentFeeMonths/Index";
+
+                            SelectedMonths = null;
+
+                            SelectedMonths = data.StudentFeeId;
+
+                            var StdId = SelectedMonths.toString();
+
+                            //  window.location.href = "/StudentFeeMonths/Index";
+                            window.location.href = "/StudentFeeMonths/ChallanFormView?idlist=" + StdId;
+                        
+                        //window.location.href = "/StudentFeeMonths/Index";
+
+                        }
 
 
                     }
@@ -764,25 +802,41 @@
                         $('#FurtherDiscount').attr('readonly', false);
                         $('#DiscountComments').attr('readonly', false);
 
+                        $('#ImportantNotice1').val(data.ImportantNotice);
+
+                        $("#DiscountComments").val(data.DiscountComments);
+                        const d = new Date(data.duedate.match(/\d+/)[0] * 1);
+                        const formattedDate = d.getFullYear() + '-' + ("0" + (d.getMonth() + 1)).slice(-2) + '-' + ("0" + d.getDate()).slice(-2)
+                        $('#DueDate1').val(formattedDate);
+
+
                     }
                     else {
+
                         $("#TotalFee").val(0);
                         $("#HiddenTotalFee").val(0);
                         $("#Multiplier").val(0);
                         $("#HiddenTutionFee").val(0);
                         $("#TutionFee").val(0);
 
+                        $('#ImportantNotice1').attr('readonly', true);
                         $('#FurtherDiscount').attr('readonly', true);
                         $('#DiscountComments').attr('readonly', true);
                         $("#error1").html(data.Msg);
                         $('#SaveButton1').prop('disabled', true);
 
+
                     }
+                     checkStudentChallan();
                 }
+               
             })
 
         }
     }
+
+
+
 
     function checkStudentChallan() {
         debugger
@@ -796,7 +850,7 @@
                 url: "/StudentChallan/checkStudentChallan",
                 data: { 'StudentId': StudentId, 'MonthId': MonthId },
                 success: function (data) {
-
+                    debugger
                     if (data == "") {
 
                         //$("#error1").html(data);
@@ -804,12 +858,19 @@
                         $('#FurtherDiscount').attr('readonly', false);
                         $('#DiscountComments').attr('readonly', false);
                     }
+                    else if (data == "Selected student challan is paid") {
 
-                    else {
                         $('#FurtherDiscount').attr('readonly', true);
                         $('#DiscountComments').attr('readonly', true);
                         $("#error1").html(data);
                         $('#SaveButton1').prop('disabled', true);
+                    }
+
+                    else {
+                        $('#FurtherDiscount').attr('readonly', false);
+                        $('#DiscountComments').attr('readonly', false);
+                        $("#error1").html(data);
+                        $('#SaveButton1').prop('disabled', false);
                     }
                 }
 

@@ -382,8 +382,6 @@ namespace SEA_Application.Controllers
 
         }
 
-
-
         public ActionResult ChallanForm()
         {
             return View();
@@ -585,6 +583,7 @@ namespace SEA_Application.Controllers
                 challan.StudentClass = Student.AspNetClass.Name;
                 challan.DueDate = studentFeeDetail.ChallanDueDate.ToString();
                 challan.IssueDate = studentFeeDetail.ChallanIssueDate.ToString();
+                challan.ImportantNotice = studentFeeDetail.Notice;
                 //   challan.FeeMonth = MonthMultiplier.ToString();
                 challan.InvoiceNumber = "Invoice no." + studentFeeDetail.InvoiceNo + " of " + countTotalMultipliers;
 
@@ -866,6 +865,7 @@ namespace SEA_Application.Controllers
             public string NovMonth { get; set; }
             public string DecMonth { get; set; }
 
+            public string ImportantNotice { get; set; }
             //  public List<NonRecurringFee> NonRecurringFeeList { get; set; }
 
             //non recuring

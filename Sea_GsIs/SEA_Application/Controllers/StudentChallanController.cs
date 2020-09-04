@@ -2,6 +2,7 @@
 using SEA_Application.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -23,11 +24,12 @@ namespace SEA_Application.Controllers
             return View();
         }
 
-        public ActionResult SaveChallanForm(int BranchId, int ClassId, int SectionId, int MonthId, string DueDate)
+        public ActionResult SaveChallanForm(int BranchId, int ClassId, int MonthId, string DueDate,string ImportantNotice)
         {
             var dbTransaction = db.Database.BeginTransaction();
             var errorMsg = "";
             var FeeExist = true;
+            List<string> StudentIds = null;
             try
             {
                 var userId = User.Identity.GetUserId();
@@ -36,16 +38,29 @@ namespace SEA_Application.Controllers
 
                 //  int BranchClassSectionId = db.AspNetBranchClass_Sections.Where(x => x.BranchClassId == BranchClassId && x.SectionId == SectionId).FirstOrDefault().Id;
 
-                List<int> AllStudentsIds = db.AspNetStudent_Enrollments.Where(x => x.SectionId == SectionId).Select(x => x.StudentId).Distinct().ToList();
+                int BranchClassId = ClassId;
 
-               // List<int> ids  = new List<int> {  1835,1757 };
 
+                AspNetBranch_Class BranchClass = db.AspNetBranch_Class.Where(x => x.Id == BranchClassId).FirstOrDefault();
+
+                int BranchClassBranchId = BranchClass.BranchId;
+                int BranchClassClassId = BranchClass.ClassId;
+                string monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(MonthId);
+
+                List<int> AllStudentsIds = db.AspNetStudents.Where(x => x.BranchId == BranchClassBranchId && x.ClassId == BranchClassClassId).Select(x => x.Id).ToList();
+
+                //  List<int> AllStudentsIds = db.AspNetStudent_Enrollments.Where(x => x.SectionId == SectionId).Select(x => x.StudentId).Distinct().ToList();
+
+                // List<int> ids  = new List<int> {  1835,1757 };
+                var BranchName = BranchClass.AspNetBranch.Name;
+                var ClassName = BranchClass.AspNetClass.Name;
 
                 var count = db.StudentFeeDetails.Where(x => AllStudentsIds.Contains(x.StudentFee.AspNetStudent.Id) && x.Month == MonthId).Count();
 
                 if (count != 0)
                 {
-                    errorMsg = "Selected challan is already created.";
+                   // errorMsg = "Selected challan is already created.";
+                    errorMsg = "Challan for "+ ClassName +" is already created for "+monthName;
                 }
                 else
                 {
@@ -78,7 +93,7 @@ namespace SEA_Application.Controllers
                             studentfeeDetails.FurtherDiscount = 0;
                             studentfeeDetails.DiscountComments = null;
                             studentfeeDetails.Month = MonthId;
-
+                            studentfeeDetails.Notice = ImportantNotice;
                             int StudentTotalChallan = db.StudentFeeDetails.Where(x => x.StudentFee.AspNetStudent.Id == StudentId).Count();
                             studentfeeDetails.InvoiceNo = StudentTotalChallan + 1;
 
@@ -276,11 +291,14 @@ namespace SEA_Application.Controllers
 
                         db.StudentFeeDetails.AddRange(listStudentFeeDetails);
                         db.SaveChanges();
-                        TempData["ClassChallanFormCreated"] = "Created";
+
+                        StudentIds = listStudentFeeDetails.Select(x => x.Id.ToString()).ToList();
+                     
+                      //  TempData["ClassChallanFormCreated"] = "Created";
                         dbTransaction.Commit();
-
-
+                         
                     }
+                    
                     else
                     {
                         errorMsg = "There are no students enrolled. ";
@@ -292,15 +310,16 @@ namespace SEA_Application.Controllers
                 {
                     errorMsg = "Created";
                 }
+                
 
-                return Json(errorMsg, JsonRequestBehavior.AllowGet);
+                return Json( new { errorMsg  = errorMsg, StudentIds = StudentIds }, JsonRequestBehavior.AllowGet);
             } //end of try
 
             catch (Exception ex)
             {
 
                 var msg = ex.Message;
-                
+
                 dbTransaction.Dispose();
 
                 if (FeeExist == true)
@@ -317,17 +336,16 @@ namespace SEA_Application.Controllers
                     errorMsg = "Exception";
                 }
 
-
-
-                return Json(errorMsg, JsonRequestBehavior.AllowGet);
+                return Json(new { errorMsg = errorMsg, StudentIds = StudentIds }, JsonRequestBehavior.AllowGet);
 
             }
 
         }
 
-        public ActionResult SaveChallanFormOfStudent(/*int BranchId1, int ClassId1, int SectionId1,*/ int StudentId, int Month1, string DueDate1, int FurtherDiscount, string DiscountComments)
+        public ActionResult SaveChallanFormOfStudent(/*int BranchId1, int ClassId1, int SectionId1,*/ int StudentId, int Month1, string DueDate1, int FurtherDiscount, string DiscountComments,string ImportantNotice1)
         {
-
+            string StudentFeeId  = null;
+            string StatusMsg = null; 
             var dbTransaction = db.Database.BeginTransaction();
             try
             {
@@ -349,8 +367,8 @@ namespace SEA_Application.Controllers
                     studentfeeDetails.FurtherDiscount = FurtherDiscount;
                     studentfeeDetails.DiscountComments = DiscountComments;
                     studentfeeDetails.Month = Month1;
-
-                   int StudentTotalChallan =  db.StudentFeeDetails.Where(x => x.StudentFee.AspNetStudent.Id == StudentId).Count();
+                    studentfeeDetails.Notice = ImportantNotice1;
+                    int StudentTotalChallan = db.StudentFeeDetails.Where(x => x.StudentFee.AspNetStudent.Id == StudentId).Count();
 
                     studentfeeDetails.InvoiceNo = StudentTotalChallan + 1;
 
@@ -474,6 +492,8 @@ namespace SEA_Application.Controllers
 
                     db.StudentFeeDetails.Add(studentfeeDetails);
                     db.SaveChanges();
+                    StudentFeeId = studentfeeDetails.Id.ToString();
+
 
                     var id = User.Identity.GetUserId();
                     var username = db.AspNetUsers.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault();
@@ -618,72 +638,23 @@ namespace SEA_Application.Controllers
                 }
                 else
                 {
-                    //    StudentFeeDetail studentfeeDetails = new StudentFeeDetail();
 
-                    var StudentFee = db.StudentFees.Where(x => x.StudentID == StudentId).FirstOrDefault();
-                    studentFeeDetailsExist.StudentFeeID = StudentFee.Id;
-                    studentFeeDetailsExist.ChallanSubmissionDate = null;
+                    studentFeeDetailsExist.PaidAmount = studentFeeDetailsExist.PaidAmount - FurtherDiscount;
                     studentFeeDetailsExist.ChallanDueDate = Convert.ToDateTime(DueDate1);
-                    studentFeeDetailsExist.ChallanIssueDate = DateTime.Now;
-                    studentFeeDetailsExist.Status = "Pending";
-                    studentFeeDetailsExist.FurtherDiscount = FurtherDiscount;
+                    studentFeeDetailsExist.FurtherDiscount = studentFeeDetailsExist.FurtherDiscount + FurtherDiscount;
                     studentFeeDetailsExist.DiscountComments = DiscountComments;
-                    studentFeeDetailsExist.Month = Month1;
-
-                    var TotalWithoutAdminssion = StudentFee.TotalWithoutAdmission;
-
-                    var nonRecurringList = db.StudentNonRecurringFees.Where(x => x.Month == Month1 && x.StudentFeeID == StudentId).ToList();
-
-                    int TotalNonRecurring = 0;
-                    foreach (var nonRecurring in nonRecurringList)
-                    {
-                        TotalNonRecurring = TotalNonRecurring + nonRecurring.Amount.Value;
-                    }
-
-                    var multiplier = db.StudentFeeMultipliers.Where(x => x.StudentId == StudentId).FirstOrDefault();
-                    double MonthMultiplier = 0;
-                    if (Month1 == 1)
-                        MonthMultiplier = multiplier.Jan_Multiplier.Value;
-                    else if (Month1 == 2)
-                        MonthMultiplier = multiplier.Feb_Multiplier.Value;
-                    else if (Month1 == 3)
-                        MonthMultiplier = multiplier.Mar_Multiplier.Value;
-                    else if (Month1 == 4)
-                        MonthMultiplier = multiplier.April__Multiplier.Value;
-                    else if (Month1 == 5)
-                        MonthMultiplier = multiplier.May_Multiplier.Value;
-                    else if (Month1 == 6)
-                        MonthMultiplier = multiplier.June_Multiplier.Value;
-                    else if (Month1 == 7)
-                        MonthMultiplier = multiplier.July__Multiplier.Value;
-                    else if (Month1 == 8)
-                        MonthMultiplier = multiplier.Aug_Multiplier.Value;
-                    else if (Month1 == 9)
-                        MonthMultiplier = multiplier.Sep_Multiplier.Value;
-                    else if (Month1 == 10)
-                        MonthMultiplier = multiplier.Oct_Multiplier.Value;
-                    else if (Month1 == 11)
-                        MonthMultiplier = multiplier.Nov_Multiplier.Value;
-                    else if (Month1 == 12)
-                        MonthMultiplier = multiplier.Dec__Multiplier.Value;
-                    else
-                    {
-                    }
-
-                    var paidAmount = (TotalWithoutAdminssion * MonthMultiplier) + TotalNonRecurring;
-
-                    studentFeeDetailsExist.Multiplier = MonthMultiplier;
-                    studentFeeDetailsExist.PaidAmount = Convert.ToInt32(paidAmount);
+                    studentFeeDetailsExist.Notice = ImportantNotice1;
                     db.SaveChanges();
+
+                    StudentFeeId = studentFeeDetailsExist.Id.ToString();
+                    var id = User.Identity.GetUserId();
+                    var username = db.AspNetUsers.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault();
 
                     if (FurtherDiscount != 0)
                     {
-                        var id = User.Identity.GetUserId();
-
-                        var username = db.AspNetUsers.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault();
 
                         Voucher voucher1 = new Voucher();
-                        voucher1.Name = "Student Discount  ";
+                        voucher1.Name = "Student Discount";
                         voucher1.Notes = "";
                         voucher1.Date = GetLocalDateTime.GetLocalDateTimeFunction();
                         voucher1.CreatedBy = username;
@@ -694,21 +665,22 @@ namespace SEA_Application.Controllers
 
 
                         var DiscountAmount = FurtherDiscount;
-
                         VoucherRecord voucherRecord3 = new VoucherRecord();
                         var LeadgerDiscount = db.Ledgers.Where(x => x.Name == "Discount").FirstOrDefault();
 
                         decimal? CurrentBalanceOfDiscount = LeadgerDiscount.CurrentBalance;
-                        decimal? AfterBalanceOfDiscount = CurrentBalanceOfDiscount + Convert.ToDecimal(DiscountAmount);
+                        decimal? AfterBalanceOfDiscount = CurrentBalanceOfDiscount + Convert.ToDecimal(FurtherDiscount);
                         voucherRecord3.LedgerId = LeadgerDiscount.Id;
                         voucherRecord3.Type = "Dr";
-                        voucherRecord3.Amount = Convert.ToDecimal(DiscountAmount);
+                        voucherRecord3.Amount = Convert.ToDecimal(FurtherDiscount);
                         voucherRecord3.CurrentBalance = CurrentBalanceOfDiscount;
                         voucherRecord3.AfterBalance = AfterBalanceOfDiscount;
                         voucherRecord3.VoucherId = voucher1.Id;
+                        voucherRecord3.UserType = "Student";
+                        voucherRecord3.UserId = StudentId.ToString();
+                        voucherRecord3.BranchId = BranchId;
                         voucherRecord3.Description = "Discount given to student ";
                         LeadgerDiscount.CurrentBalance = AfterBalanceOfDiscount;
-
                         db.VoucherRecords.Add(voucherRecord3);
                         db.SaveChanges();
 
@@ -717,13 +689,16 @@ namespace SEA_Application.Controllers
                         var LedgerAccountReceivable = db.Ledgers.Where(x => x.Name == "Account Receivable").FirstOrDefault();
 
                         decimal? CurrentBalanceOfAccountReceivable = LedgerAccountReceivable.CurrentBalance;
-                        decimal? AfterBalanceOfAccountReceivable = CurrentBalanceOfAccountReceivable - Convert.ToDecimal(DiscountAmount);
+                        decimal? AfterBalanceOfAccountReceivable = CurrentBalanceOfAccountReceivable - Convert.ToDecimal(FurtherDiscount);
                         voucherRecord4.LedgerId = LedgerAccountReceivable.Id;
                         voucherRecord4.Type = "Cr";
-                        voucherRecord4.Amount = Convert.ToDecimal(DiscountAmount);
+                        voucherRecord4.Amount = Convert.ToDecimal(FurtherDiscount);
                         voucherRecord4.CurrentBalance = CurrentBalanceOfAccountReceivable;
                         voucherRecord4.AfterBalance = AfterBalanceOfAccountReceivable;
                         voucherRecord4.VoucherId = voucher1.Id;
+                        voucherRecord4.UserType = "Student";
+                        voucherRecord4.UserId = StudentId.ToString();
+                        voucherRecord4.BranchId = BranchId;
                         voucherRecord4.Description = "";
                         LedgerAccountReceivable.CurrentBalance = AfterBalanceOfAccountReceivable;
 
@@ -733,17 +708,18 @@ namespace SEA_Application.Controllers
 
                 }
 
-                TempData["StudentChallanFormCreated"] = "Created";
+             //  TempData["StudentChallanFormCreated"] = "Created";
                 dbTransaction.Commit();
-
-                return Json("", JsonRequestBehavior.AllowGet);
+                StatusMsg = "Created";
+                return Json( new { StatusMsg = StatusMsg, StudentFeeId = StudentFeeId }, JsonRequestBehavior.AllowGet);
 
             }
             catch (Exception ex)
             {
                 var msg = ex.Message;
                 dbTransaction.Dispose();
-                return Json("Error", JsonRequestBehavior.AllowGet);
+                StatusMsg = "Error";
+                return Json(new { StatusMsg = StatusMsg, StudentFeeId = StudentFeeId }, JsonRequestBehavior.AllowGet);
 
             }
 
@@ -753,10 +729,13 @@ namespace SEA_Application.Controllers
         {
 
             StudentFeeDetail studentfeeDetails = new StudentFeeDetail();
+            var DiscountComments = "";
+            DateTime? duedate = null;
             var Msg = "";
             double? tutionFee = 0;
             double paidAmount = 0;
             double MonthMultiplier = 0;
+            string ImportantNotice = "";
             var StudentFee = db.StudentFees.Where(x => x.StudentID == StudentId).FirstOrDefault();
             if (StudentFee != null)
             {
@@ -810,6 +789,20 @@ namespace SEA_Application.Controllers
 
                 tutionFee = StudentFee.DiscountTutionFeeAmount * MonthMultiplier;
 
+                var sfd = db.StudentFeeDetails.Where(x => x.StudentFee.AspNetStudent.Id == StudentId && x.Month == MonthId).FirstOrDefault();
+
+                //   int? paidAmount1 =0;
+
+
+                if (sfd != null)
+                {
+                    duedate = sfd.ChallanDueDate;
+                    paidAmount = sfd.PaidAmount.Value;
+                    tutionFee = tutionFee - sfd.FurtherDiscount;
+                    DiscountComments = sfd.DiscountComments;
+                    ImportantNotice = sfd.Notice;
+                }
+
             }
             else
             {
@@ -817,7 +810,7 @@ namespace SEA_Application.Controllers
             }
 
 
-            return Json(new { paidAmount = paidAmount, MonthMultiplier = MonthMultiplier, tutionFee = tutionFee, Msg = Msg }, JsonRequestBehavior.AllowGet);
+            return Json(new { paidAmount = paidAmount, MonthMultiplier = MonthMultiplier, tutionFee = tutionFee, Msg = Msg, duedate = duedate, DiscountComments = DiscountComments, ImportantNotice= ImportantNotice }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult checkStudentChallan(int StudentId, int MonthId)
@@ -826,13 +819,21 @@ namespace SEA_Application.Controllers
 
             var Msg = "";
 
-            if (studentFeeDetails != null)
+            if (studentFeeDetails == null)
             {
-                Msg = "Challan is already created of selected Student and Month ";
+                Msg = "";
                 return Json(Msg, JsonRequestBehavior.AllowGet);
+            }
+            else if (studentFeeDetails.Status == "Paid")
+            {
+                Msg = "Selected student challan is paid";
+                return Json(Msg, JsonRequestBehavior.AllowGet);
+
             }
             else
             {
+                Msg = "Challan is already created of selected student and month";
+
                 return Json(Msg, JsonRequestBehavior.AllowGet);
 
             }

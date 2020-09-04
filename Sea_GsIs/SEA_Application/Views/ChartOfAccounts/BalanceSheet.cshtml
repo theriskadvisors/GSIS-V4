@@ -1,0 +1,485 @@
+﻿
+@{
+    ViewBag.Title = "BalanceSheet";
+    Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+}
+
+<style>
+    .bold_text {
+        font-weight: bold;
+    }
+
+    .fsize {
+        font-size: 14px;
+    }
+
+    .fcolor {
+        color: #00b8ec;
+    }
+
+    .hr_margin {
+        margin-top: 5px;
+        margin-bottom: 5px;
+    }
+
+    hr:hover {
+        background: #00b8ec;
+    }
+</style>
+
+<div class="col-md-12">
+
+    <div class="col-md-6 pull-left">
+
+        <div class="col-md-4 pull-left">
+
+
+            <h2 style="color:#00b8ec">Summary</h2>
+            <h4 style="color:#00b8ec">Balance Sheet</h4>
+            <h5>As at August-8 2020</h5>
+
+        </div>
+
+        <div class="col-md-2 pull-left">
+
+            <br />
+            <br />
+            <span>From</span>
+            <input type="date" name="FromDate" id="FromDate" value="" />
+            <span>To</span>
+            <input type="date" name="ToDate" id="ToDate" value="" />
+
+
+
+        </div>
+
+    </div>
+    <div class="col-md-6 pull-right">
+
+        <br />
+        <br />
+        <br />
+        <h4 style="color:#00b8ec">Profit and Loss Statement</h4>
+        <h5>For the period from 31-May 2020 to 8-August 2020</h5>
+
+    </div>
+    <div style="clear:both">
+
+    </div>
+
+</div>
+
+<div class="col-md-12">
+    <div class="col-md-6 pull-left">
+        <div id="Assets" style="        background: white;
+        padding: 20px;
+        border-radius: 5px;
+">
+
+            <div id="AssetsHead">
+
+                <div class="pull-left">
+
+                    <span class="bold_text">Assests</span>
+                </div>
+
+                <div class="pull-right">
+                    <span class="bold_text" id="AssestsTotal"> 0.000 PKR </span>
+                </div>
+
+            </div>
+            <br />
+            <hr />
+
+
+            <div style="clear:both">
+
+            </div>
+
+        </div>
+
+        <br />
+        <div id="Liabilities" style=" background: white; padding: 20px; border-radius: 5px; ">
+
+            <div id="LiabilitiesHead">
+
+                <div class="pull-left">
+
+                    <span class="bold_text">Liabilities</span>
+                </div>
+
+                <div class="pull-right">
+                    <span class="bold_text" id="LiabilitiesTotal"> 0 PKR </span>
+                </div>
+
+            </div>
+
+            <br />
+            <hr />
+
+            <div style="clear:both">
+
+            </div>
+
+        </div>
+
+        <br />
+
+        <div id="Equity" style=" background: white; padding: 20px; border-radius: 5px; ">
+
+            <div id="EquityHead">
+
+                <div class="pull-left">
+
+                    <span class="bold_text">Equity</span>
+                </div>
+
+                <div class="pull-right">
+                    <span class="bold_text" id="EquityTotal"> 0 PKR </span>
+                </div>
+
+            </div>
+
+            <br />
+            <hr />
+
+
+
+            <div style="clear:both">
+
+            </div>
+
+        </div>
+    </div>
+
+
+
+    <div class="col-md-6 pull-right">
+        <div id="Income" style=" background: white; padding: 20px; border-radius: 5px; ">
+
+            <div id="IncomeHead">
+
+                <div class="pull-left">
+
+                    <span class="bold_text">Income</span>
+                </div>
+
+                <div class="pull-right">
+                    <span class="bold_text" id="IncomeTotal"> 0.000 PKR </span>
+                </div>
+
+            </div>
+
+
+            <br />
+            <hr class="" />
+            <div style="clear:both"></div>
+
+        </div>
+
+        <br />
+        <div id="Expense" style=" background: white; padding: 20px; border-radius: 5px; ">
+
+            <div id="ExpenseHead">
+
+                <div class="pull-left">
+
+                    <span class="bold_text">Less Expense</span>
+                </div>
+
+                <div class="pull-right">
+                    <span class="bold_text" id="ExpenseTotal"> 70,0000.00 PKR </span>
+                </div>
+
+            </div>
+
+            <br />
+            <hr />
+
+
+
+            <div style="clear:both">
+
+            </div>
+
+        </div>
+
+        <br />
+
+        <div id="NetProfit" style=" background: white; padding: 20px; border-radius: 5px; ">
+
+            <div id="NetProfitHead">
+
+                <div class="pull-left">
+
+                    <span class="bold_text">NetProfit</span>
+                </div>
+
+                <div class="pull-right">
+                    <span class="bold_text" id="NetTotal"> 000000.00 PKR </span>
+                </div>
+
+            </div>
+
+
+
+            <div style="clear:both">
+
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#BreadCrumbs").append(' <li> <a href="/Account/Dashboard"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Summary</a></li>');
+        var AssetsTotal = 0;
+        var LiabilitiesTotal = 0;
+        var EquityTotal = 0;
+        var IncomeTotal = 0;
+        var ExpenseTotal = 0;
+        var NetTotal = 0;
+
+
+
+
+        $.ajax({
+            type: "POST",
+            url: "/ChartOfAccounts/GetChart1",
+            success: function (data) {
+                $("#SubmitTable").append('');
+
+                $.each(data, function (i, item) {
+
+                    var head = data[i];
+
+                    if (head.HeadName == "Assets") {
+
+                        var ledger = head.ledger;
+
+                        $("#AssetsHead").attr('title', head.HeadId);
+
+
+                        for (var i = 0; i < ledger.length; i++) {
+
+                            var v = 'AssetsHead';
+
+                            AssetsTotal = AssetsTotal + ledger[i].Balance;
+
+                            if (ledger[i].ledgerGroup.GroupName != null) {
+
+
+                                $("#AssetsHead").after("<br>  <hr class='hr_margin' />  <div class='pull-left'><span onclick='REDIRECTLedger('assetshead')' class='fsize'>" + ledger[i].LedgerName + " (" + ledger[i].ledgerGroup.GroupName + ")  </span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div>");
+
+                            }
+                            else {
+                                $("#AssetsHead").after("<br>  <hr class='hr_margin' />  <div class='pull-left'><span onclick='REDIRECTLedger('assetshead')' class='fsize'>" + ledger[i].LedgerName + "</span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div>");
+
+                            }
+
+
+                        }
+
+                        $("#AssestsTotal").html(AssetsTotal + " PKR");
+
+                    }
+
+
+                    if (head.HeadName == "Liabilities") {
+
+                        var ledger = head.ledger;
+
+
+
+                        $("#LiabilitiesHead").attr('title', head.HeadId);
+
+                        for (var i = 0; i < ledger.length; i++) {
+
+                            LiabilitiesTotal = LiabilitiesTotal + ledger[i].Balance;
+
+
+                            if (ledger[i].ledgerGroup.GroupName != null) {
+
+
+                                $("#LiabilitiesHead").after("<br>  <hr class='hr_margin' />  <div class='pull-left'><span  class='fsize'>" + ledger[i].LedgerName + " (" + ledger[i].ledgerGroup.GroupName + ")  </span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div>");
+
+                            }
+                            else {
+
+                                $("#LiabilitiesHead").after("<br>  <hr class='hr_margin' />  <div class='pull-left'><span class='fsize'>" + ledger[i].LedgerName + "</span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div>");
+
+                            }
+
+                        }
+
+                        $("#LiabilitiesTotal").html(LiabilitiesTotal + " PKR");
+
+
+                    }
+
+                    if (head.HeadName == "Equity") {
+                        $("#EquityHead").attr('title', head.HeadId);
+                        var ledger = head.ledger;
+
+
+                        for (var i = 0; i < ledger.length; i++) {
+
+                            EquityTotal = EquityTotal + ledger[i].Balance;
+
+
+                            if (ledger[i].ledgerGroup.GroupName != null) {
+
+                                $("#EquityHead").after("<br>  <hr class='hr_margin' />  <div class='pull-left'><span  class='fsize'>" + ledger[i].LedgerName + " (" + ledger[i].ledgerGroup.GroupName + ")  </span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div>");
+                            }
+                            else {
+
+
+                                $("#EquityHead").after("<br>  <hr class='hr_margin' />  <div class='pull-left'><span class='fsize'>" + ledger[i].LedgerName + "</span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div>");
+                            }
+
+                        }
+
+                        $("#EquityTotal").html(EquityTotal + " PKR");
+
+
+
+                    }
+
+                    if (head.HeadName == "Expense") {
+
+                        var ledger = head.ledger;
+                        $("#ExpenseHead").attr('title', head.HeadId);
+
+
+                        for (var i = 0; i < ledger.length; i++) {
+
+                            ExpenseTotal = ExpenseTotal + ledger[i].Balance;
+
+
+                            if (ledger[i].ledgerGroup.GroupName != null) {
+
+                                $("#ExpenseHead").after("<br>  <hr class='hr_margin' />  <div class='pull-left'><span  class='fsize'>" + ledger[i].LedgerName + " (" + ledger[i].ledgerGroup.GroupName + ")  </span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div>");
+                            }
+                            else {
+
+                                $("#ExpenseHead").after("<br>  <hr class='hr_margin' />  <div class='pull-left'><span class='fsize'>" + ledger[i].LedgerName + "</span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div>");
+                            }
+
+                        }
+
+                        $("#ExpenseTotal").html(ExpenseTotal + " PKR");
+
+
+                    }
+
+                    if (head.HeadName == "Income") {
+
+                        var ledger = head.ledger;
+                        $("#IncomeHead").attr('title', head.HeadId);
+
+
+                        for (var i = 0; i < ledger.length; i++) {
+
+                            IncomeTotal = IncomeTotal + ledger[i].Balance;
+
+                            if (ledger[i].ledgerGroup.GroupName != null) {
+
+                                $("#IncomeHead").after("<br>  <hr class='hr_margin' />  <div class='pull-left'><span  class='fsize'>" + ledger[i].LedgerName + " (" + ledger[i].ledgerGroup.GroupName + ")  </span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div>");
+                            }
+                            else {
+
+
+                                $("#IncomeHead").after("<br>  <hr class='hr_margin' />  <div class='pull-left'><span class='fsize'>" + ledger[i].LedgerName + "</span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div>");
+                            }
+
+                        }
+                        $("#IncomeTotal").html(IncomeTotal + " PKR");
+
+
+
+                    }
+
+                })//each function
+                NetTotal = IncomeTotal - ExpenseTotal;
+
+                $("#NetTotal").html(NetTotal + " PKR");
+
+            } //success function
+        }) //ajax call
+
+
+        $("#FromDate").change(function () {
+
+            var FromDate = $(this).val();
+            var ToDate = $("#ToDate").val();
+
+            if (FromDate != "" && ToDate != "") {
+
+
+                $.ajax({
+                    type: "POST",
+                    url: "/ChartOfAccounts/GetBalanceSheet",
+                    data: {"FromDate":FromDate , "ToDate":ToDate },
+                    success: function (data) {
+
+
+                    }
+                })
+
+
+            }
+
+
+        })
+
+        $("#ToDate").change(function () {
+
+            var ToDate = $(this).val();
+            var FromDate = $("#FromDate").val();
+
+            if (FromDate != "" && ToDate != "") {
+
+
+                $.ajax({
+                    type: "POST",
+                    url: "/ChartOfAccounts/GetBalanceSheet",
+                     data: {"FromDate":FromDate , "ToDate":ToDate },
+                    success: function (data) {
+
+
+                    }
+                })
+
+
+            }
+
+        })
+
+
+
+    })//document ready
+    function NewGroup() {
+        window.location.href = "/LedgerGroups/Create";
+    }
+    function NewAccount() {
+        window.location.href = "/Ledgers/Create";
+    }
+    function REDIRECTLedger(v) {
+
+    }
+    function REDIRECTGroup() {
+        $('.table').on('click', 'tbody tr', function () {
+            var td = $(this).children("td");
+            debugger;
+            if ($(td).html() != "No data available in table");
+            window.location.href = "/LedgerGroups/Edit?id=" + $(td[2]).html();
+        })
+    }
+</script>

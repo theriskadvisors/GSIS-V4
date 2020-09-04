@@ -69,10 +69,6 @@ namespace SEA_Application.Controllers
             return Content(status);
         }
 
-
-
-
-
         public ActionResult ClassesByBranch(int BranchId)
         {
             // var BranchClasses  =  db.AspNetBranch_Class.Where(x => x.BranchId == BranchId).ToList().Select(x => new { x.Id, x.AspNetClass.Name });
@@ -155,11 +151,7 @@ namespace SEA_Application.Controllers
 
 
             return Json("", JsonRequestBehavior.AllowGet);
-
-            
         }
-
-
 
         public ActionResult GetSessions()
         {
