@@ -521,6 +521,9 @@
                                     @Html.DisplayNameFor(model => model.StudentFee.AspNetStudent.Name)
                                 </th>
                                 <th>
+                                  Roll No
+                                </th>
+                                <th>
                                     @Html.DisplayNameFor(model => model.ChallanIssueDate)
                                 </th>
                                 <th>
@@ -548,119 +551,122 @@
                             @foreach (var item in Model)
                             {
 
-                                <tr>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Id)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.StudentFee.AspNetStudent.Name)
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Id)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.StudentFee.AspNetStudent.Name)
 
-                                    </td>
-                                    <td>
-                                        @*@Html.DisplayFor(modelItem => item.ChallanIssueDate)*@
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.StudentFee.AspNetStudent.AspNetUser.UserName)
+                                </td>
+                                <td>
+                                    @*@Html.DisplayFor(modelItem => item.ChallanIssueDate)*@
 
-                                        @string.Format("{0:MM/dd/yyyy}", item.ChallanIssueDate)
+                                    @string.Format("{0:MM/dd/yyyy}", item.ChallanIssueDate)
 
-                                    </td>
-                                    <td>
+                                </td>
+                                <td>
 
-                                        @*@Html.DisplayFor(modelItem => item.ChallanDueDate.Value.ToShortDateString())*@
-                                        @*@Html.DisplayFor(modelItem => item.ChallanDueDate)*@
+                                    @*@Html.DisplayFor(modelItem => item.ChallanDueDate.Value.ToShortDateString())*@
+                                    @*@Html.DisplayFor(modelItem => item.ChallanDueDate)*@
 
-                                        @string.Format("{0:MM/dd/yyyy}", item.ChallanDueDate)
+                                    @string.Format("{0:MM/dd/yyyy}", item.ChallanDueDate)
 
-                                    </td>
-                                    <td>
+                                </td>
+                                <td>
 
-                                        @if (item.Month == 1)
-                                        {
-                                            <label>January</label>
-                                        }
-                                        else if (item.Month == 2)
-                                        {
-                                            <label>February</label>
+                                    @if (item.Month == 1)
+                                    {
+                                        <label>January</label>
+                                    }
+                                    else if (item.Month == 2)
+                                    {
+                                        <label>February</label>
 
-                                        }
-                                        else if (item.Month == 3)
-                                        {
-                                            <label>March</label>
+                                    }
+                                    else if (item.Month == 3)
+                                    {
+                                        <label>March</label>
 
-                                        }
+                                    }
 
-                                        else if (item.Month == 4)
-                                        {
+                                    else if (item.Month == 4)
+                                    {
 
-                                            <label>April</label>
-                                        }
+                                        <label>April</label>
+                                    }
 
-                                        else if (item.Month == 5)
-                                        {
-                                            <label>May</label>
+                                    else if (item.Month == 5)
+                                    {
+                                        <label>May</label>
 
-                                        }
+                                    }
 
-                                        else if (item.Month == 6)
-                                        {
-                                            <label>June</label>
+                                    else if (item.Month == 6)
+                                    {
+                                        <label>June</label>
 
-                                        }
+                                    }
 
-                                        else if (item.Month == 7)
-                                        {
-                                            <label>July</label>
+                                    else if (item.Month == 7)
+                                    {
+                                        <label>July</label>
 
-                                        }
+                                    }
 
-                                        else if (item.Month == 8)
-                                        {
-                                            <label>August</label>
+                                    else if (item.Month == 8)
+                                    {
+                                        <label>August</label>
 
-                                        }
+                                    }
 
-                                        else if (item.Month == 9)
-                                        {
-                                            <label>September</label>
+                                    else if (item.Month == 9)
+                                    {
+                                        <label>September</label>
 
-                                        }
+                                    }
 
-                                        else if (item.Month == 10)
-                                        {
-                                            <label>October</label>
+                                    else if (item.Month == 10)
+                                    {
+                                        <label>October</label>
 
-                                        }
+                                    }
 
-                                        else if (item.Month == 11)
-                                        {
-                                            <label>November</label>
+                                    else if (item.Month == 11)
+                                    {
+                                        <label>November</label>
 
-                                        }
+                                    }
 
-                                        else if (item.Month == 12)
-                                        {
-                                            <label>December</label>
+                                    else if (item.Month == 12)
+                                    {
+                                        <label>December</label>
 
-                                        }
+                                    }
 
 
 
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Status)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Status)
 
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.PaidAmount)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.PaidAmount)
 
-                                    </td>
+                                </td>
 
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Multiplier)
-                                    </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Multiplier)
+                                </td>
 
-                                    <td>
-                                        <input type="checkbox" value=@item.Id class="check_class" name="@item.Status" id="test'@item.Id'" /><label for="test'@item.Id'"></label>
-                                    </td>
-                                </tr>
+                                <td>
+                                    <input type="checkbox" value=@item.Id class="check_class" name="@item.Status" id="test'@item.Id'" /><label for="test'@item.Id'"></label>
+                                </td>
+                            </tr>
                             }
                         </tbody>
                         <tfoot>
@@ -670,6 +676,9 @@
                                 </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.StudentFee.AspNetStudent.Name)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.StudentFee.AspNetStudent.AspNetUser.UserName)
                                 </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.ChallanIssueDate)
