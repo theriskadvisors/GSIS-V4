@@ -278,7 +278,8 @@ namespace SEA_Application.Controllers
                         where enrollment.AspNetEmployee.UserId == ID && enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.ClassId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.ClassId
                         && enrollment.AspNetBranchClass_Sections.AspNetSection.Id == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SectionId
                         && enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.BranchId
-                        select new
+                        && SAS.AspNetStudent.AspNetBranch.Id == enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetBranch.Id && SAS.AspNetStudent.AspNetClass.Id == enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetClass.Id
+                         select new
                         {
                             NameOfStudent = SAS.AspNetStudent.Name,
                             AssignmnetDueDate = SAS.AssignmentDueDate.ToString(),
