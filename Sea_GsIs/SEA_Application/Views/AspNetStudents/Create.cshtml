@@ -374,9 +374,9 @@
                 var Check = true;
 
 
-                if (Total > 12 || Total < 12 || Total == 0 || Total < 0) {
+                if (Total > 12 || Total < 8 || Total == 0 || Total < 0) {
 
-                    $("#MonthsError").html("Months total must be 12");
+                    $("#MonthsError").html("Months total must be greater than 8 and less than or equal to 12");
                     $("#submit").prop("disabled", true);
                     Check = false;
 
@@ -675,9 +675,10 @@
 
         var Total = parseFloat(Junuary) + parseFloat(February) + parseFloat(March) + parseFloat(April) + parseFloat(May) + parseFloat(June) + parseFloat(July) + parseFloat(August) + parseFloat(September) + parseFloat(October) + parseFloat(November) + parseFloat(December);
 
-        if (Total > 12) {
+        if (Total > 12 || Total < 8) {
 
-            $("#MonthsError").html("Months total must be 12");
+             $("#MonthsError").html("Months total must be greater than 8 and less than or equal to 12");
+                  
             $("#submit").prop("disabled", true);
 
         }

@@ -76,6 +76,7 @@ namespace SEA_Application.Controllers
             var headlist = db.LedgerHeads.OrderBy(x => x.Name).ToList();
             List<Ledger_Head> ledgerheadlist = new List<Ledger_Head>();
             foreach (var h_item in headlist)
+
             {
                 Ledger_Head ledgerhead = new Ledger_Head();
                 ledgerhead.HeadName = h_item.Name;
@@ -143,46 +144,126 @@ namespace SEA_Application.Controllers
 
         public ActionResult GetBalanceSheet(string FromDate, string ToDate)
         {
-            DateTime dateTimeFrom = Convert.ToDateTime(FromDate);
+            // DateTime dateTimeFrom = Convert.ToDateTime(FromDate);
             DateTime dateTimeTo = Convert.ToDateTime(ToDate);
 
+            dateTimeTo = dateTimeTo.AddDays(1);
 
+            string toDateInString = dateTimeTo.ToString();
+
+
+            var AllLedgersByDate = db.LedgersByDate(FromDate, toDateInString).ToList();
+            var AllLedgers = db.Ledgers.ToList();
+
+            List<LedgerSearch> LedgerSearchList = new List<LedgerSearch>();
+
+            foreach (var ledger in AllLedgers)
+            {
+                LedgerSearch ledgerSearch = new LedgerSearch();
+
+                if (ledger.LedgerGroup != null)
+                {
+                    ledgerSearch.GroupName = ledger.LedgerGroup.Name;
+                }
+                else
+                {
+                    ledgerSearch.GroupName = null;
+
+                }
+
+                ledgerSearch.HeadName = ledger.LedgerHead.Name;
+                ledgerSearch.HeadId = ledger.LedgerHead.Id;
+                ledgerSearch.LedgerName = ledger.Name;
+                ledgerSearch.LedgerType = null;
+                ledgerSearch.LedgerId = ledger.Id;
+                ledgerSearch.DebitAmount = 0;
+                ledgerSearch.CreditAmount = 0;
+                ledgerSearch.CalculatedAmount = 0;
+                // ledgerSearch.Amount = 0;
+                LedgerSearchList.Add(ledgerSearch);
+
+            }
+
+            foreach (var ledgerSearch in LedgerSearchList)
+            {
+                foreach (var ledgerByDate in AllLedgersByDate)
+                {
+
+                    if (ledgerSearch.LedgerId == ledgerByDate.LedgerId && ledgerByDate.LedgerType == "Dr")
+                    {
+
+                        ledgerSearch.DebitAmount = Convert.ToDouble(ledgerByDate.LedgerAmount);
+
+                    }
+                    else if (ledgerSearch.LedgerId == ledgerByDate.LedgerId && ledgerByDate.LedgerType == "Cr")
+                    {
+
+                        ledgerSearch.CreditAmount = Convert.ToDouble(ledgerByDate.LedgerAmount);
+                    }
+                    else
+                    {
+                    }
+
+                }
+
+            }
+
+            foreach (var ledgerSearch in LedgerSearchList)
+            {
+                if (ledgerSearch.HeadName == "Assets" || ledgerSearch.HeadName == "Expense")
+                {
+                    ledgerSearch.CalculatedAmount = ledgerSearch.DebitAmount - ledgerSearch.CreditAmount;
+                }
+                else
+                {
+                    ledgerSearch.CalculatedAmount = ledgerSearch.CreditAmount - ledgerSearch.DebitAmount;
+                }
+
+            }
+
+          
+            List<Ledger_Head> ledgerheadlist = new List<Ledger_Head>();
+
+            ledgerheadlist  =  GetLedgers(LedgerSearchList);
+            return Json(ledgerheadlist, JsonRequestBehavior.AllowGet);
+            //var ledgers = from voucher in db.Vouchers
+            //              join voucherRecord in db.VoucherRecords on voucher.Id equals  voucherRecord.VoucherId
+            //              join ledger in db.Ledgers on voucherRecord.LedgerId equals ledger.Id
+            //              where voucher.Date >= dateTimeFrom && voucher.Date <= dateTimeTo
+            //              select voucher;
+
+        }
+
+       public List<Ledger_Head> GetLedgers( List<LedgerSearch> LedgerSearchList)
+        {
+
+            List<Ledger_Head> ledgerheadlist = new List<Ledger_Head>();
 
             var headlist = db.LedgerHeads.OrderBy(x => x.Name).ToList();
-            List<Ledger_Head> ledgerheadlist = new List<Ledger_Head>();
             foreach (var h_item in headlist)
+
             {
                 Ledger_Head ledgerhead = new Ledger_Head();
                 ledgerhead.HeadName = h_item.Name;
                 ledgerhead.HeadId = h_item.Id;
 
-                var _ledgerlist = db.Ledgers.Where(x => x.LedgerHeadId == h_item.Id).OrderBy(x => x.Name).ToList();
+                var _ledgerlist = LedgerSearchList.Where(x => x.HeadId == h_item.Id).OrderBy(x => x.LedgerName).ToList();
 
-                ledgerhead.ledgerGroup = new List<Ledger_Group>();
+
                 ledgerhead.ledger = new List<_Ledger>();
 
-          
+
                 List<_Ledger> AllLedgersList = new List<_Ledger>();
                 foreach (var item in _ledgerlist)
                 {
                     _Ledger l = new _Ledger();
-                    l.LedgerId = item.Id;
-                    l.LedgerName = item.Name;
-                    l.Balance = Convert.ToDouble(item.CurrentBalance);
+                    l.LedgerId = item.LedgerId;
+                    l.LedgerName = item.LedgerName;
+                    l.Balance = Convert.ToDouble(item.CalculatedAmount);
 
                     SEA_Application.Controllers.ChartOfAccountsController.Ledger_Group lGroup = new SEA_Application.Controllers.ChartOfAccountsController.Ledger_Group();
                     //lGroup.Id = 0;
-
-                    if (item.LedgerGroup != null)
-                    {
-                        lGroup.GroupName = item.LedgerGroup.Name;
-                    }
-                    else
-                    {
-
-                        lGroup.GroupName = null;
-                    }
-
+                    lGroup.GroupName = item.GroupName;
                     l.ledgerGroup = lGroup;
 
                     AllLedgersList.Add(l);
@@ -194,18 +275,10 @@ namespace SEA_Application.Controllers
 
                 ledgerheadlist.Add(ledgerhead);
             }
-            return Json(ledgerheadlist, JsonRequestBehavior.AllowGet);
 
-            //dateTimeTo=dateTimeTo.AddDays(1);
-
-            //var ledgers = from voucher in db.Vouchers
-            //              join voucherRecord in db.VoucherRecords on voucher.Id equals  voucherRecord.VoucherId
-            //              join ledger in db.Ledgers on voucherRecord.LedgerId equals ledger.Id
-            //              where voucher.Date >= dateTimeFrom && voucher.Date <= dateTimeTo
-            //              select voucher;
+            return ledgerheadlist;
 
 
-            return Json("", JsonRequestBehavior.AllowGet);
         }
 
         public class Ledger_Head
@@ -222,11 +295,44 @@ namespace SEA_Application.Controllers
             public string GroupName { get; set; }
             public List<_Ledger> ledger { get; set; }
         }
+        public class LedgerDebitCredit
+        {
+            public int LedgerId { get; set; }
+            public string LedgerName { get; set; }
+            public double Amount { get; set; }
+            public int HeadId { get; set; }
+            public string HeadName { get; set; }
+            public string LedgerType { get; set; }
+            public string GroupName { get; set; }
+
+        }
+        public class LedgerSearch
+        {
+            public int LedgerId { get; set; }
+            public string LedgerName { get; set; }
+            //   public double Amount { get; set; }
+            public double Balance { get; set; }
+            public int HeadId { get; set; }
+            public string HeadName { get; set; }
+            public string LedgerType { get; set; }
+            public string GroupName { get; set; }
+
+            public double DebitAmount { get; set; }
+            public double CreditAmount { get; set; }
+
+            public double CalculatedAmount { get; set; }
+
+            public Ledger_Group ledgerGroup { get; set; }
+
+
+        }
+
         public class _Ledger
         {
             public int LedgerId { get; set; }
             public string LedgerName { get; set; }
             public double Balance { get; set; }
+
 
             //added by shahzad
             public Ledger_Group ledgerGroup { get; set; }

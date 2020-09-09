@@ -221,7 +221,7 @@ namespace SEA_Application.Controllers
 
         }
 
-        public ActionResult ChangeChallanStatus(string idlist)
+        public ActionResult ChangeChallanStatus(string idlist, int LedgerId, string PaidDate)
 
         {
             var StudentFeeDetailIds = idlist.Split(',');
@@ -238,6 +238,7 @@ namespace SEA_Application.Controllers
                 }
                 else
                 {
+                    studentFeeDetailToUpdate.PaidDate = Convert.ToDateTime(PaidDate);
                     studentFeeDetailToUpdate.Status = "Paid";
                     db.SaveChanges();
 
@@ -358,7 +359,7 @@ namespace SEA_Application.Controllers
 
 
                     VoucherRecord voucherRecord1 = new VoucherRecord();
-                    var LedgerCash = db.Ledgers.Where(x => x.Name == "Cash In Hand").FirstOrDefault();
+                    var LedgerCash = db.Ledgers.Where(x => x.Id == LedgerId).FirstOrDefault();
                     decimal? CurrentBalanceOfCash = LedgerCash.CurrentBalance;
                     decimal? AfterBalanceOfCash = CurrentBalanceOfCash + Convert.ToDecimal(paidAmount);
                     voucherRecord1.LedgerId = LedgerCash.Id;
@@ -590,7 +591,7 @@ namespace SEA_Application.Controllers
                 Class_Session classSession = db.Class_Session.Where(x => x.ClassId == Student.AspNetClass.Id).FirstOrDefault();
 
 
-                if(classSession == null)
+                if (classSession == null)
                 {
                     challan.ClassSession = "";
                 }
@@ -820,6 +821,14 @@ namespace SEA_Application.Controllers
             }
 
             return Json("", JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetAllBankCashLedgers()
+        {
+
+            var AllBankCashLedgers = db.Ledgers.Where(x => x.LedgerGroup.Name == "Bank" || x.LedgerGroup.Name == "Cash").Select(x=> new { x.Id, x.Name, x.LedgerGroupId}).ToList();
+
+            return Json(AllBankCashLedgers, JsonRequestBehavior.AllowGet);
         }
 
         public class challanform

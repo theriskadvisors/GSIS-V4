@@ -258,6 +258,7 @@ namespace SEA_Application.Controllers
                             voucherRecord1.Description = "Fee Added of Student ";
                             voucherRecord1.UserType = "Student";
                             voucherRecord1.UserId = StudentId.ToString();
+                            voucherRecord1.BranchId = BranchId;
                             LedgerStudentFee.CurrentBalance = AfterBalanceOfNotes;
 
                             db.VoucherRecords.Add(voucherRecord1);
