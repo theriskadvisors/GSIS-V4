@@ -13,6 +13,11 @@
 }
 
 <style>
+    .alert span {
+        display: block;
+        max-width: 89%;
+        color: white !important;
+    }
     .col-md-2 {
         width: 19.666667%;
     }
@@ -406,15 +411,22 @@
                     <br>
 
                     <div class="pull-right">
+
+                      
+                        @if (User.IsInRole("Accountant"))
+                        {
                         <button class="btn btn-primary" id="submit" type="submit">Save</button>
-                        <button onclick="window.location.href = '/AspnetStudents/StudentIndex'" id="cancel" type="button" class="btn btn-primary pull-right rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                        }
+                             <button onclick="window.location.href = '/AspnetStudents/StudentIndex'" id="cancel" type="button" class="btn btn-primary pull-right rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
                             <i class="material-icons mr-2">cached</i>  Cancel &nbsp; &nbsp;
                         </button>
                         <div class="clearfix"></div>
                     </div>
                 </form>
+                <button class="btn btn-danger" id="disable">Disable</button>
 
-                @*}*@
+
+               
             </div>
         </div>
     </div>
@@ -432,7 +444,40 @@
             readURL(this);
         });
 
-        
+
+             $("#disable").click(function () {
+
+                 debugger;
+                 var StudentID = $("#RollNo").val();
+                 $.ajax({
+                     type: "POST",
+                     url: "/AspnetLessons/DisableStudent",
+                     data: { "StudentID": StudentID },
+                     success: function (data) {
+                         if(data == "success")
+                         {
+                            // alert("changed");
+                             var type = 'success';
+                             var msg = "Student disabled";
+                             showNotification('top', 'center', msg, type);
+
+                         }
+                         else {
+
+                             // alert("not changed");
+                             var type = 'danger';
+                             var msg = "Student is already disabled";
+                             showNotification('top', 'center', msg, type);
+                         }
+                       
+
+                     }
+                 })
+                 
+
+                 
+             });
+
 
         $("#PageHeader").html("Edit Student");
 
@@ -492,6 +537,13 @@
             ResestFields();
             GetFeeHeads();
         })
+
+
+
+        
+
+
+
         $("#ClassId").change(function () {
 
             ResestFields();

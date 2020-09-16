@@ -30,6 +30,23 @@ namespace SEA_Application.Controllers
             return View(aspnetLessons.ToList());
         }
 
+        public ActionResult DisableStudent(string StudentID)
+        {
+            string status = "error";
+            if (StudentID != null)
+            {
+                AspNetUser user = db.AspNetUsers.Where(x => x.UserName == StudentID).FirstOrDefault();
+                user.StatusId = 2;
+                if (db.SaveChanges() > 0)
+                {
+                    status = "success";
+                }
+            }
+            return Content(status);
+        }
+
+
+
         public ActionResult ViewLessonsToAdmin()
         {
 
