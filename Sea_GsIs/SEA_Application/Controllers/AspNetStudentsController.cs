@@ -1866,19 +1866,20 @@ namespace SEA_Application.Controllers
                 studentRegistrationViewModel.Nov_Multiplier = studentFeeMultiplier.Nov_Multiplier.Value;
                 studentRegistrationViewModel.Dec__Multiplier = studentFeeMultiplier.Dec__Multiplier.Value;
 
-                if (aspNetStudent.Birthdate != null)
-                {
+                //if (aspNetStudent.Birthdate != null)
+                //{
 
-                    DateTime Date = Convert.ToDateTime(aspNetStudent.Birthdate);
+                //    DateTime Date = Convert.ToDateTime(aspNetStudent.Birthdate);
 
-                    string date = Date.ToString("yyyy-MM-dd");
+                //    string date = Date.ToString("yyyy-MM-dd");
 
-                    ViewBag.BirthDate = date;
-                }
-                else
-                {
-                    ViewBag.BirthDate = null;
-                }
+                //    ViewBag.BirthDate = date;
+                //}
+                //else
+                //{
+                //    ViewBag.BirthDate = null;
+                //}
+                ViewBag.BirthDate = null;
             }
             else
             {
