@@ -1,0 +1,632 @@
+﻿@model SEA_Application.Models.LessonPlan
+
+@{
+
+    Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
+}
+
+
+<style>
+   
+    .card .card-body .form-group {
+        margin: 15px 0 0;
+    }
+
+    .tab {
+        display: none;
+    }
+    /* Make circles that indicate the steps of the form: */
+    .step {
+        height: 15px;
+        width: 15px;
+        margin: 0 15px;
+        /*background-color: #bbbbbb;*/
+        /*border: none;*/
+        border-radius: 50%;
+        display: inline-block;
+        /*opacity: 0.5;*/
+    }
+
+    .mt-4, .my-4 {
+        margin-top: 1.17rem !important;
+    }
+
+    .step.active {
+        opacity: 1;
+    }
+
+    /* Mark the steps that are finished and valid: */
+    .step.finish {
+        background-color: #4CAF50;
+    }
+
+    #prevBtn {
+        color: #afbccc !important;
+    }
+
+    #createLessonForm .step {
+        font-size: 12px;
+        font-weight: 600;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 21px;
+        text-align: center;
+        color: #afbccc;
+    }
+
+    #createLessonForm .step {
+        width: 24px;
+        height: 24px;
+        background-color: #ffffff;
+        border: solid 1px rgba(0, 0, 0, 0.1);
+        opacity: 1;
+    }
+
+        #createLessonForm .step.active {
+            width: 26px;
+            height: 26px;
+            border: solid 2px #ffffff;
+            background-color: #3cd876;
+            color: #ffffff;
+            box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+        }
+
+        #createLessonForm .step.finish {
+            width: 26px;
+            height: 26px;
+            border: solid 2px #ffffff;
+            color: #ffffff;
+            background-color: #3cd876;
+            box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
+        }
+
+            #createLessonForm .step.finish.active {
+                /*background-image: none;*/
+            }
+
+    .stepsCon {
+        position: relative;
+        display: inline-block;
+        z-index: 6;
+    }
+
+        .stepsCon::before {
+            content: '';
+            background-color: rgba(0, 0, 0, 0.1);
+            height: 1px;
+            width: calc(100% - 50px);
+            position: absolute;
+            left: 25px;
+            top: calc(50%);
+            z-index: -4;
+        }
+
+    .step.finish {
+        background-image: url(/Content/assets/assets/icons/finish.png);
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+
+    .tab .leftCol .form-group {
+        margin-top: 30px !important;
+    }
+
+    .tab .leftCol .input-group .form-group {
+        margin-top: 5px !important;
+    }
+
+    /*--------WIZARD-----*/
+
+    @@media screen and (max-width: 767px) {
+        .tab > .row > .col-md-6.pl-5.pr-5 {
+            padding-left: 0 !important;
+        }
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+
+
+        $("#PageHeader").html("Create Lesson");
+
+        $("#BreadCrumbs").append(' <li> <a href="/Teacher/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li> <a href="/AspnetSubjectTopics/ViewTopicsAndLessons"> Topics & Lessons </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Create</a></li>');
+        $("#TotalMarks").val("0");
+
+        var course = 'CSS';
+        var Class;
+
+
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "/AspNetProject/AllClasses_LP",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#ClassID");
+                $el.empty();
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").text('Select Class'));
+                    for (i = 0; i < sch.length; i++) {
+
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i].Id).text(sch[i].Name));
+                    }
+                }
+                else {
+                    $el.append($("<option></option>")
+                        .attr("value", '').text('Select Class'));
+                }
+            }
+        });
+
+
+        $('#ClassID').change(function () {
+
+            var ClassId = $(this).val();
+            //Class = UserName;
+
+            if (ClassId != "") {
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $(".SubIdDDL");
+                        $el.empty();
+                        var $e3 = $(".TopicIdDDL");
+                        $e3.empty();
+                        var $e4 = $("#SectionID");
+                        $e4.empty();
+
+                        if (sch.length > 0) {
+                            $e4.append($("<option></option>")
+                                .attr("value", "").text('Select Section'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $e4.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $e4.append($("<option></option>")
+                                .attr("value", '').text('Select Section'));
+                        }
+                    }
+                });
+            }
+
+            else {
+
+                var $el = $(".SubIdDDL");
+                $el.empty();
+                var $e3 = $(".TopicIdDDL");
+                $e3.empty();
+
+                var $e4 = $("#SectionID");
+                $e4.empty();
+
+
+            }
+
+        });
+        $('#SectionID').change(function () {
+
+            var SectionId = $(this).val();
+            //Class = UserName;
+
+            if (SectionId != "") {
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/AspNetProject/SubjectsByClass?SectionId=" + SectionId,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $(".SubId");
+                        $el.empty();
+                        var $e3 = $(".TopicIdDDL");
+                        $e3.empty();
+
+
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Subject'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Subject'));
+                        }
+                    }
+                });
+            }
+
+            else {
+
+                var $el = $("#SubjectID");
+                $el.empty();
+                var $e3 = $(".TopicIdDDL");
+                $e3.empty();
+
+
+            }
+
+        });
+
+
+
+        $('#SubjectID').change(function () {
+
+            var ClassId = $("#ClassID").val();
+            var SectionId = $("#SectionID").val();
+            var SubjectId = $(this).val();
+
+            if (SubjectId != "" && ClassId != "") {
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/AspNetProject/GetSubjectsForLessonPlan?ClassId=" + ClassId + "&&SubjectId=" + SubjectId + "&&SectionId=" + SectionId,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $(".TopicIdDDL");
+                        $el.empty();
+
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Topic'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select'));
+                        }
+                    }
+                });
+
+            }
+            else {
+
+                var $el = $(".TopicIdDDL");
+                $el.empty();
+
+            }
+
+        });
+
+
+        $("#btnCancel").click(function () {
+            window.location.href = "/AspnetSubjectTopics/ViewTopicsAndLessons";
+        })
+
+
+
+
+
+    })//end of document ready
+
+
+
+
+</script>
+
+
+<style>
+    .help-block {
+        color: red;
+    }
+
+    .page-sidebar .page-sidebar-menu, .page-sidebar-closed.page-sidebar-fixed .page-sidebar:hover .page-sidebar-menu {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        height: 2500px !important;
+    }
+
+    textarea {
+        width: 400px;
+        height: 200px;
+    }
+</style>
+
+<form id="tab2Form">
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+
+                <span id="GenericError" style="color:red;"></span>
+
+                <div class="card-body p-5">
+
+                    <!-- One "tab" for each step in the form: -->
+                    <div class="tab">
+                        <h2 class="column-heading wizard-heading mb-4">Lesson Plan Basic Info*</h2>
+                        <div class="row">
+                            <div class="col-md-6 leftCol">
+
+                                <div class="form-group col-md-12 bmd-form-group">
+                                    <label class="bmd-label-floating" style="background: white;margin-left: 0.5rem;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Select Class<span class="red-mark">*</span> </label>
+
+                                    <select class="form-control round-border Floating_text" id="ClassID" name="ClassID" required></select>
+
+                                </div>
+                                <div class="form-group col-md-12 bmd-form-group">
+                                    <label class="bmd-label-floating" style="background: white;margin-left: 0.5rem;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Select Section<span class="red-mark">*</span> </label>
+
+                                    <select class="form-control round-border Floating_text" id="SectionID" name="SectionID" required></select>
+
+                                </div>
+                                <div class="form-group col-md-12 bmd-form-group">
+                                    <label class="bmd-label-floating" style="background: white;margin-left: 0.5rem;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Select Week<span class="red-mark">*</span> </label>
+
+                                    <select class="form-control round-border Floating_text" id="Week" name="Week" required>
+                                        <option value="">Select One</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                    </select>
+                                </div>
+                                <div class="form-group col-md-12 bmd-form-group">
+                                    <label class="bmd-label-floating" style="background: white;margin-left: 0.5rem;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Select Chapter<span class="red-mark">*</span> </label>
+                                    <input type="text" class="form-control round-border Floating_text" id="Chapter" name="Chapter"></input>
+                                </div>
+
+
+                                <div class="form-group bmd-form-group pt-5">
+                                    <label class="bmd-label-floating" style="background: white;margin-left: 0.5rem;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Lesson Objectives</label>
+                                    <textarea class="form-control round-border Floating_text" name="LessonObjectives" id="LessonObjectives" rows="6"></textarea>
+                                </div>
+
+                                <div class="form-group bmd-form-group pt-5">
+                                    <label class="bmd-label-floating" style="background: white;margin-left: 0.5rem;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Concepts to be Learnt</label>
+                                    <textarea class="form-control round-border Floating_text" name="Concepts_TBL" id="Concepts_TBL" rows="6"></textarea>
+                                </div>
+
+
+
+
+                            </div>
+
+                            <div class="col-md-6 pl-5 pr-5 ">
+
+
+
+
+                                <div class="form-row mt-3">
+                                    <div class="form-group col-md-12 bmd-form-group">
+                                        <label class="bmd-label-floating" style="background: white;margin-left: 0.5rem;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Select Subject <span class="red-mark">*</span> </label>
+                                        <select class="form-control SubIdDDL round-border Floating_text SubId" id="SubjectID" name="SubjectID" required></select>
+                                    </div>
+                                </div>
+
+
+
+                                <div class="form-row mt-3">
+                                    <div class="form-group col-md-12 bmd-form-group">
+                                        <label class="bmd-label-floating" style="background: white;margin-left: 0.5rem;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Select Date <span class="red-mark">*</span> </label>
+                                        <input type="date" name="LessonPlanDate" id="LessonPlanDate" value="" required class="round-border Floating_text form-control" />
+                                    </div>
+                                </div>
+                                <div class="form-row mt-3">
+                                    <div class="form-group col-md-12 bmd-form-group">
+                                        <label class="bmd-label-floating" style="background: white;margin-left: 0.5rem;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Select Topic <span class="red-mark">*</span> </label>
+
+                                        <select class="form-control TopicIdDDL round-border Floating_text TopicIdDDL" id="TopicID" name="TopicID" required></select>
+                                    </div>
+                                </div>
+
+
+                                <div class="form-group bmd-form-group pt-5">
+                                    <label class="bmd-label-floating" style="background: white;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Duration of Lesson</label>
+                                    @*<textarea class="form-control round-border Floating_text" name="Duration_OTL" id="Duration_OTL" rows="6"></textarea>*@
+                                    <input class="round-border Floating_text form-control" type="datetime-local" name="Duration_OTL" id="Duration_OTL" value="" />
+                                </div>
+                                <br />
+
+                                <div class="form-group bmd-form-group pt-5">
+                                    <label class="bmd-label-floating" style="background: white;margin-left: 0.5rem;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Preperation Prior to Lesson</label>
+                                    <textarea class="form-control round-border Floating_text" name="Prep_PTL" id="Prep_PTL" rows="6"></textarea>
+                                </div>
+
+
+
+                            </div>
+                        </div>
+
+                        <table class="table table-hover" style="border-radius: 15px; border: 1px solid lightgrey; ">
+                            <thead style="background-color: #28BBE5">
+                                <tr>
+                                    <th><b>How lesson may be carried out</b></th>
+                                    <th><b>Resource</b></th>
+                                    <th><b>Duration</b></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label>Starter:</label>
+                                        <textarea class="form-control round-border Floating_text" name="Starter" id="Starter" rows="6"></textarea>
+                                    </td>
+                                    <td>
+                                        <label> </label>
+                                        <textarea class="form-control round-border Floating_text" name="R_Starter" id="R_Starter" rows="6"></textarea>
+                                    </td>
+                                    <td>
+                                        <input type="datetime-local" name="D_Starter" id="D_Starter" value="" class="round-border Floating_text form-control" />
+                                    </td>
+                                </tr>
+
+                                <tr>
+
+                                    <td>
+                                        <label>Explanation:</label>
+                                        <textarea class="form-control round-border Floating_text" name="Explanation" id="Explanation" rows="6"></textarea>
+                                    </td>
+                                    <td>
+                                        <label> </label>
+                                        <textarea class="form-control round-border Floating_text" name="R_Explanation" id="R_Explanation" rows="6"></textarea>
+                                    </td>
+                                    <td>
+                                        <input type="datetime-local" name="D_Explanation" id="D_Explanation" value="" class="round-border Floating_text form-control" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Interaction with the students:</label>
+                                        <textarea class="form-control round-border Floating_text" name="Interaction" id="Interaction" rows="6"></textarea>
+                                    </td>
+                                    <td>
+                                        <label> </label>
+                                        <textarea class="form-control round-border Floating_text" name="R_Interaction" id="R_Interaction" rows="6"></textarea>
+                                    </td>
+                                    <td>
+                                        <input type="datetime-local" name="D_Interaction" id="D_Interaction" value="" class="round-border Floating_text form-control" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+
+                                        <label>Practice:</label>
+                                        <textarea class="form-control round-border Floating_text" name="Practice" id="Practice" rows="6"></textarea>
+                                    </td>
+                                    <td>
+                                        <label> </label>
+                                        <textarea class="form-control round-border Floating_text" name="R_Practice" id="R_Practice" rows="6"></textarea>
+                                    </td>
+                                    <td>
+                                        <input type="datetime-local" name="D_Practice" id="D_Practice" value="" class="round-border Floating_text form-control" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Conclusion of the Lesson:</label>
+
+                                        <textarea class="form-control round-border Floating_text" name="Conclusion" id="Conclusion" rows="6"></textarea>
+                                    </td>
+                                    <td>
+                                        <label> </label>
+                                        <textarea class="form-control round-border Floating_text" name="R_Conclusion" id="R_Conclusion" rows="6"></textarea>
+                                    </td>
+                                    <td>
+                                        <input type="datetime-local" name="D_Conclusion" id="D_Conclusion" value="" class="round-border Floating_text form-control" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Evaluation:</label>
+                                        <textarea class="form-control round-border Floating_text" name="Evaluation" id="Evaluation" rows="6"></textarea>
+                                    </td>
+                                    <td>
+                                        <label> </label>
+                                        <textarea class="form-control round-border Floating_text" name="R_Evaluation" id="R_Evaluation" rows="6"></textarea>
+                                    </td>
+                                    <td>
+                                        <input type="datetime-local" name="D_Evaluation" id="D_Evaluation" value="" class="round-border Floating_text form-control" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+
+                                        <label>Follow- up/ Extension activities:</label>
+                                        <textarea class="form-control round-border Floating_text" name="Followup" id="Followup" rows="6"></textarea>
+                                    </td>
+                                    <td>
+                                        <label> </label>
+                                        <textarea class="form-control round-border Floating_text" name="R_Followup" id="R_Followup" rows="6"></textarea>
+                                    </td>
+                                    <td>
+                                        <input type="datetime-local" name="D_Followup" id="D_Followup" value="" class="round-border Floating_text form-control" />
+                                    </td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+
+
+
+                    </div>
+
+                    <button onclick="window.location.href = '/Teacher/LessonPlanList'" type="button" id="1btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3" style="float: right;">
+                        <i class="material-icons mr-2">cached</i>  Cancel
+                    </button>
+
+
+                    <input type="submit" name="name" value="Save" class=" btn btn-primary rounded rounded-lg" style="float: right;" />
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</form>
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $('#tab2Form').validate({ // initialize the plugin
+            rules: {
+                ClassId1: {
+                    required: true,
+                },
+
+            },
+            submitHandler: function (form) {
+
+                $("#SaveButton1").prop("disabled", true);
+
+                var data = $("#tab2Form").serialize();
+
+
+
+                $.ajax({
+                    type: "post",
+                    url: "/Teacher/LessonPlan",
+                    data: data, //{ 'BranchId': BranchId, 'ClassId': ClassId, 'SectionId': SectionId, 'MonthId': MonthId, 'DueDate': DueDate },
+
+                    success: function (data) {
+                        window.location.href = "/Teacher/LessonPlanList";
+                    }
+                })
+
+            }
+
+        })
+
+
+    });
+
+
+
+
+</script>

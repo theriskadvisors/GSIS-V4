@@ -6,10 +6,11 @@ using System.Web.Mvc;
 using SEA_Application.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.Data.Entity;
 
 namespace SEA_Application.Controllers
 {
-    [Authorize(Roles = "Teacher")]
+    //[Authorize(Roles = "Teacher")]
     public class TeacherController : Controller
     {
         private Sea_Entities db = new Sea_Entities();
@@ -32,10 +33,122 @@ namespace SEA_Application.Controllers
 
             }
             classes.Add("Not Published");
-         
+
             ViewBag.AllClasses = classes;
 
             return View();
+        }
+
+
+        //public ActionResult LessonPlanList()
+        //{
+        //    List<LessonPlan> lp = db.LessonPlans.ToList();
+
+        //    return View(lp);
+        //}
+
+        public ActionResult LessonPlan()
+        {
+
+            return View();
+        }
+        public ActionResult EditLessonPlan(int ID)
+        {
+            LessonPlan LP = db.LessonPlans.Where(x => x.Id == ID).FirstOrDefault();
+
+            int ClassId = LP.ClassID.Value;
+
+
+            ViewBag.UserRole = "";
+
+            ViewBag.ID = ID;
+            ViewBag.SectionID = LP.SectionID;
+            ViewBag.ClassID = LP.ClassID;
+            ViewBag.TopicID = LP.TopicID;
+            ViewBag.SubjectID = LP.SubjectID;
+
+            if (User.IsInRole("Branch_Admin"))
+            {
+                ViewBag.UserRole = "Admin";
+                ViewBag.ClassName = db.AspNetClasses.Where(x => x.Id == ClassId).FirstOrDefault().Name;
+                ViewBag.SubjectName = db.AspNetCourses.Where(x => x.Id == LP.SubjectID).FirstOrDefault().Name;
+                ViewBag.SectionName = db.AspNetSections.Where(x => x.Id == LP.SectionID).FirstOrDefault().Name;
+                ViewBag.TopicName = db.AspnetSubjectTopics.Where(x => x.Id == LP.TopicID).FirstOrDefault().Name;
+
+            }
+
+
+
+            return View(LP);
+        }
+
+        [HttpPost]
+        public ActionResult EditLessonPlans(LessonPlan LP)
+        {
+            //string status = "";
+            // LessonPlan LP = db.LessonPlans.Where(x => x.Id == ID).FirstOrDefault();
+            // status = Newtonsoft.Json.JsonConvert.SerializeObject(LP);
+            try
+            {
+                //  db.LessonPlans.Attach(LP);
+                bool? status = db.LessonPlans.Where(x => x.Id == LP.Id).FirstOrDefault().Status;
+                LP.Status = status;
+
+                // db.Entry(LP).Property(o => o.Status).IsModified = false;
+                // db.Entry(LP).Property(o => o.CreationDate).IsModified = false;
+                // db.Entry(LP).Property(o => o.CreatedBy).IsModified = false;
+                Sea_Entities db1 = new Sea_Entities();
+
+                db1.Entry(LP).State = EntityState.Modified;
+                db1.SaveChanges();
+
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+            }
+
+            return RedirectToAction("LessonPlanList");
+        }
+
+        [HttpPost]
+        public ActionResult LessonPlan(LessonPlan LP)
+        {
+            if (LP != null)
+            {
+
+                LP.CreationDate = DateTime.Now;
+                LP.Status = false;
+                LP.CreatedBy = User.Identity.GetUserId();
+                db.LessonPlans.Add(LP);
+                db.SaveChanges();
+
+            }
+
+
+
+
+
+            return RedirectToAction("LessonPlanList");
+        }
+
+        public ActionResult LessonPlanList()
+        {
+
+            List<LessonPlan> lp = db.LessonPlans.ToList();
+
+            return View(lp);
+        }
+
+        public ActionResult PublishLesson(int id)
+        {
+            LessonPlan LessonPlanToUpdate = db.LessonPlans.Where(x => x.Id == id).FirstOrDefault();
+            LessonPlanToUpdate.Status = true;
+
+            db.SaveChanges();
+
+            return RedirectToAction("LessonPlanList");
+
         }
 
 
@@ -141,12 +254,12 @@ namespace SEA_Application.Controllers
         {
             List<Class_Subject> ClassSubject = new List<Class_Subject>();
             var tid = User.Identity.GetUserId();
-  
+
 
             var teacherid = db.AspNetEmployees.Where(x => x.UserId == tid).Select(x => x.Id).FirstOrDefault();
-            var enrolmentlist= db.AspNetTeacher_Enrollments.Where(x => x.TeacherId == teacherid).ToList();
+            var enrolmentlist = db.AspNetTeacher_Enrollments.Where(x => x.TeacherId == teacherid).ToList();
 
-           
+
             foreach (var item in enrolmentlist)
             {
                 //var classcourse = db.AspNetClass_Courses.Where(x => x.Id == item.CourseId).FirstOrDefault();
@@ -162,7 +275,7 @@ namespace SEA_Application.Controllers
                 //cs.Section = db.AspNetSections.Where(x => x.Id == SectionID).FirstOrDefault().Name;
 
 
-                   
+
                 ClassSubject.Add(cs);
             }
             return Json(ClassSubject, JsonRequestBehavior.AllowGet);
@@ -183,9 +296,9 @@ namespace SEA_Application.Controllers
 
         public ActionResult ViewStudentAttendence()
         {
-          var id = User.Identity.GetUserId();
-          ViewBag.teacherid = db.AspNetEmployees.Where(x => x.UserId == id).FirstOrDefault().Id;
-          return View();
+            var id = User.Identity.GetUserId();
+            ViewBag.teacherid = db.AspNetEmployees.Where(x => x.UserId == id).FirstOrDefault().Id;
+            return View();
         }
 
         public ActionResult StudentDetails(string RollNo)
