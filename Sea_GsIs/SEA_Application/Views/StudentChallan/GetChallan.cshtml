@@ -99,6 +99,14 @@
 
                                     <div class="form-row mt-4">
                                         <div class="form-group col-md-12 bmd-form-group">
+                                            <label for="" class="control-label pl-2">Issue Date*</label>
+
+                                            <input required class="form-control" type="date" name="IssueDate" id="IssueDate" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-row mt-4">
+                                        <div class="form-group col-md-12 bmd-form-group">
                                             <label for="" class="control-label pl-2">Due Date*</label>
 
                                             <input required class="form-control" type="date" name="DueDate" id="DueDate" />
@@ -201,6 +209,13 @@
                                         </div>
                                     </div>
 
+                                    <div class="form-row mt-4">
+                                        <div class="form-group col-md-12 bmd-form-group">
+                                            <label for="" class="control-label pl-2">Issue Date*</label>
+
+                                            <input required class="form-control" type="date" name="IssueDate1" id="IssueDate1" />
+                                        </div>
+                                    </div>
 
                                     <div class="form-row mt-4">
                                         <div class="form-group col-md-12 bmd-form-group">
@@ -672,12 +687,13 @@
                 //var SectionId = $("#SectionId").val();
                 var MonthId = $("#MonthId").val();
                 var DueDate = $("#DueDate").val();
+                var IssueDate = $("#IssueDate").val();
                 var ImportantNotice = $("#ImportantNotice").val();
 
                 $.ajax({
                     type: "post",
                     url: "/StudentChallan/SaveChallanForm",
-                    data: { 'BranchId': BranchId, 'ClassId': ClassId, 'MonthId': MonthId, 'DueDate': DueDate,'ImportantNotice':ImportantNotice },
+                    data: { 'BranchId': BranchId, 'ClassId': ClassId, 'MonthId': MonthId,'IssueDate':IssueDate, 'DueDate': DueDate,'ImportantNotice':ImportantNotice },
 
                     success: function (data) {
                         debugger
@@ -805,9 +821,15 @@
                         $('#ImportantNotice1').val(data.ImportantNotice);
 
                         $("#DiscountComments").val(data.DiscountComments);
+
                         const d = new Date(data.duedate.match(/\d+/)[0] * 1);
                         const formattedDate = d.getFullYear() + '-' + ("0" + (d.getMonth() + 1)).slice(-2) + '-' + ("0" + d.getDate()).slice(-2)
                         $('#DueDate1').val(formattedDate);
+
+
+                        const d1 = new Date(data.issuedate.match(/\d+/)[0] * 1);
+                        const formattedDate1 = d1.getFullYear() + '-' + ("0" + (d1.getMonth() + 1)).slice(-2) + '-' + ("0" + d1.getDate()).slice(-2)
+                        $('#IssueDate1').val(formattedDate1);
 
 
                     }
