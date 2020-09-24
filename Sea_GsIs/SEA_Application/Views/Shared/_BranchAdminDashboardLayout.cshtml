@@ -188,7 +188,16 @@
                         </a>
                     </li>
 
+                    <li class="nav-item" id="studentattendance">
+                        <a href="@Url.Action("StudentAttendance", "AspnetLessons")" class="nav-link ">
+                            <i class="sea-dash">
+                                <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
+                            </i>
+                            <p>Student Attendance</p>
+                        </a>
+                    </li>
 
+                    
                     <li class="nav-item" id="AdminLessons">
                         <a href="@Url.Action("ViewLessonsToAdmin", "AspnetLessons")" class="nav-link ">
                             <i class="sea-dash">
@@ -197,6 +206,16 @@
                             <p>Lessons</p>
                         </a>
                     </li>
+                    <li class="nav-item" id="AdminLessons">
+                        <a href="@Url.Action("LessonPlanList", "Teacher")" class="nav-link ">
+                            <i class="sea-dash">
+                                <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
+                            </i>
+                            <p> Lesson Plan</p>
+                        </a>
+                    </li>
+
+
 
                     <li id="BranchClassSection" class="nav-item ">
                         <a href="@Url.Action("ViewQuestionAndQuizByAdmin", "AspnetQuestions")" class="nav-link ">
