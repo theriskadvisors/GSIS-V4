@@ -15,8 +15,9 @@
         });
 
 
+
         var table = $('#datatable').dataTable({
-                initComplete: function () {
+            initComplete: function () {
                 // Apply the search
                 this.api().columns().every(function () {
                     var that = this;
@@ -38,7 +39,7 @@
                     text: '<span class="datatableButtonsReset"> <img src="/Content/assets/assets/icons/Icon-Reset2.png" alt=""> Reset</span>'
                 },
                 {
-                    text: '<span class="datatableButtonsEdit"> <img src="/Content/assets/assets/icons/Icon-edit.png" alt=""> Create</span>',
+                    text: '<span  class="datatableButtonsEdit"> <img src="/Content/assets/assets/icons/Icon-edit.png" alt=""> Create</span>',
                     action: function (e, dt, button, config) {
                         window.location.href = '/Teacher/LessonPlan';
                     }
@@ -67,7 +68,18 @@
                 "<'row mt-4'<'col-sm-12 col-md-4 col-lg-6 infoCon'i><'col-sm-12 col-md-8 col-lg-6 pagCon'p>>",
         });
 
-      
+
+        var UserRole = $("#UserRole").val();
+
+        if (UserRole == "Admin") {
+            // alert("Admin");
+            $(".datatableButtonsEdit").addClass('hidden');
+        }
+        else {
+           // alert("not Admin");
+        }
+
+
         $("#ClassID").prepend('<option value="0" >All</option>');
 
         $("#PageHeader").html("Lesson Plan");
@@ -86,7 +98,7 @@
 
             window.location.href = "/Teacher/EditLessonPlan?ID=" + userName;
         });
-             $("#datatable_filter").hide();
+        $("#datatable_filter").hide();
         $('#datatable tfoot tr').appendTo('#datatable thead');
 
     });
@@ -95,21 +107,21 @@
 
 
 @*@if (User.IsInRole("Admin"))
-{
-    <script>
-        $(document).ready(function () {
-          //  DrawTable();
-        })
-    </script>
-}
-else
-{
-    <script>
-        $(document).ready(function () {
-         //   DrawTable1();
-        })
-    </script>
-}*@
+    {
+        <script>
+            $(document).ready(function () {
+              //  DrawTable();
+            })
+        </script>
+    }
+    else
+    {
+        <script>
+            $(document).ready(function () {
+             //   DrawTable1();
+            })
+        </script>
+    }*@
 
 
 @*<style>
@@ -127,6 +139,8 @@ else
             <div class="box-title"></div>
 
             <div class="box-body">
+
+                <input type="hidden" id="UserRole" name="name" value="@ViewBag.UserRole" />
 
                 <div class="table-responsive">
                     <table class="table hover table-bordered table-striped" id="datatable">
@@ -229,7 +243,7 @@ else
                                     Status
                                 </th>
                             </tr>
-                       
+
                         </tfoot>
 
 

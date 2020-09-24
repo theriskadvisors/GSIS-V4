@@ -134,7 +134,12 @@ namespace SEA_Application.Controllers
 
         public ActionResult LessonPlanList()
         {
-
+            ViewBag.UserRole = "";
+            if (User.IsInRole("Branch_Admin"))
+            {
+                ViewBag.UserRole = "Admin";
+            }
+          
             List<LessonPlan> lp = db.LessonPlans.ToList();
 
             return View(lp);
