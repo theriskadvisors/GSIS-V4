@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.Identity;
+using OfficeOpenXml;
 using SEA_Application.Models;
 using System;
 using System.Collections.Generic;
@@ -426,6 +427,337 @@ namespace SEA_Application.Controllers
             }
 
         }
+
+        public ActionResult NonRecurringFeeLoader()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public ActionResult NonRecurringFeeFromFile(RegisterViewModel model)
+        {
+
+            var dbTransaction = db.Database.BeginTransaction();
+            int? RowNumber = null;
+            int? ColumnNumber = null;
+            var StudentFeeMsg = "";
+
+            try
+            {
+                HttpPostedFileBase file = Request.Files["StudentLoaderFile"];
+                if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
+                {
+                    string fileName = file.FileName;
+                    string fileContentType = file.ContentType;
+                    byte[] fileBytes = new byte[file.ContentLength];
+                    var data = file.InputStream.Read(fileBytes, 0, Convert.ToInt32(file.ContentLength));
+                }
+                using (var package = new ExcelPackage(file.InputStream))
+                {
+                    var currentSheet = package.Workbook.Worksheets;
+                    var workSheet = currentSheet.First();
+                    var noOfCol = workSheet.Dimension.End.Column;
+                    var noOfRow = workSheet.Dimension.End.Row;
+                    ApplicationDbContext context = new ApplicationDbContext();
+
+                    List<int> NonRecurringFeeTypeIds = new List<int>();
+
+                    int AdmissionFee = 0;
+                    int StationeryFundId = db.NonRecurringTypes.Where(x => x.ExpenseType == "Stationery Fund").FirstOrDefault().Id;
+                    int AnnualFundId = db.NonRecurringTypes.Where(x => x.ExpenseType == "Annual Fund").FirstOrDefault().Id;
+                    int AdmissionFeeId = db.NonRecurringTypes.Where(x => x.ExpenseType == "Admission Fee").FirstOrDefault().Id;
+                    int SecurityRefId = db.NonRecurringTypes.Where(x => x.ExpenseType == "Security (Ref)").FirstOrDefault().Id;
+                    int RegistrationId = db.NonRecurringTypes.Where(x => x.ExpenseType == "Registration").FirstOrDefault().Id;
+                    int AdvanceTaxId = db.NonRecurringTypes.Where(x => x.ExpenseType == "Advance Tax").FirstOrDefault().Id;
+                    int AdjustmentId = db.NonRecurringTypes.Where(x => x.ExpenseType == "Adjustment").FirstOrDefault().Id;
+                    int SLCChargesId = db.NonRecurringTypes.Where(x => x.ExpenseType == "SLC Charges").FirstOrDefault().Id;
+                    int ArrearsId = db.NonRecurringTypes.Where(x => x.ExpenseType == "Arrears").FirstOrDefault().Id;
+                    int ExamChargesId = db.NonRecurringTypes.Where(x => x.ExpenseType == "Exam Charges").FirstOrDefault().Id;
+                    int NonPaymentFineId = db.NonRecurringTypes.Where(x => x.ExpenseType == "Non-Payment Fine").FirstOrDefault().Id;
+                    int WaiverId = db.NonRecurringTypes.Where(x => x.ExpenseType == "Waiver (If Any)/ VLEP Sofware charges").FirstOrDefault().Id;
+                    int DefferedId = db.NonRecurringTypes.Where(x => x.ExpenseType == "Deffered (If Any)").FirstOrDefault().Id;
+
+                    for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
+                    {
+                        //  RowNumber = rowIterator - 1;
+                        //  RowNumber = rowIterator;
+
+                        var Name = workSheet.Cells[rowIterator, 1].Value.ToString();
+                        var UserName = workSheet.Cells[rowIterator, 2].Value.ToString();
+                        var UserNameExist = (from user in db.AspNetUsers //db.AspNetUsers.Where(x=>x.AspNetUser.UserName ==UserName).FirstOrDefault();
+                                             join student in db.AspNetStudents on user.Id equals student.UserId
+                                             where user.UserName == UserName
+                                             select user).FirstOrDefault();
+
+                        
+                        if (UserNameExist != null)
+                        {
+
+                            var Month = workSheet.Cells[rowIterator, 3].Value;
+
+                            if (Month == null)
+                            {
+                                StudentFeeMsg = ":Please Enter Billing Month";
+
+                                throw new System.ArgumentException(":Please Enter Billing Month.");
+
+                                //   Month = 0;
+
+                            }
+                            var MonthToInterger = Convert.ToInt32(Month);
+
+                            if (MonthToInterger < 0 || MonthToInterger == 0)
+                            {
+                                StudentFeeMsg = ":Please Enter Corrent Month No";
+
+                                throw new System.ArgumentException(":Please Enter Corrent Month No");
+                            }
+
+
+                            var StationeryFund = workSheet.Cells[rowIterator, 4].Value;
+
+                            if (StationeryFund == null)
+                            {
+                                StationeryFund = 0;
+                            }
+                            var AnnualFund = workSheet.Cells[rowIterator, 5].Value;
+
+                            if (AnnualFund == null)
+                            {
+                                AnnualFund = 0;
+                            }
+                            var SecurityRef = workSheet.Cells[rowIterator, 6].Value;
+
+                            if (SecurityRef == null)
+                            {
+                                SecurityRef = 0;
+                            }
+                            var Registration = workSheet.Cells[rowIterator, 7].Value;
+
+                            if (Registration == null)
+                            {
+                                Registration = 0;
+                            }
+
+                            var AdvanceTax = workSheet.Cells[rowIterator, 8].Value;
+
+                            if (AdvanceTax == null)
+                            {
+                                AdvanceTax = 0;
+                            }
+
+                            var Adjustment = workSheet.Cells[rowIterator, 9].Value;
+
+                            if (Adjustment == null)
+                            {
+                                Adjustment = 0;
+                            }
+
+                            var SLCCharges = workSheet.Cells[rowIterator, 10].Value;
+
+                            if (SLCCharges == null)
+                            {
+                                SLCCharges = 0;
+                            }
+
+                            var Arrears = workSheet.Cells[rowIterator, 11].Value;
+
+                            if (Arrears == null)
+                            {
+                                Arrears = 0;
+                            }
+
+                            var ExamCharges = workSheet.Cells[rowIterator, 12].Value;
+
+                            if (ExamCharges == null)
+                            {
+                                ExamCharges = 0;
+                            }
+
+                            var NonPaymentFine = workSheet.Cells[rowIterator, 13].Value;
+
+                            if (NonPaymentFine == null)
+                            {
+                                NonPaymentFine = 0;
+                            }
+
+                            var Waiver = workSheet.Cells[rowIterator, 14].Value;
+                            if (Waiver == null)
+                            {
+                                Waiver = 0;
+                            }
+
+                            var Deffered = workSheet.Cells[rowIterator, 15].Value;
+
+                            if (Deffered == null)
+                            {
+                                Deffered = 0;
+                            }
+
+
+                            //   int MonthInt = Convert.ToInt32(Month);
+                            var StudentExist = db.AspNetStudents.Where(x => x.UserId == UserNameExist.Id).FirstOrDefault();
+
+                            if (StudentExist != null)
+                            {
+
+                                StudentNonRecurringFee checkStudentFeeExist = db.StudentNonRecurringFees.Where(x => x.StudentFeeID == StudentExist.Id && x.Month == MonthToInterger).FirstOrDefault();
+
+                                if (checkStudentFeeExist == null)
+                                {
+
+                                    StudentNonRecurringFee studentNonRecurringFee1 = new StudentNonRecurringFee();
+                                    studentNonRecurringFee1.Month = Convert.ToInt32(Month);
+                                    studentNonRecurringFee1.Amount = Convert.ToInt32(StationeryFund);
+                                    studentNonRecurringFee1.StudentFeeID = StudentExist.Id;
+                                    studentNonRecurringFee1.NonRecTypeID = StationeryFundId;
+                                    db.StudentNonRecurringFees.Add(studentNonRecurringFee1);
+                                    db.SaveChanges();
+
+                                    StudentNonRecurringFee studentNonRecurringFee2 = new StudentNonRecurringFee();
+                                    studentNonRecurringFee2.Month = Convert.ToInt32(Month);
+                                    studentNonRecurringFee2.Amount = Convert.ToInt32(AnnualFund);
+                                    studentNonRecurringFee2.StudentFeeID = StudentExist.Id;
+                                    studentNonRecurringFee2.NonRecTypeID = AnnualFundId;
+                                    db.StudentNonRecurringFees.Add(studentNonRecurringFee2);
+                                    db.SaveChanges();
+
+                                    StudentNonRecurringFee studentNonRecurringFee3 = new StudentNonRecurringFee();
+                                    studentNonRecurringFee3.Month = Convert.ToInt32(Month);
+                                    studentNonRecurringFee3.Amount = AdmissionFee;
+                                    studentNonRecurringFee3.StudentFeeID = StudentExist.Id;
+                                    studentNonRecurringFee3.NonRecTypeID = AdmissionFeeId;
+                                    db.StudentNonRecurringFees.Add(studentNonRecurringFee3);
+                                    db.SaveChanges();
+
+
+                                    StudentNonRecurringFee studentNonRecurringFee4 = new StudentNonRecurringFee();
+                                    studentNonRecurringFee4.Month = Convert.ToInt32(Month);
+                                    studentNonRecurringFee4.Amount = Convert.ToInt32(SecurityRef);
+                                    studentNonRecurringFee4.StudentFeeID = StudentExist.Id;
+                                    studentNonRecurringFee4.NonRecTypeID = SecurityRefId;
+                                    db.StudentNonRecurringFees.Add(studentNonRecurringFee4);
+                                    db.SaveChanges();
+
+                                    StudentNonRecurringFee studentNonRecurringFee5 = new StudentNonRecurringFee();
+                                    studentNonRecurringFee5.Month = Convert.ToInt32(Month);
+                                    studentNonRecurringFee5.Amount = Convert.ToInt32(Registration);
+                                    studentNonRecurringFee5.StudentFeeID = StudentExist.Id;
+                                    studentNonRecurringFee5.NonRecTypeID = RegistrationId;
+                                    db.StudentNonRecurringFees.Add(studentNonRecurringFee5);
+                                    db.SaveChanges();
+
+                                    StudentNonRecurringFee studentNonRecurringFee6 = new StudentNonRecurringFee();
+                                    studentNonRecurringFee6.Month = Convert.ToInt32(Month);
+                                    studentNonRecurringFee6.Amount = Convert.ToInt32(AdvanceTax);
+                                    studentNonRecurringFee6.StudentFeeID = StudentExist.Id;
+                                    studentNonRecurringFee6.NonRecTypeID = AdvanceTaxId;
+                                    db.StudentNonRecurringFees.Add(studentNonRecurringFee6);
+                                    db.SaveChanges();
+
+                                    StudentNonRecurringFee studentNonRecurringFee7 = new StudentNonRecurringFee();
+                                    studentNonRecurringFee7.Month = Convert.ToInt32(Month);
+                                    studentNonRecurringFee7.Amount = Convert.ToInt32(Adjustment);
+                                    studentNonRecurringFee7.StudentFeeID = StudentExist.Id;
+                                    studentNonRecurringFee7.NonRecTypeID = AdjustmentId;
+                                    db.StudentNonRecurringFees.Add(studentNonRecurringFee7);
+                                    db.SaveChanges();
+
+                                    StudentNonRecurringFee studentNonRecurringFee8 = new StudentNonRecurringFee();
+                                    studentNonRecurringFee8.Month = Convert.ToInt32(Month);
+                                    studentNonRecurringFee8.Amount = Convert.ToInt32(SLCCharges);
+                                    studentNonRecurringFee8.StudentFeeID = StudentExist.Id;
+                                    studentNonRecurringFee8.NonRecTypeID = SLCChargesId;
+                                    db.StudentNonRecurringFees.Add(studentNonRecurringFee8);
+                                    db.SaveChanges();
+
+                                    StudentNonRecurringFee studentNonRecurringFee9 = new StudentNonRecurringFee();
+                                    studentNonRecurringFee9.Month = Convert.ToInt32(Month);
+                                    studentNonRecurringFee9.Amount = Convert.ToInt32(Arrears);
+                                    studentNonRecurringFee9.StudentFeeID = StudentExist.Id;
+                                    studentNonRecurringFee9.NonRecTypeID = ArrearsId;
+                                    db.StudentNonRecurringFees.Add(studentNonRecurringFee9);
+                                    db.SaveChanges();
+
+                                    StudentNonRecurringFee studentNonRecurringFee10 = new StudentNonRecurringFee();
+                                    studentNonRecurringFee10.Month = Convert.ToInt32(Month);
+                                    studentNonRecurringFee10.Amount = Convert.ToInt32(ExamCharges);
+                                    studentNonRecurringFee10.StudentFeeID = StudentExist.Id;
+                                    studentNonRecurringFee10.NonRecTypeID = ExamChargesId;
+                                    db.StudentNonRecurringFees.Add(studentNonRecurringFee10);
+                                    db.SaveChanges();
+
+                                    StudentNonRecurringFee studentNonRecurringFee11 = new StudentNonRecurringFee();
+                                    studentNonRecurringFee11.Month = Convert.ToInt32(Month);
+                                    studentNonRecurringFee11.Amount = Convert.ToInt32(NonPaymentFine);
+                                    studentNonRecurringFee11.StudentFeeID = StudentExist.Id;
+                                    studentNonRecurringFee11.NonRecTypeID = NonPaymentFineId;
+                                    db.StudentNonRecurringFees.Add(studentNonRecurringFee11);
+                                    db.SaveChanges();
+
+                                    StudentNonRecurringFee studentNonRecurringFee12 = new StudentNonRecurringFee();
+                                    studentNonRecurringFee12.Month = Convert.ToInt32(Month);
+                                    studentNonRecurringFee12.Amount = Convert.ToInt32(Waiver);
+                                    studentNonRecurringFee12.StudentFeeID = StudentExist.Id;
+                                    studentNonRecurringFee12.NonRecTypeID = WaiverId;
+                                    db.StudentNonRecurringFees.Add(studentNonRecurringFee12);
+                                    db.SaveChanges();
+
+                                    StudentNonRecurringFee studentNonRecurringFee13 = new StudentNonRecurringFee();
+                                    studentNonRecurringFee13.Month = Convert.ToInt32(Month);
+                                    studentNonRecurringFee13.Amount = Convert.ToInt32(Deffered);
+                                    studentNonRecurringFee13.StudentFeeID = StudentExist.Id;
+                                    studentNonRecurringFee13.NonRecTypeID = DefferedId;
+                                    db.StudentNonRecurringFees.Add(studentNonRecurringFee13);
+                                    db.SaveChanges();
+
+
+                                }
+                                else
+                                {
+                                    StudentFeeMsg = ":Fee is Already created of selected student and month";
+
+                                    throw new System.ArgumentException(":Fee is Already created of this student");
+                                }
+
+                            }
+
+                        }
+
+                        else
+                        {
+                            ViewBag.Error = "Error in Row " + RowNumber + " Please Enter Valid UserName";
+                            dbTransaction.Dispose();
+
+                            return View("NonRecurringFeeLoader");
+                        }
+
+
+                    }
+                    dbTransaction.Commit();
+                    return RedirectToAction("Index","NonRecurringFee");
+                }
+            }//try bracket
+
+            catch (Exception e)
+            {
+                //   ModelState.AddModelError("Error", e.InnerException);
+                dbTransaction.Dispose();
+
+                ViewBag.Error = "Error in Row " + RowNumber + " " + StudentFeeMsg;
+
+                return View("NonRecurringFeeLoader");
+            }
+
+
+
+
+
+        }
+
+
 
         public class NonRecurringFeeEdit
         {

@@ -25,7 +25,7 @@ namespace SEA_Application.Controllers
             return View();
         }
 
-        public ActionResult SaveChallanForm(int BranchId, int ClassId, int MonthId,string IssueDate, string DueDate, string ImportantNotice)
+        public ActionResult SaveChallanForm(int BranchId, int ClassId, int MonthId, string IssueDate, string DueDate, string ImportantNotice)
         {
             var dbTransaction = db.Database.BeginTransaction();
             var errorMsg = "";
@@ -89,7 +89,7 @@ namespace SEA_Application.Controllers
                             studentfeeDetails.StudentFeeID = StudentFee.Id;
                             studentfeeDetails.ChallanSubmissionDate = null;
                             studentfeeDetails.ChallanDueDate = Convert.ToDateTime(DueDate);
-                            studentfeeDetails.ChallanIssueDate = Convert.ToDateTime( IssueDate);
+                            studentfeeDetails.ChallanIssueDate = Convert.ToDateTime(IssueDate);
                             studentfeeDetails.CreationDate = GetLocalDateTime.GetLocalDateTimeFunction();
                             studentfeeDetails.Status = "Pending";
                             studentfeeDetails.FurtherDiscount = 0;
@@ -220,6 +220,7 @@ namespace SEA_Application.Controllers
                             voucher.Notes = "";
                             voucher.Date = GetLocalDateTime.GetLocalDateTimeFunction();
                             voucher.CreatedBy = username;
+                            voucher.ChallanId = studentfeeDetails.Id;
                             int? VoucherObj = db.Vouchers.Max(x => x.VoucherNo);
                             voucher.VoucherNo = Convert.ToInt32(VoucherObj) + 1;
                             db.Vouchers.Add(voucher);
@@ -345,7 +346,7 @@ namespace SEA_Application.Controllers
 
         }
 
-        public ActionResult SaveChallanFormOfStudent(/*int BranchId1, int ClassId1, int SectionId1,*/ int StudentId, int Month1,string IssueDate1, string DueDate1, int FurtherDiscount, string DiscountComments, string ImportantNotice1)
+        public ActionResult SaveChallanFormOfStudent(/*int BranchId1, int ClassId1, int SectionId1,*/ int StudentId, int Month1, string IssueDate1, string DueDate1, int FurtherDiscount, string DiscountComments, string ImportantNotice1)
         {
             string StudentFeeId = null;
             string StatusMsg = null;
@@ -365,7 +366,7 @@ namespace SEA_Application.Controllers
                     studentfeeDetails.StudentFeeID = StudentFee.Id;
                     studentfeeDetails.ChallanSubmissionDate = null;
                     studentfeeDetails.ChallanDueDate = Convert.ToDateTime(DueDate1);
-                    studentfeeDetails.ChallanIssueDate =Convert.ToDateTime(IssueDate1);
+                    studentfeeDetails.ChallanIssueDate = Convert.ToDateTime(IssueDate1);
                     studentfeeDetails.CreationDate = GetLocalDateTime.GetLocalDateTimeFunction();
                     studentfeeDetails.Status = "Pending";
                     studentfeeDetails.FurtherDiscount = FurtherDiscount;
@@ -507,6 +508,7 @@ namespace SEA_Application.Controllers
                     voucher.Notes = "";
                     voucher.Date = GetLocalDateTime.GetLocalDateTimeFunction();
                     voucher.CreatedBy = username;
+                    voucher.ChallanId = studentfeeDetails.Id;
                     int? VoucherObj = db.Vouchers.Max(x => x.VoucherNo);
                     voucher.VoucherNo = Convert.ToInt32(VoucherObj) + 1;
                     db.Vouchers.Add(voucher);
@@ -591,6 +593,7 @@ namespace SEA_Application.Controllers
                         voucher1.Notes = "";
                         voucher1.Date = GetLocalDateTime.GetLocalDateTimeFunction();
                         voucher1.CreatedBy = username;
+                        voucher1.ChallanId = studentfeeDetails.Id;
                         int? VoucherObj1 = db.Vouchers.Max(x => x.VoucherNo);
                         voucher1.VoucherNo = Convert.ToInt32(VoucherObj1) + 1;
                         db.Vouchers.Add(voucher1);
@@ -663,6 +666,7 @@ namespace SEA_Application.Controllers
                         voucher1.Notes = "";
                         voucher1.Date = GetLocalDateTime.GetLocalDateTimeFunction();
                         voucher1.CreatedBy = username;
+                        voucher1.ChallanId = studentFeeDetailsExist.Id;
                         int? VoucherObj1 = db.Vouchers.Max(x => x.VoucherNo);
                         voucher1.VoucherNo = Convert.ToInt32(VoucherObj1) + 1;
                         db.Vouchers.Add(voucher1);
@@ -971,8 +975,6 @@ namespace SEA_Application.Controllers
 
                                     }
 
-
-
                                     double paidAmount = (TotalWithoutAdminssion * MonthMultiplier) + TotalNonRecurring;
 
                                     double paidAmountWithoutDiscount = paidAmount;
@@ -1015,6 +1017,8 @@ namespace SEA_Application.Controllers
                                     voucher.Notes = "";
                                     voucher.Date = GetLocalDateTime.GetLocalDateTimeFunction();
                                     voucher.CreatedBy = username;
+                                    voucher.ChallanId = studentfeeDetails.Id;
+
                                     int? VoucherObj = db.Vouchers.Max(x => x.VoucherNo);
                                     voucher.VoucherNo = Convert.ToInt32(VoucherObj) + 1;
                                     db.Vouchers.Add(voucher);
@@ -1105,6 +1109,8 @@ namespace SEA_Application.Controllers
                                         voucher1.CreatedBy = username;
                                         int? VoucherObj1 = db.Vouchers.Max(x => x.VoucherNo);
                                         voucher1.VoucherNo = Convert.ToInt32(VoucherObj1) + 1;
+                                        voucher1.ChallanId = studentfeeDetails.Id;
+
                                         db.Vouchers.Add(voucher1);
                                         db.SaveChanges();
 
@@ -1200,6 +1206,96 @@ namespace SEA_Application.Controllers
 
         }
 
+        public ActionResult DeleteChallan(int ChallanId)
+        {
+            var dbTransaction = db.Database.BeginTransaction();
+            try
+            {
+
+
+
+                var ChallanStatus = db.StudentFeeDetails.Where(x => x.Id == ChallanId).FirstOrDefault().Status;
+
+                if (ChallanStatus != "Paid")
+                {
+
+
+                    List<VoucherRecord> VoucherRecordList = db.VoucherRecords.Where(x => x.Voucher.ChallanId == ChallanId).ToList();
+                    foreach (var voucherRecord in VoucherRecordList)
+                    {
+
+                        var LedgerHeadName = db.Ledgers.Where(x => x.Id == voucherRecord.LedgerId).Select(x => x.LedgerHead.Name).FirstOrDefault();
+
+                        var LedgerType = voucherRecord.Type;
+                        if (LedgerHeadName == "Assets" || LedgerHeadName == "Expense")
+                        {
+                            var LedgerToModify = db.Ledgers.Where(x => x.Id == voucherRecord.LedgerId).FirstOrDefault();
+
+                            decimal LedgerAmountToModify = LedgerToModify.CurrentBalance.Value;
+
+                            if (LedgerType == "Dr")
+                            {
+                                LedgerToModify.CurrentBalance = LedgerAmountToModify - voucherRecord.Amount;
+                                db.SaveChanges();
+                            }
+                            else
+                            {
+                                LedgerToModify.CurrentBalance = LedgerAmountToModify + voucherRecord.Amount;
+                                db.SaveChanges();
+                            }
+
+                        }
+                        else if (LedgerHeadName == "Income" || LedgerHeadName == "Liabilities")
+                        {
+
+                            var LedgerToModify = db.Ledgers.Where(x => x.Id == voucherRecord.LedgerId).FirstOrDefault();
+
+                            decimal LedgerAmountToModify = LedgerToModify.CurrentBalance.Value;
+
+                            if (LedgerType == "Dr")
+                            {
+                                LedgerToModify.CurrentBalance = LedgerAmountToModify + voucherRecord.Amount;
+                                db.SaveChanges();
+                            }
+                            else
+                            {
+                                LedgerToModify.CurrentBalance = LedgerAmountToModify - voucherRecord.Amount;
+                                db.SaveChanges();
+                            }
+
+                        }
+                        else
+                        {
+                        }
+
+                    }
+
+                    db.VoucherRecords.RemoveRange(VoucherRecordList);
+                    db.SaveChanges();
+
+                    List<Voucher> VoucherList = db.Vouchers.Where(x => x.ChallanId == ChallanId).ToList();
+                    db.Vouchers.RemoveRange(VoucherList);
+                    db.SaveChanges();
+
+
+                    StudentFeeDetail StudentFeeDetailToDelete = db.StudentFeeDetails.Where(x => x.Id == ChallanId).FirstOrDefault();
+                    db.StudentFeeDetails.Remove(StudentFeeDetailToDelete);
+                    db.SaveChanges();
+
+                    dbTransaction.Commit();
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                var exception = "exception";
+                dbTransaction.Dispose();
+            }
+
+
+            return RedirectToAction("Index", "StudentFeeMonths");
+        }
 
         public ActionResult GetTotalFee(int MonthId, int StudentId)
         {

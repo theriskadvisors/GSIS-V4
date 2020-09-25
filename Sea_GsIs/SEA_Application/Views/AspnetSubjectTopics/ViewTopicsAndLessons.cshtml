@@ -7,6 +7,7 @@
 }
 
 <style>
+
     .pageHeading h1 {
         font-size: 26px;
         font-weight: 600;
@@ -26,8 +27,13 @@
         font-weight: 600;
         color: #00b8ec;
     }
+
+    .InacticeCheckBoxes:hover {
+    }
 </style>
 <script>
+    var SelectedLessons = [];
+
     $(document).ready(function () {
 
         $("#PageHeader").html("Topics And Lessons");
@@ -44,6 +50,8 @@
             var title = $(this).text();
             $(this).html('<input type="text" class="round-border" style="border-color:#00b8ec; border-radius:5px;width:100%" placeholder="Search ' + title + '" />');
         });
+
+
 
         var table = $('#datatable').dataTable({
             initComplete: function () {
@@ -106,9 +114,9 @@
                         }
                     });
                 });
-            },buttons: [
+            }, buttons: [
                 {
-                    text: '<span class="datatableButtonsReset"> <img src="/Content/assets/assets/icons/Icon-Reset2.png" alt=""> Reset</span>'
+                    text: '<button onclick="InactiveLessons()" value="InActive" class="btn btn-default"><i class="fa fa-share" aria-hidden="true"> </i> In Active</button>'
                 },
                 {
                     text: '<span class="datatableButtonsEdit"> <img src="/Content/assets/assets/icons/Icon-edit.png" alt=""> Create</span>',
@@ -154,8 +162,13 @@
             window.location.href = "/AspnetSubjectTopics/Edit?id=" + userName;
         });
 
-        $('#datatable1').on('click', 'tbody tr', function () {
-            var td = $(this).children("td");
+        //  $('#datatable1').on('click', 'tbody tr td:first', function () {
+
+        $('#datatable1').on('click', 'tbody tr td:nth-child(1),td:nth-child(2),td:nth-child(3),td:nth-child(4),td:nth-child(5),td:nth-child(6),td:nth-child(7),td:nth-child(8)', function () {
+
+            //  $('#datatable1 tbody tr').on('click', 'tbody tr');
+
+            var td = $('#datatable1 tbody tr').children("td");   //$(this).children("td");
             var LessonId = $(td[0]).children("input").val();
 
             window.location.href = "/AspnetLessons/Edit?id=" + LessonId;
@@ -173,11 +186,28 @@
                 $.each(data, function (index) {
 
                     console.log(data[index].LessonStatus);
-                    if (data[index].LessonStatus == false || data[index].LessonStatus == null) {
-                        status = "Created";
-                    } else {
-                        status = 'Published';
+
+                    //if (data[index].LessonStatus == false || data[index].LessonStatus == null) {
+                    //    status = "Created";
+                    //} else {
+                    //    status = 'Published';
+                    //}
+
+                    if (data[index].LessonIsActive == false && data[index].LessonStatus == false) {
+                        status = "InActive";
                     }
+                    else if (data[index].LessonIsActive == true && data[index].LessonStatus == true) {
+                        status = "Published";
+                    }
+                    else if (data[index].LessonStatus == true)
+                    {
+                          status = "Published";
+                    }
+                    else {
+                        status = 'Created';
+                    }
+
+
 
                     //  var date = data[index].LessonStartDate.split(' ');
 
@@ -198,18 +228,18 @@
                     if (data[index].LessonStartDate != null) {
 
                         var value1 = new Date(parseInt(data[index].LessonStartDate.replace(/(^.*\()|([+-].*$)/g, '')));
-                       var dat1 = value1.getMonth() +
+                        var dat1 = value1.getMonth() +
                             1 +
                             "/" +
                             value1.getDate() +
                             "/" +
                             value1.getFullYear();// + " " +
                         // value.getTime().toString();
-                        table1.fnAddData([dat + "<input  type=hidden value=" + data[index].LessonId + ">", dat1, data[index].LessonClass, data[index].LessonSection, data[index].LessonSubject, data[index].LessonSubjectTopicName, data[index].LessonName, status]);
+                        table1.fnAddData([dat + "<input  type=hidden value=" + data[index].LessonId + ">", dat1, data[index].LessonClass, data[index].LessonSection, data[index].LessonSubject, data[index].LessonSubjectTopicName, data[index].LessonName, status, "<input value ='" + data[index].LessonId + "' type ='checkbox'  class='InacticeCheckBoxes' >"]);
 
                     }
                     else {
-                        table1.fnAddData([dat + "<input  type=hidden value=" + data[index].LessonId + ">", "", data[index].LessonClass, data[index].LessonSection, data[index].LessonSubject, data[index].LessonSubjectTopicName, data[index].LessonName, status]);
+                        table1.fnAddData([dat + "<input  type=hidden value=" + data[index].LessonId + ">", "", data[index].LessonClass, data[index].LessonSection, data[index].LessonSubject, data[index].LessonSubjectTopicName, data[index].LessonName, status, "<input value ='" + data[index].LessonId + "' type ='checkbox' class='InacticeCheckBoxes' >"]);
 
                     }
 
@@ -231,7 +261,7 @@
             success: function (data) {
                 table.fnClearTable();
                 $.each(data, function (index) {
-                    table.fnAddData([data[index].TopicName + "<input  type=hidden value=" + data[index].Id + ">", data[index].Description, data[index].ClassName, data[index].SubjectName ,data[index].SectionName, data[index].BranchName]);
+                    table.fnAddData([data[index].TopicName + "<input  type=hidden value=" + data[index].Id + ">", data[index].Description, data[index].ClassName, data[index].SubjectName, data[index].SectionName, data[index].BranchName]);
                 })
                 table.fnDraw();
             }
@@ -244,7 +274,7 @@
             $("#Topics-tab-attr").click();
         }
         else {
-            // toastr.success('Lesson created successfully');	
+            // toastr.success('Lesson created successfully');
             $("#Lessons-tab-attr").click();
         }
         if ($("#LessonCreateMsg").val() != "") {
@@ -269,7 +299,7 @@
             var type = 'info';
             var msg = "Topic updated successfully";
             showNotification('top', 'center', msg, type);
-           // toastr.info('Topic updated successfully');
+            // toastr.info('Topic updated successfully');
         }
         if ($("#LessonDeletionMsg").val() != "") {
             var type = 'warning';
@@ -284,6 +314,54 @@
             //toastr.warning('Topic deleted successfully');
         }
     })
+
+    $(document).on("click", ".InacticeCheckBoxes", function () {
+
+        debugger;
+        var ischecked = $(this).is(':checked');
+
+
+        if (!ischecked) {
+
+            var selectedvalue = $(this).val();
+            var index = SelectedLessons.indexOf(selectedvalue);
+            SelectedLessons.splice(index, 1);
+
+            //   alert(SelectedLessons);
+        }
+        else {
+
+            var selectedvalue = $(this).val();
+            SelectedLessons.push(selectedvalue);
+            //  alert(SelectedLessons);
+
+            // Counter++;
+            // $("#counter").val(SelectedLessons);
+            // var statusName = $(this).attr('name')
+
+        }
+
+    });
+
+    function InactiveLessons() {
+
+
+        var LessonsIds = SelectedLessons.toString();
+        if (LessonsIds == "") {
+
+            //  $("#Error_Text").html("");
+
+        }
+
+        else {
+
+            window.location.href = "/AspnetLessons/InactiveLessons?idlist=" + LessonsIds;
+
+            // window.location.href = "/StudentFeeMonths/ChallanFormView?idlist=" + StdId;
+
+
+        }
+    }
 </script>
 
 
@@ -407,6 +485,9 @@
                                             <th>
                                                 Status
                                             </th>
+                                            <th>
+                                                Action
+                                            </th>
                                         </tr>
                                     </thead>
                                     <tbody id="LessonsList"></tbody>
@@ -436,6 +517,9 @@
                                             </th>
                                             <th>
                                                 Status
+                                            </th>
+                                            <th>
+                                                Action
                                             </th>
                                         </tr>
                                     </tfoot>

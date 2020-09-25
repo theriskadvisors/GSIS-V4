@@ -1529,6 +1529,7 @@ namespace SEA_Application.Controllers
             }
             catch (Exception e)
             {
+                var msg1 = e.Message;
 
                  TempData["ErrorMessage"] = "Error! Empty Cell Found." + "At Row #" + ErrorLine;
                 //   ModelState.AddModelError("Error", e.InnerException);
@@ -1562,6 +1563,7 @@ namespace SEA_Application.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> TeacherClassSubjectfromFile(RegisterViewModel model)
         {
+            int? RowNumber=0;
             // if (ModelState.IsValid)
             var dbTransaction = db.Database.BeginTransaction();
             try
@@ -1584,6 +1586,7 @@ namespace SEA_Application.Controllers
                     ApplicationDbContext context = new ApplicationDbContext();
                     for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
                     {
+                        RowNumber = rowIterator;
                         AspNetTeacher_Enrollments classcourse = new AspNetTeacher_Enrollments();
                         var generic = new AspnetGenericBranchClassSubject();
 
@@ -1631,6 +1634,8 @@ namespace SEA_Application.Controllers
             }
             catch (Exception e)
             {
+
+                var a = RowNumber;
                 //   ModelState.AddModelError("Error", e.InnerException);
                 dbTransaction.Dispose();
                 return RedirectToAction("TeacherClassSubject_Create", "BranchAdmin", model);
@@ -2129,6 +2134,99 @@ namespace SEA_Application.Controllers
 
             return View(model);
         }
+
+
+        public ActionResult AllBranches()
+        {
+            var Branches = (from branch in db.AspNetBranches
+                                //join branchclasssubject in db.AspnetGenericBranchClassSubjects on branch.Id equals branchclasssubject.BranchId
+
+                            select new
+                            {
+                                branch.Id,
+                                branch.Name,
+                            }).Distinct();
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(Branches);
+            return Content(status);
+        }
+        public ActionResult ClassesByBranch(int BranchId)
+        {
+            var BranchClasses = db.AspNetBranch_Class.Where(x => x.BranchId == BranchId).ToList().Select(x => new { x.Id, x.AspNetClass.Name });
+            //var ID = User.Identity.GetUserId();
+            //var Classes = (from classs in db.AspNetClasses
+            //                join branchClass in db.AspNetBranch_Class on 
+
+            //               select new
+            //               {
+            //                   classs.Id,
+            //                   classs.Name,
+            //               }).Distinct();
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(BranchClasses);
+            // return Json(SubjectsByClass, JsonRequestBehavior.AllowGet);
+            return Content(status);
+        }
+
+
+        public ActionResult SectionByClasses(int ClassId)
+        {
+            var ID = User.Identity.GetUserId();
+
+            //var Sections = db.AspNetTeacher_Enrollments.Where(x => x.AspNetEmployee.UserId == ID).Select(x => new { x.AspNetBranchClass_Sections.AspNetSection.Id, x.AspNetBranchClass_Sections.AspNetSection.Name }).Distinct();
+            // var BranchClasses = db.AspNetBranch_Class.Where(x => x.BranchId == BranchId).ToList().Select(x => new { x.Id, x.AspNetClass.Name });
+
+            var Sections = db.AspNetBranchClass_Sections.Where(x => x.BranchClassId == ClassId).Select(x => new { x.Id, x.AspNetSection.Name });
+
+            //var Sections = (from section in db.AspNetSections
+            //                select new
+            //                {
+            //                    section.Id,
+            //                    section.Name,
+
+            //                }).Distinct();
+
+
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(Sections);
+            return Json(status, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult SubjectsByClass(int ClassId)
+        {
+            // var BranchClasses  =  db.AspNetBranch_Class.Where(x => x.BranchId == BranchId).ToList().Select(x => new { x.Id, x.AspNetClass.Name });
+            var BranchClass = db.AspNetBranch_Class.Where(x => x.Id == ClassId).FirstOrDefault().ClassId;
+            var CoursesList = db.AspNetClass_Courses.Where(x => x.ClassId == BranchClass).Select(x => new { x.Id, x.AspNetCours.Name }).OrderBy(x => x.Name).Distinct();
+
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(CoursesList);
+
+            return Json(status, JsonRequestBehavior.AllowGet);
+
+        }
+        public ActionResult GetStudents(int SectionId)
+        {
+            
+            int BranchClassSectionId = db.AspNetBranchClass_Sections.Where(x => x.Id == SectionId).FirstOrDefault().Id;
+
+            var AllStudents = (from enrollment in db.AspNetStudent_Enrollments.Where(x => x.SectionId == SectionId)
+                               join student in db.AspNetStudents on enrollment.StudentId equals student.Id
+                               select new
+                               {
+                                   student.Id,
+                                   student.Name,
+
+                               }).Distinct();
+
+
+              string status = Newtonsoft.Json.JsonConvert.SerializeObject(AllStudents);
+
+              return Json(status, JsonRequestBehavior.AllowGet);
+
+            //  string status = Newtonsoft.Json.JsonConvert.SerializeObject(students);
+
+            // return Content(status);
+
+
+
+        }
+
 
         public ActionResult EditAccountant(int id)
         {

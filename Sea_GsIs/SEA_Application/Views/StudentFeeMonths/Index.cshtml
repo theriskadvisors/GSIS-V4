@@ -234,6 +234,7 @@
             var title = $(this).text();
             $(this).html('<input type="text" class="round-border" style="border-color:#00b8ec; border-radius:5px;width:100%" placeholder="Search ' + title + '" />');
         });
+
         var table = $('#example').dataTable({
             initComplete: function () {
                 // Apply the search
@@ -561,7 +562,11 @@
         })
                    
     }
+    function DeleteChallan(id) {
 
+        window.location.href = "/StudentChallan/DeleteChallan?ChallanId=" + id;
+
+    }
 </script>
 
 <div class="inc-btn hidden">
@@ -642,6 +647,9 @@
                                 </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.Multiplier)
+                                </th>
+                                <th>
+                                    Action
                                 </th>
                                 <th>
                                     Action
@@ -768,6 +776,19 @@
                                 <td>
                                     <input type="checkbox" value=@item.Id class="check_class" name="@item.Status" id="test'@item.Id'" /><label for="test'@item.Id'"></label>
                                 </td>
+
+                                <td>
+                                    @if (item.Status == "Paid")
+                                    {
+                                        <input disabled type="button" style="color:white !important" value="Delete" onclick="DeleteChallan(@item.Id)" class="btn btn-sm btn-danger" name="" />
+                                    }
+                                    else
+                                    {
+                                        <input type="button" style="color:white !important" value="Delete" onclick="DeleteChallan(@item.Id)" class="btn btn-sm btn-danger" name="" />
+                                    }
+
+                                </td>
+
                             </tr>
                             }
                         </tbody>
@@ -803,12 +824,17 @@
                                 <th>
                                     Action
                                 </th>
+                                <th>
+                                    Action
+                                </th>
                             </tr>
                         </tfoot>
 
 
 
                     </table>
+
+
                 </div>
             </div>
         </div>
@@ -848,3 +874,4 @@
         </div>
     </div>
 </div>
+

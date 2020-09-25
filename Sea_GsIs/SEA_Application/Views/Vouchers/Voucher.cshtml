@@ -22,11 +22,37 @@
         $("#BreadCrumbs").append(' <li> <a href="/FinanceSummary/Index"> Home </a> <span>&gt;</span></li>');
         $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Journal Entry</a></li>');
 
+        
+        $('#datatable tfoot th').each(function () {
+            var title = $(this).text();
+            $(this).html('<input type="text"  class="round-border searchFields" style="border-color:#00b8ec; border-radius:5px;width:100%" placeholder="Search ' + title + '" />');
+        });
+
         var table = $('#datatable').dataTable({
+            dom: 'Bfrtip',
+
+              initComplete: function () {
+                // Apply the search
+                this.api().columns().every(function () {
+                    var that = this;
+
+                    $('input', this.footer()).on('keyup change clear', function () {
+                        //if (that.search() !== this.value) {
+                        //    that
+                        //        .search(this.value)
+                        //        .draw();
+                        //}
+                        if (that.search() !== this.value) {
+                            that.search(this.value).draw();
+                        }
+                    });
+                });
+            },
             buttons: [
                 {
-                    text: '<span class="datatableButtonsReset"> <img src="/Content/assets/assets/icons/Icon-Reset2.png" alt=""> Reset</span>'
+                    text: ' <button onclick="ResetFields()" value="Get Challan" class="btn btn-default"  ><i class="fa fa-refresh"> </i>&nbsp;&nbsp;  Reset </button>'
                 },
+
                 {
                     text: '<span class="datatableButtonsEdit"> <img src="/Content/assets/assets/icons/Icon-edit.png" alt=""> Create</span>',
                     action: function (e, dt, button, config) {
@@ -34,7 +60,10 @@
                     }
                 },
                 {
-                    text: '<span class="datatableButtonsDownload"> <img src="/Content/assets/assets/icons/Icon-download.png" alt=""> Download</span>'
+                    text: '<span class="datatableButtonsDownload"> <img src="/Content/assets/assets/icons/Icon-download.png" alt=""> Download</span>',
+                    action: function (e, dt, node, config) {
+                        $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt, node, config);
+                    }
                 }
             ],
             "language": {
@@ -58,10 +87,8 @@
         });
 
 
-        //table = $('#example').dataTable();
-
-        //drawTable();
-        $('.eeniart0017').css("display", "block");
+       $("#datatable_filter").hide();
+        $('#datatable tfoot tr').appendTo('#datatable thead');
 
         $.ajax({
             type: "POST",
@@ -92,7 +119,7 @@
                     else {
                         Credit = item.Amount;
                     }
-                    table.fnAddData([item.VoucherNo, item.Name, item.LedgerName, item.Notes, ab, numberWithCommas(Debit), numberWithCommas(Credit)]);
+                    table.fnAddData([item.VoucherNo, item.UserName, item.UserId, item.Name, item.LedgerName, item.Notes, ab, numberWithCommas(Debit), numberWithCommas(Credit)]);
                 })
             }
         })
@@ -101,7 +128,16 @@
     function numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
+    function ResetFields() {
 
+        $(".searchFields").each(function () {
+
+            $(this).val("");
+            $(this).keyup();
+
+        })
+
+    }
     //function drawTable() {
     //    $('#example_filter').addClass("form-group");
     //    $('#example_filter').addClass("has-feedback");
@@ -150,7 +186,13 @@
                         <thead>
                             <tr>
                                 <th style="width:90px">
-                                    Voucher No
+                                    Challan No
+                                </th>
+                                <th>
+                                    User Name
+                                </th>
+                                <th>
+                                    User Id
                                 </th>
                                 <th>
                                     Name
@@ -173,7 +215,42 @@
                                 </th>
                             </tr>
                         </thead>
-                        <tbody></tbody>
+                        <tbody>
+                        </tbody>
+                        <tfoot>
+
+                            <tr>
+                                <th style="width:90px">
+                                    Challan No
+                                </th>
+                                <th>
+                                    User Name
+                                </th>
+                                <th>
+                                    User Id
+                                </th>
+                                <th>
+                                    Name
+                                </th>
+                                <th>
+                                    Account
+                                </th>
+
+                                <th>
+                                    Description
+                                </th>
+                                <th>
+                                    Date
+                                </th>
+                                <th>
+                                    Debit
+                                </th>
+                                <th>
+                                    Credit
+                                </th>
+                            </tr>
+
+                        </tfoot>
                     </table>
                 </div>
             </div>

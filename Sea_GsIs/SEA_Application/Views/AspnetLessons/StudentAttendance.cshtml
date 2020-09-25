@@ -1,0 +1,382 @@
+﻿
+@{
+    ViewBag.Title = "StudentAttendance";
+    Layout = "~/Views/Shared/_BranchAdminDashboardLayout.cshtml";
+}
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#PageHeader").html("Student Attendance ");
+        $("#BreadCrumbs").append(' <li> <a href="/BranchAdmin/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#"> Student Attendance </a></li>');
+
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "/BranchAdmin/AllBranches",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#BranchId");
+                $el.empty();
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").text('Select Branch'));
+                    for (i = 0; i < sch.length; i++) {
+
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i].Id).text(sch[i].Name));
+                    }
+                }
+                else {
+                    $el.append($("<option></option>")
+                        .attr("value", '').text('Select Branch'));
+                }
+            }
+        });
+
+
+        $('#BranchId').change(function () {
+
+            var BranchId = $(this).val();
+
+            if (BranchId != "") {
+
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/BranchAdmin/ClassesByBranch?BranchId=" + BranchId,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#ClassId");
+                        $el.empty();
+                        var $e2 = $("#SubjectId");
+                        $e2.empty();
+
+                        var $e3 = $("#SectionId");
+                        $e3.empty();
+                        var $e4 = $("#StudentId");
+                        $e4.empty();
+
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Class'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Class'));
+                        }
+                    }
+                });
+            }
+            else {
+                var $el = $("#ClassId");
+                $el.empty();
+                var $e2 = $("#SubjectId");
+                $e2.empty();
+
+                var $e3 = $("#SectionId");
+                $e3.empty();
+                var $e4 = $("#StudentId");
+                $e4.empty();
+
+
+            }
+
+        });
+
+        $('#ClassId').change(function () {
+
+            var ClassId = $(this).val();
+            //Class = UserName;
+
+            if (ClassId != "") {
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/BranchAdmin/SectionByClasses?ClassId=" + ClassId,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#SectionId");
+                        $el.empty();
+                        var $e2 = $("#SubjectId");
+                        $e2.empty();
+                        var $e4 = $("#StudentId");
+                        $e4.empty();
+
+                        debugger
+
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Section'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Subject'));
+                        }
+                    }
+                });
+            }
+
+            else {
+
+                var $el = $("#SectionId");
+                $el.empty();
+
+                var $e2 = $("#SubjectId");
+                $e2.empty();
+                var $e4 = $("#StudentId");
+                $e4.empty();
+
+
+            }
+
+        });
+
+        $('#ClassId').change(function () {
+
+            var ClassId = $(this).val();
+            //Class = UserName;
+
+            if (SectionId != "") {
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/BranchAdmin/SubjectsByClass?ClassId=" + ClassId,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#SubjectId");
+                        $el.empty();
+
+                        var $e4 = $("#StudentId");
+                        $e4.empty();
+
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Subject'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Subject'));
+                        }
+                    }
+                });
+            }
+
+            else {
+
+                var $el = $("#SubjectId");
+                $el.empty();
+                var $e4 = $("#StudentId");
+                $e4.empty();
+            }
+
+        });
+
+
+        $('#SectionId').change(function () {
+
+            var SectionId = $(this).val();
+            if (SectionId != "") {
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/BranchAdmin/GetStudents?SectionId=" + SectionId,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#StudentId");
+                        $el.empty();
+
+
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Student'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Student'));
+                        }
+                    }
+                });
+            }
+
+            else {
+
+                var $e4 = $("#StudentId");
+                $e4.empty();
+
+
+
+            }
+
+        });
+
+
+        $("#AttendanceBtn").click(function () {
+            debugger
+            var BranchId = $("#BranchId").val();
+            var ClassId = $("#ClassId").val();
+            var SectionId = $("#SectionId").val();
+            var StudentId = $("#StudentId").val();
+            var SubjectId = $("#SubjectId").val();
+
+
+            if (BranchId != "" && ClassId != "" && SectionId != "" && StudentId != "" && SubjectId != "")
+            {
+
+                //$.ajax({
+                //    type: "POST",
+
+                //    url: "/AspnetLessons/GetStudentAttendance",
+                //    data: { "BranchId": BranchId, "ClassId": ClassId, "SectionId": SectionId, "SubjectId": SubjectId, "StudentId": StudentId },
+                //    success: function (data) {
+
+
+
+
+
+                //    }
+                //})
+
+
+
+             //   window.location.href = "/AspnetLessons/GetStudentAttendance?BranchId="+ BranchId +"&ClassId" + ClassId +"&SectionId"+SectionId +"&SubjectId"+SubjectId +"&StudentId"+StudentId;
+
+                  window.location.href = "/AspnetLessons/GetStudentAttendance?BranchId=" + BranchId + "&ClassId=" + ClassId + "&SectionId=" + SectionId + "&SubjectId=" + SubjectId +"&StudentId=" + StudentId;
+
+            }
+
+
+
+        })
+
+
+
+    })
+</script>
+
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body p-5">
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="col-md-8 pl-5 pr-5 ">
+
+
+
+
+                        <div class="form-row mt-4">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <label for="" class="bmd-label-static pl-2">Select Branch*</label>
+
+                                <select class="form-control" id="BranchId" name="BranchId" required></select>
+
+                            </div>
+                        </div>
+
+                        <div class="form-row mt-4">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <label for="" class="bmd-label-static pl-2">Select class *</label>
+
+                                <select class="form-control" id="ClassId" name="ClassId" required></select>
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-row mt-4">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <label for="" class="bmd-label-static pl-2">Select Section *</label>
+
+                                <select class="form-control" id="SectionId" name="SectionId" required></select>
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-row mt-4">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <label for="" class="bmd-label-static pl-2">Subject*</label>
+
+                                <select class="form-control SubIdDDL" id="SubjectId" name="SubjectId" required></select>
+
+                            </div>
+                        </div>
+
+                        <div class="form-row mt-4">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <label for="" class="bmd-label-static pl-2">Student*</label>
+
+                                <select class="form-control" id="StudentId" name="StudentId" required></select>
+
+                            </div>
+                        </div>
+
+
+
+
+
+                    </div> <!-- End Column -->
+
+
+                    <div class="col-md-8 pl-5 pr-5 ">
+                        <button type="button" id="AttendanceBtn" class="btn btn-primary rounded rounded-lg"> See Attendance </button>
+
+
+                        <button type="button" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                            <i class="material-icons mr-2">cached</i>  Cancel
+                        </button>
+
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+</div>

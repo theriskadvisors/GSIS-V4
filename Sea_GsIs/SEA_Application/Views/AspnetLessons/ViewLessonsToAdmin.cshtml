@@ -124,41 +124,26 @@
 
             success: function (data) {
 
+                var status;
                 table1.fnClearTable();
 
                 $.each(data, function (index) {
 
-                    if (data[index].LessonStatus == false || data[index].LessonStatus == null) {
-
-                        // table1.fnAddData([data[index].LessonName + "<input  type=hidden value=" + data[index].LessonId + ">", data[index].LessonDuration, data[index].LessonSubjectTopicName, data[index].LessonSubject, data[index].LessonClass, data[index].LessonSection, "Created", data[index].LessonDate]);
-
-                        var value = new Date(parseInt(data[index].LessonDate.replace(/(^.*\()|([+-].*$)/g, '')));
-                        var dat = value.getMonth() +
-                            1 +
-                            "/" +
-                            value.getDate() +
-                            "/" +
-                            value.getFullYear();// + " " +
-
-
-
-
-                        var value1 = new Date(parseInt(data[index].LessonStartDate.replace(/(^.*\()|([+-].*$)/g, '')));
-                        var dat1 = value1.getMonth() +
-                            1 +
-                            "/" +
-                            value1.getDate() +
-                            "/" +
-                            value1.getFullYear();// + " " +
-                        // value.getTime().toString();
-                        table1.fnAddData([dat + "<input  type=hidden value=" + data[index].LessonId + ">", dat1, data[index].LessonClass, data[index].LessonSection, data[index].LessonSubject, data[index].LessonSubjectTopicName, data[index].LessonName, "Created"]);
-
-
-                        // table1.fnAddData([data[index].LessonDate + "<input  type=hidden value=" + data[index].LessonId + ">", data[index].LessonClass, data[index].LessonSection, data[index].LessonSubject, data[index].LessonSubjectTopicName, data[index].LessonName, "Created"]);
-
+                 
+                    if (data[index].LessonIsActive == false && data[index].LessonStatus == false) {
+                        status = "InActive";
+                    }
+                    else if (data[index].LessonIsActive == true && data[index].LessonStatus == true) {
+                        status = "Published";
+                    }
+                    else if (data[index].LessonStatus == true)
+                    {
+                          status = "Published";
                     }
                     else {
-
+                        status = 'Created';
+                    }
+                   
                         var value = new Date(parseInt(data[index].LessonDate.replace(/(^.*\()|([+-].*$)/g, '')));
                         var dat = value.getMonth() +
                             1 +
@@ -176,12 +161,11 @@
                             "/" +
                             value1.getFullYear();// + " " +
                         // value.getTime().toString();
-                        table1.fnAddData([dat + "<input  type=hidden value=" + data[index].LessonId + ">", dat1, data[index].LessonClass, data[index].LessonSection, data[index].LessonSubject, data[index].LessonSubjectTopicName, data[index].LessonName, "Published"]);
+                        table1.fnAddData([dat + "<input  type=hidden value=" + data[index].LessonId + ">", dat1, data[index].LessonClass, data[index].LessonSection, data[index].LessonSubject, data[index].LessonSubjectTopicName, data[index].LessonName, status]);
 
                         // table1.fnAddData([data[index].LessonName + "<input  type=hidden value=" + data[index].LessonId + ">", data[index].LessonDuration, data[index].LessonSubjectTopicName, data[index].LessonSubject, data[index].LessonClass, data[index].LessonSection, "Published", data[index].LessonDate]);
                         //    table1.fnAddData([data[index].LessonDate + "<input  type=hidden value=" + data[index].LessonId + ">", data[index].LessonClass, data[index].LessonSection, data[index].LessonSubject, data[index].LessonSubjectTopicName, data[index].LessonName, "Published"]);
 
-                    }
                 })
                 table1.fnDraw();
             }

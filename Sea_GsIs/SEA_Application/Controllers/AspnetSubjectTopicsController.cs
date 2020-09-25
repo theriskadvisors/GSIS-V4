@@ -70,11 +70,12 @@ namespace SEA_Application.Controllers
                                   LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
                                   LessonStatus = lesson.Status,
                                   LessonDate = lesson.CreationDate,
-                                //  LessonStartDate = DbFunctions.TruncateTime(lesson.StartDate).ToString()
-                                  LessonStartDate = lesson.StartDate
+                                  //  LessonStartDate = DbFunctions.TruncateTime(lesson.StartDate).ToString()
+                                  LessonStartDate = lesson.StartDate,
+                                  LessonIsActive = lesson.IsActive
 
 
-                           }).OrderByDescending(x=>x.LessonDate).Distinct().ToList();
+                              }).OrderByDescending(x=>x.LessonDate).Distinct().ToList();
 
 
             return Json(AllLessons, JsonRequestBehavior.AllowGet);

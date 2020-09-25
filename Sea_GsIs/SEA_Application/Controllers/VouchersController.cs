@@ -27,15 +27,56 @@ namespace SEA_Application.Controllers
         }
         public JsonResult GetVoucher()
         {
+            List<Voucher_list> list = new List<Voucher_list>();
+
+            try
+            {
+
             var result = (from voucher in db.Vouchers
                           join record in db.VoucherRecords on voucher.Id equals record.VoucherId
                           where voucher.Id == record.VoucherId
-                          select new { voucher.Id, voucher.VoucherNo, voucher.Name, record.Description, voucher.Date, record.Amount, record.Type, l_name = record.Ledger.Name }).ToList();
-            //  var voucherresult = db.Vouchers.ToList();
+                          select new { voucher.Id, voucher.VoucherNo, voucher.Name, record.Description, voucher.Date, record.Amount, record.Type, l_name = record.Ledger.Name, record.UserId, record.UserType }).ToList();
 
-            List<Voucher_list> list = new List<Voucher_list>();
+
             foreach (var item in result)
             {
+                var UserName = "";
+                var UserIdOrRollNo = "";
+
+
+                if (item.UserType == "Employee")
+                {
+                    var EmployeeId = Convert.ToInt32(item.UserId);
+
+                    AspNetEmployee Employee = db.AspNetEmployees.Where(x => x.Id == EmployeeId).FirstOrDefault();
+
+                    AspNetUser User = db.AspNetUsers.Where(x => x.Id == Employee.UserId).FirstOrDefault();
+
+                    if (User != null)
+                    {
+                        UserIdOrRollNo = User.UserName;
+                    }
+
+                    UserIdOrRollNo = "-";
+                    UserName = Employee.Name;
+
+
+                }
+                else if (item.UserType == "Student")
+                {
+                    var StudentId = Convert.ToInt32( item.UserId);
+
+                    AspNetUser User = db.AspNetStudents.Where(x => x.Id == StudentId).FirstOrDefault().AspNetUser;
+                    UserName = User.Name;
+                    UserIdOrRollNo = User.UserName;
+
+                }
+                else
+                {
+                    UserName = "-";
+                    UserIdOrRollNo = "-";
+                }
+
                 Voucher_list vl = new Voucher_list();
                 vl.ID = item.Id;
                 vl.VoucherNo = item.VoucherNo;
@@ -45,8 +86,34 @@ namespace SEA_Application.Controllers
                 vl.Amount = item.Amount;
                 vl.LedgerName = item.l_name;
                 vl.type = item.Type;
+                vl.UserId = UserIdOrRollNo;
+                vl.UserName = UserName;
+
                 list.Add(vl);
+
             }
+
+            }
+            catch(Exception ex)
+            {
+                var a = ex.Message;
+            }
+            //  var voucherresult = db.Vouchers.ToList();
+
+            // List<Voucher_list> list = new List<Voucher_list>();
+            //foreach (var item in result)
+            //{
+            //    Voucher_list vl = new Voucher_list();
+            //    vl.ID = item.Id;
+            //    vl.VoucherNo = item.VoucherNo;
+            //    vl.Name = item.Name;
+            //    vl.Notes = item.Description;
+            //    vl.Date = item.Date;
+            //    vl.Amount = item.Amount;
+            //    vl.LedgerName = item.l_name;
+            //    vl.type = item.Type;
+            //    list.Add(vl);
+            //}
             return Json(list, JsonRequestBehavior.AllowGet);
         }
         public ActionResult JournalEntry()
@@ -428,6 +495,9 @@ namespace SEA_Application.Controllers
             public decimal? Amount { get; set; }
             public string LedgerName { get; set; }
             public string type { get; set; }
+
+            public string UserId { get; set; }
+            public string UserName { get; set; }
 
         }
         protected override void Dispose(bool disposing)
