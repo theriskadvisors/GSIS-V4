@@ -1,5 +1,4 @@
-﻿@model IEnumerable<SEA_Application.Models.LessonPlan>
-
+﻿
 @{
     ViewBag.Title = "LessonPlanList";
     Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
@@ -13,7 +12,6 @@
             var title = $(this).text();
             $(this).html('<input type="text" class="round-border" style="border-color:#00b8ec; border-radius:5px;width:100%" placeholder="Search ' + title + '" />');
         });
-
 
 
         var table = $('#datatable').dataTable({
@@ -88,16 +86,59 @@
         $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Lesson Plan </a></li>');
 
 
+        
+        $.ajax({
+            type: "POST",
+            url: "/Teacher/GetLessonPlanList",
+            data: {},
+
+            success: function (data) {
+
+                var status;
+
+                table.fnClearTable();
+
+                $.each(data, function (index) {
+                    debugger
+
+                    if (data[index].Status == true) {
+
+                        status = "<span style='color:green !important'>Published</span>";
+
+                    }
+                    else {
+
+                        status = "<span style='color:red !important'>Not Published</span>";
+
+                    }
+
+
+                    table.fnAddData([data[index].ClassName + "<input  type=hidden value=" + data[index].Id + ">", data[index].SubjectName, data[index].TopicName, data[index].Week, data[index].Chapter, status]);
+                       })
+                table.fnDraw();
+            }
+        })
 
         $('.table').on('click', 'tbody tr', function () {
             debugger;
             var td = $(this).children("td");
 
-            var userName = $(td[0]).html();
-            userName = userName.trim();
+           var userName = $(td[0]).children("input").val();
+
+           // alert(userName);
+            // userName = userName.trim();
 
             window.location.href = "/Teacher/EditLessonPlan?ID=" + userName;
         });
+
+        //    $('#datatable').on('click', 'tbody tr', function () {
+        //    var td = $(this).children("td");
+        //    var userName = $(td[0]).children("input").val();
+
+        //    window.location.href = "/AspnetSubjectTopics/Edit?id=" + userName;
+        //});
+
+
         $("#datatable_filter").hide();
         $('#datatable tfoot tr').appendTo('#datatable thead');
 
@@ -146,9 +187,7 @@
                     <table class="table hover table-bordered table-striped" id="datatable">
                         <thead>
                             <tr>
-                                <th hidden>
-                                    Id
-                                </th>
+                            
 
                                 <th>
                                     Class Name
@@ -172,55 +211,16 @@
                                 </th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach (var item in Model)
-                            {
-                                <tr>
-                                    <td hidden>
-                                        @Html.DisplayFor(modelItem => item.Id)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.AspNetClass.Name)
-                                    </td>
-
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.AspNetCours.Name)
+                        <tbody  id="LessonPlanList">
+                         
 
 
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.AspnetSubjectTopic.Name)
-                                    </td>
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Week)
-                                    </td>
-
-                                    <td>
-                                        @Html.DisplayFor(modelItem => item.Chapter)
-                                    </td>
-                                    @if (item.Status == true)
-                                    {
-                                        <td>
-                                            <span style="color:green !important">Published</span>
-                                        </td>
-                                    }
-
-                                    else
-                                    {
-                                        <td>
-                                            <span style="color:red !important"> Not Published </span>
-                                        </td>
-                                    }
-                                </tr>
-                            }
                         </tbody>
 
                         <tfoot>
 
                             <tr>
-                                <th hidden>
-                                    Id
-                                </th>
+                               
 
                                 <th>
                                     Class Name

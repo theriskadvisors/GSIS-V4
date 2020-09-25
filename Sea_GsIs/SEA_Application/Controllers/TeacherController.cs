@@ -124,27 +124,73 @@ namespace SEA_Application.Controllers
                 db.SaveChanges();
 
             }
-
-
-
-
-
             return RedirectToAction("LessonPlanList");
         }
 
         public ActionResult LessonPlanList()
         {
+
             ViewBag.UserRole = "";
             if (User.IsInRole("Branch_Admin"))
             {
                 ViewBag.UserRole = "Admin";
             }
-          
-            List<LessonPlan> lp = db.LessonPlans.ToList();
 
-            return View(lp);
+            return View();
         }
+        public ActionResult GetLessonPlanList()
+        {
 
+            var ID = User.Identity.GetUserId();
+
+            int branchId;
+            if (User.IsInRole("Branch_Admin"))
+            {
+
+                branchId = db.AspNetBranch_Admins
+              .Where(branchAdmin => branchAdmin.AdminId.Equals(ID, StringComparison.OrdinalIgnoreCase))
+              .Select(branchAdmin => branchAdmin.BranchId).FirstOrDefault();
+
+                var AllLessonPlan = (from lessonPlan in db.LessonPlans.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                     select new
+                                     {
+                                         Id = lessonPlan.Id,
+                                         ClassName = lessonPlan.AspNetClass.Name,
+                                         SubjectName = lessonPlan.AspNetCours.Name,
+                                         TopicName = lessonPlan.AspnetSubjectTopic.Name,
+                                         Week = lessonPlan.Week,
+                                         Chapter = lessonPlan.Chapter,
+                                         Status = lessonPlan.Status,
+
+                                     }).Distinct().ToList();
+                return Json(AllLessonPlan, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+
+
+                var AllLessonPlan = (from lessonPlan in db.LessonPlans
+                                     join enrollment in db.AspNetTeacher_Enrollments on lessonPlan.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SubjectId equals enrollment.AspNetClass_Courses.AspNetCours.Id
+                                     where enrollment.AspNetEmployee.UserId == ID && enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.ClassId == lessonPlan.AspnetSubjectTopic.AspnetGenericBranchClassSubject.ClassId
+                                     && enrollment.AspNetBranchClass_Sections.AspNetSection.Id == lessonPlan.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SectionId
+                                     && enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId == lessonPlan.AspnetSubjectTopic.AspnetGenericBranchClassSubject.BranchId
+                                     select new
+                                     {
+                                         Id = lessonPlan.Id,
+                                         ClassName = lessonPlan.AspNetClass.Name,
+                                         SubjectName = lessonPlan.AspNetCours.Name,
+                                         TopicName = lessonPlan.AspnetSubjectTopic.Name,
+                                         Week = lessonPlan.Week,
+                                         Chapter = lessonPlan.Chapter,
+                                         Status = lessonPlan.Status,
+
+                                     }).Distinct().ToList();
+                return Json(AllLessonPlan, JsonRequestBehavior.AllowGet);
+
+            }
+
+
+        }
         public ActionResult PublishLesson(int id)
         {
             LessonPlan LessonPlanToUpdate = db.LessonPlans.Where(x => x.Id == id).FirstOrDefault();
