@@ -96,6 +96,7 @@ namespace SEA_Application.Controllers
                 //  LP.Status = status;
                 LessonPlan LessonPlanToUpdate = db.LessonPlans.Where(x => x.Id == LP.Id).FirstOrDefault();
                 LP.Status = LessonPlanToUpdate.Status;
+                LP.Attachment = LessonPlanToUpdate.Attachment;
 
                 if (files != null)
                 {
