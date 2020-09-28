@@ -7,6 +7,7 @@ using SEA_Application.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Data.Entity;
+using System.IO;
 
 namespace SEA_Application.Controllers
 {
@@ -83,22 +84,44 @@ namespace SEA_Application.Controllers
         }
 
         [HttpPost]
-        public ActionResult EditLessonPlans(LessonPlan LP)
+        public ActionResult EditLessonPlans(LessonPlan LP, IEnumerable<HttpPostedFileBase> files)
         {
-            //string status = "";
-            // LessonPlan LP = db.LessonPlans.Where(x => x.Id == ID).FirstOrDefault();
-            // status = Newtonsoft.Json.JsonConvert.SerializeObject(LP);
+
             try
             {
-                //  db.LessonPlans.Attach(LP);
-                bool? status = db.LessonPlans.Where(x => x.Id == LP.Id).FirstOrDefault().Status;
-                LP.Status = status;
+                var fileName = "";
+                var AllFiles = "";
 
-                // db.Entry(LP).Property(o => o.Status).IsModified = false;
-                // db.Entry(LP).Property(o => o.CreationDate).IsModified = false;
-                // db.Entry(LP).Property(o => o.CreatedBy).IsModified = false;
+                //  bool? status = db.LessonPlans.Where(x => x.Id == LP.Id).FirstOrDefault().Status;
+                //  LP.Status = status;
+                LessonPlan LessonPlanToUpdate = db.LessonPlans.Where(x => x.Id == LP.Id).FirstOrDefault();
+                LP.Status = LessonPlanToUpdate.Status;
+
+                if (files != null)
+                {
+                    foreach (var file1 in files)
+                    {
+                        if (file1 != null && file1.ContentLength > 0)
+                        {
+                            var name = Path.GetFileNameWithoutExtension(file1.FileName);
+                            var ext = Path.GetExtension(file1.FileName);
+                            // fileName = name + "_LS_" + LessonID + Student.Id + ext;	
+                            fileName = name + "_LP_" + LP.Id + ext;
+                            AllFiles += fileName + "/";
+                            file1.SaveAs(Path.Combine(Server.MapPath("~/Content/LessonPlanAttachments/"), fileName));
+                        }
+                    }
+                }
+                if (AllFiles != "")
+                {
+                   // LessonPlan LessonPlanToUpdate = db.LessonPlans.Where(x => x.Id == LP.Id).FirstOrDefault();
+                    LessonPlanToUpdate.Attachment = AllFiles;
+                    LP.Attachment = AllFiles;
+                   // db.SaveChanges();
+                }
+
+                
                 Sea_Entities db1 = new Sea_Entities();
-
                 db1.Entry(LP).State = EntityState.Modified;
                 db1.SaveChanges();
 
@@ -108,14 +131,16 @@ namespace SEA_Application.Controllers
                 var msg = ex.Message;
             }
 
-            return RedirectToAction("LessonPlanList");
+            return Json("Success", JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
-        public ActionResult LessonPlan(LessonPlan LP)
+        public ActionResult LessonPlan(LessonPlan LP, IEnumerable<HttpPostedFileBase> files)
         {
             if (LP != null)
             {
+                var fileName = "";
+                var AllFiles = "";
 
                 LP.CreationDate = DateTime.Now;
                 LP.Status = false;
@@ -123,8 +148,32 @@ namespace SEA_Application.Controllers
                 db.LessonPlans.Add(LP);
                 db.SaveChanges();
 
+                if (files != null)
+                {
+                    foreach (var file1 in files)
+                    {
+                        if (file1 != null && file1.ContentLength > 0)
+                        {
+                            var name = Path.GetFileNameWithoutExtension(file1.FileName);
+                            var ext = Path.GetExtension(file1.FileName);
+                            // fileName = name + "_LS_" + LessonID + Student.Id + ext;	
+                            fileName = name + "_LP_" + LP.Id + ext;
+                            AllFiles += fileName + "/";
+                            file1.SaveAs(Path.Combine(Server.MapPath("~/Content/LessonPlanAttachments/"), fileName));
+                        }
+                    }
+                }
+                if (AllFiles != "")
+                {
+                    LessonPlan LessonPlanToUpdate = db.LessonPlans.Where(x => x.Id == LP.Id).FirstOrDefault();
+                    LessonPlanToUpdate.Attachment = AllFiles;
+                    db.SaveChanges();
+                }
+
             }
-            return RedirectToAction("LessonPlanList");
+
+            return Json("Success", JsonRequestBehavior.AllowGet);
+
         }
 
         public ActionResult LessonPlanList()

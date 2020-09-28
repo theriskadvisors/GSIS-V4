@@ -7,7 +7,7 @@
 
 
 <style>
-   
+
     .card .card-body .form-group {
         margin: 15px 0 0;
     }
@@ -327,7 +327,24 @@
         })
 
 
+        $('input[type="file"]').change(function (e) {
+            //var fileName = e.target.files[0].name;
+            //document.getElementById("FilePath").placeholder = fileName;
 
+            var fileName = e.target.files[0].name;
+            var fileUpload = $("#SubmitAssignment").get(0).files;
+
+            var fruits = [];
+            if (fileUpload.length > 0) {
+
+                for (var i = 0; i < fileUpload.length; i++) {
+                    fruits.push(fileUpload[i].name + " , ");
+                }
+            }
+
+            $("#SelectedFiles").html(fruits);
+            document.getElementById("FilePath").placeholder = "";
+        });
 
 
     })//end of document ready
@@ -395,10 +412,28 @@
                                         <option value="4">4</option>
                                     </select>
                                 </div>
+                                @*<div class="form-group col-md-12 bmd-form-group">
+                                        <label class="bmd-label-floating" style="background: white;margin-left: 0.5rem;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Select Chapter<span class="red-mark">*</span> </label>
+                                        <input type="text" class="form-control round-border Floating_text" id="Chapter" name="Chapter"></input>
+                                    </div>*@
+
                                 <div class="form-group col-md-12 bmd-form-group">
-                                    <label class="bmd-label-floating" style="background: white;margin-left: 0.5rem;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Select Chapter<span class="red-mark">*</span> </label>
-                                    <input type="text" class="form-control round-border Floating_text" id="Chapter" name="Chapter"></input>
+                                    <div class="file-field d-flex">
+                                        <div class="btn btn-primary btn-md mb-0">
+                                            <span style="color:white" onclick='event.stopPropagation(); document.getElementById("SubmitAssignment").click();'>Choose files</span>
+                                            <input type="file" class="multiple" name="files" id="SubmitAssignment" multiple />
+                                        </div>
+
+                                        <div class="file-path-wrapper d-flex align-items-end ml-3 w-100">
+                                            <input id="FilePath" class="file-path validate form-control" type="text" readonly disabled placeholder="No file Chosen">
+                                        </div>
+                                    </div>
+                                    <div style="color: #afbccc;font-size: 14px;font-weight: 500;" class="my-3">Max: 32 MB (Filename should be unique)</div>
+                                    <div style="color: #afbccc;font-size: 14px;font-weight: 500;" class="my-3" id="SelectedFiles"></div>
                                 </div>
+                                <span id="AssingmentFileToShow"></span>
+                                <span style="color:blue" id="AssignmentMessage"></span>
+
 
 
                                 <div class="form-group bmd-form-group pt-5">
@@ -448,7 +483,7 @@
                                 <div class="form-group bmd-form-group pt-5">
                                     <label class="bmd-label-floating" style="background: white;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Duration of Lesson</label>
                                     @*<textarea class="form-control round-border Floating_text" name="Duration_OTL" id="Duration_OTL" rows="6"></textarea>*@
-                                    <input class="round-border Floating_text form-control" type="datetime-local" name="Duration_OTL" id="Duration_OTL" value="" />
+                                    <input class="round-border Floating_text form-control" type="time" name="Duration_OTL" id="Duration_OTL" value="" />
                                 </div>
                                 <br />
 
@@ -481,7 +516,7 @@
                                         <textarea class="form-control round-border Floating_text" name="R_Starter" id="R_Starter" rows="6"></textarea>
                                     </td>
                                     <td>
-                                        <input type="datetime-local" name="D_Starter" id="D_Starter" value="" class="round-border Floating_text form-control" />
+                                        <input type="time" name="D_Starter" id="D_Starter" value="" class="round-border Floating_text form-control" />
                                     </td>
                                 </tr>
 
@@ -496,7 +531,7 @@
                                         <textarea class="form-control round-border Floating_text" name="R_Explanation" id="R_Explanation" rows="6"></textarea>
                                     </td>
                                     <td>
-                                        <input type="datetime-local" name="D_Explanation" id="D_Explanation" value="" class="round-border Floating_text form-control" />
+                                        <input type="time" name="D_Explanation" id="D_Explanation" value="" class="round-border Floating_text form-control" />
                                     </td>
                                 </tr>
                                 <tr>
@@ -509,7 +544,7 @@
                                         <textarea class="form-control round-border Floating_text" name="R_Interaction" id="R_Interaction" rows="6"></textarea>
                                     </td>
                                     <td>
-                                        <input type="datetime-local" name="D_Interaction" id="D_Interaction" value="" class="round-border Floating_text form-control" />
+                                        <input type="time" name="D_Interaction" id="D_Interaction" value="" class="round-border Floating_text form-control" />
                                     </td>
                                 </tr>
                                 <tr>
@@ -523,7 +558,7 @@
                                         <textarea class="form-control round-border Floating_text" name="R_Practice" id="R_Practice" rows="6"></textarea>
                                     </td>
                                     <td>
-                                        <input type="datetime-local" name="D_Practice" id="D_Practice" value="" class="round-border Floating_text form-control" />
+                                        <input type="time" name="D_Practice" id="D_Practice" value="" class="round-border Floating_text form-control" />
                                     </td>
                                 </tr>
                                 <tr>
@@ -537,7 +572,7 @@
                                         <textarea class="form-control round-border Floating_text" name="R_Conclusion" id="R_Conclusion" rows="6"></textarea>
                                     </td>
                                     <td>
-                                        <input type="datetime-local" name="D_Conclusion" id="D_Conclusion" value="" class="round-border Floating_text form-control" />
+                                        <input type="time" name="D_Conclusion" id="D_Conclusion" value="" class="round-border Floating_text form-control" />
                                     </td>
                                 </tr>
                                 <tr>
@@ -550,7 +585,7 @@
                                         <textarea class="form-control round-border Floating_text" name="R_Evaluation" id="R_Evaluation" rows="6"></textarea>
                                     </td>
                                     <td>
-                                        <input type="datetime-local" name="D_Evaluation" id="D_Evaluation" value="" class="round-border Floating_text form-control" />
+                                        <input type="time" name="D_Evaluation" id="D_Evaluation" value="" class="round-border Floating_text form-control" />
                                     </td>
                                 </tr>
                                 <tr>
@@ -564,7 +599,7 @@
                                         <textarea class="form-control round-border Floating_text" name="R_Followup" id="R_Followup" rows="6"></textarea>
                                     </td>
                                     <td>
-                                        <input type="datetime-local" name="D_Followup" id="D_Followup" value="" class="round-border Floating_text form-control" />
+                                        <input type="time" name="D_Followup" id="D_Followup" value="" class="round-border Floating_text form-control" />
                                     </td>
                                 </tr>
 
@@ -602,20 +637,40 @@
 
             },
             submitHandler: function (form) {
-
+                debugger
                 $("#SaveButton1").prop("disabled", true);
 
-                var data = $("#tab2Form").serialize();
+                // var data = $("#tab2Form").serialize();
 
 
+                var data = new FormData();
+                var form_data = $('#tab2Form').serializeArray();
+                $.each(form_data, function (key, input) {
+                    data.append(input.name, input.value);
+                });
+
+                //File data
+                var fileUpload = $("#SubmitAssignment").get(0).files;
+                for (var i = 0; i < fileUpload.length; i++) {
+                    data.append("files", fileUpload[i]);
+                }
+                data.append('key', 'value');
 
                 $.ajax({
                     type: "post",
                     url: "/Teacher/LessonPlan",
+                    dataType: "JSON",
+                    contentType: false,
+                    processData: false,
                     data: data, //{ 'BranchId': BranchId, 'ClassId': ClassId, 'SectionId': SectionId, 'MonthId': MonthId, 'DueDate': DueDate },
 
                     success: function (data) {
                         window.location.href = "/Teacher/LessonPlanList";
+                    },
+                    error: function (e) {
+
+                        debugger
+                        alert("error");
                     }
                 })
 
