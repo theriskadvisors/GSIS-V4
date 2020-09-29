@@ -410,6 +410,28 @@
                                         <option value="2">2</option>
                                         <option value="3">3</option>
                                         <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                        <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                        <option value="24">24</option>
+                                        <option value="25">25</option>
+                                        <option value="26">26</option>
                                     </select>
                                 </div>
                                 @*<div class="form-group col-md-12 bmd-form-group">
@@ -483,7 +505,10 @@
                                 <div class="form-group bmd-form-group pt-5">
                                     <label class="bmd-label-floating" style="background: white;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Duration of Lesson</label>
                                     @*<textarea class="form-control round-border Floating_text" name="Duration_OTL" id="Duration_OTL" rows="6"></textarea>*@
-                                    <input class="round-border Floating_text form-control" type="time" name="Duration_OTL" id="Duration_OTL" value="" />
+                                    @*<input class="round-border Floating_text form-control" type="time" name="Duration_OTL" id="Duration_OTL" value="" />*@
+
+                                    <input type="number" id="Duration_OTL" min="0" max="120" value="0" onkeydown="return false" class="form-control round-border Floating_text" name="Duration_OTL"  />
+
                                 </div>
                                 <br />
 
@@ -516,7 +541,10 @@
                                         <textarea class="form-control round-border Floating_text" name="R_Starter" id="R_Starter" rows="6"></textarea>
                                     </td>
                                     <td>
-                                        <input type="time" name="D_Starter" id="D_Starter" value="" class="round-border Floating_text form-control" />
+                                        @*<input type="time" name="D_Starter" id="D_Starter" value="" class="round-border Floating_text form-control" />*@
+
+                                        <input type="number" id="D_Starter" min="0" max="120" value="0" onkeydown="return false" class="form-control round-border Floating_text" name="D_Starter"  />
+
                                     </td>
                                 </tr>
 
@@ -531,7 +559,12 @@
                                         <textarea class="form-control round-border Floating_text" name="R_Explanation" id="R_Explanation" rows="6"></textarea>
                                     </td>
                                     <td>
-                                        <input type="time" name="D_Explanation" id="D_Explanation" value="" class="round-border Floating_text form-control" />
+                                        @*<input type="time" name="D_Explanation" id="D_Explanation" value="" class="round-border Floating_text form-control" />*@
+
+
+
+                                        <input type="number" id="D_Explanation" min="0" max="120" value="0" onkeydown="return false" class="form-control round-border Floating_text" name="D_Explanation"  />
+
                                     </td>
                                 </tr>
                                 <tr>
@@ -544,7 +577,10 @@
                                         <textarea class="form-control round-border Floating_text" name="R_Interaction" id="R_Interaction" rows="6"></textarea>
                                     </td>
                                     <td>
-                                        <input type="time" name="D_Interaction" id="D_Interaction" value="" class="round-border Floating_text form-control" />
+                                        @*<input type="time" name="D_Interaction" id="D_Interaction" value="" class="round-border Floating_text form-control" />*@
+
+                                        <input type="number" id="D_Interaction" min="0" max="120" value="0" onkeydown="return false" class="form-control round-border Floating_text" name="D_Interaction"  />
+
                                     </td>
                                 </tr>
                                 <tr>
@@ -558,7 +594,10 @@
                                         <textarea class="form-control round-border Floating_text" name="R_Practice" id="R_Practice" rows="6"></textarea>
                                     </td>
                                     <td>
-                                        <input type="time" name="D_Practice" id="D_Practice" value="" class="round-border Floating_text form-control" />
+                                        @*<input type="time" name="D_Practice" id="D_Practice" value="" class="round-border Floating_text form-control" />*@
+
+                                        <input type="number" id="D_Practice" min="0" max="120" value="0" onkeydown="return false" class="form-control round-border Floating_text" name="D_Practice"  />
+
                                     </td>
                                 </tr>
                                 <tr>
@@ -572,7 +611,11 @@
                                         <textarea class="form-control round-border Floating_text" name="R_Conclusion" id="R_Conclusion" rows="6"></textarea>
                                     </td>
                                     <td>
-                                        <input type="time" name="D_Conclusion" id="D_Conclusion" value="" class="round-border Floating_text form-control" />
+                                        @*<input type="time" name="D_Conclusion" id="D_Conclusion" value="" class="round-border Floating_text form-control" />*@
+
+
+                                        <input type="number" id="D_Conclusion" min="0" max="120" value="0" onkeydown="return false" class="form-control round-border Floating_text" name="D_Conclusion"  />
+
                                     </td>
                                 </tr>
                                 <tr>
@@ -585,7 +628,10 @@
                                         <textarea class="form-control round-border Floating_text" name="R_Evaluation" id="R_Evaluation" rows="6"></textarea>
                                     </td>
                                     <td>
-                                        <input type="time" name="D_Evaluation" id="D_Evaluation" value="" class="round-border Floating_text form-control" />
+                                        @*<input type="time" name="D_Evaluation" id="D_Evaluation" value="" class="round-border Floating_text form-control" />*@
+
+                                        <input type="number" id="D_Evaluation" min="0" max="120" value="0" onkeydown="return false" class="form-control round-border Floating_text" name="D_Evaluation"  />
+
                                     </td>
                                 </tr>
                                 <tr>
@@ -599,7 +645,9 @@
                                         <textarea class="form-control round-border Floating_text" name="R_Followup" id="R_Followup" rows="6"></textarea>
                                     </td>
                                     <td>
-                                        <input type="time" name="D_Followup" id="D_Followup" value="" class="round-border Floating_text form-control" />
+                                        @*<input type="time" name="D_Followup" id="D_Followup" value="" class="round-border Floating_text form-control" />*@
+                                        <input type="number" id="D_Followup" min="0" max="120" value="0" onkeydown="return false" class="form-control round-border Floating_text" name="D_Followup" />
+
                                     </td>
                                 </tr>
 

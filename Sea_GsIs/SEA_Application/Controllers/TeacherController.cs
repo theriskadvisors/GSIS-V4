@@ -251,6 +251,13 @@ namespace SEA_Application.Controllers
             return RedirectToAction("LessonPlanList");
 
         }
+        public ActionResult DownloadLessonPlanAttachment(string Name)
+        {
+
+            var filepath = System.IO.Path.Combine(Server.MapPath("~/Content/LessonPlanAttachments/"), Name);
+
+            return File(filepath, MimeMapping.GetMimeMapping(filepath), Name);
+        }
 
 
         public ActionResult TeacherStudents()

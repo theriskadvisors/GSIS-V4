@@ -552,11 +552,35 @@
                                     <label class="bmd-label-floating" style="background: white;margin-left: 0.5rem;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Select Week<span class="red-mark">*</span> </label>
 
                                     <select class="form-control round-border Floating_text" id="Week" name="Week" value="@Model.Week" required>
+                                        
                                         <option value="">Select One</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
                                         <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                        <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                        <option value="24">24</option>
+                                        <option value="25">25</option>
+                                        <option value="26">26</option>
+
                                     </select>
                                 </div>
                                 @*<div class="form-group col-md-12 bmd-form-group">
@@ -576,8 +600,20 @@
                                         </div>
                                     </div>
                                     <div style="color: #afbccc;font-size: 14px;font-weight: 500;" class="my-3">Max: 32 MB (Filename should be unique)</div>
-                                    <div style="color: #afbccc;font-size: 14px;font-weight: 500;" class="my-3" id="SelectedFiles"> @if (Model.LessonPlanAttachments != null)
-                                    { @Model.LessonPlanAttachments.Replace('/', ',') }</div>
+                                    <div style="color: #afbccc;font-size: 14px;font-weight: 500;" class="my-3" id="SelectedFiles">
+                                        @if (Model.LessonPlanAttachments != null)
+                                        {
+
+                                            foreach(var attachment in   Model.LessonPlanAttachments.Split('/').ToList())
+                                            {
+
+                                                <br>
+                                                <a style="color:blue;text-decoration:underline" href="/Teacher/DownloadLessonPlanAttachment?Name=@attachment" >@attachment</a>
+                                        
+                                        }
+
+                                        }
+                                    </div>
                                 </div>
                                 @*<span id="AssingmentFileToShow"></span>
                                     <span style="color:blue" id="AssignmentMessage"></span>*@
@@ -620,6 +656,7 @@
                                         @Html.TextBoxFor(m => m.LessonPlanDate, "{0:yyyy-MM-dd}", new { @class = "datefield form-control", @type = "date" })
 
 
+
                                     </div>
                                 </div>
                                 <div class="form-row mt-3">
@@ -637,7 +674,10 @@
                                     @*<input type="time" name="Duration_OTL" id="Duration_OTL" value="" />*@
 
 
-                                    @Html.TextBoxFor(m => m.Duration_OTL, "{0:HH:mm:ss}", new { @class = "datefield form-control", @type = "time" })
+                                    @*@Html.TextBoxFor(m => m.Duration_OTL, "{0:HH:mm:ss}", new { @class = "datefield form-control", @type = "time" })*@
+
+                                    <input type="number" id="Duration_OTL" min="0" max="120" value="@Model.Duration_OTL" onkeydown="return false" class="form-control round-border Floating_text" name="Duration_OTL" />
+
 
                                 </div>
 
@@ -675,7 +715,9 @@
 
                                         @*<input type="time" value="@string.Format(" {0:yyyy-MM-ddTHH:mm:ss}", Model.D_Starter)" name="D_Starter" id="D_Starter" class="round-border Floating_text form-control" />*@
 
-                                        @Html.TextBoxFor(m => m.D_Starter, "{0:HH:mm:ss}", new { @class = "datefield form-control", @type = "time" })
+                                        @*@Html.TextBoxFor(m => m.D_Starter, "{0:HH:mm:ss}", new { @class = "datefield form-control", @type = "time" })*@
+
+                                        <input type="number" id="D_Starter" min="0" max="120" value="@Model.D_Starter" onkeydown="return false" class="form-control round-border Floating_text" name="D_Starter" />
 
 
                                     </td>
@@ -694,8 +736,9 @@
                                     <td>
                                         @*<input type="time" value="@string.Format(" {0:yyyy-MM-ddTHH:mm:ss}", Model.D_Explanation)" name="D_Explanation" id="D_Explanation" class="round-border Floating_text form-control" />*@
 
-                                        @Html.TextBoxFor(m => m.D_Explanation, "{0:HH:mm:ss}", new { @class = "datefield form-control", @type = "time" })
+                                        @*@Html.TextBoxFor(m => m.D_Explanation, "{0:HH:mm:ss}", new { @class = "datefield form-control", @type = "time" })*@
 
+                                        <input type="number" id="D_Explanation" min="0" max="120" value="@Model.D_Explanation" onkeydown="return false" class="form-control round-border Floating_text" name="D_Explanation" />
 
 
                                     </td>
@@ -712,7 +755,9 @@
                                     <td>
                                         @*<input type="time" value="@string.Format(" {0:yyyy-MM-ddTHH:mm:ss}", Model.D_Interaction)" name="D_Interaction" id="D_Interaction" value="" class="round-border Floating_text form-control" />*@
 
-                                        @Html.TextBoxFor(m => m.D_Interaction, "{0:HH:mm:ss}", new { @class = "datefield form-control", @type = "time" })
+                                        @*@Html.TextBoxFor(m => m.D_Interaction, "{0:HH:mm:ss}", new { @class = "datefield form-control", @type = "time" })*@
+
+                                        <input type="number" id="D_Interaction" min="0" max="120" value="@Model.D_Interaction" onkeydown="return false" class="form-control round-border Floating_text" name="D_Interaction" />
 
                                     </td>
                                 </tr>
@@ -729,7 +774,11 @@
                                     <td>
                                         @*<input type="time" value="@string.Format(" {0:yyyy-MM-ddTHH:mm:ss}", Model.D_Practice)" name="D_Practice" id="D_Practice" class="round-border Floating_text form-control" />*@
 
-                                        @Html.TextBoxFor(m => m.D_Practice, "{0:HH:mm:ss}", new { @class = "datefield form-control", @type = "time" })
+                                        @*@Html.TextBoxFor(m => m.D_Practice, "{0:HH:mm:ss}", new { @class = "datefield form-control", @type = "time" })*@
+
+
+
+                                        <input type="number" id="D_Practice" min="0" max="120" value="@Model.D_Practice" onkeydown="return false" class="form-control round-border Floating_text" name="D_Practice" />
 
                                     </td>
                                 </tr>
@@ -746,7 +795,9 @@
                                     <td>
                                         @*<input type="time" value="@string.Format(" {0:yyyy-MM-ddTHH:mm:ss}", Model.D_Conclusion)" name="D_Conclusion" id="D_Conclusion" class="round-border Floating_text form-control" />*@
 
-                                        @Html.TextBoxFor(m => m.D_Conclusion, "{0:HH:mm:ss}", new { @class = "datefield form-control", @type = "time" })
+                                        @*@Html.TextBoxFor(m => m.D_Conclusion, "{0:HH:mm:ss}", new { @class = "datefield form-control", @type = "time" })*@
+
+                                        <input type="number" id="D_Conclusion" min="0" max="120" value="@Model.D_Conclusion" onkeydown="return false" class="form-control round-border Floating_text" name="D_Conclusion" />
 
                                     </td>
                                 </tr>
@@ -762,7 +813,9 @@
                                     <td>
                                         @*<input type="time" value="@string.Format(" {0:yyyy-MM-ddTHH:mm:ss}", Model.D_Evaluation)" name="D_Evaluation" id="D_Evaluation" value="@Model.D_Evaluation" class="round-border Floating_text form-control" />*@
 
-                                        @Html.TextBoxFor(m => m.D_Evaluation, "{0:HH:mm:ss}", new { @class = "datefield form-control", @type = "time" })
+                                        @*@Html.TextBoxFor(m => m.D_Evaluation, "{0:HH:mm:ss}", new { @class = "datefield form-control", @type = "time" })*@
+
+                                        <input type="number" id="D_Evaluation" min="0" max="120" value="@Model.D_Evaluation" onkeydown="return false" class="form-control round-border Floating_text" name="D_Evaluation" />
 
                                     </td>
                                 </tr>
@@ -779,7 +832,9 @@
                                     <td>
                                         @*<input type="time" name="D_Followup" id="D_Followup" value="@string.Format(" {0:yyyy-MM-ddTHH:mm:ss}", Model.D_Followup)" class="round-border Floating_text form-control" />*@
 
-                                        @Html.TextBoxFor(m => m.D_Followup, "{0:HH:mm:ss}", new { @class = "datefield form-control", @type = "time" })
+                                        @*@Html.TextBoxFor(m => m.D_Followup, "{0:HH:mm:ss}", new { @class = "datefield form-control", @type = "time" })*@
+
+                                        <input type="number" id="D_Followup" min="0" max="120" value="@Model.D_Followup" onkeydown="return false" class="form-control round-border Floating_text" name="D_Followup" />
 
 
                                     </td>

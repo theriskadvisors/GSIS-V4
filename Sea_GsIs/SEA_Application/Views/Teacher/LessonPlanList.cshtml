@@ -10,7 +10,7 @@
 
         $('#datatable tfoot th').each(function () {
             var title = $(this).text();
-            $(this).html('<input type="text" class="round-border" style="border-color:#00b8ec; border-radius:5px;width:100%" placeholder="Search ' + title + '" />');
+            $(this).html('<input type="text" class="round-border" style="border-color:#00b8ec; border-radius:5px;width:100%" placeholder="Search" />');
         });
 
 
@@ -113,7 +113,7 @@
                     }
 
 
-                    table.fnAddData([data[index].ClassName + "<input  type=hidden value=" + data[index].Id + ">", data[index].SubjectName, data[index].TopicName, data[index].Week, data[index].Chapter, status]);
+                    table.fnAddData([data[index].ClassName + "<input  type=hidden value=" + data[index].Id + ">", data[index].SubjectName, data[index].TopicName, data[index].Week, status]);
                        })
                 table.fnDraw();
             }
@@ -203,9 +203,7 @@
                                     Week
                                 </th>
 
-                                <th>
-                                    Chapter
-                                </th>
+                              
                                 <th>
                                     Status
                                 </th>
@@ -236,9 +234,7 @@
                                     Week
                                 </th>
 
-                                <th>
-                                    Chapter
-                                </th>
+                               
                                 <th>
                                     Status
                                 </th>
