@@ -542,6 +542,7 @@ namespace SEA_Application.Controllers
                 var fileName = name + "_LI_" + Lesson.Id + ext;
 
 
+
                 AttachmentImage.SaveAs(Server.MapPath("~/Content/LessonImage/") + fileName);
 
                 Lesson.LessonIMG = fileName;

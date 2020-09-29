@@ -96,7 +96,7 @@ namespace SEA_Application.Controllers
                 //  LP.Status = status;
                 LessonPlan LessonPlanToUpdate = db.LessonPlans.Where(x => x.Id == LP.Id).FirstOrDefault();
                 LP.Status = LessonPlanToUpdate.Status;
-                LP.Attachment = LessonPlanToUpdate.Attachment;
+                LP.LessonPlanAttachments = LessonPlanToUpdate.LessonPlanAttachments;
 
                 if (files != null)
                 {
@@ -116,8 +116,8 @@ namespace SEA_Application.Controllers
                 if (AllFiles != "")
                 {
                    // LessonPlan LessonPlanToUpdate = db.LessonPlans.Where(x => x.Id == LP.Id).FirstOrDefault();
-                    LessonPlanToUpdate.Attachment = AllFiles;
-                    LP.Attachment = AllFiles;
+                    LessonPlanToUpdate.LessonPlanAttachments = AllFiles;
+                    LP.LessonPlanAttachments = AllFiles;
                    // db.SaveChanges();
                 }
 
@@ -167,7 +167,7 @@ namespace SEA_Application.Controllers
                 if (AllFiles != "")
                 {
                     LessonPlan LessonPlanToUpdate = db.LessonPlans.Where(x => x.Id == LP.Id).FirstOrDefault();
-                    LessonPlanToUpdate.Attachment = AllFiles;
+                    LessonPlanToUpdate.LessonPlanAttachments = AllFiles;
                     db.SaveChanges();
                 }
 
