@@ -30,6 +30,14 @@
 
     .InacticeCheckBoxes:hover {
     }
+
+    #InactiveButton {
+        color: #141437 !important;
+        font-size: 14px !important;
+        line-height: 1.71 !important;
+        font-weight: normal !important;
+        font-family: 'Poppins', sans-serif !important;
+    }
 </style>
 <script>
     var SelectedLessons = [];
@@ -116,7 +124,7 @@
                 });
             }, buttons: [
                 {
-                    text: '<button onclick="InactiveLessons()" value="InActive" class="btn btn-default"><i  aria-hidden="true"> </i> In Active</button>'
+                    text: '<button id="InactiveButton" onclick="InactiveLessons()" value="InActive" class="btn btn-default"><i  aria-hidden="true"> </i> In Active</button>'
                 },
                 {
                     text: '<span class="datatableButtonsEdit"> <img src="/Content/assets/assets/icons/Icon-edit.png" alt=""> Create</span>',
@@ -168,10 +176,18 @@
 
             //  $('#datatable1 tbody tr').on('click', 'tbody tr');
 
-            var td = $('#datatable1 tbody tr').children("td");   //$(this).children("td");
+
+            //var td = $('#datatable1 tbody tr').children("td");
+            //$(this).children("td");
+
+
+            //var htmlcode = $(this).parent().children("td");
+            var td = $(this).parent().children("td");
             var LessonId = $(td[0]).children("input").val();
 
-            window.location.href = "/AspnetLessons/Edit?id=" + LessonId;
+            //alert(LessonId);
+
+              window.location.href = "/AspnetLessons/Edit?id=" + LessonId;
         });
 
 
@@ -388,7 +404,8 @@
 
     <div class="card">
         <div class="card-body p-4">
-            <div class="tab-content" style="padding: 10px 0px 0px 0px;">
+            <div class="tab-content" style="        padding: 10px 0px 0px 0px;
+">
 
                 <div class="tab-pane active show" id="Topics-attr" role="tabpanel" aria-labelledby="Topics-tab-attr">
                     <div class="box box-primary">
