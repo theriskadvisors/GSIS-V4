@@ -130,7 +130,7 @@ namespace SEA_Application.Controllers
                 .Select(branchAdmin => branchAdmin.BranchId)
                 .FirstOrDefault();
 
-                var teachers = (from teacher in db.AspNetTeacher_Enrollments.Where(x => x.AspNetEmployee.BranchId == branchId)
+                var teachers = (from teacher in db.AspNetTeacher_Enrollments.Where(x => x.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId == branchId)
                                 join user in db.AspNetUsers on teacher.AspNetEmployee.UserId equals user.Id
                                 select new
                                 {
@@ -146,7 +146,7 @@ namespace SEA_Application.Controllers
             {
                 var branchId = db.AspNetBranches.Where(x => x.BranchPrincipalId == loggedInUserId).Select(x => x.Id).FirstOrDefault();
 
-                var teachers = (from teacher in db.AspNetTeacher_Enrollments.Where(x => x.AspNetEmployee.BranchId == branchId)
+                var teachers = (from teacher in db.AspNetTeacher_Enrollments.Where(x => x.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId == branchId)
                                 join user in db.AspNetUsers on teacher.AspNetEmployee.UserId equals user.Id
                                 select new
                                 {
