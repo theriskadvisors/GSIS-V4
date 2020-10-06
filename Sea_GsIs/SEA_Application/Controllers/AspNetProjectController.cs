@@ -93,7 +93,8 @@ namespace SEA_Application.Controllers
 
             //var Sections = db.AspNetTeacher_Enrollments.Where(x => x.AspNetEmployee.UserId == ID).Select(x => new { x.AspNetBranchClass_Sections.AspNetSection.Id, x.AspNetBranchClass_Sections.AspNetSection.Name }).Distinct();
 
-            var Sections = db.AspNetTeacher_Enrollments.Where(x => x.AspNetEmployee.UserId == ID && x.AspNetBranchClass_Sections.AspNetBranch_Class.ClassId == ClassId).Select(x => new {
+            var Sections = db.AspNetTeacher_Enrollments.Where(x => x.AspNetEmployee.UserId == ID && x.AspNetBranchClass_Sections.AspNetBranch_Class.ClassId == ClassId).Select(x => new
+            {
                 Id = x.AspNetBranchClass_Sections.AspNetSection.Id,
                 Name = x.AspNetBranchClass_Sections.AspNetSection.Name
             }).Distinct();
@@ -159,22 +160,40 @@ namespace SEA_Application.Controllers
             return Content(status);
         }
 
+        public ActionResult BranchClassSectionStudents(int BranchId, int ClassId, int SectionId)
+        {
+            int BranchClassId = db.AspNetBranch_Class.Where(x => x.BranchId == BranchId && x.ClassId == ClassId).FirstOrDefault().Id;
 
-        public ActionResult GetSubjects( int BranchId , int ClassId , int SubjectId,int SectionId)
+            int BranchClassSectionId = db.AspNetBranchClass_Sections.Where(x => x.BranchClassId == BranchClassId && x.SectionId == SectionId).FirstOrDefault().Id;
+
+            var AllStudents = (from enrollment in db.AspNetStudent_Enrollments.Where(x => x.SectionId == BranchClassSectionId)
+                               join student in db.AspNetStudents on enrollment.StudentId equals student.Id
+                               select new
+                               {
+                                   student.Id,
+                                   student.Name,
+
+                               }).Distinct();
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(AllStudents);
+            // return Json(SubjectsByClass, JsonRequestBehavior.AllowGet);
+            return Content(status);
+        }
+
+        public ActionResult GetSubjects(int BranchId, int ClassId, int SubjectId, int SectionId)
         {
 
-          var Generic =   db.AspnetGenericBranchClassSubjects.Where(x => x.BranchId == BranchId && x.ClassId == ClassId && x.SubjectId == SubjectId && x.SectionId == SectionId).FirstOrDefault();
+            var Generic = db.AspnetGenericBranchClassSubjects.Where(x => x.BranchId == BranchId && x.ClassId == ClassId && x.SubjectId == SubjectId && x.SectionId == SectionId).FirstOrDefault();
 
-            if( Generic != null)
+            if (Generic != null)
             {
 
                 var id = Generic.Id;
 
-             var Topics =    db.AspnetSubjectTopics.Where(x=>x.GenericBranchClassSubjectId == id).ToList().Select(x => new { x.Id, x.Name });
+                var Topics = db.AspnetSubjectTopics.Where(x => x.GenericBranchClassSubjectId == id).ToList().Select(x => new { x.Id, x.Name });
 
 
 
-                string AllTopics  = Newtonsoft.Json.JsonConvert.SerializeObject(Topics);
+                string AllTopics = Newtonsoft.Json.JsonConvert.SerializeObject(Topics);
                 return Content(AllTopics);
             }
 

@@ -1,0 +1,161 @@
+﻿@model SEA_Application.Models.AspNetHomeWork
+@{
+    ViewBag.Title = "DiaryDetails";
+    Layout = "~/Views/Shared/_StudentDashboardLayout.cshtml";
+}
+
+
+
+<input type="hidden" name="HomeWorkId" id="HomeWorkId" value="@ViewBag.HomeWorkId" />
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+
+            <div class="card-body p-5">
+
+                <br />
+                <div class="row">
+
+                    <div class="col-md-10 pl-5 pr-5">
+
+
+                        <table class="table table-bordered ">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Subject Name
+                                    </th>
+                                    <th>
+                                        Homework Detail
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="HomeworkDetailTbody"></tbody>
+                        </table>
+                        <hr />
+                    </div>
+
+
+                    <div class="col-md-6 pl-5 pr-5">
+
+                        @*<lable class="col-md-1 col-lg-1 pull-left">Attachment:</lable>
+
+                            <input type="file" id="attachment" name="attachment">*@
+
+                        <div class="form-group bmd-form-group">
+                            <div class="file-field d-flex">
+                                @*<div class="btn btn-primary btn-md mb-0">
+                <span style="color:white" onclick='event.stopPropagation(); document.getElementById("SubmitAssignment").click();'>Choose files</span>
+                <input type="file" class="multiple" name="attachment" id="SubmitAssignment" multiple />
+            </div>
+
+            <div class="file-path-wrapper d-flex align-items-end ml-3 w-100">
+                <input id="FilePath" class="file-path validate form-control" type="text" readonly disabled placeholder="No file Chosen">
+            </div>*@
+                            </div>
+
+                            
+                            <label for="" class="control-label">Attachments</label>
+                            <div style="color: #afbccc;font-size: 14px;font-weight: 500;" class="my-3" id="SelectedFiles">
+
+                                @if (Model.Attachment != null)
+                                {
+
+                                    foreach (var attachment in Model.Attachment.Split('/').ToList())
+                                    {
+                                        <a style="color:blue;text-decoration:underline" href="/AspnetHomeWorks/DownloadDiaryAttachment?Name=@attachment">@attachment</a>
+                                        <br>
+                                    }
+
+                                }
+
+
+                            </div>
+
+
+                        </div>
+
+                        <div class="form-group bmd-form-group pt-5">
+                            <label class="control-label" style="background: white;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Teacher Comments</label>
+                            <textarea readonly class="form-control round-border Floating_text" name="TeacherComment" id="TeacherComment" style="width:700px !important;" cols="50" rows="6">@ViewBag.TeacherComments</textarea>
+                        </div>
+
+
+                        <br />
+
+                        @*<input type="submit" value="Update" id="AddDiary" class="btn btn-primary rounded rounded-lg" />*@
+
+                        @*<button type="button" id="" onclick="window.location.href = '/AspNetHomeWorks/Index'" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                                Cancel
+                            </button>*@
+
+
+                    </div><!--end of column 6 -->
+                </div><!--End of Row-->
+
+
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+
+       $(document).ready(function () {
+
+           
+        $("#PageHeader").html("Diary");
+        $("#BreadCrumbs").append(' <li> <a href="#"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li> <a href="/AspnetStudentHomeWorks/Diary"> Diary View</a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Diary Details</a></li>');
+
+
+
+
+        var HomeWorkId =  $("#HomeWorkId").val();
+
+            $.get('@Url.Action("SubjectsOfTeacherByHomeWorkId")',
+            {HomeWorkId:HomeWorkId},
+            function (data) {
+
+            $("#HomeworkDetailTbody").html('');
+            $.each(data, function (i, item) {
+
+                $("#HomeworkDetailTbody").append('<tr id=' + item.Id + '><td>' + item.Subject + '</td><td><textarea readonly class="form-control" id="HomeWorkDetail"></textarea></td></tr>');
+
+            });
+
+
+            $.get('@Url.Action("GetHomeworkDetails","AspNetHomeWorks")',
+            {HomeWorkId:HomeWorkId},
+                function (data) {
+
+                        $.each(data, function (i, item) {
+
+                            $("#HomeworkDetailTbody tr").each(function () {
+
+                                var RowId = $(this).attr('id');
+
+                            if (RowId == item.SubjectID) {
+
+                                var td = $(this).children("td").find("textarea").val(item.HomeworkDetail);
+                            }
+
+
+                            });
+
+                    });
+
+
+                });
+
+
+
+                });
+
+
+                    })//end of document ready
+
+</script>
