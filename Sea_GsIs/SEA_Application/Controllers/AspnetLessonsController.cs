@@ -227,7 +227,7 @@ namespace SEA_Application.Controllers
                     var BCSId = db.AspNetBranchClass_Sections.Where(x => x.BranchClassId == BCId && x.SectionId == SectionID).Select(x => x.Id).FirstOrDefault();
                     var CSId = db.AspNetClass_Courses.Where(x => x.ClassId == ClassID && x.CourseId == SubjectID).Select(x => x.Id).FirstOrDefault();
 
-                    var Students = db.AspNetStudent_Enrollments.Where(x => x.SectionId == BCSId && x.CourseId == CSId).Select(x => x.AspNetStudent.AspNetUser.Id).ToList();
+                    var Students = db.AspNetStudent_Enrollments.Where(x => x.SectionId == BCSId && x.CourseId == CSId && x.AspNetStudent.AspNetUser.StatusId != 2).Select(x => x.AspNetStudent.AspNetUser.Id).ToList();
                     var subjectName = db.AspnetLessons.Where(x => x.Id == Lesson.Id).Select(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name).FirstOrDefault();
                     var ClassName = db.AspnetLessons.Where(x => x.Id == Lesson.Id).Select(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name).FirstOrDefault();
                     var SectionName = db.AspnetLessons.Where(x => x.Id == Lesson.Id).Select(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name).FirstOrDefault();
