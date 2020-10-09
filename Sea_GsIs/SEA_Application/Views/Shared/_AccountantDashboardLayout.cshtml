@@ -76,10 +76,10 @@
         <!--SIDEBAR-->
         <div class="sidebar sidebarCollapsed" data-color="azure" data-background-color="azure">
             <!--
-            Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+                Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
 
-            Tip 2: you can also add an image using data-image tag
-        -->
+                Tip 2: you can also add an image using data-image tag
+            -->
             <div class="logo d-flex">
                 <a class="simple-text logo-normal" href="#" style="flex: 3;">
                     <img class="transparent" alt="" src="~/Content/assets/assets/img/logo SEA1.png">
@@ -100,7 +100,7 @@
                         </a>
                     </li>
 
-                    <li class="nav-item">
+                    <li class="nav-item hidden">
                         <a href="@Url.Action("LedgerList", "LedgerGroups")" class="nav-link nav-toggle">
                             <i class="sea-dash">
                                 <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
@@ -108,7 +108,7 @@
                             <p id="">Ledger Group </p>
                         </a>
                     </li>
-                    <li class="nav-item" >
+                    <li class="nav-item">
                         <a href="@Url.Action("StudentIndex", "AspNetStudents")" class="nav-link nav-toggle">
                             <i class="sea-dash">
                                 <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
@@ -116,7 +116,8 @@
                             <p id="">Students </p>
                         </a>
                     </li>
-                    <li class="nav-item" >
+
+                    <li class="nav-item">
                         <a href="@Url.Action("SiblingList", "AspNetStudents")" class="nav-link nav-toggle">
                             <i class="sea-dash">
                                 <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
@@ -133,32 +134,42 @@
                         </a>
                     </li>
                     @*<li class="nav-item">
+            <a href="@Url.Action("StudentsLoader", "AspNetStudents")" class="nav-link nav-toggle">
+                <i class="sea-dash">
+                    <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
+                </i>
+                <p id="">Student Loader </p>
+            </a>
+        </li>*@
+
+
+                    @*<li class="nav-item">
+            <a href="@Url.Action("NonRecurringFeeLoader", "NonRecurringFee")" class="nav-link nav-toggle">
+                <i class="sea-dash">
+                    <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
+                </i>
+                <p id="">NonRecurringFee Loader </p>
+            </a>
+        </li>*@
+
+                    @*<li class="nav-item">
+            <a href="@Url.Action("ChallanLoader", "StudentChallan")" class="nav-link nav-toggle">
+                <i class="sea-dash">
+                    <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
+                </i>
+                <p id="">Challan Loader </p>
+            </a>
+        </li>*@
+
+
+                    <li class="nav-item hidden">
                         <a href="@Url.Action("StudentsLoader", "AspNetStudents")" class="nav-link nav-toggle">
                             <i class="sea-dash">
                                 <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
                             </i>
                             <p id="">Student Loader </p>
                         </a>
-                    </li>*@
-
-
-                    @*<li class="nav-item">
-                        <a href="@Url.Action("NonRecurringFeeLoader", "NonRecurringFee")" class="nav-link nav-toggle">
-                            <i class="sea-dash">
-                                <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
-                            </i>
-                            <p id="">NonRecurringFee Loader </p>
-                        </a>
-                    </li>*@
-
-                    @*<li class="nav-item">
-                        <a href="@Url.Action("ChallanLoader", "StudentChallan")" class="nav-link nav-toggle">
-                            <i class="sea-dash">
-                                <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
-                            </i>
-                            <p id="">Challan Loader </p>
-                        </a>
-                    </li>*@
+                    </li>
 
                     <li class="nav-item">
                         <a href="@Url.Action("Index", "Class_Session")" class="nav-link nav-toggle">
@@ -179,7 +190,7 @@
                 <p id="">Journal Entry </p>
             </a>
         </li>*@
-                    <li class="nav-item">
+                    <li class="nav-item hidden">
                         <a href="@Url.Action("LedgerList", "Ledgers")" class="nav-link nav-toggle">
                             <i class="sea-dash">
                                 <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
@@ -188,7 +199,7 @@
                         </a>
                     </li>
 
-                    <li class="nav-item">
+                    <li class="nav-item hidden">
                         <a href="@Url.Action("CashIndex", "FinanceSummary")" class="nav-link nav-toggle">
                             <i class="sea-dash">
                                 <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
@@ -197,7 +208,7 @@
                         </a>
                     </li>
 
-                    <li class="nav-item">
+                    <li class="nav-item hidden">
                         <a href="@Url.Action("BankIndex", "FinanceSummary")" class="nav-link nav-toggle">
                             <i class="sea-dash">
                                 <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
@@ -216,7 +227,7 @@
                             <p>Journal Entry</p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item hidden">
                         <a href="@Url.Action("InterTransaction", "FinanceSummary")" class="nav-link nav-toggle">
 
                             <i class="sea-dash">
@@ -261,6 +272,8 @@
                             <p>Recurring Fee</p>
                         </a>
                     </li>
+
+
                     <li class="nav-item">
 
                         <a href="@Url.Action("Index", "NonRecurringFee")" class="nav-link nav-toggle">
@@ -270,7 +283,7 @@
                             <p id="">Non Recurring Fee  </p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item hidden">
                         <a href="@Url.Action("Index", "StudentFeeMultipliers")" class="nav-link nav-toggle">
 
                             <i class="sea-dash">
@@ -288,16 +301,6 @@
                             <p>Monthly Fee</p>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a href="@Url.Action("StudentFeeMonths", "StudentFeeMonths")" class="nav-link nav-toggle">
-
-                            <i class="sea-dash">
-                                <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
-                            </i>
-                            <p>Monthly Fee Loader</p>
-                        </a>
-                    </li>
-
 
                     <li class="nav-item">
                         <a href="@Url.Action("DefaulterStudent", "StudentFeeMonths")" class="nav-link nav-toggle">
@@ -310,6 +313,16 @@
                     </li>
 
                     <li class="nav-item">
+                        <a href="@Url.Action("StudentFeeMonths", "StudentFeeMonths")" class="nav-link nav-toggle">
+
+                            <i class="sea-dash">
+                                <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
+                            </i>
+                            <p>Monthly Fee Loader</p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item hidden">
                         <a href="@Url.Action("Index", "NonRecurringFeeMultipliers")" class="nav-link nav-toggle">
 
                             <i class="sea-dash">
@@ -318,7 +331,7 @@
                             <p>NonRecurring FeeMultipliers</p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item hidden">
                         <a href="@Url.Action("Index", "NonRecurringMonths")" class="nav-link nav-toggle">
 
                             <i class="sea-dash">
@@ -327,7 +340,7 @@
                             <p>NonRecurring FeeMonths</p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item hidden">
                         <a href="@Url.Action("StudentDiscountIndex", "StudentDiscounts")" class="nav-link nav-toggle">
 
                             <i class="sea-dash">
@@ -336,7 +349,7 @@
                             <p>Student Discount</p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item hidden">
                         <a href="@Url.Action("FeeDiscountIndex", "FeeDiscounts")" class="nav-link nav-toggle">
 
                             <i class="sea-dash">
@@ -345,7 +358,7 @@
                             <p>Discount Type</p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item hidden">
                         <a href="@Url.Action("Index", "EmployeeSalaryRecord")" class="nav-link nav-toggle">
 
                             <i class="sea-dash">
@@ -354,7 +367,7 @@
                             <p>Employee Salary Records</p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item hidden">
                         <a href="@Url.Action("Index", "EmployeeSalaries")" class="nav-link nav-toggle">
 
                             <i class="sea-dash">
@@ -363,7 +376,7 @@
                             <p>Employee Salary</p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item hidden">
                         <a href="@Url.Action("Index", "EmployeeAdvanceSalaries")" class="nav-link nav-toggle">
 
                             <i class="sea-dash">
@@ -372,7 +385,7 @@
                             <p>Advance Salary</p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item hidden">
                         <a href="@Url.Action("PenaltyFeeIndex", "PenaltyFees")" class="nav-link nav-toggle">
 
                             <i class="sea-dash">
@@ -381,7 +394,7 @@
                             <p>Penalty Type</p>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item hidden">
                         <a href="@Url.Action("StudentPaneltiesIndex", "StudentPenalties")" class="nav-link nav-toggle">
 
                             <i class="sea-dash">
@@ -2019,6 +2032,8 @@
 
 
         });//end of document ready
+
+
 
         function showNotification(from, align, msg, type) {
             //type = ['', 'info', 'danger', 'success', 'warning', 'rose', 'primary'];
