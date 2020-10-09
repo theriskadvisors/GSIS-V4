@@ -8,6 +8,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
+using OfficeOpenXml;
 using SEA_Application.Models;
 
 namespace SEA_Application.Controllers
@@ -222,167 +223,648 @@ namespace SEA_Application.Controllers
         }
 
         public ActionResult ChangeChallanStatus(string idlist, int LedgerId, string PaidDate)
-
         {
-            var StudentFeeDetailIds = idlist.Split(',');
-            List<challanform> listChallanForm = new List<challanform>();
-            foreach (var listitem in StudentFeeDetailIds)
+
+            var dbTransaction = db.Database.BeginTransaction();
+            try
             {
-                int item = Convert.ToInt32(listitem);
-
-                StudentFeeDetail studentFeeDetailToUpdate = db.StudentFeeDetails.Where(x => x.Id == item).FirstOrDefault();
 
 
-                if (studentFeeDetailToUpdate.Status == "Paid")
+                var StudentFeeDetailIds = idlist.Split(',');
+                List<challanform> listChallanForm = new List<challanform>();
+                foreach (var listitem in StudentFeeDetailIds)
                 {
+                    int item = Convert.ToInt32(listitem);
+
+                    StudentFeeDetail studentFeeDetailToUpdate = db.StudentFeeDetails.Where(x => x.Id == item).FirstOrDefault();
+
+
+                    if (studentFeeDetailToUpdate.Status == "Paid")
+                    {
+                    }
+                    else
+                    {
+                        studentFeeDetailToUpdate.PaidDate = Convert.ToDateTime(PaidDate);
+                        studentFeeDetailToUpdate.Status = "Paid";
+                        db.SaveChanges();
+
+                        int Month = studentFeeDetailToUpdate.Month.Value;
+
+                        StudentFee studentFeeToUpdate = db.StudentFees.Where(x => x.Id == studentFeeDetailToUpdate.StudentFeeID).FirstOrDefault();
+
+                        StudentFeeMultiplier studentFeeMultiplier = db.StudentFeeMultipliers.Where(x => x.StudentId == studentFeeToUpdate.StudentID).FirstOrDefault();
+
+                        if (Month == 1)
+                        {
+                            studentFeeMultiplier.Jan_StatusPaid = true;
+                            studentFeeMultiplier.Jan_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+                        }
+                        else if (Month == 2)
+                        {
+                            studentFeeMultiplier.Feb_StatusPaid = true;
+                            studentFeeMultiplier.Feb_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+
+                        }
+                        else if (Month == 3)
+                        {
+                            studentFeeMultiplier.Mar_StatusPaid = true;
+                            studentFeeMultiplier.Mar_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+
+                        }
+                        else if (Month == 4)
+                        {
+                            studentFeeMultiplier.April_StatusPaid = true;
+                            studentFeeMultiplier.Apr_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+
+                        }
+                        else if (Month == 5)
+                        {
+                            studentFeeMultiplier.May_StatusPaid = true;
+                            studentFeeMultiplier.May_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+
+                        }
+                        else if (Month == 6)
+                        {
+                            studentFeeMultiplier.June_StatusPaid = true;
+                            studentFeeMultiplier.Jun_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+
+                        }
+                        else if (Month == 7)
+                        {
+                            studentFeeMultiplier.July_StatusPaid = true;
+                            studentFeeMultiplier.Jul_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+
+                        }
+                        else if (Month == 8)
+                        {
+                            studentFeeMultiplier.Aug_StatusPaid = true;
+                            studentFeeMultiplier.Aug_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+
+                        }
+                        else if (Month == 9)
+                        {
+                            studentFeeMultiplier.Sep_StatusPaid = true;
+                            studentFeeMultiplier.Sep_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+
+                        }
+                        else if (Month == 10)
+                        {
+                            studentFeeMultiplier.Oct_StatusPaid = true;
+                            studentFeeMultiplier.Oct_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+
+                        }
+                        else if (Month == 11)
+                        {
+                            studentFeeMultiplier.Nov_StatusPaid = true;
+                            studentFeeMultiplier.Nov_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+
+                        }
+                        else if (Month == 12)
+                        {
+                            studentFeeMultiplier.Dec_StatusPaid = true;
+                            studentFeeMultiplier.Dec_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+
+                        }
+                        else { }
+
+                        db.SaveChanges();
+
+
+                        var paidAmount = studentFeeDetailToUpdate.PaidAmount;
+                        var id = User.Identity.GetUserId();
+                        var username = db.AspNetUsers.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault();
+                        Voucher voucher = new Voucher();
+                        var SessionId = db.AspNetSessions.Where(x => x.IsActive == true).FirstOrDefault().Id;
+                        voucher.Name = "Student Fee Paid";
+                        voucher.Notes = "";
+                        voucher.Date = GetLocalDateTime.GetLocalDateTimeFunction();
+                        voucher.CreatedBy = username;
+                        voucher.ChallanId = item;
+                        int? VoucherObj = db.Vouchers.Max(x => x.VoucherNo);
+                        voucher.VoucherNo = Convert.ToInt32(VoucherObj) + 1;
+                        db.Vouchers.Add(voucher);
+                        db.SaveChanges();
+
+                        var Leadger = db.Ledgers.Where(x => x.Name == "Account Receivable").FirstOrDefault();
+                        int AccountReceivableId = Leadger.Id;
+                        decimal? CurrentBalance = Leadger.CurrentBalance;
+                        VoucherRecord voucherRecord = new VoucherRecord();
+                        decimal? AfterBalance = CurrentBalance - Convert.ToDecimal(paidAmount);
+                        voucherRecord.LedgerId = AccountReceivableId;
+                        voucherRecord.Type = "Cr";
+                        voucherRecord.Amount = Convert.ToDecimal(paidAmount);
+                        voucherRecord.CurrentBalance = CurrentBalance;
+                        voucherRecord.AfterBalance = AfterBalance;
+                        voucherRecord.VoucherId = voucher.Id;
+                        voucherRecord.UserType = "Student";
+                        voucherRecord.UserId = studentFeeDetailToUpdate.StudentFee.AspNetStudent.Id.ToString();
+                        voucherRecord.BranchId = studentFeeDetailToUpdate.StudentFee.AspNetStudent.BranchId;
+                        voucherRecord.Description = "Fee added of student";
+                        Leadger.CurrentBalance = AfterBalance;
+                        db.VoucherRecords.Add(voucherRecord);
+                        db.SaveChanges();
+
+
+                        VoucherRecord voucherRecord1 = new VoucherRecord();
+                        var LedgerCash = db.Ledgers.Where(x => x.Id == LedgerId).FirstOrDefault();
+                        decimal? CurrentBalanceOfCash = LedgerCash.CurrentBalance;
+                        decimal? AfterBalanceOfCash = CurrentBalanceOfCash + Convert.ToDecimal(paidAmount);
+                        voucherRecord1.LedgerId = LedgerCash.Id;
+                        voucherRecord1.Type = "Dr";
+                        voucherRecord1.Amount = Convert.ToDecimal(paidAmount);
+                        voucherRecord1.CurrentBalance = CurrentBalanceOfCash;
+                        voucherRecord1.AfterBalance = AfterBalanceOfCash;
+                        voucherRecord1.VoucherId = voucher.Id;
+                        voucherRecord1.Description = "";
+                        voucherRecord1.UserType = null;
+                        voucherRecord1.UserId = null;
+                        voucherRecord1.BranchId = studentFeeDetailToUpdate.StudentFee.AspNetStudent.BranchId;
+                        LedgerCash.CurrentBalance = AfterBalanceOfCash;
+
+                        db.VoucherRecords.Add(voucherRecord1);
+                        db.SaveChanges();
+
+                    }
                 }
-                else
-                {
-                    studentFeeDetailToUpdate.PaidDate = Convert.ToDateTime(PaidDate);
-                    studentFeeDetailToUpdate.Status = "Paid";
-                    db.SaveChanges();
-
-                    int Month = studentFeeDetailToUpdate.Month.Value;
-
-                    StudentFee studentFeeToUpdate = db.StudentFees.Where(x => x.Id == studentFeeDetailToUpdate.StudentFeeID).FirstOrDefault();
-
-                    StudentFeeMultiplier studentFeeMultiplier = db.StudentFeeMultipliers.Where(x => x.StudentId == studentFeeToUpdate.StudentID).FirstOrDefault();
-
-                    if (Month == 1)
-                    {
-                        studentFeeMultiplier.Jan_StatusPaid = true;
-                        studentFeeMultiplier.Jan_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
-                    }
-                    else if (Month == 2)
-                    {
-                        studentFeeMultiplier.Feb_StatusPaid = true;
-                        studentFeeMultiplier.Feb_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
-
-                    }
-                    else if (Month == 3)
-                    {
-                        studentFeeMultiplier.Mar_StatusPaid = true;
-                        studentFeeMultiplier.Mar_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
-
-                    }
-                    else if (Month == 4)
-                    {
-                        studentFeeMultiplier.April_StatusPaid = true;
-                        studentFeeMultiplier.Apr_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
-
-                    }
-                    else if (Month == 5)
-                    {
-                        studentFeeMultiplier.May_StatusPaid = true;
-                        studentFeeMultiplier.May_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
-
-                    }
-                    else if (Month == 6)
-                    {
-                        studentFeeMultiplier.June_StatusPaid = true;
-                        studentFeeMultiplier.Jun_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
-
-                    }
-                    else if (Month == 7)
-                    {
-                        studentFeeMultiplier.July_StatusPaid = true;
-                        studentFeeMultiplier.Jul_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
-
-                    }
-                    else if (Month == 8)
-                    {
-                        studentFeeMultiplier.Aug_StatusPaid = true;
-                        studentFeeMultiplier.Aug_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
-
-                    }
-                    else if (Month == 9)
-                    {
-                        studentFeeMultiplier.Sep_StatusPaid = true;
-                        studentFeeMultiplier.Sep_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
-
-                    }
-                    else if (Month == 10)
-                    {
-                        studentFeeMultiplier.Oct_StatusPaid = true;
-                        studentFeeMultiplier.Oct_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
-
-                    }
-                    else if (Month == 11)
-                    {
-                        studentFeeMultiplier.Nov_StatusPaid = true;
-                        studentFeeMultiplier.Nov_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
-
-                    }
-                    else if (Month == 12)
-                    {
-                        studentFeeMultiplier.Dec_StatusPaid = true;
-                        studentFeeMultiplier.Dec_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
-
-                    }
-                    else { }
-
-                    db.SaveChanges();
 
 
-                    var paidAmount = studentFeeDetailToUpdate.PaidAmount;
-                    var id = User.Identity.GetUserId();
-                    var username = db.AspNetUsers.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault();
-                    Voucher voucher = new Voucher();
-                    var SessionId = db.AspNetSessions.Where(x => x.IsActive == true).FirstOrDefault().Id;
-                    voucher.Name = "Student Fee Paid";
-                    voucher.Notes = "";
-                    voucher.Date = GetLocalDateTime.GetLocalDateTimeFunction();
-                    voucher.CreatedBy = username;
-                    int? VoucherObj = db.Vouchers.Max(x => x.VoucherNo);
-                    voucher.VoucherNo = Convert.ToInt32(VoucherObj) + 1;
-                    db.Vouchers.Add(voucher);
-                    db.SaveChanges();
+            }//end of try block 
 
-                    var Leadger = db.Ledgers.Where(x => x.Name == "Account Receivable").FirstOrDefault();
-                    int AccountReceivableId = Leadger.Id;
-                    decimal? CurrentBalance = Leadger.CurrentBalance;
-                    VoucherRecord voucherRecord = new VoucherRecord();
-                    decimal? AfterBalance = CurrentBalance - Convert.ToDecimal(paidAmount);
-                    voucherRecord.LedgerId = AccountReceivableId;
-                    voucherRecord.Type = "Cr";
-                    voucherRecord.Amount = Convert.ToDecimal(paidAmount);
-                    voucherRecord.CurrentBalance = CurrentBalance;
-                    voucherRecord.AfterBalance = AfterBalance;
-                    voucherRecord.VoucherId = voucher.Id;
-                    voucherRecord.UserType = "Student";
-                    voucherRecord.UserId = studentFeeDetailToUpdate.StudentFee.AspNetStudent.Id.ToString();
-                    voucherRecord.BranchId = studentFeeDetailToUpdate.StudentFee.AspNetStudent.BranchId;
-                    voucherRecord.Description = "Fee added of student";
-                    Leadger.CurrentBalance = AfterBalance;
-                    db.VoucherRecords.Add(voucherRecord);
-                    db.SaveChanges();
-
-
-                    VoucherRecord voucherRecord1 = new VoucherRecord();
-                    var LedgerCash = db.Ledgers.Where(x => x.Id == LedgerId).FirstOrDefault();
-                    decimal? CurrentBalanceOfCash = LedgerCash.CurrentBalance;
-                    decimal? AfterBalanceOfCash = CurrentBalanceOfCash + Convert.ToDecimal(paidAmount);
-                    voucherRecord1.LedgerId = LedgerCash.Id;
-                    voucherRecord1.Type = "Dr";
-                    voucherRecord1.Amount = Convert.ToDecimal(paidAmount);
-                    voucherRecord1.CurrentBalance = CurrentBalanceOfCash;
-                    voucherRecord1.AfterBalance = AfterBalanceOfCash;
-                    voucherRecord1.VoucherId = voucher.Id;
-                    voucherRecord1.Description = "";
-                    voucherRecord1.UserType = null;
-                    voucherRecord1.UserId = null;
-                    voucherRecord1.BranchId = studentFeeDetailToUpdate.StudentFee.AspNetStudent.BranchId;
-                    LedgerCash.CurrentBalance = AfterBalanceOfCash;
-
-                    db.VoucherRecords.Add(voucherRecord1);
-                    db.SaveChanges();
-
-                }
+            catch (Exception Ex)
+            {
+                dbTransaction.Dispose();
+                ViewBag.Error = "Something went wrong";
             }
+
+            dbTransaction.Commit();
             return RedirectToAction("Index", "StudentFeeMonths");
 
         }
 
+        public ActionResult DefaulterStudent()
+        {
+      
+
+            return View();
+        }
+
+        public ActionResult DefaulterStudentsList()
+        {
+            TimeZone time2 = TimeZone.CurrentTimeZone;
+            DateTime test = time2.ToUniversalTime(DateTime.Now);
+            var pakistan = TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time");
+            DateTime? pakistantime = TimeZoneInfo.ConvertTimeFromUtc(test, pakistan);
+
+            var DefaulterStudents = (from student in db.AspNetStudents
+                                     join studentFeeDetails in db.StudentFeeDetails on student.Id equals studentFeeDetails.StudentFee.AspNetStudent.Id
+                                     where studentFeeDetails.Status != "Paid" && studentFeeDetails.ChallanDueDate < pakistantime && student.AspNetUser.StatusId !=2
+                                     select new
+                                     {
+                                         student.AspNetUser.Name,
+                                         student.AspNetUser.UserName,
+                                         studentFeeDetails.ChallanDueDate,
+                                         studentFeeDetails.Month,
+                                         studentFeeDetails.Multiplier,
+                                         studentFeeDetails.FurtherDiscount,
+                                         studentFeeDetails.Id,
+                                         BranchName = student.AspNetBranch.Name,
+                                         ClassName = student.AspNetClass.Name,
+
+                                     }).ToList();
+            return Json(DefaulterStudents, JsonRequestBehavior.AllowGet);
+        }
+
+
+
+        public class Error
+        {
+            public string ErrorRow { get; set; }
+            public List<ErrorName> ErrorNamesList { get; set; } = new List<ErrorName>();
+        }
+        public class ErrorName
+        {
+            public string Name { get; set; }
+        }
+        public ActionResult MonthlyFeeFromFile()
+        {
+            int? RowNumber = null;
+            var StudentFeeMsg = "";
+
+            HttpPostedFileBase file = Request.Files["StudentLoaderFile"];
+            if ((file != null) && (file.ContentLength > 0) && !string.IsNullOrEmpty(file.FileName))
+            {
+                string fileName = file.FileName;
+                string fileContentType = file.ContentType;
+                byte[] fileBytes = new byte[file.ContentLength];
+                var data = file.InputStream.Read(fileBytes, 0, Convert.ToInt32(file.ContentLength));
+            }
+            using (var package = new ExcelPackage(file.InputStream))
+            {
+                List<Error> Errors = new List<Error>();
+
+                var currentSheet = package.Workbook.Worksheets;
+                var workSheet = currentSheet.First();
+                var noOfCol = workSheet.Dimension.End.Column;
+                var noOfRow = workSheet.Dimension.End.Row;
+                ApplicationDbContext context = new ApplicationDbContext();
+                for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
+                {
+                    Error ErrorObj = new Error();
+
+                    List<ErrorName> ErrorsList = new List<ErrorName>();
+
+                    RowNumber = rowIterator;
+
+                    var Name = workSheet.Cells[rowIterator, 1].Value;
+                    var UserName = workSheet.Cells[rowIterator, 2].Value;
+                    var ChllanId = workSheet.Cells[rowIterator, 3].Value;
+                    var PaidDate = workSheet.Cells[rowIterator, 4].Value;
+                    var LedgerName = workSheet.Cells[rowIterator, 5].Value;
+
+                    if (Name == null && UserName == null && ChllanId == null && PaidDate == null && LedgerName == null)
+                    {
+                        continue;
+                    }
+
+                    if (Name == null)
+                    {
+                        StudentFeeMsg = ":Please Enter Name";
+                        ErrorsList.Add(new ErrorName { Name = "Please Enter Name" });
+                    }
+                    bool IsUserNameExist = false;
+
+                    if (UserName == null)
+                    {
+                        IsUserNameExist = false;
+                        StudentFeeMsg = ":Please Enter Roll No";
+                        ErrorsList.Add(new ErrorName { Name = "Please Enter Roll No" });
+                    }
+                    else
+                    {
+                        var UserNameExist = (from user in db.AspNetUsers //db.AspNetUsers.Where(x=>x.AspNetUser.UserName ==UserName).FirstOrDefault();
+                                             join student in db.AspNetStudents on user.Id equals student.UserId
+                                             where user.UserName == UserName.ToString()
+                                             select user).FirstOrDefault();
+
+                        if (UserNameExist == null)
+                        {
+
+                            StudentFeeMsg = ":Please Enter Valid Roll No ";
+
+                            ErrorsList.Add(new ErrorName { Name = "Pleae Enter Valid Roll No " });
+                        }
+                        else
+                        {
+                            IsUserNameExist = true;
+                        }
+
+                    }
+
+                    if (ChllanId == null)
+                    {
+                        StudentFeeMsg = ":Please Enter Challan Id";
+                        ErrorsList.Add(new ErrorName { Name = "Please Enter Challan Id" });
+                    }
+                    else
+                    {
+                        int ChllanIdToInteger = 0;
+                        try
+                        {
+                            ChllanIdToInteger = Convert.ToInt32(ChllanId);
+                        }
+                        catch (Exception ex)
+                        {
+                            StudentFeeMsg = "Error";
+                            ErrorsList.Add(new ErrorName { Name = "Challan Id Should be in numbers" });
+                        }
+
+                        StudentFeeDetail studentFeeDetails = db.StudentFeeDetails.Where(x => x.Id == ChllanIdToInteger).FirstOrDefault();
+
+                        if (studentFeeDetails == null)
+                        {
+                            StudentFeeMsg = ":Challan Not found";
+                            ErrorsList.Add(new ErrorName { Name = "Challan Not found" });
+
+                        }
+                        else
+                        {
+
+                            if (studentFeeDetails.Status == "Paid")
+                            {
+                                StudentFeeMsg = ":Challan is Already Paid";
+
+                                ErrorsList.Add(new ErrorName { Name = "Challan is already paid" });
+                            }
+
+                            var StudentFeeUserName = studentFeeDetails.StudentFee.AspNetStudent.AspNetUser.UserName;
+
+                            if (IsUserNameExist == true)
+                            {
+
+                                if (StudentFeeUserName == UserName.ToString())
+                                {
+                                }
+                                else
+                                {
+                                    StudentFeeMsg = "Dont have a challan on this Id";
+
+                                    ErrorsList.Add(new ErrorName { Name = "Challan id is not matching the given roll no." });
+                                }
+                            }
+
+
+                        }
+
+
+
+                    }// end of else 
+
+                    if (PaidDate == null)
+                    {
+                        StudentFeeMsg = ":Please Enter Paid Date";
+                        ErrorsList.Add(new ErrorName { Name = "Please Enter Paid Date" });
+                    }
+
+                    else
+                    {
+                        try
+                        {
+
+                            DateTime PaidDateInDateTime = Convert.ToDateTime(PaidDate.ToString());
+                        }
+                        catch (Exception Ex)
+                        {
+                            StudentFeeMsg = "Please Enter date in mm/dd/yyyy format";
+                            ErrorsList.Add(new ErrorName { Name = "Please Enter date in mm/dd/yyyy format" });
+
+                        }
+
+                    }
+
+                    if (LedgerName == null)
+                    {
+                        StudentFeeMsg = ":Please Enter Ledger Name";
+                        ErrorsList.Add(new ErrorName { Name = "Please Enter Ledger Name" });
+                    }
+                    else
+                    {
+
+                        var LedgerNameInString = LedgerName.ToString();
+                        //var Ledger = db.Ledgers.Where(x => x.Name == LedgerNameInString).FirstOrDefault();
+                        var Ledger = db.LedgerGroups.Where(x => x.Ledgers.Any(y => y.Name == LedgerNameInString)).FirstOrDefault();
+
+                        if (Ledger == null)
+                        {
+                            StudentFeeMsg = ":Ledger not exist";
+                            ErrorsList.Add(new ErrorName { Name = "Ledger not Exist " });
+
+                        }
+                    }
+
+
+                    if (ErrorsList.Count() != 0)
+                    {
+
+                        ErrorObj.ErrorRow = "Error in Row " + rowIterator;
+                        ErrorObj.ErrorNamesList.AddRange(ErrorsList);
+
+                        Errors.Add(ErrorObj);
+
+                    }
+
+
+                }//end of for loop
+
+
+                if (StudentFeeMsg != "")
+                {
+                    ViewBag.ErrorsList = Errors;
+
+                    return View("StudentFeeMonths", Errors);
+                }
+                else
+                {
+
+                    var dbTransaction = db.Database.BeginTransaction();
+                    try
+                    {
+
+                        for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
+                        {
+                            var Name = workSheet.Cells[rowIterator, 1].Value;
+                            var UserName = workSheet.Cells[rowIterator, 2].Value;
+                            var ChallanId = workSheet.Cells[rowIterator, 3].Value;
+                            var PaidDate = workSheet.Cells[rowIterator, 4].Value;
+                            var LedgerName = workSheet.Cells[rowIterator, 5].Value;
+
+                            if (Name == null && UserName == null && ChallanId == null && PaidDate == null && LedgerName == null)
+                            {
+                                continue;
+                            }
+
+                            UserName = UserName.ToString();
+                            ChallanId = Convert.ToInt32(ChallanId);
+                            PaidDate = Convert.ToDateTime(PaidDate.ToString());
+
+                            LedgerName = LedgerName.ToString();
+
+                            var LedgerId = db.Ledgers.Where(x => x.Name == LedgerName.ToString()).FirstOrDefault().Id;
+
+                            List<challanform> listChallanForm = new List<challanform>();
+
+                            int item = Convert.ToInt32(ChallanId);
+
+                            StudentFeeDetail studentFeeDetailToUpdate = db.StudentFeeDetails.Where(x => x.Id == item).FirstOrDefault();
+
+
+                            if (studentFeeDetailToUpdate.Status == "Paid")
+                            {
+                            }
+                            else
+                            {
+                                studentFeeDetailToUpdate.PaidDate = Convert.ToDateTime(PaidDate);
+                                studentFeeDetailToUpdate.Status = "Paid";
+                                db.SaveChanges();
+
+                                int Month = studentFeeDetailToUpdate.Month.Value;
+
+                                StudentFee studentFeeToUpdate = db.StudentFees.Where(x => x.Id == studentFeeDetailToUpdate.StudentFeeID).FirstOrDefault();
+
+                                StudentFeeMultiplier studentFeeMultiplier = db.StudentFeeMultipliers.Where(x => x.StudentId == studentFeeToUpdate.StudentID).FirstOrDefault();
+
+                                if (Month == 1)
+                                {
+                                    studentFeeMultiplier.Jan_StatusPaid = true;
+                                    studentFeeMultiplier.Jan_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+                                }
+                                else if (Month == 2)
+                                {
+                                    studentFeeMultiplier.Feb_StatusPaid = true;
+                                    studentFeeMultiplier.Feb_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+
+                                }
+                                else if (Month == 3)
+                                {
+                                    studentFeeMultiplier.Mar_StatusPaid = true;
+                                    studentFeeMultiplier.Mar_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+
+                                }
+                                else if (Month == 4)
+                                {
+                                    studentFeeMultiplier.April_StatusPaid = true;
+                                    studentFeeMultiplier.Apr_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+
+                                }
+                                else if (Month == 5)
+                                {
+                                    studentFeeMultiplier.May_StatusPaid = true;
+                                    studentFeeMultiplier.May_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+
+                                }
+                                else if (Month == 6)
+                                {
+                                    studentFeeMultiplier.June_StatusPaid = true;
+                                    studentFeeMultiplier.Jun_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+
+                                }
+                                else if (Month == 7)
+                                {
+                                    studentFeeMultiplier.July_StatusPaid = true;
+                                    studentFeeMultiplier.Jul_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+
+                                }
+                                else if (Month == 8)
+                                {
+                                    studentFeeMultiplier.Aug_StatusPaid = true;
+                                    studentFeeMultiplier.Aug_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+
+                                }
+                                else if (Month == 9)
+                                {
+                                    studentFeeMultiplier.Sep_StatusPaid = true;
+                                    studentFeeMultiplier.Sep_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+
+                                }
+                                else if (Month == 10)
+                                {
+                                    studentFeeMultiplier.Oct_StatusPaid = true;
+                                    studentFeeMultiplier.Oct_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+
+                                }
+                                else if (Month == 11)
+                                {
+                                    studentFeeMultiplier.Nov_StatusPaid = true;
+                                    studentFeeMultiplier.Nov_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+
+                                }
+                                else if (Month == 12)
+                                {
+                                    studentFeeMultiplier.Dec_StatusPaid = true;
+                                    studentFeeMultiplier.Dec_PaidAmount = studentFeeDetailToUpdate.PaidAmount;
+
+                                }
+                                else { }
+
+                                db.SaveChanges();
+
+
+                                var paidAmount = studentFeeDetailToUpdate.PaidAmount;
+                                var id = User.Identity.GetUserId();
+                                var username = db.AspNetUsers.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault();
+                                Voucher voucher = new Voucher();
+                                var SessionId = db.AspNetSessions.Where(x => x.IsActive == true).FirstOrDefault().Id;
+                                voucher.Name = "Student Fee Paid";
+                                voucher.Notes = "";
+                                voucher.Date = GetLocalDateTime.GetLocalDateTimeFunction();
+                                voucher.CreatedBy = username;
+                                voucher.ChallanId = item;
+                                int? VoucherObj = db.Vouchers.Max(x => x.VoucherNo);
+                                voucher.VoucherNo = Convert.ToInt32(VoucherObj) + 1;
+                                db.Vouchers.Add(voucher);
+                                db.SaveChanges();
+
+                                var Leadger = db.Ledgers.Where(x => x.Name == "Account Receivable").FirstOrDefault();
+                                int AccountReceivableId = Leadger.Id;
+                                decimal? CurrentBalance = Leadger.CurrentBalance;
+                                VoucherRecord voucherRecord = new VoucherRecord();
+                                decimal? AfterBalance = CurrentBalance - Convert.ToDecimal(paidAmount);
+                                voucherRecord.LedgerId = AccountReceivableId;
+                                voucherRecord.Type = "Cr";
+                                voucherRecord.Amount = Convert.ToDecimal(paidAmount);
+                                voucherRecord.CurrentBalance = CurrentBalance;
+                                voucherRecord.AfterBalance = AfterBalance;
+                                voucherRecord.VoucherId = voucher.Id;
+                                voucherRecord.UserType = "Student";
+                                voucherRecord.UserId = studentFeeDetailToUpdate.StudentFee.AspNetStudent.Id.ToString();
+                                voucherRecord.BranchId = studentFeeDetailToUpdate.StudentFee.AspNetStudent.BranchId;
+                                voucherRecord.Description = "Fee added of student";
+                                Leadger.CurrentBalance = AfterBalance;
+                                db.VoucherRecords.Add(voucherRecord);
+                                db.SaveChanges();
+
+
+                                VoucherRecord voucherRecord1 = new VoucherRecord();
+                                var LedgerCash = db.Ledgers.Where(x => x.Id == LedgerId).FirstOrDefault();
+                                decimal? CurrentBalanceOfCash = LedgerCash.CurrentBalance;
+                                decimal? AfterBalanceOfCash = CurrentBalanceOfCash + Convert.ToDecimal(paidAmount);
+                                voucherRecord1.LedgerId = LedgerCash.Id;
+                                voucherRecord1.Type = "Dr";
+                                voucherRecord1.Amount = Convert.ToDecimal(paidAmount);
+                                voucherRecord1.CurrentBalance = CurrentBalanceOfCash;
+                                voucherRecord1.AfterBalance = AfterBalanceOfCash;
+                                voucherRecord1.VoucherId = voucher.Id;
+                                voucherRecord1.Description = "";
+                                voucherRecord1.UserType = null;
+                                voucherRecord1.UserId = null;
+                                voucherRecord1.BranchId = studentFeeDetailToUpdate.StudentFee.AspNetStudent.BranchId;
+                                LedgerCash.CurrentBalance = AfterBalanceOfCash;
+
+                                db.VoucherRecords.Add(voucherRecord1);
+                                db.SaveChanges();
+
+                            }
+
+                        }//end of loop
+
+
+
+                    }//end of try block 
+                    catch (Exception ex)
+                    {
+
+                        dbTransaction.Dispose();
+
+                        List<Error> Errors1 = new List<Error>();
+                        Errors1 = null;
+
+                        ViewBag.Error = "SomeThing Went Wrong";
+                        return View("StudentFeeMonths", Errors1);
+
+                    }
+
+                    dbTransaction.Commit();
+
+                    return RedirectToAction("Index", "StudentFeeMonths");
+
+
+                }// end of else block ;
+
+
+            }//end of using 
+
+
+
+
+            return View();
+        }
+
+        public ActionResult StudentFeeMonths()
+        {
+
+
+
+            return View();
+        }
         public ActionResult ChallanForm()
         {
             return View();
@@ -826,7 +1308,7 @@ namespace SEA_Application.Controllers
         public ActionResult GetAllBankCashLedgers()
         {
 
-            var AllBankCashLedgers = db.Ledgers.Where(x => x.LedgerGroup.Name == "Bank" || x.LedgerGroup.Name == "Cash").Select(x=> new { x.Id, x.Name, x.LedgerGroupId}).ToList();
+            var AllBankCashLedgers = db.Ledgers.Where(x => x.LedgerGroup.Name == "Bank" || x.LedgerGroup.Name == "Cash").Select(x => new { x.Id, x.Name, x.LedgerGroupId }).ToList();
 
             return Json(AllBankCashLedgers, JsonRequestBehavior.AllowGet);
         }

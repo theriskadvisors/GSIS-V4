@@ -114,7 +114,7 @@ namespace SEA_Application.Controllers
         public async Task<ActionResult> SaveStudentsFromFile(RegisterViewModel model)
         {
             // if (ModelState.IsValid)
-            
+
             var dbTransaction = db.Database.BeginTransaction();
             int? RowNumber = null;
             int? ColumnNumber = null;
@@ -144,10 +144,10 @@ namespace SEA_Application.Controllers
                         var Name = workSheet.Cells[rowIterator, 1].Value.ToString();
                         var UserName = workSheet.Cells[rowIterator, 2].Value.ToString();
                         var UserNameExist = (from user in db.AspNetUsers //db.AspNetUsers.Where(x=>x.AspNetUser.UserName ==UserName).FirstOrDefault();
-                                            join student in db.AspNetStudents on user.Id equals student.UserId
-                                            where user.UserName == UserName
-                                            select user).FirstOrDefault();
-                                           
+                                             join student in db.AspNetStudents on user.Id equals student.UserId
+                                             where user.UserName == UserName
+                                             select user).FirstOrDefault();
+
                         if (UserNameExist != null)
                         {
                             var AdmissionFee = workSheet.Cells[rowIterator, 3].Value;
@@ -372,8 +372,8 @@ namespace SEA_Application.Controllers
                                     studentFee.DiscountAdmissionFeeAmount = Convert.ToDouble(DiscountedAdmissionFee);
                                     studentFee.DiscountTotalAmount = Convert.ToDouble(TotalFeeAfterDiscount);
                                     studentFee.TotalWithoutAdmission = Convert.ToDouble(TotalFeeAfterDiscountWithoutAdmission);
-                                  
-                                    studentFee.StudentID =StudentExist.Id;
+
+                                    studentFee.StudentID = StudentExist.Id;
                                     studentFee.CreationDate = GetLocalDateTime.GetLocalDateTimeFunction();
                                     int ActiveSessionId = db.AspNetSessions.Where(x => x.IsActive == true).FirstOrDefault().Id;
                                     studentFee.SessionID = ActiveSessionId;
@@ -384,8 +384,8 @@ namespace SEA_Application.Controllers
 
                                     StudentFeeMultiplier studentFeeMultiplier = new StudentFeeMultiplier();
 
-                                    studentFeeMultiplier.Jan_Multiplier = Convert.ToDouble( JanurayMultiplier);
-                                    studentFeeMultiplier.Feb_Multiplier = Convert.ToDouble( FebruaryMultiplier);
+                                    studentFeeMultiplier.Jan_Multiplier = Convert.ToDouble(JanurayMultiplier);
+                                    studentFeeMultiplier.Feb_Multiplier = Convert.ToDouble(FebruaryMultiplier);
                                     studentFeeMultiplier.Mar_Multiplier = Convert.ToDouble(MarchMultiplier);
                                     studentFeeMultiplier.April__Multiplier = Convert.ToDouble(AprilMultiplier);
                                     studentFeeMultiplier.May_Multiplier = Convert.ToDouble(MayMultiplier);
@@ -446,7 +446,7 @@ namespace SEA_Application.Controllers
                 //   ModelState.AddModelError("Error", e.InnerException);
                 dbTransaction.Dispose();
 
-                ViewBag.Error = "Error in Row " + RowNumber+ " "+ StudentFeeMsg;
+                ViewBag.Error = "Error in Row " + RowNumber + " " + StudentFeeMsg;
 
                 return View("StudentsLoader");
             }
@@ -490,11 +490,11 @@ namespace SEA_Application.Controllers
 
                 int totalCount = 0;
 
-                if (param.sSearch != null) 
+                if (param.sSearch != null)
                 {
                     totalCount = db.AllStudentsList().Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Count();
 
-                    var studentList = db.AllStudentsList().Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch) ).Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
+                    var studentList = db.AllStudentsList().Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
                     return Json(new
                     {
                         aaData = studentList,
@@ -507,7 +507,7 @@ namespace SEA_Application.Controllers
                 else
                 {
                     totalCount = db.AllStudentsList().Count();
-                    var studentList = db.AllStudentsList().Skip((pageNo-1)*param.iDisplayLength).Take(param.iDisplayLength).ToList();
+                    var studentList = db.AllStudentsList().Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
                     return Json(new
                     {
                         aaData = studentList,
@@ -519,7 +519,7 @@ namespace SEA_Application.Controllers
                 }
 
 
-              
+
 
             }
 
@@ -546,7 +546,7 @@ namespace SEA_Application.Controllers
 
             if (param.sSearch != null)
             {
-                
+
 
                 totalCount1 = (from stdnt in db.AspNetStudents
                                join usr in db.AspNetUsers on stdnt.UserId equals usr.Id
@@ -565,7 +565,7 @@ namespace SEA_Application.Controllers
                                    join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
                                    where stdnt.UserId == usr.Id && usr.StatusId != 2 && stdnt.BranchId == branchId
                                    select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name }).Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Distinct().OrderBy(x => x.Name).Skip((pageNo1 - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
-              
+
                 return Json(new
                 {
                     aaData = studentList,
@@ -579,7 +579,7 @@ namespace SEA_Application.Controllers
 
             else
             {
-               
+
                 totalCount1 = (from stdnt in db.AspNetStudents
                                join usr in db.AspNetUsers on stdnt.UserId equals usr.Id
                                join stufee in db.StudentFees
@@ -588,7 +588,7 @@ namespace SEA_Application.Controllers
                                join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
                                where stdnt.UserId == usr.Id && usr.StatusId != 2 && stdnt.BranchId == branchId
                                select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name }).Distinct().Count();
-              
+
 
                 var studentList = (from stdnt in db.AspNetStudents
                                    join usr in db.AspNetUsers on stdnt.UserId equals usr.Id
@@ -597,8 +597,8 @@ namespace SEA_Application.Controllers
                                    from stufee in egroup.DefaultIfEmpty()
                                    join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
                                    where stdnt.UserId == usr.Id && usr.StatusId != 2 && stdnt.BranchId == branchId
-                                   select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name }).Distinct().OrderBy(x=>x.Name).Skip((pageNo1 - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
-             
+                                   select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name }).Distinct().OrderBy(x => x.Name).Skip((pageNo1 - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
+
 
                 return Json(new
                 {
@@ -630,6 +630,89 @@ namespace SEA_Application.Controllers
 
 
         }
+        public ActionResult SiblingList()
+        {
+
+            var AllSiblingIds = db.AspNetStudents.OrderBy(x => x.SiblingId).Select(x => x.SiblingId).ToList();
+
+            return View();
+        }
+
+        public ActionResult GetSiblingStudentsById(string SiblingId)
+        {
+            var AllSiblingStudentsList = db.AspNetStudents.Where(x => x.SiblingId == SiblingId).Select(x => new
+            {
+                x.AspNetUser.Name,
+                x.AspNetUser.UserName,
+                x.CellNo,
+                BranchName = x.AspNetBranch.Name,
+                ClassName = x.AspNetClass.Name,
+                x.SiblingId,
+            }).ToList();
+
+            return Json(AllSiblingStudentsList, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult AllSiblingIds()
+        {
+            //     var AllSiblingIds =      db.SiblingIds.tolist
+            var AllSiblingIds = db.SiblingIds().ToList();
+
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(AllSiblingIds);
+
+            return Content(status);
+        }
+
+
+
+
+        [HttpGet]
+        public ActionResult CreateSiblings()
+        {
+
+
+
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult CreateSiblings(int? a)
+        {
+
+            var Students = Request.Form["StudentId"].Split(',').ToList();
+            var SiblingId = Request.Form["SiblingId"];
+
+            var SiblingRecord = db.AspNetStudents.Where(x => x.SiblingId == SiblingId).FirstOrDefault();
+
+                ViewBag.Error = null;
+         
+                foreach (var item in Students)
+                {
+                    int StudentId = Convert.ToInt32(item);
+
+                    var StudentToUpdate = db.AspNetStudents.Where(x => x.Id == StudentId).FirstOrDefault();
+                    StudentToUpdate.SiblingId = SiblingId;
+                    db.SaveChanges();
+                }
+           
+            
+            return RedirectToAction("SiblingList");
+        }
+
+        public ActionResult SiblingExist(string SiblingId)
+        {
+
+            var SiblingExist = db.AspNetStudents.Where(x => x.SiblingId == SiblingId).FirstOrDefault();
+            var ErrorMsg = "No";
+            if (SiblingExist != null)
+            {
+                ErrorMsg = "Yes";
+            }
+
+
+            return Json(ErrorMsg, JsonRequestBehavior.AllowGet);
+        }
+
 
 
         public JsonResult GetAllStudents()
@@ -801,15 +884,15 @@ namespace SEA_Application.Controllers
 
             List<AllBranchClass> AllBranchClasses = new List<AllBranchClass>();
 
-            var AllBranches =  db.AspNetBranches.ToList();
+            var AllBranches = db.AspNetBranches.ToList();
             var AllClasses = db.AspNetClasses.ToList();
 
 
-            foreach(var branch in AllBranches)
+            foreach (var branch in AllBranches)
             {
-                var BranchClasses = db.AspNetBranch_Class.Where(x => x.BranchId == branch.Id).ToList() ;
+                var BranchClasses = db.AspNetBranch_Class.Where(x => x.BranchId == branch.Id).ToList();
 
-                foreach(var branchClass in BranchClasses)
+                foreach (var branchClass in BranchClasses)
                 {
                     AllBranchClass obj = new AllBranchClass();
 
@@ -822,7 +905,7 @@ namespace SEA_Application.Controllers
 
 
             }
-                    
+
 
             //var AllBranchClasses = (from clas in db.AspNetClasses
             //                        join branchClass in db.AspNetBranch_Class on clas.Id equals branchClass.ClassId
@@ -837,11 +920,11 @@ namespace SEA_Application.Controllers
         public class AllBranchClass
         {
             public int BranchClassId { get; set; }
-            public string BranchClassName  { get; set; }
+            public string BranchClassName { get; set; }
         }
 
         public ActionResult CheckStudentClassAndCourses(string StudentId)
-        { 
+        {
             AspNetStudent Student = db.AspNetStudents.Where(x => x.UserId == StudentId).FirstOrDefault();
 
             string IsStudentEntroll = "No";
@@ -857,7 +940,7 @@ namespace SEA_Application.Controllers
                 //}
 
                 var AllStudents = db.AspNetStudent_Enrollments.Where(x => x.StudentId == Student.Id).FirstOrDefault();
-               // var className = db.AspNetStudent_Enrollments.Where(x => x.StudentId == Student.Id).Select(x => x.AspNetClass_Courses.AspNetClass.Name).FirstOrDefault();
+                // var className = db.AspNetStudent_Enrollments.Where(x => x.StudentId == Student.Id).Select(x => x.AspNetClass_Courses.AspNetClass.Name).FirstOrDefault();
 
                 var className = db.AspNetClasses.Where(x => x.Id == Student.ClassId).FirstOrDefault().Name;
                 ClassId = Student.ClassId.ToString();
@@ -914,7 +997,7 @@ namespace SEA_Application.Controllers
             //                  where classCourses.ClassId == ClassId && classCourses.IsMandatory == false && classCourses.IsActive == true
             //                  select new { classCourses.Id, course.Name };
 
-           var BranchClass =  db.AspNetBranch_Class.Where(x => x.Id == ClassId).FirstOrDefault().ClassId;
+            var BranchClass = db.AspNetBranch_Class.Where(x => x.Id == ClassId).FirstOrDefault().ClassId;
             var CoursesList = db.AspNetClass_Courses.Where(x => x.ClassId == BranchClass).Select(x => new { x.Id, x.AspNetCours.Name }).OrderBy(x => x.Name).Distinct();
 
             string status = Newtonsoft.Json.JsonConvert.SerializeObject(CoursesList);
@@ -970,7 +1053,7 @@ namespace SEA_Application.Controllers
             //}
 
             AspNetStudent aspNetStudent = db.AspNetStudents.Where(x => x.UserId == StudentId).FirstOrDefault();
-           var BranchClassObj =  db.AspNetBranch_Class.Where(x => x.Id == BranchClassId).FirstOrDefault();
+            var BranchClassObj = db.AspNetBranch_Class.Where(x => x.Id == BranchClassId).FirstOrDefault();
 
             aspNetStudent.ClassId = BranchClassObj.ClassId;
             aspNetStudent.BranchId = BranchClassObj.BranchId;
@@ -982,7 +1065,7 @@ namespace SEA_Application.Controllers
             {
                 db.AspNetStudent_Enrollments.RemoveRange(StudentEntrollmentList);
                 db.SaveChanges();
-                
+
             }
 
             if (aspNetStudent != null)

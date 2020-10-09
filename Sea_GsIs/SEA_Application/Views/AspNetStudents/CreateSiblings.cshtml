@@ -1,0 +1,113 @@
+﻿
+@{
+    ViewBag.Title = "CreateSiblings";
+    Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+}
+
+
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+
+
+@using (Html.BeginForm("CreateSiblings", "AspNetStudents", FormMethod.Post, new { role = "form" }))
+{
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body p-5">
+                    <div class="col-md-6 pl-5 pr-5 ">
+
+
+
+                        <div class="form-row mt-4">
+                            <div class="form-group col-md-12 control-label">
+                                <label for="" class="control-label">Select Students *</label>
+                                <select class="js-example-basic-multiple" multiple="multiple" style="width:475px" id="StudentId" name="StudentId" required></select>
+
+                            </div>
+                        </div>
+
+
+                        <br />
+         
+                        <div class="form-group bmd-form-group is-filled">
+                            <label class="control-label">Sibling Id* </label>
+                            <input class="form-control" style="width:475px" required type="text" name="SiblingId" id="SiblingId" />
+                            <br />
+                            <span style="color:red"> @ViewBag.Error</span>
+                        </div>
+
+
+                        <br />
+
+                            <button type="submit" id="SaveButton" class="btn btn-primary rounded rounded-lg"> Save </button>
+                            <button type="button" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                                <i class="material-icons mr-2">cached</i>  Cancel
+                            </button>
+
+                    </div>
+                </div>
+                </div>
+        </div>
+    </div>
+
+}
+
+<script>
+
+
+    $(document).ready(function () {
+
+         $("#PageHeader").html("Create");
+
+        $("#BreadCrumbs").append(' <li> <a  href="/FinanceSummary/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li> <a href="/NonRecurringFee/Index"> Sibling List </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Create</a></li>');
+
+
+        $('.js-example-basic-multiple').select2();
+
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "/NonRecurringFee/GetStudents",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#StudentId");
+                $el.empty();
+
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").attr('disabled', 'disabled').text('Select Student'));
+                    for (i = 0; i < sch.length; i++) {
+
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i].Id).text(sch[i].Name));
+                    }
+                }
+                else {
+                    $el.append($("<option></option>")
+                        .attr("value", '').text('Select Student'));
+                }
+            }
+        });
+
+
+          $("#btnCancel").click(function () {
+
+            window.location.href = "/AspnetStudents/SiblingList";
+        });
+
+
+    });
+</script>
+
+
+
+
+
+

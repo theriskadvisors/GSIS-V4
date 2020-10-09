@@ -675,7 +675,7 @@
                     var ArrNames = obj.split("/");
                     for (var i = 0; i < ArrNames.length - 1; i++) {
                         var obj = ArrNames[i];
-                        //  $("#menu").append('</br><li><a href="/Content/StudentAssignments/' + obj + '"> ' + obj + '</a></li></br></br>');	
+                        //  $("#menu").append('</br><li><a href="/Content/StudentAssignments/' + obj + '"> ' + obj + '</a></li></br></br>');
                         $("#TeacherResubmittedAssignmentFile").append('<a style="color:blue;text-decoration:underline" href="/StudentCourses/DownloadTeacherResubmittedAssignment/?id=' + data.AssignmentSubmissionId + '&Name=' + obj + '">' + obj + '</a>&nbsp&nbsp&nbsp&nbsp');
                     }
                 }
@@ -1014,7 +1014,6 @@
                                                 </div>
 
                                                 <div class="form-group" id="TeacherAssignment">
-
 
                                                     <span class="col-md-12" id="TeacherAssignmentFile"></span>
 

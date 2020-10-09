@@ -388,9 +388,7 @@ namespace SEA_Application.Controllers
                     //}
 
                     var StudentChallanExist = db.StudentFeeDetails.Where(x => x.StudentFee.AspNetStudent.Id == StudentId).ToList();
-
                     var NonRecurringFeeExist = db.StudentNonRecurringFees.Where(x => x.StudentFeeID == StudentId && x.Month == Month1).ToList();
-
 
                     if (StudentChallanExist.Count() == 0)
                     {
@@ -1188,9 +1186,6 @@ namespace SEA_Application.Controllers
 
                 }//end of using 
 
-
-
-
             }
             catch (Exception e)
             {
@@ -1202,8 +1197,6 @@ namespace SEA_Application.Controllers
                 return View("ChallanLoader");
             }
 
-
-
         }
 
         public ActionResult DeleteChallan(int ChallanId)
@@ -1211,19 +1204,14 @@ namespace SEA_Application.Controllers
             var dbTransaction = db.Database.BeginTransaction();
             try
             {
-
-
-
                 var ChallanStatus = db.StudentFeeDetails.Where(x => x.Id == ChallanId).FirstOrDefault().Status;
 
                 if (ChallanStatus != "Paid")
                 {
 
-
                     List<VoucherRecord> VoucherRecordList = db.VoucherRecords.Where(x => x.Voucher.ChallanId == ChallanId).ToList();
                     foreach (var voucherRecord in VoucherRecordList)
                     {
-
                         var LedgerHeadName = db.Ledgers.Where(x => x.Id == voucherRecord.LedgerId).Select(x => x.LedgerHead.Name).FirstOrDefault();
 
                         var LedgerType = voucherRecord.Type;
@@ -1277,12 +1265,25 @@ namespace SEA_Application.Controllers
                     db.Vouchers.RemoveRange(VoucherList);
                     db.SaveChanges();
 
+                    var StudentFeeDetailObj = db.StudentFeeDetails.Where(x => x.Id == ChallanId).FirstOrDefault();
+
+                    var StudentId = StudentFeeDetailObj.StudentFee.AspNetStudent.Id;
+                    var MonthId = StudentFeeDetailObj.Month;
 
                     StudentFeeDetail StudentFeeDetailToDelete = db.StudentFeeDetails.Where(x => x.Id == ChallanId).FirstOrDefault();
                     db.StudentFeeDetails.Remove(StudentFeeDetailToDelete);
                     db.SaveChanges();
 
-                    dbTransaction.Commit();
+
+                    var StudentChallanExist = db.StudentFeeDetails.Where(x => x.StudentFee.AspNetStudent.Id == StudentId).ToList();
+
+                    if (StudentChallanExist.Count() == 0)
+                    {
+                        //   var NonRecurringAdmissionFeeOfFirstChallan = db.StudentNonRecurringFees.Where(x => x.StudentFeeID == StudentId && x.Month == MonthId && x.NonRecurringType.ExpenseType == "Admission Fee").FirstOrDefault();
+                        var NonRecurringAdmissionFeeOfFirstChallan = db.StudentNonRecurringFees.Where(x => x.StudentFeeID == StudentId  && x.NonRecurringType.ExpenseType == "Admission Fee").FirstOrDefault();
+                        db.StudentNonRecurringFees.Remove(NonRecurringAdmissionFeeOfFirstChallan);
+                        db.SaveChanges();
+                    }
 
                 }
             }
@@ -1293,7 +1294,7 @@ namespace SEA_Application.Controllers
                 dbTransaction.Dispose();
             }
 
-
+            dbTransaction.Commit();
             return RedirectToAction("Index", "StudentFeeMonths");
         }
 

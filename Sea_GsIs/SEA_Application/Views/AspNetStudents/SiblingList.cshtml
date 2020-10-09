@@ -1,0 +1,214 @@
+﻿@model IEnumerable<SEA_Application.Models.AspnetSubjectTopic>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+
+}
+
+<style>
+    .pageHeading h1 {
+        font-size: 26px;
+        font-weight: 600;
+        color: #00b8ec;
+    }
+
+    .table-responsive {
+        display: block;
+        width: 100%;
+        overflow-x: hidden;
+        -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+    }
+
+    .pageHeading h1 {
+        font-size: 26px;
+        font-weight: 600;
+        color: #00b8ec;
+    }
+</style>
+<script>
+    $(document).ready(function () {
+
+
+        $("#PageHeader").html("Sibling List");
+
+        $("#BreadCrumbs").append(' <li> <a href="/FinanceSummary/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Sibling List</a></li>');
+
+        var table = $('#datatable').dataTable({
+
+     
+            buttons: [
+                     {
+                    text: '<span class="datatableButtonsReset"> <img src="/Content/assets/assets/icons/Icon-Reset2.png" alt=""> Reset</span>'
+                },
+                {
+                    text: '<span class="datatableButtonsEdit"> <img src="/Content/assets/assets/icons/Icon-edit.png" alt=""> Create</span>',
+                    action: function (e, dt, button, config) {
+                        window.location.href = '/AspnetStudents/CreateSiblings';
+                    }
+                },
+                {
+                    text: '<span class="datatableButtonsDownload"> <img src="/Content/assets/assets/icons/Icon-download.png" alt=""> Download</span>'
+                }
+            ],
+            "language": {
+                "lengthMenu": "<div class=\"d-flex showEntriesCon\">\n" +
+                    "  <div class=\"p-2\">Show </div> <div class=\"showEntries\"> _MENU_\n" +
+                    "  </div>\n" +
+                    "  </div>",
+                "info": "<div class='showingEntriesOfTotal'>Showing <span class=\"text-info\">_START_ to _END_</span> of _TOTAL_ entries</div>",
+                "paginate": {
+                    "first": "Firstt",
+                    "last": "Lastt",
+                    "next": ' <img src="~/Content/assets/assets/icons/Arrow2.png" alt=""> ',
+                    "previous": ' <img src="~/Content/assets/assets/icons/Arrow1.png" alt=""> '
+                }
+            },
+            "searching": true,
+            // dom: '<"class">Blfrtip',
+            dom: "<'row mb-3'<'col-sm-12 col-md-2 col-lg-2'l><'col-sm-12 col-md-10 col-lg-10 datatableButtonsCon text-right'Bf>>" +
+                "<'row'<'col-sm-12 datatablesData'tr>>" +
+                "<'row mt-4'<'col-sm-12 col-md-4 col-lg-6 infoCon'i><'col-sm-12 col-md-8 col-lg-6 pagCon'p>>",
+        });
+
+
+
+
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "/AspNetStudents/AllSiblingIds",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#SiblingId");
+                $el.empty();
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").text('Select Id'));
+                    for (i = 0; i < sch.length; i++) {
+
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i]).text(sch[i]));
+                    }
+                }
+                else {
+                    $el.append($("<option></option>")
+                        .attr("value", '').text('Select Id'));
+                }
+            }
+        });
+
+        $("#SiblingId").change(function () {
+
+            var SiblingId = $(this).val();
+
+            if (SiblingId != "") {
+
+
+                $.ajax({
+                    type: "POST",
+                    url: "/AspNetStudents/GetSiblingStudentsById",
+                    data: {SiblingId:SiblingId},
+
+                    success: function (data) {
+                        table.fnClearTable();
+                        $.each(data, function (index) {
+
+
+
+                            table.fnAddData([data[index].Name, data[index].UserName, data[index].CellNo, data[index].BranchName, data[index].ClassName, data[index].SiblingId]);
+
+                        })
+                        table.fnDraw();
+                    }
+                })
+
+            }
+            else {
+               // $("tbody").html("");
+                                        table.fnClearTable();
+            }
+
+
+        })// sibling id change function
+
+
+
+     //   $("#datatable_filter").hide();
+    //    $('#datatable tfoot tr').appendTo('#datatable thead');
+    })
+</script>
+
+<div class="card">
+    <div class="card-body p-4">
+        <div class="tab-content" style="padding: 10px 0px 0px 0px;">
+
+            <div class="tab-pane active show" id="Topics-attr" role="tabpanel" aria-labelledby="Topics-tab-attr">
+
+
+                <div class="form-row mt-4">
+                    <div class="form-group col-md-2 bmd-form-group">
+                        <label for="" class="control-label"> Sibling Id*</label>
+
+                        <select class="form-control" id="SiblingId" name="SiblingId" required></select>
+
+                    </div>
+                </div>
+
+                <br />
+
+
+                <div class="box box-primary">
+                    <div class="box-body">
+                        <div class="box-title"></div>
+                        <div class="table-responsive">
+
+
+                            <table class="table hover  table-striped table-bordered" id="datatable">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                           Name
+                                        </th>
+                                        <th>
+                                            Roll No
+                                        </th>
+                                        <th>
+                                            Phone No
+                                        </th>
+                                        <th>
+                                           Branch Name
+                                        </th>
+                                        <th>
+                                            Class Name 
+                                        </th>
+                                        <th>
+                                           Sibling Id
+                                        </th>
+                                     
+
+                                    </tr>
+
+                                </thead>
+
+
+
+                                <tbody id="NonRecurringLists">
+                                </tbody>
+
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>

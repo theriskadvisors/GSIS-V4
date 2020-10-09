@@ -1,0 +1,94 @@
+﻿@model IEnumerable<SEA_Application.Controllers.FinanceSummaryController.BilingMonth>
+@{
+    ViewBag.Title = "BillingMonth";
+    Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body p-4">
+
+        <div class="box box-primary">
+            <div class="box-title"></div>
+
+            <div class="box-body">
+
+
+                <div class="table-responsive">
+
+
+                    <table class="table table-bordered table-striped" border="1" id="example">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Month
+                                </th>
+                                <th>
+                                    Total Recurring
+                                </th>
+                                <th>
+                                    Total NonRecurring
+                                </th>
+                                <th>
+
+                                    Total
+                                </th>
+                                <th>
+                                    Status
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+
+                                <tr>
+                                    <td>
+                                        @item.MonthName
+                                    </td>
+                                    <td>
+                                        @item.TotalRecurringFee
+
+                                    </td>
+                                    <td>
+                                        @item.TotalNonRecurringFee
+                                    </td>
+                                    <td>
+
+                                        @item.Total
+                                    </td>
+                                    <td>
+
+                                        @item.Status
+                                    </td>
+
+
+                                </tr>
+                             
+                                }
+
+
+                    </table>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+
+          $("#PageHeader").html("Billing Months");
+
+        $("#BreadCrumbs").append(' <li> <a href="/Account/Dashboard"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Billing Months</a></li>');
+
+
+
+    })
+
+</script>

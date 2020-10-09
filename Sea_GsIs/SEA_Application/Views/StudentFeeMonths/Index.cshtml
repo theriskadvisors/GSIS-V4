@@ -622,7 +622,11 @@
                         <thead>
                             <tr>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.Id)
+                                    Challan Id 
+                                    </th>
+
+                                <th>
+                                    Challan Id
                                 </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.StudentFee.AspNetStudent.Name)
@@ -662,6 +666,11 @@
                             {
 
                             <tr>
+
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Id)
+                                </td>
+
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Id)
                                 </td>
@@ -794,6 +803,9 @@
                         </tbody>
                         <tfoot>
                             <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Id)
+                                </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.Id)
                                 </th>

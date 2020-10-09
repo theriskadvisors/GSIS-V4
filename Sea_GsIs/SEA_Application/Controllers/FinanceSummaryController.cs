@@ -25,6 +25,629 @@ namespace SEA_Application.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
 
         }
+        public ActionResult AllStudents()
+        {
+
+
+
+            return View();
+        }
+
+        public ActionResult BillingMonth(string userName)
+        {
+            List<BilingMonth> BiliingMonthList = new List<BilingMonth>();
+
+            var UserId = db.AspNetUsers.Where(x => x.UserName == userName).FirstOrDefault().Id;
+            var StudentId = db.AspNetStudents.Where(x => x.UserId == UserId).FirstOrDefault().Id;
+
+            var StudentFee = db.StudentFees.Where(x => x.StudentID == StudentId).FirstOrDefault();
+            var StudentFeeMultiplier = db.StudentFeeMultipliers.Where(x => x.StudentId == StudentId).FirstOrDefault();
+            string[] MonthNames = new string[12] { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", };
+
+
+            if (StudentFee == null)
+            {
+                foreach (var MonthName in MonthNames)
+                {
+                    BilingMonth BillingMonth = new BilingMonth();
+                    BillingMonth.MonthName = MonthName;
+                    BillingMonth.Status = "UnPaid";
+                    BillingMonth.TotalRecurringFee = 0;
+                    BillingMonth.TotalNonRecurringFee = 0;
+                    BillingMonth.Total = 0;
+
+                    BiliingMonthList.Add(BillingMonth);
+
+                }
+
+            }
+
+            else
+            {
+                foreach (var MonthName in MonthNames)
+                {
+                    BilingMonth BillingMonth = new BilingMonth();
+                    BillingMonth.MonthName = MonthName;
+                    BillingMonth.Status = "";
+                    BillingMonth.TotalRecurringFee = 0;
+                    BillingMonth.TotalNonRecurringFee = 0;
+                    BillingMonth.Total = 0;
+
+                    if (MonthName == "January")
+                    {
+                        var MonthStatus = StudentFeeMultiplier.Jan_StatusPaid;
+                        var MonthPaidAmount = StudentFeeMultiplier.Jan_PaidAmount;
+                        var MonthMultiplier = StudentFeeMultiplier.Jan_Multiplier;
+                        var MonthNumber = 1;
+
+                        var nonRecurringList = db.StudentNonRecurringFees.Where(x => x.Month == MonthNumber && x.StudentFeeID == StudentId).ToList();
+                        int TotalNonRecurring = 0;
+                        foreach (var nonRecurring in nonRecurringList)
+                        {
+                            TotalNonRecurring = TotalNonRecurring + nonRecurring.Amount.Value;
+                        }
+                        var TotalRecurringFee = StudentFee.TotalWithoutAdmission * MonthMultiplier;
+                        BillingMonth.TotalRecurringFee = Convert.ToInt32(TotalRecurringFee);
+
+
+                        BillingMonth.TotalNonRecurringFee = TotalNonRecurring;
+                        
+                        if (MonthStatus == true)
+                        {
+                            BillingMonth.Total = Convert.ToInt32( MonthPaidAmount);
+                            BillingMonth.Status = "Paid";
+
+                        }
+                        else
+                        {
+                            BillingMonth.Status = "UnPaid";
+
+                            var GrandTotal = TotalRecurringFee + TotalNonRecurring;
+                            BillingMonth.Total = Convert.ToInt32(GrandTotal);
+
+                        }
+                        BiliingMonthList.Add(BillingMonth);
+
+                    }
+                    else if (MonthName == "February")
+                    {
+                        var MonthStatus = StudentFeeMultiplier.Feb_StatusPaid;
+                        var MonthPaidAmount = StudentFeeMultiplier.Feb_PaidAmount;
+                        var MonthMultiplier = StudentFeeMultiplier.Feb_Multiplier;
+                        var MonthNumber = 2;
+
+                        var nonRecurringList = db.StudentNonRecurringFees.Where(x => x.Month == MonthNumber && x.StudentFeeID == StudentId).ToList();
+                        int TotalNonRecurring = 0;
+                        foreach (var nonRecurring in nonRecurringList)
+                        {
+                            TotalNonRecurring = TotalNonRecurring + nonRecurring.Amount.Value;
+                        }
+                        var TotalRecurringFee = StudentFee.TotalWithoutAdmission * MonthMultiplier;
+                        BillingMonth.TotalRecurringFee = Convert.ToInt32(TotalRecurringFee);
+
+                        BillingMonth.TotalNonRecurringFee = TotalNonRecurring;
+
+
+
+                        if (MonthStatus == true)
+                        {
+                            BillingMonth.Total = Convert.ToInt32(MonthPaidAmount);
+
+                            BillingMonth.Status = "Paid";
+
+                        }
+                        else
+                        {
+                            BillingMonth.Status = "UnPaid";
+                            var GrandTotal = TotalRecurringFee + TotalNonRecurring;
+                            BillingMonth.Total = Convert.ToInt32(GrandTotal);
+
+                        }
+
+                        BiliingMonthList.Add(BillingMonth);
+
+                    }
+                    else if (MonthName == "March")
+                    {
+                        var MonthStatus = StudentFeeMultiplier.Mar_StatusPaid;
+                        var MonthPaidAmount = StudentFeeMultiplier.Mar_PaidAmount;
+                        var MonthMultiplier = StudentFeeMultiplier.Mar_Multiplier;
+
+                        var MonthNumber = 3;
+
+                        var nonRecurringList = db.StudentNonRecurringFees.Where(x => x.Month == MonthNumber && x.StudentFeeID == StudentId).ToList();
+                        int TotalNonRecurring = 0;
+                        foreach (var nonRecurring in nonRecurringList)
+                        {
+                            TotalNonRecurring = TotalNonRecurring + nonRecurring.Amount.Value;
+                        }
+                        var TotalRecurringFee = StudentFee.TotalWithoutAdmission * MonthMultiplier;
+                        BillingMonth.TotalRecurringFee = Convert.ToInt32(TotalRecurringFee);
+
+                        BillingMonth.TotalNonRecurringFee = TotalNonRecurring;
+
+
+                        if (MonthStatus == true)
+                        {
+                            BillingMonth.Total = Convert.ToInt32(MonthPaidAmount);
+
+                            BillingMonth.Status = "Paid";
+                        }
+                        else
+                        {
+                            BillingMonth.Status = "UnPaid";
+                          
+                            var GrandTotal = TotalRecurringFee + TotalNonRecurring;
+                            BillingMonth.Total = Convert.ToInt32(GrandTotal);
+                        }
+
+                        BiliingMonthList.Add(BillingMonth);
+
+                    }
+
+                    else if (MonthName == "April")
+                    {
+                        var MonthStatus = StudentFeeMultiplier.April_StatusPaid;
+                        var MonthPaidAmount = StudentFeeMultiplier.Apr_PaidAmount;
+                        var MonthMultiplier = StudentFeeMultiplier.April__Multiplier;
+
+                        var MonthNumber = 4;
+
+                        var nonRecurringList = db.StudentNonRecurringFees.Where(x => x.Month == MonthNumber && x.StudentFeeID == StudentId).ToList();
+                        int TotalNonRecurring = 0;
+                        foreach (var nonRecurring in nonRecurringList)
+                        {
+                            TotalNonRecurring = TotalNonRecurring + nonRecurring.Amount.Value;
+                        }
+                        var TotalRecurringFee = StudentFee.TotalWithoutAdmission * MonthMultiplier;
+                        BillingMonth.TotalRecurringFee = Convert.ToInt32(TotalRecurringFee);
+
+                        BillingMonth.TotalNonRecurringFee = TotalNonRecurring;
+
+
+                        if (MonthStatus == true)
+                        {
+                            BillingMonth.Status = "Paid";
+                            BillingMonth.Total = Convert.ToInt32(MonthPaidAmount);
+
+
+
+                        }
+                        else
+                        {
+                            BillingMonth.Status = "UnPaid";
+                            
+                            var GrandTotal = TotalRecurringFee + TotalNonRecurring;
+                       
+                            BillingMonth.Total = Convert.ToInt32(GrandTotal);
+
+
+                        }
+
+                        BiliingMonthList.Add(BillingMonth);
+
+                    }
+
+                    else if (MonthName == "May")
+                    {
+                        var MonthStatus = StudentFeeMultiplier.May_StatusPaid;
+                        var MonthPaidAmount = StudentFeeMultiplier.May_PaidAmount;
+                        var MonthMultiplier = StudentFeeMultiplier.May_Multiplier;
+                        var MonthNumber = 5;
+
+                        var nonRecurringList = db.StudentNonRecurringFees.Where(x => x.Month == MonthNumber && x.StudentFeeID == StudentId).ToList();
+                        int TotalNonRecurring = 0;
+                        foreach (var nonRecurring in nonRecurringList)
+                        {
+                            TotalNonRecurring = TotalNonRecurring + nonRecurring.Amount.Value;
+                        }
+                        var TotalRecurringFee = StudentFee.TotalWithoutAdmission * MonthMultiplier;
+                        BillingMonth.TotalRecurringFee = Convert.ToInt32(TotalRecurringFee);
+
+                        BillingMonth.TotalNonRecurringFee = TotalNonRecurring;
+
+
+
+                        if (MonthStatus == true)
+                        {
+                            BillingMonth.Status = "Paid";
+                            BillingMonth.Total = Convert.ToInt32(MonthPaidAmount);
+
+
+
+                        }
+                        else
+                        {
+                            BillingMonth.Status = "UnPaid";
+                           
+                            var GrandTotal = TotalRecurringFee + TotalNonRecurring;
+                         
+                            BillingMonth.Total = Convert.ToInt32(GrandTotal);
+                        }
+
+                        BiliingMonthList.Add(BillingMonth);
+
+                    }
+
+                    else if (MonthName == "June")
+                    {
+                        var MonthStatus = StudentFeeMultiplier.June_StatusPaid;
+                        var MonthPaidAmount = StudentFeeMultiplier.Jun_PaidAmount;
+                        var MonthMultiplier = StudentFeeMultiplier.June_Multiplier;
+                        var MonthNumber = 6;
+
+                        var nonRecurringList = db.StudentNonRecurringFees.Where(x => x.Month == MonthNumber && x.StudentFeeID == StudentId).ToList();
+                        int TotalNonRecurring = 0;
+                        foreach (var nonRecurring in nonRecurringList)
+                        {
+                            TotalNonRecurring = TotalNonRecurring + nonRecurring.Amount.Value;
+                        }
+
+                        var TotalRecurringFee = StudentFee.TotalWithoutAdmission * MonthMultiplier;
+                        BillingMonth.TotalRecurringFee = Convert.ToInt32(TotalRecurringFee);
+                        BillingMonth.TotalNonRecurringFee = TotalNonRecurring;
+
+                        if (MonthStatus == true)
+                        {
+                            BillingMonth.Status = "Paid";
+                            BillingMonth.Total = Convert.ToInt32(MonthPaidAmount);
+
+                        }
+                        else
+                        {
+                            BillingMonth.Status = "UnPaid";
+                         
+                            var GrandTotal = TotalRecurringFee + TotalNonRecurring;
+                       
+                            BillingMonth.Total = Convert.ToInt32(GrandTotal);
+                        }
+
+                        BiliingMonthList.Add(BillingMonth);
+                    }
+
+                    else if (MonthName == "July")
+                    {
+                        var MonthStatus = StudentFeeMultiplier.July_StatusPaid;
+                        var MonthPaidAmount = StudentFeeMultiplier.Jul_PaidAmount;
+                        var MonthMultiplier = StudentFeeMultiplier.July__Multiplier;
+                        var MonthNumber = 7;
+
+                        var nonRecurringList = db.StudentNonRecurringFees.Where(x => x.Month == MonthNumber && x.StudentFeeID == StudentId).ToList();
+                        int TotalNonRecurring = 0;
+                        foreach (var nonRecurring in nonRecurringList)
+                        {
+                            TotalNonRecurring = TotalNonRecurring + nonRecurring.Amount.Value;
+                        }
+                        var TotalRecurringFee = StudentFee.TotalWithoutAdmission * MonthMultiplier;
+                        BillingMonth.TotalRecurringFee = Convert.ToInt32(TotalRecurringFee);
+
+                        BillingMonth.TotalNonRecurringFee = TotalNonRecurring;
+
+                        if (MonthStatus == true)
+                        {
+                            BillingMonth.Status = "Paid";
+                            BillingMonth.Total = Convert.ToInt32(MonthPaidAmount);
+
+                        }
+                        else
+                        {
+                            BillingMonth.Status = "UnPaid";
+                           
+                            var GrandTotal = TotalRecurringFee + TotalNonRecurring;
+                          
+                            BillingMonth.Total = Convert.ToInt32(GrandTotal);
+                        }
+
+                        BiliingMonthList.Add(BillingMonth);
+                    }
+                    else if (MonthName == "August")
+                    {
+                        var MonthStatus = StudentFeeMultiplier.Aug_StatusPaid;
+                        var MonthPaidAmount = StudentFeeMultiplier.Aug_PaidAmount;
+                        var MonthMultiplier = StudentFeeMultiplier.Aug_Multiplier;
+
+                        var MonthNumber = 8;
+
+                        var nonRecurringList = db.StudentNonRecurringFees.Where(x => x.Month == MonthNumber && x.StudentFeeID == StudentId).ToList();
+                        int TotalNonRecurring = 0;
+                        foreach (var nonRecurring in nonRecurringList)
+                        {
+                            TotalNonRecurring = TotalNonRecurring + nonRecurring.Amount.Value;
+                        }
+
+                        var TotalRecurringFee = StudentFee.TotalWithoutAdmission * MonthMultiplier;
+                        BillingMonth.TotalRecurringFee = Convert.ToInt32(TotalRecurringFee);
+                        BillingMonth.TotalNonRecurringFee = TotalNonRecurring;
+
+                        if (MonthStatus == true)
+                        {
+                            BillingMonth.Status = "Paid";
+                            BillingMonth.Total = Convert.ToInt32(MonthPaidAmount);
+
+                        }
+                        else
+                        {
+                            BillingMonth.Status = "UnPaid";
+                           
+                            var GrandTotal = TotalRecurringFee + TotalNonRecurring;
+                          
+                            BillingMonth.Total = Convert.ToInt32(GrandTotal);
+                        }
+
+                        BiliingMonthList.Add(BillingMonth);
+                    }
+
+                    else if (MonthName == "September")
+                    {
+                        var MonthStatus = StudentFeeMultiplier.Sep_StatusPaid;
+                        var MonthPaidAmount = StudentFeeMultiplier.Sep_PaidAmount;
+                        var MonthMultiplier = StudentFeeMultiplier.Sep_Multiplier;
+
+                        var MonthNumber = 9;
+
+                        var nonRecurringList = db.StudentNonRecurringFees.Where(x => x.Month == MonthNumber && x.StudentFeeID == StudentId).ToList();
+                        int TotalNonRecurring = 0;
+                        foreach (var nonRecurring in nonRecurringList)
+                        {
+                            TotalNonRecurring = TotalNonRecurring + nonRecurring.Amount.Value;
+                        }
+                        var TotalRecurringFee = StudentFee.TotalWithoutAdmission * MonthMultiplier;
+                        BillingMonth.TotalRecurringFee = Convert.ToInt32(TotalRecurringFee);
+
+                        BillingMonth.TotalNonRecurringFee = TotalNonRecurring;
+
+
+                        if (MonthStatus == true)
+                        {
+
+                            BillingMonth.Status = "Paid";
+                            BillingMonth.Total = Convert.ToInt32(MonthPaidAmount);
+
+                        }
+                        else
+                        {
+                            BillingMonth.Status = "UnPaid";
+                            
+                            var GrandTotal = TotalRecurringFee + TotalNonRecurring;
+                           
+                            BillingMonth.Total = Convert.ToInt32(GrandTotal);
+                        }
+
+                        BiliingMonthList.Add(BillingMonth);
+                    }
+
+                    else if (MonthName == "October")
+                    {
+                        var MonthStatus = StudentFeeMultiplier.Oct_StatusPaid;
+                        var MonthPaidAmount = StudentFeeMultiplier.Oct_PaidAmount;
+                        var MonthMultiplier = StudentFeeMultiplier.Oct_Multiplier;
+
+                        var MonthNumber = 10;
+
+                        var nonRecurringList = db.StudentNonRecurringFees.Where(x => x.Month == MonthNumber && x.StudentFeeID == StudentId).ToList();
+                        int TotalNonRecurring = 0;
+                        foreach (var nonRecurring in nonRecurringList)
+                        {
+                            TotalNonRecurring = TotalNonRecurring + nonRecurring.Amount.Value;
+                        }
+
+                        var TotalRecurringFee = StudentFee.TotalWithoutAdmission * MonthMultiplier;
+                        BillingMonth.TotalRecurringFee = Convert.ToInt32(TotalRecurringFee);
+                        BillingMonth.TotalNonRecurringFee = TotalNonRecurring;
+
+
+                        if (MonthStatus == true)
+                        {
+                            BillingMonth.Status = "Paid";
+                            BillingMonth.Total = Convert.ToInt32(MonthPaidAmount);
+
+                        }
+                        else
+                        {
+                            BillingMonth.Status = "UnPaid";
+                            
+                            var GrandTotal = TotalRecurringFee + TotalNonRecurring;
+                           
+                            BillingMonth.Total = Convert.ToInt32(GrandTotal);
+                        }
+
+                        BiliingMonthList.Add(BillingMonth);
+                    }
+
+                    else if (MonthName == "November")
+                    {
+                        var MonthStatus = StudentFeeMultiplier.Nov_StatusPaid;
+                        var MonthPaidAmount = StudentFeeMultiplier.Nov_PaidAmount;
+                        var MonthMultiplier = StudentFeeMultiplier.Nov_Multiplier;
+
+                        var MonthNumber = 11;
+
+                        var nonRecurringList = db.StudentNonRecurringFees.Where(x => x.Month == MonthNumber && x.StudentFeeID == StudentId).ToList();
+                        int TotalNonRecurring = 0;
+                        foreach (var nonRecurring in nonRecurringList)
+                        {
+                            TotalNonRecurring = TotalNonRecurring + nonRecurring.Amount.Value;
+                        }
+
+                        var TotalRecurringFee = StudentFee.TotalWithoutAdmission * MonthMultiplier;
+                        BillingMonth.TotalRecurringFee = Convert.ToInt32(TotalRecurringFee);
+                        BillingMonth.TotalNonRecurringFee = TotalNonRecurring;
+
+                        if (MonthStatus == true)
+                        {
+                            BillingMonth.Status = "Paid";
+                            BillingMonth.Total = Convert.ToInt32(MonthPaidAmount);
+
+
+                        }
+                        else
+                        {
+
+                            BillingMonth.Status = "UnPaid";
+                            
+                            var GrandTotal = TotalRecurringFee + TotalNonRecurring;
+                            
+                            BillingMonth.Total = Convert.ToInt32(GrandTotal);
+                        }
+
+                        BiliingMonthList.Add(BillingMonth);
+                    }
+
+                    else
+                    {
+                        var MonthStatus = StudentFeeMultiplier.Dec_StatusPaid;
+                        var MonthPaidAmount = StudentFeeMultiplier.Dec_PaidAmount;
+                        var MonthMultiplier = StudentFeeMultiplier.Dec__Multiplier;
+
+                        var MonthNumber = 12;
+
+                        var nonRecurringList = db.StudentNonRecurringFees.Where(x => x.Month == MonthNumber && x.StudentFeeID == StudentId).ToList();
+                        int TotalNonRecurring = 0;
+                        foreach (var nonRecurring in nonRecurringList)
+                        {
+                            TotalNonRecurring = TotalNonRecurring + nonRecurring.Amount.Value;
+                        }
+
+                        var TotalRecurringFee = StudentFee.TotalWithoutAdmission * MonthMultiplier;
+                        BillingMonth.TotalRecurringFee = Convert.ToInt32(TotalRecurringFee);
+
+                        BillingMonth.TotalNonRecurringFee = TotalNonRecurring;
+
+                        if (MonthStatus == true)
+                        {
+                            BillingMonth.Status = "Paid";
+                            BillingMonth.Total = Convert.ToInt32(MonthPaidAmount);
+
+
+                        }
+                        else
+                        {
+
+                            BillingMonth.Status = "UnPaid";
+                           
+                            var GrandTotal = TotalRecurringFee + TotalNonRecurring;
+                           
+                            BillingMonth.Total = Convert.ToInt32(GrandTotal);
+                        }
+
+                        BiliingMonthList.Add(BillingMonth);
+
+
+                    }
+
+
+                }
+            }
+
+            return View(BiliingMonthList);
+        }
+        public class BilingMonth
+        {
+            public string MonthName { get; set; }
+            public int TotalRecurringFee { get; set; }
+            public int TotalNonRecurringFee { get; set; }
+            public int Total { get; set; }
+            public string Status { get; set; }
+        }
+        public JsonResult GetStudents(DataTablesParam param)
+        {
+            var loggedInUserId = User.Identity.GetUserId();
+            try
+            {
+
+
+                if (User.IsInRole("Accountant"))
+                {
+                    int pageNo = 1;
+
+                    if (param.iDisplayStart >= param.iDisplayLength)
+                    {
+
+                        pageNo = (param.iDisplayStart / param.iDisplayLength) + 1;
+
+                    }
+
+                    int totalCount = 0;
+
+                    if (param.sSearch != null)
+                    {
+                        // totalCount = db.AllStudentsList().Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Count();
+
+                        // var studentList = db.AllStudentsList().Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
+
+                        totalCount = (from stdnt in db.AspNetStudents
+                                      join usr in db.AspNetUsers on stdnt.UserId equals usr.Id
+                                      join stufee in db.StudentFees
+                                      on stdnt.Id equals stufee.StudentID into egroup
+                                      from stufee in egroup.DefaultIfEmpty()
+                                      join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
+                                      where stdnt.UserId == usr.Id && usr.StatusId != 2
+                                      select new { stdnt.Name, BranchName = stdnt.AspNetBranch.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name }).Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Distinct().Count();
+
+                        var studentList = (from stdnt in db.AspNetStudents
+                                           join usr in db.AspNetUsers on stdnt.UserId equals usr.Id
+                                           join stufee in db.StudentFees
+                                           on stdnt.Id equals stufee.StudentID into egroup
+                                           from stufee in egroup.DefaultIfEmpty()
+                                           join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
+                                           where stdnt.UserId == usr.Id && usr.StatusId != 2
+                                           select new { stdnt.Name, BranchName = stdnt.AspNetBranch.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name }).Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Distinct().OrderBy(x => x.Name).Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
+
+
+                        return Json(new
+                        {
+                            aaData = studentList,
+                            sEcho = param.sEcho,
+                            iTotalDisplayRecords = totalCount,
+                            iTotalRecords = totalCount
+
+                        }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+
+
+                        totalCount = (from stdnt in db.AspNetStudents
+                                      join usr in db.AspNetUsers on stdnt.UserId equals usr.Id
+                                      join stufee in db.StudentFees
+                                      on stdnt.Id equals stufee.StudentID into egroup
+                                      from stufee in egroup.DefaultIfEmpty()
+                                      join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
+                                      where stdnt.UserId == usr.Id && usr.StatusId != 2
+                                      select new { stdnt.Name, BranchName = stdnt.AspNetBranch.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name }).Distinct().Count();
+                        //var studentList = db.AllStudentsList().Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
+
+
+                        var studentList = (from stdnt in db.AspNetStudents
+                                           join usr in db.AspNetUsers on stdnt.UserId equals usr.Id
+                                           join stufee in db.StudentFees
+                                           on stdnt.Id equals stufee.StudentID into egroup
+                                           from stufee in egroup.DefaultIfEmpty()
+                                           join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
+                                           where stdnt.UserId == usr.Id && usr.StatusId != 2
+                                           select new { stdnt.Name, BranchName = stdnt.AspNetBranch.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name }).Distinct().OrderBy(x => x.Name).Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
+
+
+                        return Json(new
+                        {
+                            aaData = studentList,
+                            sEcho = param.sEcho,
+                            iTotalDisplayRecords = totalCount,
+                            iTotalRecords = totalCount
+
+                        }, JsonRequestBehavior.AllowGet);
+                    }
+
+                }//accountant if condition
+            }
+            catch (Exception ex)
+            {
+                var exmsg = ex.Message;
+            }
+
+            return Json("", JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult UserName()
         {
             var id = User.Identity.GetUserId();
@@ -831,7 +1454,7 @@ namespace SEA_Application.Controllers
 
         public ActionResult GetLedgerAmount(int LedgerId)
         {
-          var CurrentBalance =   db.Ledgers.Where(x => x.Id == LedgerId).FirstOrDefault().CurrentBalance;
+            var CurrentBalance = db.Ledgers.Where(x => x.Id == LedgerId).FirstOrDefault().CurrentBalance;
 
             return Json(CurrentBalance, JsonRequestBehavior.AllowGet);
         }
@@ -869,7 +1492,7 @@ namespace SEA_Application.Controllers
         public JsonResult SelectAllLedgers()
         {
 
-            var headlist = db.LedgerHeads.Where(x=>x.Name == "Assets" || x.Name == "Expense").ToList();
+            var headlist = db.LedgerHeads.Where(x => x.Name == "Assets" || x.Name == "Expense").ToList();
 
             List<HeadList> Head_list = new List<HeadList>();
             foreach (var item in headlist)
