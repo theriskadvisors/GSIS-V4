@@ -87,6 +87,7 @@
 
     </div>
 
+
     <div class="col-md-6 pull-right" style="">
 
         <h4 style="color:#00b8ec">Profit and Loss Statement</h4>
@@ -105,8 +106,7 @@
     <div class="col-md-6 pull-left">
         <div id="Assets" style="background: white;
         padding: 20px;
-        border-radius: 5px;
-">
+        border-radius: 5px;">
 
             <div id="AssetsHead">
 
@@ -270,6 +270,7 @@
 
     $(document).ready(function () {
 
+      
 
         $("#BreadCrumbs").append(' <li> <a href="/Account/Dashboard"> Home </a> <span>&gt;</span></li>');
         $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Summary</a></li>');
@@ -280,7 +281,7 @@
         var ExpenseTotal = 0;
         var NetTotal = 0;
 
-
+          BalanceSheet();
 
         $('#FromDate').datepicker({
             dateFormat: 'yy-mm-dd'
@@ -308,172 +309,6 @@
 
             });
         });
-
-
-
-        $.ajax({
-            type: "POST",
-            url: "/ChartOfAccounts/GetChart1",
-            success: function (data) {
-                $("#SubmitTable").append('');
-
-                $.each(data, function (i, item) {
-
-                    var head = data[i];
-
-                    if (head.HeadName == "Assets") {
-
-                        var ledger = head.ledger;
-
-                        $("#AssetsHead").attr('title', head.HeadId);
-
-
-                        for (var i = 0; i < ledger.length; i++) {
-
-                            var v = 'AssetsHead';
-
-                            AssetsTotal = AssetsTotal + ledger[i].Balance;
-
-                            if (ledger[i].ledgerGroup.GroupName != null) {
-
-
-                                $("#AssetsHead").after("<div class ='AssetsHeadElement'><br>  <hr class='hr_margin' />  <div class='pull-left'><span onclick='REDIRECTLedger('assetshead')' class='fsize'>" + ledger[i].LedgerName + " (" + ledger[i].ledgerGroup.GroupName + ")  </span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div></div>");
-
-                            }
-                            else {
-                                $("#AssetsHead").after("<div class ='AssetsHeadElement'><br>  <hr class='hr_margin' />  <div class='pull-left'><span onclick='REDIRECTLedger('assetshead')' class='fsize'>" + ledger[i].LedgerName + "</span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div></div>");
-
-                            }
-
-
-                        }
-
-                        $("#AssestsTotal").html(AssetsTotal + " PKR");
-
-                    }
-
-
-                    if (head.HeadName == "Liabilities") {
-
-                        var ledger = head.ledger;
-
-
-
-                        $("#LiabilitiesHead").attr('title', head.HeadId);
-
-                        for (var i = 0; i < ledger.length; i++) {
-
-                            LiabilitiesTotal = LiabilitiesTotal + ledger[i].Balance;
-
-
-                            if (ledger[i].ledgerGroup.GroupName != null) {
-
-
-                                $("#LiabilitiesHead").after("<div class ='LiabilitiesHeadElement'><br>  <hr class='hr_margin' />  <div class='pull-left'><span  class='fsize'>" + ledger[i].LedgerName + " (" + ledger[i].ledgerGroup.GroupName + ")  </span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div></div>");
-
-                            }
-                            else {
-
-                                $("#LiabilitiesHead").after("<div class ='LiabilitiesHeadElement'><br>  <hr class='hr_margin' />  <div class='pull-left'><span class='fsize'>" + ledger[i].LedgerName + "</span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div></div>");
-
-                            }
-
-                        }
-
-                        $("#LiabilitiesTotal").html(LiabilitiesTotal + " PKR");
-
-
-                    }
-
-                    if (head.HeadName == "Equity") {
-                        $("#EquityHead").attr('title', head.HeadId);
-                        var ledger = head.ledger;
-
-
-                        for (var i = 0; i < ledger.length; i++) {
-
-                            EquityTotal = EquityTotal + ledger[i].Balance;
-
-
-                            if (ledger[i].ledgerGroup.GroupName != null) {
-
-                                $("#EquityHead").after("<div class ='EquityHeadElement'><br>  <hr class='hr_margin' />  <div class='pull-left'><span  class='fsize'>" + ledger[i].LedgerName + " (" + ledger[i].ledgerGroup.GroupName + ")  </span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div></div>");
-                            }
-                            else {
-
-
-                                $("#EquityHead").after("<div class ='EquityHeadElement'><br>  <hr class='hr_margin' />  <div class='pull-left'><span class='fsize'>" + ledger[i].LedgerName + "</span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div></div>");
-                            }
-
-                        }
-
-                        $("#EquityTotal").html(EquityTotal + " PKR");
-
-
-
-                    }
-
-                    if (head.HeadName == "Expense") {
-
-                        var ledger = head.ledger;
-                        $("#ExpenseHead").attr('title', head.HeadId);
-
-
-                        for (var i = 0; i < ledger.length; i++) {
-
-                            ExpenseTotal = ExpenseTotal + ledger[i].Balance;
-
-
-                            if (ledger[i].ledgerGroup.GroupName != null) {
-
-                                $("#ExpenseHead").after("<div class ='ExpenseHeadElement'><br>  <hr class='hr_margin' />  <div class='pull-left'><span  class='fsize'>" + ledger[i].LedgerName + " (" + ledger[i].ledgerGroup.GroupName + ")  </span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div></div>");
-                            }
-                            else {
-
-                                $("#ExpenseHead").after("<div class ='ExpenseHeadElement'><br>  <hr class='hr_margin' />  <div class='pull-left'><span class='fsize'>" + ledger[i].LedgerName + "</span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div></div>");
-                            }
-
-                        }
-
-                        $("#ExpenseTotal").html(ExpenseTotal + " PKR");
-
-
-                    }
-
-                    if (head.HeadName == "Income") {
-
-                        var ledger = head.ledger;
-                        $("#IncomeHead").attr('title', head.HeadId);
-
-
-                        for (var i = 0; i < ledger.length; i++) {
-
-                            IncomeTotal = IncomeTotal + ledger[i].Balance;
-
-                            if (ledger[i].ledgerGroup.GroupName != null) {
-
-                                $("#IncomeHead").after("<div class ='IncomeHeadElement'><br>  <hr class='hr_margin' />  <div class='pull-left'><span  class='fsize'>" + ledger[i].LedgerName + " (" + ledger[i].ledgerGroup.GroupName + ")  </span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div></div>");
-                            }
-                            else {
-
-
-                                $("#IncomeHead").after("<div class ='IncomeHeadElement'><br>  <hr class='hr_margin' />  <div class='pull-left'><span class='fsize'>" + ledger[i].LedgerName + "</span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div></div>");
-                            }
-
-                        }
-                        $("#IncomeTotal").html(IncomeTotal + " PKR");
-
-
-
-                    }
-
-                })//each function
-                NetTotal = IncomeTotal - ExpenseTotal;
-
-                $("#NetTotal").html(NetTotal + " PKR");
-
-            } //success function
-        }) //ajax call
 
 
         $("#FromDate").change(function () {
@@ -507,7 +342,6 @@
 
 
                 $("#DateToView").html('<h5><span id="FromDateView"> ' + FromDateFormat + ' </span> to <span id="ToDateView">' + ToDateFormat + ' </span></h5>');
-
 
 
                 GetBalanceSheet(FromDate, ToDate);
@@ -563,9 +397,21 @@
         })
 
         $("#BranchId").change(function () {
+            debugger
+            var BranchId = $(this).val();
+            if (BranchId == "") {
 
-            GetProfitAndLoss();
+                BalanceSheet();
+                $("#DateToView").html("");
+                $("#FromDate").val("");
+                $("#ToDate").val("");
 
+                //
+            }
+
+            else {
+                GetProfitAndLoss();
+            }
         })
 
         $.ajax({
@@ -601,7 +447,182 @@
 
     })//document ready
 
+    function BalanceSheet() {
 
+        
+
+        $.ajax({
+            type: "POST",
+            url: "/ChartOfAccounts/GetChart1",
+            success: function (data) {
+
+                debugger
+                $("#SubmitTable").append('');
+
+                $.each(data, function (i, item) {
+
+                    var head = data[i];
+
+                    if (head.HeadName == "Assets") {
+
+                        var ledger = head.ledger;
+
+                        $("#AssetsHead").attr('title', head.HeadId);
+                        $(".AssetsHeadElement").html("");
+
+                        AssetsTotal = 0;
+                        for (var i = 0; i < ledger.length; i++) {
+
+                            var v = 'AssetsHead';
+
+                            AssetsTotal = AssetsTotal + ledger[i].Balance;
+
+                            if (ledger[i].ledgerGroup.GroupName != null) {
+
+
+                                $("#AssetsHead").after("<div class ='AssetsHeadElement'><br>  <hr class='hr_margin' />  <div class='pull-left'><span onclick='REDIRECTLedger('assetshead')' class='fsize'>" + ledger[i].LedgerName + " (" + ledger[i].ledgerGroup.GroupName + ")  </span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div></div>");
+
+                            }
+                            else {
+                                $("#AssetsHead").after("<div class ='AssetsHeadElement'><br>  <hr class='hr_margin' />  <div class='pull-left'><span onclick='REDIRECTLedger('assetshead')' class='fsize'>" + ledger[i].LedgerName + "</span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div></div>");
+
+                            }
+
+
+                        }
+
+                        $("#AssestsTotal").html(AssetsTotal + " PKR");
+
+                    }
+
+
+                    if (head.HeadName == "Liabilities") {
+
+                        var ledger = head.ledger;
+
+
+
+                        $("#LiabilitiesHead").attr('title', head.HeadId);
+
+                        $(".LiabilitiesHeadElement").html("");
+                        LiabilitiesTotal = 0;
+                        for (var i = 0; i < ledger.length; i++) {
+
+                            LiabilitiesTotal = LiabilitiesTotal + ledger[i].Balance;
+
+
+                            if (ledger[i].ledgerGroup.GroupName != null) {
+
+
+                                $("#LiabilitiesHead").after("<div class ='LiabilitiesHeadElement'><br>  <hr class='hr_margin' />  <div class='pull-left'><span  class='fsize'>" + ledger[i].LedgerName + " (" + ledger[i].ledgerGroup.GroupName + ")  </span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div></div>");
+
+                            }
+                            else {
+
+                                $("#LiabilitiesHead").after("<div class ='LiabilitiesHeadElement'><br>  <hr class='hr_margin' />  <div class='pull-left'><span class='fsize'>" + ledger[i].LedgerName + "</span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div></div>");
+
+                            }
+
+                        }
+
+                        $("#LiabilitiesTotal").html(LiabilitiesTotal + " PKR");
+
+
+                    }
+
+                    if (head.HeadName == "Equity") {
+                        $("#EquityHead").attr('title', head.HeadId);
+                        var ledger = head.ledger;
+
+                        $(".EquityHeadElement").html("");
+                        EquityTotal = 0;
+                        for (var i = 0; i < ledger.length; i++) {
+
+                            EquityTotal = EquityTotal + ledger[i].Balance;
+
+
+                            if (ledger[i].ledgerGroup.GroupName != null) {
+
+                                $("#EquityHead").after("<div class ='EquityHeadElement'><br>  <hr class='hr_margin' />  <div class='pull-left'><span  class='fsize'>" + ledger[i].LedgerName + " (" + ledger[i].ledgerGroup.GroupName + ")  </span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div></div>");
+                            }
+                            else {
+
+
+                                $("#EquityHead").after("<div class ='EquityHeadElement'><br>  <hr class='hr_margin' />  <div class='pull-left'><span class='fsize'>" + ledger[i].LedgerName + "</span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div></div>");
+                            }
+
+                        }
+
+                        $("#EquityTotal").html(EquityTotal + " PKR");
+
+
+
+                    }
+
+                    if (head.HeadName == "Expense") {
+
+                        var ledger = head.ledger;
+                        $("#ExpenseHead").attr('title', head.HeadId);
+
+                        $(".ExpenseHeadElement").html("");
+                        ExpenseTotal = 0;
+                        for (var i = 0; i < ledger.length; i++) {
+
+                            ExpenseTotal = ExpenseTotal + ledger[i].Balance;
+
+
+                            if (ledger[i].ledgerGroup.GroupName != null) {
+
+                                $("#ExpenseHead").after("<div class ='ExpenseHeadElement'><br>  <hr class='hr_margin' />  <div class='pull-left'><span  class='fsize'>" + ledger[i].LedgerName + " (" + ledger[i].ledgerGroup.GroupName + ")  </span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div></div>");
+                            }
+                            else {
+
+                                $("#ExpenseHead").after("<div class ='ExpenseHeadElement'><br>  <hr class='hr_margin' />  <div class='pull-left'><span class='fsize'>" + ledger[i].LedgerName + "</span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div></div>");
+                            }
+
+                        }
+
+                        $("#ExpenseTotal").html(ExpenseTotal + " PKR");
+
+
+                    }
+
+                    if (head.HeadName == "Income") {
+
+                        var ledger = head.ledger;
+                        $("#IncomeHead").attr('title', head.HeadId);
+
+                        $(".IncomeHeadElement").html("");
+                        IncomeTotal = 0;
+                        for (var i = 0; i < ledger.length; i++) {
+
+                            IncomeTotal = IncomeTotal + ledger[i].Balance;
+
+                            if (ledger[i].ledgerGroup.GroupName != null) {
+
+                                $("#IncomeHead").after("<div class ='IncomeHeadElement'><br>  <hr class='hr_margin' />  <div class='pull-left'><span  class='fsize'>" + ledger[i].LedgerName + " (" + ledger[i].ledgerGroup.GroupName + ")  </span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div></div>");
+                            }
+                            else {
+
+
+                                $("#IncomeHead").after("<div class ='IncomeHeadElement'><br>  <hr class='hr_margin' />  <div class='pull-left'><span class='fsize'>" + ledger[i].LedgerName + "</span> </div><div class='pull-right fcolor'><span class='fsize'> " + ledger[i].Balance + " </span></div></div>");
+                            }
+
+                        }
+                        $("#IncomeTotal").html(IncomeTotal + " PKR");
+
+
+
+                    }
+
+                })//each function
+                NetTotal = IncomeTotal - ExpenseTotal;
+
+                $("#NetTotal").html(NetTotal + " PKR");
+
+            } //success function
+        }) //ajax call
+    }
 
     function GetMonthName(monthNumber) {
         var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];

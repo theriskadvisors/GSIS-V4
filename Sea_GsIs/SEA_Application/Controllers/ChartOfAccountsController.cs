@@ -171,12 +171,12 @@ namespace SEA_Application.Controllers
 
             List<Ledger_Head> ledgerheadlist = new List<Ledger_Head>();
 
-            if (BalanceSheetList.Count() != 0)
-            {
+            //if (BalanceSheetList.Count() != 0)
+            //{
 
                 ledgerheadlist = GetLedgers(BalanceSheetList);
 
-            }
+           // }
 
             return Json(ledgerheadlist, JsonRequestBehavior.AllowGet);
             //var ledgers = from voucher in db.Vouchers
@@ -208,7 +208,7 @@ namespace SEA_Application.Controllers
 
                     ledger.LedgerId = BalanceSheet.LedgerId;
                     ledger.LedgerName = BalanceSheet.LedgerName;
-                    ledger.LedgerHead.HeadName = BalanceSheet.LedgerType;
+                 //   ledger.LedgerHead.HeadName = BalanceSheet.LedgerType;
                     lh.HeadName = BalanceSheet.LedgerType;
                     ledger.Balance = Convert.ToDouble(BalanceSheet.LedgerAmount);
 
@@ -243,12 +243,12 @@ namespace SEA_Application.Controllers
             }
             List<Ledger_Head> ledgerheadlist = new List<Ledger_Head>();
 
-            if (BalanceSheetList.Count() != 0)
-            {
+          ////  if (BalanceSheetList.Count() != 0)
+          //  {
 
                 ledgerheadlist = GetLedgers(BalanceSheetList);
 
-            }
+           // }
 
             return Json(ledgerheadlist, JsonRequestBehavior.AllowGet);
 
