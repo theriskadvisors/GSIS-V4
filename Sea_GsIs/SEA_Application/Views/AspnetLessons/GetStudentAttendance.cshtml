@@ -12,7 +12,7 @@
 
 
 <style>
-    /**/
+   
     .announceSubjectList {
         overflow-y: auto;
         max-height: 310px;
@@ -22,7 +22,47 @@
 
     @@media print {
         #noprint {
+            display: none;
+        }
+        #layout_navbar_toogle
+        {
+            display:none;
+        }
+     
+        li {
             visibility: hidden;
+          
+        }
+       
+        .timeCon
+        {
+             visibility:hidden;
+        }
+
+
+
+        .col-md-12 {
+            padding: 0 !important;
+        }
+
+        .card {
+            margin: 0px !important;
+            padding-top: 0px !important;
+            padding-bottom: 0px !important;
+            padding-left: 0px !important;
+            padding-right: 0px !important;
+        }
+
+        .main-panel > .content {
+            margin-top: 0px !important;
+            padding-top: 0px !important;
+            padding-bottom: 0px !important;
+            padding-left: 0px !important;
+            padding-right: 0px !important;
+        }
+
+        #attendenceTable {
+            visibility: visible;
         }
     }
 
@@ -53,7 +93,7 @@
         font-weight: 600;
         font-stretch: normal;
         font-style: normal;
-        /*! line-height: 1.61; */
+       
         letter-spacing: normal;
         text-align: center;
         color: #ffffff;
@@ -69,7 +109,7 @@
         .text-muted.lessonButton i {
             font-size: 25px;
         }
-    /*subject list new*/
+   
     .text-subjectList {
         font-size: 20px;
         font-weight: 600;
@@ -127,7 +167,7 @@
     .progress__bar {
         background-color: #ff8543;
         height: 5px;
-        /*! display: inline-block; */
+       
         width: 0;
     }
 
@@ -153,8 +193,7 @@
     }
 
     .progress__bar:after {
-        /*   background-color: #e2e2ee;
-    height: 5px; */
+       
     }
 
     .subject-list-box.subject-list-box-new:hover {
@@ -170,7 +209,7 @@
         .subject-list-box.subject-list-box-new .form-check .form-check-input:checked ~ .form-check-sign .check::before {
             color: #ff8543;
         }
-    /*attendance*/
+   
     .student-attendance-headding h2 {
         font-size: 24px;
         font-weight: 500;
@@ -307,14 +346,13 @@
                         </div>
                         <div class="col-sm-12 col-md-6 col-lg-5 align-items-center d-flex justify-content-end">
                             &nbsp;
-                           
+
                             <div class="student-attendance-headding align-items-center fc-left d-flex justify-content-between"><h2 class="m-0 mr-3">@ViewBag.StartDate</h2><div class="fc-button-group"><button type="button" class="fc-prev-button fc-button fc-state-default fc-corner-left hidden" aria-label="prev"><span class="fc-icon fc-icon-left-single-arrow"></span></button><button type="button" class="fc-next-button fc-button fc-state-default fc-corner-right hidden" aria-label="next"><span class="fc-icon fc-icon-right-single-arrow hidden"></span></button></div></div>
                             <button onclick="window.print()" type="button" class="btn btn-primary  pull-left rounded rounded-lg createBtn coursesBtn mr-3">
                                 Download Report
                             </button>
 
 
-
                         </div>
 
                     </div>
@@ -323,68 +361,60 @@
 
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="p-5">
-                    <div class="row datatablesData AttendanceTableCon">
-                        <input type="hidden" name="SubjectId" id="SubjectId" value="@ViewBag.SubjectId" />
-                        <input type="hidden" name="StudentId" id="StudentId" value="@ViewBag.StudentId" />
-
-                        <div class="col-md-8 attendance-subheading">
-                            <span id="heading"> @ViewBag.StudentName </span> <br>
-                            @ViewBag.BranchName <span id="E_Date"> , @ViewBag.ClassName</span> - @ViewBag.SectionName - @ViewBag.SubjectName
-                            <div class="form-row my-4 mb-4">
-                                @*<div class="form-group col-md-12 bmd-form-group">
-                    <label for="" class="bmd-label-static pl-2">Select Class*</label>
-                    <select class="form-control" style="color: #b9cbe1;">
-                        <option selected="">Select</option>
-                        <option value="">Selection 1</option>
-                        <option value="">Selection 2</option>
-                    </select>
-                </div>*@
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            @*<button type="button" class="btn btn-primary pull-right rounded rounded-lg createBtn coursesBtn">
-                View
-                All Courses
-            </button>*@
-                        </div>
 
 
+    <div class="card">
+        <div class="p-5" id="attendenceTable">
+            <div class="row datatablesData AttendanceTableCon">
+                <input type="hidden" name="SubjectId" id="SubjectId" value="@ViewBag.SubjectId" />
+                <input type="hidden" name="StudentId" id="StudentId" value="@ViewBag.StudentId" />
 
-
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12 datatablesData AttendanceTableCon table-responsive-lg">
-                            <table class="display table table-hover dataTable no-footer  mb-0" role="grid" id="TeacherAttendanceTable">
-                                <thead>
-                                    <tr role="row">
-                                        <th class="attNumber" style="width: 2%;">#</th>
-                                        <th class="sorting" rowspan="1" colspan="1" aria-label="  Name: activate to sort column ascending" style="width: 6%;">Lesson Name</th>
-                                        <th class="sorting" rowspan="1" colspan="1" aria-label="Roll Number: activate to sort column ascending" style="width: 9%;">Status</th>
-                                        <th class="sorting" rowspan="1" colspan="1" aria-label="Email: activate to sort column ascending" style="width: 16%;">Attendance Time</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                
-
-                                    <tr role="row" class="rowHere">
-                                    </tr>
-
-                                </tbody>
-                            </table>
-
-                        </div>
+                <div class="col-md-8 attendance-subheading">
+                    <span id="heading"> @ViewBag.StudentName </span> <br>
+                    @ViewBag.BranchName <span id="E_Date"> , @ViewBag.ClassName</span> - @ViewBag.SectionName - @ViewBag.SubjectName
+                    <div class="form-row my-4 mb-4">
+                     
                     </div>
                 </div>
+                <div class="col-md-4">
+                    @*<button type="button" class="btn btn-primary pull-right rounded rounded-lg createBtn coursesBtn">
+                            View
+                            All Courses
+                        </button>*@
+                </div>
+
+
+
+
             </div>
+            <div class="row">
+                <div class="col-sm-12 datatablesData AttendanceTableCon table-responsive-lg">
+                    <table class="display table table-hover dataTable no-footer  mb-0" role="grid" id="TeacherAttendanceTable">
+                        <thead>
+                            <tr role="row">
+                                <th class="attNumber" style="width: 2%;">#</th>
+                                <th class="sorting" rowspan="1" colspan="1" aria-label="  Name: activate to sort column ascending" style="width: 6%;">Lesson Name</th>
+                                <th class="sorting" rowspan="1" colspan="1" aria-label="Roll Number: activate to sort column ascending" style="width: 9%;">Status</th>
+                                @*<th class="sorting" rowspan="1" colspan="1" aria-label="Email: activate to sort column ascending" style="width: 16%;">Attendance Time</th>*@
+                            </tr>
+                        </thead>
+                        <tbody>
 
+
+                            <tr role="row" class="rowHere">
+                            </tr>
+
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
         </div>
-
     </div>
+
 </div>
+
+
 
 <!--   Core JS Files   -->
 
@@ -393,8 +423,8 @@
     $(document).ready(function () {
         //$("#PageHeader").html("Lesson Attendance");
 
-       
-       
+
+
         $("#BreadCrumbs").append(' <li> <a  href="/Teacher/Index"> Home </a> <span>&gt;</span></li>');
         $("#BreadCrumbs").append(' <li><a id="BreadCrumps1" href="/AspnetLessons/StudentAttendance">Student Attendance </a><span>&gt;</span></li>');
         $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Student Attendance View</a></li>');
@@ -403,25 +433,25 @@
 
 
     //var LessonID = $("#LessonID").val();
-     var SubjectId = $("#SubjectId").val();
+    var SubjectId = $("#SubjectId").val();
     var StudentId = $("#StudentId").val();
 
     $.ajax({
 
         type: "POST",
         url: "/AspNetLessons/StudentAttendanceList",
-        data: { "SubjectId": SubjectId , "StudentId": StudentId },
+        data: { "SubjectId": SubjectId, "StudentId": StudentId },
         success: function (data) {
             var j = 1;
             for (var i = 0; i < data.length; i++) {
                 if (data[i].LessonStatus == "Present") {
-                    $("#TeacherAttendanceTable").append("<tr><td class='attNumber'>" + j + "</td><td>" + data[i].LessonName + "</td><td><div class='fc-button-group attendance-btn'><button type='button' class='fc-month-button fc-button fc-state-default fc-corner-left att-present-btn selected'><input type='radio' name='record_2' class='record_id_1' value='Present' checked>            <i class='fa fa-check' aria-hidden='true'></i>            Present        </button>        <button type='button' class='fc-agendaWeek-button fc-button fc-state-default att-absent-btn'><input type='radio' name='record_2' class='record_id_1' value='Absent'><i class='fa fa-times' aria-hidden='true'></i>Absent</button>        <button type='button' class='fc-listWeek-button fc-button fc-state-default fc-corner-right att-late-btn'>            <input type='radio' name='record_2' class='record_id_1' value='Late'>            <i class='fa fa-minus' aria-hidden='true'></i>Late</button></div></td><td><div class='reasonText'>" + data[i].LessonStartDate + "</div></td></td></tr>");
+                    $("#TeacherAttendanceTable").append("<tr><td class='attNumber'>" + j + "</td><td>" + data[i].LessonName + "</td><td><div class='fc-button-group attendance-btn'><button type='button' class='fc-month-button fc-button fc-state-default fc-corner-left att-present-btn selected'><input type='radio' name='record_2' class='record_id_1' value='Present' checked>            <i class='fa fa-check' aria-hidden='true'></i>            Present        </button>        <button type='button' class='fc-agendaWeek-button fc-button fc-state-default att-absent-btn'><input type='radio' name='record_2' class='record_id_1' value='Absent'><i class='fa fa-times' aria-hidden='true'></i>Absent</button>        <button type='button' class='fc-listWeek-button fc-button fc-state-default fc-corner-right att-late-btn'>            <input type='radio' name='record_2' class='record_id_1' value='Late'>            <i class='fa fa-minus' aria-hidden='true'></i>Late</button></div></td></tr>");
                 }
                 else if (data[i].LessonStatus == "Absent") {
-                    $("#TeacherAttendanceTable").append("<tr><td class='attNumber'>" + j + "</td><td>" + data[i].LessonName + "</td><td> <div class='fc-button-group attendance-btn'>  <button type='button' class='fc-month-button fc-button fc-state-default fc-corner-left att-present-btn'><input type='radio' name='record_1' class='record_id_1' value='Present'> <i class='fa fa-check' aria-hidden='true'></i>Present  </button> <button type='button' class='fc-agendaWeek-button fc-button fc-state-default att-absent-btn selected'> <input type='radio' name='record_1' class='record_id_1' value='Absent' checked> <i class='fa fa-times' aria-hidden='true'></i> Absent </button><button type='button' class='fc-listWeek-button fc-button fc-state-default fc-corner-right att-late-btn'>  <input type='radio' name='record_1' class='record_id_1' value='Late'><i class='fa fa-minus' aria-hidden='true'></i> Late</button></div> </td>  <td><div class='reasonText'>" + data[i].LessonStartDate + "</div></td></tr>")
+                    $("#TeacherAttendanceTable").append("<tr><td class='attNumber'>" + j + "</td><td>" + data[i].LessonName + "</td><td> <div class='fc-button-group attendance-btn'>  <button type='button' class='fc-month-button fc-button fc-state-default fc-corner-left att-present-btn'><input type='radio' name='record_1' class='record_id_1' value='Present'> <i class='fa fa-check' aria-hidden='true'></i>Present  </button> <button type='button' class='fc-agendaWeek-button fc-button fc-state-default att-absent-btn selected'> <input type='radio' name='record_1' class='record_id_1' value='Absent' checked> <i class='fa fa-times' aria-hidden='true'></i> Absent </button><button type='button' class='fc-listWeek-button fc-button fc-state-default fc-corner-right att-late-btn'>  <input type='radio' name='record_1' class='record_id_1' value='Late'><i class='fa fa-minus' aria-hidden='true'></i> Late</button></div> </td>  </tr>")
                 }
                 else {
-                    $("#TeacherAttendanceTable").append("<tr><td class='attNumber'>" + j + "</td><td>" + data[i].LessonName + "</td><td><div class='fc-button-group attendance-btn'><button type='button' class='fc-month-button fc-button fc-state-default fc-corner-left att-present-btn '><input type='radio' name='record_3' class='record_id_1' value='Present' > <i class='fa fa-check' aria-hidden='true'></i>Present</button> <button type='button' class='fc-agendaWeek-button fc-button fc-state-default att-absent-btn'><input type='radio' name='record_3' class='record_id_1' value='Absent'><i class='fa fa-times' aria-hidden='true'></i>Absent </button> <button type='button' class='fc-listWeek-button fc-button fc-state-default fc-corner-right att-late-btn selected' ><input type='radio' name='record_3' class='record_id_1' value='Late' checked>   <i class='fa fa-minus' aria-hidden='true'></i>Late </button></div>  </td>  <td><div class='reasonText'>" + data[i].LessonStartDate + "</div></td></tr>")
+                    $("#TeacherAttendanceTable").append("<tr><td class='attNumber'>" + j + "</td><td>" + data[i].LessonName + "</td><td><div class='fc-button-group attendance-btn'><button type='button' class='fc-month-button fc-button fc-state-default fc-corner-left att-present-btn '><input type='radio' name='record_3' class='record_id_1' value='Present' > <i class='fa fa-check' aria-hidden='true'></i>Present</button> <button type='button' class='fc-agendaWeek-button fc-button fc-state-default att-absent-btn'><input type='radio' name='record_3' class='record_id_1' value='Absent'><i class='fa fa-times' aria-hidden='true'></i>Absent </button> <button type='button' class='fc-listWeek-button fc-button fc-state-default fc-corner-right att-late-btn selected' ><input type='radio' name='record_3' class='record_id_1' value='Late' checked>   <i class='fa fa-minus' aria-hidden='true'></i>Late </button></div>  </td>  </tr>")
 
                 }
                 j++;
