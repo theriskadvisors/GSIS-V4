@@ -2222,11 +2222,21 @@ namespace SEA_Application.Controllers
             //  string status = Newtonsoft.Json.JsonConvert.SerializeObject(students);
 
             // return Content(status);
+            
+        }
+        public ActionResult GetAllStudents()
+        {
+            var students = (from stdnt in db.AspNetStudents
+                            join usr in db.AspNetUsers
+                            on stdnt.UserId equals usr.Id
+                            select new { stdnt.Id, Name = stdnt.Name + "(" + usr.UserName + ")", stdnt.RollNo, stdnt.CellNo, usr.Image }).OrderBy(x => x.Name).ToList();
 
 
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(students);
+            // return Json(SubjectsByClass, JsonRequestBehavior.AllowGet);
+            return Content(status);
 
         }
-
 
         public ActionResult EditAccountant(int id)
         {

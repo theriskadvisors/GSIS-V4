@@ -106,6 +106,8 @@ namespace SEA_Application.Controllers
             ViewBag.SubjectName = SubjectName;
             ViewBag.LessonName = LessonName;
             ViewBag.StartDate = StartDate;
+
+
             return View();
         }
         public ActionResult GetLessonAttendance(int LessonID)
@@ -127,7 +129,7 @@ namespace SEA_Application.Controllers
                                 where enrollment.AspNetClass_Courses.ClassId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.ClassId
                                 && enrollment.AspNetBranchClass_Sections.SectionId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SectionId
                                 && enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.BranchId
-                                && lesson.Id == LessonID 
+                                && lesson.Id == LessonID
                                 select new { StudentName = enrollment.AspNetStudent.AspNetUser.Name, LessonStatus = "Absent", LessonStartDate = "" }).Distinct().ToList();
                 foreach (var item in students)
                 {
@@ -156,7 +158,7 @@ namespace SEA_Application.Controllers
                                 && enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.BranchId
                                 && lesson.Id == LessonID
                                 select new { StudentName = enrollment.AspNetStudent.AspNetUser.Name, LessonStatus = "Absent", LessonStartDate = "" }).Distinct().ToList();
-             
+
                 foreach (var item in students)
                 {
                     var std = data.Where(x => x.StudentName.ToString() == item.StudentName.ToString()).FirstOrDefault();
@@ -192,15 +194,146 @@ namespace SEA_Application.Controllers
 
             return View();
         }
-        
-        public ActionResult GetStudentAttendance(int? BranchId, int? ClassId, int? SectionId, int? SubjectId, int? StudentId )
+        public class StudentLessonAttendance
         {
+            public string LessonName { get; set; }
+            public string StudentName { get; set; }
+            public string SubjectName { get; set; }
+            public string LessonType { get; set; }
+            public string LessonStatus { get; set; }
+            public TimeSpan Time { get; set; }
+            public string StartDate { get; set; }
+        }
+
+        //public ActionResult GetStudentAttendance(int? StudentId)
+        //{
+
+        //    var StudentUserId = db.AspNetStudents.Where(x => x.Id == StudentId).FirstOrDefault().UserId;
+
+        //    var List = (from track in db.StudentLessonTrackings.Where(x => x.StudentId == StudentUserId )
+        //                 join lesson in db.AspnetLessons on track.LessonId equals lesson.Id
+        //                 join user in db.AspNetUsers on track.StudentId equals user.Id
+
+        //                 select new
+        //                 {
+        //                     LessonName = lesson.Name,
+        //                     LessonType = lesson.ContentType,
+        //                     SubjectName = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+        //                     StudentName = user.Name,
+        //                     LessonMeetingStatus = track.MeetingJoinStatus,
+        //                     LessonStatus  = track.LessonStatus,
+        //                     LessonStartDate = track.StartDate.ToString()
+
+        //                 }).ToList();
+
+        //    List<StudentLessonAttendance> StudentAttendanceList = new List<StudentLessonAttendance>();
+
+        //    foreach ( var item in List)
+        //    {
+        //        StudentLessonAttendance studentLessonAttendance = new StudentLessonAttendance();
+
+        //        studentLessonAttendance.LessonName = item.LessonName;
+        //        studentLessonAttendance.LessonType = item.LessonType;
+        //        studentLessonAttendance.StartDate = item.LessonStartDate;
+        //        studentLessonAttendance.SubjectName = item.SubjectName;
+        //        studentLessonAttendance.StudentName = item.StudentName;
+
+        //        if (item.LessonType == "Link")
+        //           {
 
 
+        //            if (item.LessonMeetingStatus  != null)
+        //            {
+
+        //                studentLessonAttendance.LessonStatus = item.LessonMeetingStatus;
+        //            }
+        //            else
+        //            {
+        //                studentLessonAttendance.LessonStatus = "Absent";
+        //            }
+
+        //            StudentAttendanceList.Add(studentLessonAttendance);
+        //        }
+        //        else
+        //        {
+        //            if (item.LessonStatus != null)
+        //            {
+        //                studentLessonAttendance.LessonStatus = item.LessonStatus;
+        //            }
+        //            else
+        //            {
+        //                studentLessonAttendance.LessonStatus = "Absent";
+        //            }
+
+        //            StudentAttendanceList.Add(studentLessonAttendance);
+
+        //        }
+
+
+        //    }
+
+        //    return Json(StudentAttendanceList, JsonRequestBehavior.AllowGet);
+
+
+        //}
+
+        public ActionResult GetStudentAttendance(int BranchId, int ClassId, int SectionId, int SubjectId, int StudentId)
+        {
+            ViewBag.BranchId = BranchId;
+            ViewBag.ClassId = ClassId;
+            ViewBag.SectionId = SectionId;
+            ViewBag.SubjectId = SubjectId;
+            ViewBag.StudentId = StudentId;
+
+            var BranchName = db.AspNetBranches.Where(x => x.Id == BranchId).FirstOrDefault().Name;
+            var ClassName = db.AspNetClasses.Where(x => x.Id == ClassId).FirstOrDefault().Name;
+            var SectionName = db.AspNetSections.Where(x => x.Id == SectionId).FirstOrDefault().Name;
+            var SubjectName = db.AspNetCourses.Where(x => x.Id == SubjectId).FirstOrDefault().Name;
+            var StudentName = db.AspNetStudents.Where(x => x.Id == StudentId).FirstOrDefault().Name;
+
+            ViewBag.BranchName = BranchName;
+            ViewBag.ClassName = ClassName;
+
+            ViewBag.SectionName = SectionName;
+            ViewBag.SectionName = SectionName;
+            ViewBag.SubjectName = SubjectName;
+
+            ViewBag.StudentName = StudentName;
 
 
 
             return View();
+
+        }
+        public ActionResult StudentAttendanceList(int SubjectId, int StudentId)
+        {
+
+            var StudentUserId = db.AspNetStudents.Where(x => x.Id == StudentId).FirstOrDefault().UserId;
+            var students = (from enrollment in db.AspNetStudent_Enrollments
+                            join lesson in db.AspnetLessons on enrollment.AspNetClass_Courses.CourseId equals lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SubjectId
+                            join lessonTracking in db.StudentLessonTrackings on lesson.Id equals lessonTracking.LessonId into egroup
+                            from lessonTracking in egroup.DefaultIfEmpty()
+                            where enrollment.AspNetClass_Courses.ClassId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.ClassId
+                            && enrollment.AspNetBranchClass_Sections.SectionId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SectionId
+                            && enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.BranchId
+                            where lesson.Status == true && lesson.IsActive == true && lesson.ContentType == "Link" && enrollment.StudentId == StudentId && lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SubjectId == SubjectId
+                            select new { LessonName = lesson.Name, LessonType = lesson.ContentType, SubjectName = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name, StudentName = enrollment.AspNetStudent.AspNetUser.Name, LessonStatus = lessonTracking.MeetingJoinStatus != null ? lessonTracking.MeetingJoinStatus : "Absent", LessonStartDate = "" }).Distinct().ToList();
+
+
+            var students1 = (from enrollment in db.AspNetStudent_Enrollments
+                             join lesson in db.AspnetLessons on enrollment.AspNetClass_Courses.CourseId equals lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SubjectId
+                             join lessonTracking in db.StudentLessonTrackings on lesson.Id equals lessonTracking.LessonId into egroup
+                             from lessonTracking in egroup.DefaultIfEmpty()
+                             where enrollment.AspNetClass_Courses.ClassId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.ClassId
+                             && enrollment.AspNetBranchClass_Sections.SectionId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SectionId
+                             && enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.BranchId
+                             where lesson.Status == true && lesson.IsActive == true && lesson.ContentType != "Link" && enrollment.StudentId == StudentId && lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SubjectId == SubjectId
+                             select new { LessonName = lesson.Name, LessonType = lesson.ContentType, SubjectName = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name, StudentName = enrollment.AspNetStudent.AspNetUser.Name, LessonStatus = lessonTracking.LessonStatus != null ? lessonTracking.LessonStatus : "Absent", LessonStartDate = "" }).Distinct().ToList();
+
+            students1.AddRange(students);
+
+            return Json(students1, JsonRequestBehavior.AllowGet);
+
         }
 
 
@@ -234,7 +367,7 @@ namespace SEA_Application.Controllers
 
                     var eventList = db.Events.Where(x => x.LessonID == id).FirstOrDefault();
 
-                    if(eventList == null)
+                    if (eventList == null)
                     {
                         var events = new Event();
                         events.UserId = null;
@@ -275,7 +408,7 @@ namespace SEA_Application.Controllers
                     {
                         eventList.SubjectClass = Lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name;
                         eventList.ThemeColor = "Green";
-                        db.SaveChanges();   
+                        db.SaveChanges();
                     }
 
                     var events1 = new Event();
@@ -312,9 +445,9 @@ namespace SEA_Application.Controllers
                     //    var user = db.AspNetUsers.Where(x => x.Id == item).FirstOrDefault();
                     //    SendMail(user.SecondaryEmail, "Lesson Published", "" + CustomModel.EmailDesign.TecherLessonTemplate (user.Name, loggedUser.Name, Lesson.Name));
                     //}
-                }         
+                }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 var logs = new AspNetLog();
                 logs.Operation = "Lesson Publish -- Exception: " + e.Message + "--- Inner Exception: " + e.InnerException;
@@ -341,7 +474,7 @@ namespace SEA_Application.Controllers
                     client.UseDefaultCredentials = false;
                     client.Credentials = new NetworkCredential(senderEmail, senderPassword);
 
-                    MailMessage mailMessage = new MailMessage(senderEmail, item, subjeEnumerableDebugViewct , emailBody);
+                    MailMessage mailMessage = new MailMessage(senderEmail, item, subjeEnumerableDebugViewct, emailBody);
                     mailMessage.IsBodyHtml = true;
                     mailMessage.BodyEncoding = UTF8Encoding.UTF8;
 
@@ -469,7 +602,7 @@ namespace SEA_Application.Controllers
             Lesson.Video_Url = LessonViewModel.LessonVideoURL;
             Lesson.TopicId = LessonViewModel.TopicId;
             Lesson.DurationMinutes = LessonViewModel.LessonDuration;
-           // Lesson.IsActive = LessonViewModel.IsActive;
+            // Lesson.IsActive = LessonViewModel.IsActive;
             Lesson.IsActive = true;
             Lesson.CreationDate = LessonViewModel.CreationDate;
             Lesson.Description = LessonViewModel.LessonDescription;
@@ -484,7 +617,7 @@ namespace SEA_Application.Controllers
 
             TimeZoneInfo PK_ZONE = TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time");
             DateTime PKTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, PK_ZONE);
-            Lesson.CreationDate = PKTime.Date; 
+            Lesson.CreationDate = PKTime.Date;
 
             Lesson.MeetingLink = LessonViewModel.MeetingLink;
             Lesson.ContentType = LessonViewModel.ContentType;
@@ -626,7 +759,7 @@ namespace SEA_Application.Controllers
             studentAssignment.CreationDate = PKTime.Date;
             studentAssignment.LessonId = Lesson.Id;
 
-            if(studentAssignment.DueDate != null)
+            if (studentAssignment.DueDate != null)
             {
                 db.AspnetStudentAssignments.Add(studentAssignment);
                 db.SaveChanges();
@@ -795,7 +928,7 @@ namespace SEA_Application.Controllers
                     foreach (var item in Students)
                     {
                         var user = db.AspNetUsers.Where(x => x.Id == item).FirstOrDefault();
-                        if(user == null)
+                        if (user == null)
                         {
                             continue;
                         }
@@ -841,7 +974,8 @@ namespace SEA_Application.Controllers
         }
         public ActionResult populateBranchEvents()
         {
-            try {
+            try
+            {
                 var Lessons = db.AspnetLessons.ToList();
 
                 foreach (var Lesson in Lessons)
@@ -889,11 +1023,12 @@ namespace SEA_Application.Controllers
                     }
                     //break;
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 int a = 0;
             }
-            
+
             return RedirectToAction("ViewTopicsAndLessons", "AspnetSubjectTopics");
         }
 
@@ -1556,7 +1691,7 @@ namespace SEA_Application.Controllers
 
             int ClassCoursesID = db.AspNetClass_Courses.Where(x => x.ClassId == GenericObject.ClassId && x.CourseId == GenericSubjectId).Select(x => x.Id).FirstOrDefault();
 
-            int TeacherId = db.AspNetTeacher_Enrollments.Where(x => x.SectionId == BranchClassSectionId && x.CourseId == ClassCoursesID).Select(x=> x.TeacherId).FirstOrDefault();
+            int TeacherId = db.AspNetTeacher_Enrollments.Where(x => x.SectionId == BranchClassSectionId && x.CourseId == ClassCoursesID).Select(x => x.TeacherId).FirstOrDefault();
 
             var TeacherUserId = db.AspNetEmployees.Where(x => x.Id == TeacherId).FirstOrDefault().UserId;
 
@@ -1663,7 +1798,7 @@ namespace SEA_Application.Controllers
 
             var eventList = db.Events.Where(x => x.LessonID == Lesson.Id).ToList();
 
-            if(eventList == null)
+            if (eventList == null)
             {
                 // the below code creates event if it's not created or deleted 
                 //var subjectName = db.AspnetLessons.Where(x => x.Id == Lesson.Id).Select(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name).FirstOrDefault();
@@ -1707,7 +1842,7 @@ namespace SEA_Application.Controllers
                     db.SaveChanges();
                 }
             }
-            
+
 
             if (LessonViewModel.ContentType == "Image")
             {
@@ -2252,7 +2387,7 @@ namespace SEA_Application.Controllers
 
 
                         var fileName2 = name + "_LM_" + SecondElement.Id + ext;
-                            FileName1 = fileName2;
+                        FileName1 = fileName2;
 
 
                         Attachment2.SaveAs(Server.MapPath("~/Content/StudentAttachments/") + fileName2);
@@ -2339,7 +2474,7 @@ namespace SEA_Application.Controllers
 
             if (User.IsInRole("Branch_Admin"))
             {
-                return RedirectToAction("Edit" , new { id = Lesson.Id });
+                return RedirectToAction("Edit", new { id = Lesson.Id });
                 //return RedirectToAction("ViewLessonsToAdmin", "AspnetLessons");
             }
             else
@@ -2612,7 +2747,7 @@ namespace SEA_Application.Controllers
             Lesson.Video_Url = LessonViewModel.LessonVideoURL;
             Lesson.TopicId = LessonViewModel.TopicId;
             Lesson.DurationMinutes = LessonViewModel.LessonDuration;
-            Lesson.IsActive =true;
+            Lesson.IsActive = true;
             Lesson.CreationDate = LessonViewModel.CreationDate;
             Lesson.Description = LessonViewModel.LessonDescription;
             Lesson.OrderBy = LessonViewModel.OrderBy;
@@ -2967,15 +3102,15 @@ namespace SEA_Application.Controllers
 
             TempData["LessonDeleted"] = "Deleted";
             return RedirectToAction("ViewTopicsAndLessons", "AspnetSubjectTopics", new { @NavigateTo = "Lesson" });
-           // return RedirectToAction("ViewTopicsAndLessons", "AspnetSubjectTopics");
+            // return RedirectToAction("ViewTopicsAndLessons", "AspnetSubjectTopics");
 
         }
         public ActionResult InactiveLessons(string idlist)
         {
             var LessonsIds = idlist.Split(',');
-           // var LessonIdsInt = LessonsIds.ToList<int>();
+            // var LessonIdsInt = LessonsIds.ToList<int>();
 
-            foreach(var LessonId in LessonsIds)
+            foreach (var LessonId in LessonsIds)
             {
                 int Id = Convert.ToInt32(LessonId);
 

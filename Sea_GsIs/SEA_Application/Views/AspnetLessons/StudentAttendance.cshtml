@@ -1,7 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "StudentAttendance";
-    Layout = "~/Views/Shared/_BranchAdminDashboardLayout.cshtml";
+    Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
 }
 
 
@@ -10,13 +10,13 @@
     $(document).ready(function () {
 
         $("#PageHeader").html("Student Attendance ");
-        $("#BreadCrumbs").append(' <li> <a href="/BranchAdmin/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li> <a href="/Teacher/Index"> Home </a> <span>&gt;</span></li>');
         $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#"> Student Attendance </a></li>');
 
         $.ajax({
             type: "POST",
             cache: false,
-            url: "/BranchAdmin/AllBranches",
+            url: "/AspNetProject/AllBranches",
             processData: false,
             contentType: false,
             success: function (data) {
@@ -51,7 +51,7 @@
                 $.ajax({
                     type: "POST",
                     cache: false,
-                    url: "/BranchAdmin/ClassesByBranch?BranchId=" + BranchId,
+                    url: "/AspNetProject/ClassesByBranch?BranchId=" + BranchId,
                     processData: false,
                     contentType: false,
                     success: function (data) {
@@ -109,7 +109,7 @@
                 $.ajax({
                     type: "POST",
                     cache: false,
-                    url: "/BranchAdmin/SectionByClasses?ClassId=" + ClassId,
+                    url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId,
                     processData: false,
                     contentType: false,
                     success: function (data) {
@@ -156,9 +156,9 @@
 
         });
 
-        $('#ClassId').change(function () {
+        $('#SectionId').change(function () {
 
-            var ClassId = $(this).val();
+            var SectionId = $(this).val();
             //Class = UserName;
 
             if (SectionId != "") {
@@ -166,7 +166,7 @@
                 $.ajax({
                     type: "POST",
                     cache: false,
-                    url: "/BranchAdmin/SubjectsByClass?ClassId=" + ClassId,
+                    url: "/AspNetProject/SubjectsByClass?SectionId=" + SectionId,
                     processData: false,
                     contentType: false,
                     success: function (data) {
@@ -175,9 +175,7 @@
                         var $el = $("#SubjectId");
                         $el.empty();
 
-                        var $e4 = $("#StudentId");
-                        $e4.empty();
-
+                     
                         if (sch.length > 0) {
                             $el.append($("<option></option>")
                                 .attr("value", "").text('Select Subject'));
@@ -209,12 +207,16 @@
         $('#SectionId').change(function () {
 
             var SectionId = $(this).val();
-            if (SectionId != "") {
+            var BranchId = $("#BranchId").val();
+            var ClassId = $("#ClassId").val();
+          
+
+            if (BranchId != "" && ClassId != "" &&  SectionId != "") {
 
                 $.ajax({
                     type: "POST",
                     cache: false,
-                    url: "/BranchAdmin/GetStudents?SectionId=" + SectionId,
+                    url: "/AspNetProject/BranchClassSectionStudents?BranchId=" + BranchId + "&ClassId=" + ClassId + "&SectionId=" + SectionId,
                     processData: false,
                     contentType: false,
                     success: function (data) {
@@ -262,8 +264,7 @@
             var SubjectId = $("#SubjectId").val();
 
 
-            if (BranchId != "" && ClassId != "" && SectionId != "" && StudentId != "" && SubjectId != "")
-            {
+            if (BranchId != "" && ClassId != "" && SectionId != "" && StudentId != "" && SubjectId != "") {
 
                 //$.ajax({
                 //    type: "POST",
@@ -271,19 +272,12 @@
                 //    url: "/AspnetLessons/GetStudentAttendance",
                 //    data: { "BranchId": BranchId, "ClassId": ClassId, "SectionId": SectionId, "SubjectId": SubjectId, "StudentId": StudentId },
                 //    success: function (data) {
-
-
-
-
-
                 //    }
                 //})
 
+                //   window.location.href = "/AspnetLessons/GetStudentAttendance?BranchId="+ BranchId +"&ClassId" + ClassId +"&SectionId"+SectionId +"&SubjectId"+SubjectId +"&StudentId"+StudentId;
 
-
-             //   window.location.href = "/AspnetLessons/GetStudentAttendance?BranchId="+ BranchId +"&ClassId" + ClassId +"&SectionId"+SectionId +"&SubjectId"+SubjectId +"&StudentId"+StudentId;
-
-                  window.location.href = "/AspnetLessons/GetStudentAttendance?BranchId=" + BranchId + "&ClassId=" + ClassId + "&SectionId=" + SectionId + "&SubjectId=" + SubjectId +"&StudentId=" + StudentId;
+                window.location.href = "/AspnetLessons/GetStudentAttendance?BranchId=" + BranchId + "&ClassId=" + ClassId + "&SectionId=" + SectionId + "&SubjectId=" + SubjectId + "&StudentId=" + StudentId;
 
             }
 
@@ -291,7 +285,10 @@
 
         })
 
+        $("#btnCancel").click(function () {
 
+            window.location.href = "/Teacher/Index";
+        })
 
     })
 </script>

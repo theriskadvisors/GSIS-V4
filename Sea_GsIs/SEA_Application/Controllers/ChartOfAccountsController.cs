@@ -230,7 +230,7 @@ namespace SEA_Application.Controllers
 
                     ledger.LedgerId = BalanceSheet.LedgerId;
                     ledger.LedgerName = BalanceSheet.LedgerName;
-                    ledger.LedgerHead.HeadName = BalanceSheet.LedgerType;
+                   // ledger.LedgerHead.HeadName = BalanceSheet.LedgerType;
                     lh.HeadName = BalanceSheet.LedgerType;
                     ledger.Balance = Convert.ToDouble(BalanceSheet.LedgerAmount);
 
