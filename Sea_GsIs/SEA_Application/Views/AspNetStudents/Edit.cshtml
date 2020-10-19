@@ -18,6 +18,7 @@
         max-width: 89%;
         color: white !important;
     }
+
     .col-md-2 {
         width: 19.666667%;
     }
@@ -88,9 +89,9 @@
                                 <a href="#">
                                     @*<img id="imgPreview" src="~/Content/Images/Upload.png" onclick="$('#UploadImg').click();" />*@
 
-                                    @if ( @ViewBag.StudentImage!= null)
+                                    @if (@ViewBag.StudentImage != null)
                                     {
-                                    <img onclick="$('#UploadImg').click();" class="img-responsive" id="imgPreview" style="height:150px;width:150px;" src="~/Content/Images/StudentImages/@ViewBag.StudentImage" />
+                                        <img onclick="$('#UploadImg').click();" class="img-responsive" id="imgPreview" style="height:150px;width:150px;" src="~/Content/Images/StudentImages/@ViewBag.StudentImage" />
 
                                     }
                                     else
@@ -183,16 +184,16 @@
                             </div>
 
                             @*<div class="form-group bmd-form-group">
-                                    <span>Password</span>
-                                    <input type="password" name="Password" id="Password" class="form-control" required>
-                                    @Html.ValidationMessageFor(model => model.CellNo, "", new { @class = "text-danger", @id = "Password-Error" })
-                                </div>
+                        <span>Password</span>
+                        <input type="password" name="Password" id="Password" class="form-control" required>
+                        @Html.ValidationMessageFor(model => model.CellNo, "", new { @class = "text-danger", @id = "Password-Error" })
+                    </div>
 
-                                <div class="form-group bmd-form-group">
-                                    <span>Confirm Password</span>
-                                    <input type="password" name="ConfirmPassword" id="CnfmPass" class="form-control" required>
-                                    @Html.ValidationMessageFor(model => model.CellNo, "", new { @class = "text-danger !important", @id = "CnfmPass-Error", @style = "color:red" })
-                                </div>*@
+                    <div class="form-group bmd-form-group">
+                        <span>Confirm Password</span>
+                        <input type="password" name="ConfirmPassword" id="CnfmPass" class="form-control" required>
+                        @Html.ValidationMessageFor(model => model.CellNo, "", new { @class = "text-danger !important", @id = "CnfmPass-Error", @style = "color:red" })
+                    </div>*@
                         </div>
                         <hr class="mt-5 mb-4">
                     </div> <!-- end of row -->
@@ -204,7 +205,7 @@
 
                             @*<select class="form-control" id="BranchId" name="BranchId" required></select>*@
 
-                            @Html.DropDownList("BranchId", null, htmlAttributes: new { @class = "form-control round-border", @disabled="disabled" })
+                            @Html.DropDownList("BranchId", null, htmlAttributes: new { @class = "form-control round-border", @disabled = "disabled" })
                             @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
 
 
@@ -217,7 +218,7 @@
 
                             @*<select class="form-control" id="ClassId" name="ClassId" required></select>*@
 
-                            @Html.DropDownList("ClassId", null, htmlAttributes: new { @class = "form-control round-border", @disabled="disabled" })
+                            @Html.DropDownList("ClassId", null, htmlAttributes: new { @class = "form-control round-border", @disabled = "disabled" })
                             @Html.ValidationMessageFor(model => model.ClassId, "", new { @class = "text-danger" })
 
 
@@ -238,27 +239,27 @@
 
                             <div class="form-group">
                                 <label class="control-label col-md-5 pull-left" style="padding-left: 0px;">Tution Fee : </label>
-                                <input value="@Model.TutionFee" class="horizontal_style code" min="0" required id="TutionFee" type="number" name="TutionFee"  />
+                                <input value="@Model.TutionFee" class="horizontal_style code" min="0" required id="TutionFee" type="number" name="TutionFee" />
                             </div>
 
                             <div class="form-group">
                                 <label class="control-label col-md-5 pull-left" style="padding-left: 0px;">Lab Fee : </label>
-                                <input value="@Model.LabCharges" class="horizontal_style code" min="0" required id="LabFee" type="number" name="LabFee"  />
+                                <input value="@Model.LabCharges" class="horizontal_style code" min="0" required id="LabFee" type="number" name="LabFee" />
                             </div>
 
                             <div class="form-group">
                                 <label class="control-label col-md-5 pull-left" style="padding-left: 0px;">Computer Fee : </label>
-                                <input value="@Model.ComputerFee" class="horizontal_style code" min="0" required id="ComputerFee" type="number" name="ComputerFee"  />
+                                <input value="@Model.ComputerFee" class="horizontal_style code" min="0" required id="ComputerFee" type="number" name="ComputerFee" />
                             </div>
 
                             <div class="form-group">
                                 <label class="control-label col-md-5 pull-left" style="padding-left: 0px;">Other Services : </label>
-                                <input value="@Model.OtherServices" class="horizontal_style code" min="0" required id="OtherServices" type="number" name="OtherServices"  />
+                                <input value="@Model.OtherServices" class="horizontal_style code" min="0" required id="OtherServices" type="number" name="OtherServices" />
                             </div>
 
                             <div class="form-group">
                                 <label class="control-label col-md-5 pull-left" style="padding-left: 0px;">Total : </label>
-                                <input value="@Model.TotalFee" style="background:#C0C0C0;" min="0" readonly class="horizontal_style" required id="FeesHeadTotal" type="number" name="FeesHeadTotal"  />
+                                <input value="@Model.TotalFee" style="background:#C0C0C0;" min="0" readonly class="horizontal_style" required id="FeesHeadTotal" type="number" name="FeesHeadTotal" />
                             </div>
 
                         </div>
@@ -268,11 +269,11 @@
                             <br />
 
                             <div class="form-group">
-                                <input class="horizontal_style" min="0" max="100" value="@Model.DiscountAdmissionFee" required onkeyup="CalculateDiscountedAmount(this)" id="AdmissionFeeDisPer" type="number" name="AdmissionFeeDisPer"  />
+                                <input class="horizontal_style" min="0" max="100" value="@Model.DiscountAdmissionFee" required onkeyup="CalculateDiscountedAmount(this)" id="AdmissionFeeDisPer" type="number" name="AdmissionFeeDisPer" />
                             </div>
 
                             <div class="form-group">
-                                <input class="horizontal_style" min="0" max="100" value="@Model.DiscountTutionFee" required onkeyup="CalculateDiscountedAmount(this)" id="TutionFeeDisPer" type="number" name="TutionFeeDisPer"  />
+                                <input class="horizontal_style" min="0" max="100" value="@Model.DiscountTutionFee" required onkeyup="CalculateDiscountedAmount(this)" id="TutionFeeDisPer" type="number" name="TutionFeeDisPer" />
                             </div>
 
 
@@ -281,16 +282,16 @@
                             </div>
 
                             <div class="form-group">
-                                <input class="horizontal_style" min="0" max="100" value="@Model.DiscountComputerFee" required onkeyup="CalculateDiscountedAmount(this)" id="ComputerFeeDisPer" type="number" name="ComputerFeeDisPer"  />
+                                <input class="horizontal_style" min="0" max="100" value="@Model.DiscountComputerFee" required onkeyup="CalculateDiscountedAmount(this)" id="ComputerFeeDisPer" type="number" name="ComputerFeeDisPer" />
                             </div>
 
                             <div class="form-group">
-                                <input class="horizontal_style" min="0" max="100" value="@Model.DiscountOtherServices" required onkeyup="CalculateDiscountedAmount(this)" id="OtherServicesDisPer" type="number" name="OtherServicesDisPer"  />
+                                <input class="horizontal_style" min="0" max="100" value="@Model.DiscountOtherServices" required onkeyup="CalculateDiscountedAmount(this)" id="OtherServicesDisPer" type="number" name="OtherServicesDisPer" />
                             </div>
 
                             @*<div class="form-group">
-                                    <input style="background:#C0C0C0" min="0" class="horizontal_style" required id="DisPerTotal" type="number" name="DisPerTotal" value="0" />
-                                </div>*@
+                        <input style="background:#C0C0C0" min="0" class="horizontal_style" required id="DisPerTotal" type="number" name="DisPerTotal" value="0" />
+                    </div>*@
 
 
                         </div>
@@ -301,7 +302,7 @@
                             <br />
 
                             <div class="form-group">
-                                <input class="horizontal_style" min="0" value="@Model.DiscountAdmissionFeeAmount" required readonly id="AdmissionFeeDisAmount" type="number" name="AdmissionFeeDisAmount"  />
+                                <input class="horizontal_style" min="0" value="@Model.DiscountAdmissionFeeAmount" required readonly id="AdmissionFeeDisAmount" type="number" name="AdmissionFeeDisAmount" />
                             </div>
 
                             <div class="form-group">
@@ -309,7 +310,7 @@
                             </div>
 
                             <div class="form-group">
-                                <input class="horizontal_style" min="0" value="@Model.DiscountLabChargesAmount" required readonly id="LabFeeDisAmount" type="number" name="LabFeeDisAmount"  />
+                                <input class="horizontal_style" min="0" value="@Model.DiscountLabChargesAmount" required readonly id="LabFeeDisAmount" type="number" name="LabFeeDisAmount" />
                             </div>
 
 
@@ -319,7 +320,7 @@
 
 
                             <div class="form-group">
-                                <input class="horizontal_style" min="0" value="@Model.DiscountOtherServicesAmount" required readonly id="OtherServicesDisAmount" type="number" name="OtherServicesDisAmount"  />
+                                <input class="horizontal_style" min="0" value="@Model.DiscountOtherServicesAmount" required readonly id="OtherServicesDisAmount" type="number" name="OtherServicesDisAmount" />
                             </div>
 
                             <div class="form-group">
@@ -412,21 +413,30 @@
 
                     <div class="pull-right">
 
-                      
+
                         @if (User.IsInRole("Accountant"))
                         {
-                        <button class="btn btn-primary" id="submit" type="submit">Save</button>
+                            <button class="btn btn-primary" id="submit" type="submit">Save</button>
                         }
-                             <button onclick="window.location.href = '/AspnetStudents/StudentIndex'" id="cancel" type="button" class="btn btn-primary pull-right rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                        <button onclick="window.location.href = '/AspnetStudents/StudentIndex'" id="cancel" type="button" class="btn btn-primary pull-right rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
                             <i class="material-icons mr-2">cached</i>  Cancel &nbsp; &nbsp;
                         </button>
                         <div class="clearfix"></div>
                     </div>
                 </form>
-                <button class="btn btn-danger" id="disable">Disable</button>
+                @if (Model.Status == 2)
+                {
+                    <button class="btn btn-success" id="disable">Enable</button>
+
+                }
+                else
+                {
+
+                    <button class="btn btn-danger" id="disable">Disable</button>
+                }
 
 
-               
+
             </div>
         </div>
     </div>
@@ -436,7 +446,7 @@
 
     $(document).ready(function () {
 
-             $("#UploadImg").change(function () {
+        $("#UploadImg").change(function () {
 
 
 
@@ -445,38 +455,43 @@
         });
 
 
-             $("#disable").click(function () {
+        $("#disable").click(function () {
 
-                 debugger;
-                 var StudentID = $("#RollNo").val();
-                 $.ajax({
-                     type: "POST",
-                     url: "/AspnetLessons/DisableStudent",
-                     data: { "StudentID": StudentID },
-                     success: function (data) {
-                         if(data == "success")
-                         {
-                            // alert("changed");
-                             var type = 'success';
-                             var msg = "Student disabled";
-                             showNotification('top', 'center', msg, type);
+            debugger;
+            var StudentID = $("#RollNo").val();
+            $.ajax({
+                type: "POST",
+                url: "/AspnetLessons/DisableStudent",
+                data: { "StudentID": StudentID },
+                success: function (data) {
+                    debugger
+                    if (data == "disable") {
+                        // alert("changed");
+                        var type = 'success';
+                        var msg = "Student disabled";
+                        showNotification('top', 'center', msg, type);
+                        $("#disable").html("Enable");
+                        $("#disable").css('background', 'green');
 
-                         }
-                         else {
+                    }
+                    else {
 
-                             // alert("not changed");
-                             var type = 'danger';
-                             var msg = "Student is already disabled";
-                             showNotification('top', 'center', msg, type);
-                         }
-                       
+                        // alert("not changed");
+                        var type = 'success';
+                        var msg = "Student enabled";
+                        showNotification('top', 'center', msg, type);
+                        $("#disable").html("Disable");
+                        $("#disable").css('background', 'red');
 
-                     }
-                 })
-                 
+                    }
 
-                 
-             });
+
+                }
+            })
+
+
+
+        });
 
 
         $("#PageHeader").html("Edit Student");
@@ -484,7 +499,7 @@
         //$("#BreadCrumbs").append(' <li> <a href="#"> Home </a> <span>&gt;</span></li>');
         //$("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Edit</a></li>');
 
-        
+
         $("#BreadCrumbs").append(' <li> <a href="/FinanceSummary/Index"> Home </a> <span>&gt;</span></li>');
         $("#BreadCrumbs").append(' <li> <a href="/AspnetStudents/StudentIndex"> Students Index </a> <span>&gt;</span></li>');
         $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Create</a></li>');
@@ -540,7 +555,7 @@
 
 
 
-        
+
 
 
 
@@ -564,13 +579,13 @@
         })
 
 
-      $('#StudentForm').validate({ // initialize the plugin
+        $('#StudentForm').validate({ // initialize the plugin
             rules: {
                 FName: {
                     required: true,
                     //email: true
                 },
-                
+
             },
             submitHandler: function (form) {
                 debugger;
@@ -649,9 +664,9 @@
 
                 if (Check == true) {
 
-                       $("#submit").prop("disabled", true);
+                    $("#submit").prop("disabled", true);
 
-                     var studentRegistrationViewModel = {
+                    var studentRegistrationViewModel = {
 
                         FName: $("#FName").val(),
                         BranchId: $("#BranchId").val(),
@@ -662,7 +677,7 @@
                         CellNo: $("#CellNo").val(),
                         RollNo: $("#RollNo").val(),
                         StudentID: $("#StudentId").val(),
-                       // Password: null,
+                        // Password: null,
                         Email: $("#Email").val(),
                         BranchId: $("#BranchId").val(),
                         ClassId: $("#ClassId").val(),
@@ -679,14 +694,14 @@
                         DiscountLabCharges: $("#LabFeeDisPer").val(),
                         DiscountComputerFee: $("#ComputerFeeDisPer").val(),
                         DiscountOtherServices: $("#OtherServicesDisPer").val(),
-                    
+
                         DiscountAdmissionFeeAmount: $("#AdmissionFeeDisAmount").val(),
                         DiscountTutionFeeAmount: $("#TutionFeeDisAmount").val(),
                         DiscountLabChargesAmount: $("#LabFeeDisAmount").val(),
                         DiscountComputerFeeAmount: $("#ComputerFeeDisAmount").val(),
                         DiscountOtherServicesAmount: $("#OtherServicesDisAmount").val(),
                         DiscountTotalAmount: $("#DisAmountTotal").val(),
-                        
+
                         Jan_Multiplier: $("#Junuary").val(),
                         Feb_Multiplier: $("#February").val(),
                         Mar_Multiplier: $("#March").val(),
@@ -703,7 +718,7 @@
 
                     };
 
-                 
+
                     $.ajax({
                         type: "post",
                         url: "/AspNetStudents/Edit",
@@ -716,12 +731,12 @@
                             if (data.IsStudentUpdated == "Yes") {
 
                                 uploadStudentImage(data.UserId);
-                                   window.location.href = "/AspnetStudents/StudentIndex";
+                                window.location.href = "/AspnetStudents/StudentIndex";
 
                             }
                             else {
 
-                                
+
                             }
 
                         }
@@ -1186,23 +1201,23 @@
         }
     }
 
-        function readURL(input) {
+    function readURL(input) {
 
-            $("#imgPreview").height("150");
-            $("#imgPreview").width("150");
+        $("#imgPreview").height("150");
+        $("#imgPreview").width("150");
 
-            if (input.files && input.files[0]) {
-                var reader = new FileReader();
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
 
-                reader.onload = function (e) {
+            reader.onload = function (e) {
 
 
-                    $('#imgPreview').attr('src', e.target.result);
-                }
-
-                reader.readAsDataURL(input.files[0]);
+                $('#imgPreview').attr('src', e.target.result);
             }
+
+            reader.readAsDataURL(input.files[0]);
         }
+    }
 
 
 

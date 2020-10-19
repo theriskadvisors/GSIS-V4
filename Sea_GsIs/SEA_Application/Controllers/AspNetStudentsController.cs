@@ -452,7 +452,7 @@ namespace SEA_Application.Controllers
             }
         }
         public JsonResult GetStudents(DataTablesParam param)
-        {
+       {
             var loggedInUserId = User.Identity.GetUserId();
             int branchId;
 
@@ -492,9 +492,10 @@ namespace SEA_Application.Controllers
 
                 if (param.sSearch != null)
                 {
-                    totalCount = db.AllStudentsList().Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Count();
+                  //  var a  = db.AllStudentsList().Where(x=>x)
+                    totalCount = db.AllStudentsList().Select( x=> new { x.Name, x.TotalWithoutAdmission, x.RollNo, x.CellNo, JoiningDate = x.JoiningDate, ClassName = x.ClassName, UserStatus = x.StatusId == 2 ? "Disabled" : "Enabled" }).Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Count();
 
-                    var studentList = db.AllStudentsList().Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
+                    var studentList = db.AllStudentsList().Select(x => new { x.Name, x.TotalWithoutAdmission, x.RollNo, x.CellNo, JoiningDate = x.JoiningDate, ClassName = x.ClassName, UserStatus = x.StatusId == 2 ? "Disabled" : "Enabled" }).Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
                     return Json(new
                     {
                         aaData = studentList,
@@ -506,8 +507,8 @@ namespace SEA_Application.Controllers
                 }
                 else
                 {
-                    totalCount = db.AllStudentsList().Count();
-                    var studentList = db.AllStudentsList().Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
+                    totalCount = db.AllStudentsList().Select(x => new { x.Name, x.TotalWithoutAdmission, x.RollNo, x.CellNo, JoiningDate = x.JoiningDate, ClassName = x.ClassName, UserStatus = x.StatusId == 2 ? "Disabled" : "Enabled" }).Count();
+                    var studentList = db.AllStudentsList().Select(x => new { x.Name, x.TotalWithoutAdmission, x.RollNo, x.CellNo, JoiningDate = x.JoiningDate, ClassName = x.ClassName, UserStatus = x.StatusId == 2 ? "Disabled" : "Enabled" }).Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
                     return Json(new
                     {
                         aaData = studentList,
@@ -517,9 +518,6 @@ namespace SEA_Application.Controllers
 
                     }, JsonRequestBehavior.AllowGet);
                 }
-
-
-
 
             }
 
@@ -554,8 +552,8 @@ namespace SEA_Application.Controllers
                                on stdnt.Id equals stufee.StudentID into egroup
                                from stufee in egroup.DefaultIfEmpty()
                                join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
-                               where stdnt.UserId == usr.Id && usr.StatusId != 2 && stdnt.BranchId == branchId
-                               select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name }).Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Distinct().Count();
+                               where stdnt.UserId == usr.Id  && stdnt.BranchId == branchId
+                               select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name,UserStatus = usr.StatusId==2 ? "Disabled":"Enabled" }).Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Distinct().Count();
 
                 var studentList = (from stdnt in db.AspNetStudents
                                    join usr in db.AspNetUsers on stdnt.UserId equals usr.Id
@@ -563,8 +561,8 @@ namespace SEA_Application.Controllers
                                    on stdnt.Id equals stufee.StudentID into egroup
                                    from stufee in egroup.DefaultIfEmpty()
                                    join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
-                                   where stdnt.UserId == usr.Id && usr.StatusId != 2 && stdnt.BranchId == branchId
-                                   select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name }).Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Distinct().OrderBy(x => x.Name).Skip((pageNo1 - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
+                                   where stdnt.UserId == usr.Id && stdnt.BranchId == branchId
+                                   select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name, UserStatus = usr.StatusId == 2 ? "Disabled" : "Enabled" }).Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Distinct().OrderBy(x => x.Name).Skip((pageNo1 - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
 
                 return Json(new
                 {
@@ -586,8 +584,8 @@ namespace SEA_Application.Controllers
                                on stdnt.Id equals stufee.StudentID into egroup
                                from stufee in egroup.DefaultIfEmpty()
                                join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
-                               where stdnt.UserId == usr.Id && usr.StatusId != 2 && stdnt.BranchId == branchId
-                               select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name }).Distinct().Count();
+                               where stdnt.UserId == usr.Id  && stdnt.BranchId == branchId
+                               select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name, UserStatus = usr.StatusId == 2 ? "Disabled" : "Enabled" }).Distinct().Count();
 
 
                 var studentList = (from stdnt in db.AspNetStudents
@@ -596,8 +594,8 @@ namespace SEA_Application.Controllers
                                    on stdnt.Id equals stufee.StudentID into egroup
                                    from stufee in egroup.DefaultIfEmpty()
                                    join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
-                                   where stdnt.UserId == usr.Id && usr.StatusId != 2 && stdnt.BranchId == branchId
-                                   select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name }).Distinct().OrderBy(x => x.Name).Skip((pageNo1 - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
+                                   where stdnt.UserId == usr.Id  && stdnt.BranchId == branchId
+                                   select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name, UserStatus = usr.StatusId == 2 ? "Disabled" : "Enabled" }).Distinct().OrderBy(x => x.Name).Skip((pageNo1 - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
 
 
                 return Json(new
@@ -2007,6 +2005,7 @@ namespace SEA_Application.Controllers
             studentRegistrationViewModel.Email = aspNetStudent.AspNetUser.Email;
             studentRegistrationViewModel.RollNo = aspNetStudent.RollNo;
             studentRegistrationViewModel.CellNo = aspNetStudent.CellNo;
+            studentRegistrationViewModel.Status = db.AspNetUsers.Where(x => x.Id == aspNetStudent.UserId).FirstOrDefault().StatusId;
 
             studentRegistrationViewModel.Birthdate = aspNetStudent.Birthdate;
 
@@ -2095,8 +2094,6 @@ namespace SEA_Application.Controllers
                 if (studentFee != null)
 
                 {
-
-
                     studentFee.TutionFee = studentRegistrationViewModel.TutionFee;
                     studentFee.ComputerFee = studentRegistrationViewModel.ComputerFee;
                     studentFee.LabCharges = studentRegistrationViewModel.LabCharges;

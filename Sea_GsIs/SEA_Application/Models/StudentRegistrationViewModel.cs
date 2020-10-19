@@ -14,6 +14,7 @@ namespace SEA_Application.Models
         public Nullable<int> NationalityId { get; set; }
         public Nullable<int> ReligionId { get; set; }
         public Nullable<int> GenderId { get; set; }
+        public Nullable<int> Status { get; set; }
 
         public string Email { get; set; }
 

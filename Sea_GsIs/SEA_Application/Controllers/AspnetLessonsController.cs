@@ -32,16 +32,28 @@ namespace SEA_Application.Controllers
 
         public ActionResult DisableStudent(string StudentID)
         {
-            string status = "error";
+            string status = "";
             if (StudentID != null)
             {
                 AspNetUser user = db.AspNetUsers.Where(x => x.UserName == StudentID).FirstOrDefault();
-                user.StatusId = 2;
-                if (db.SaveChanges() > 0)
+//                user.StatusId = 2;
+                if (user.StatusId == 2)
                 {
-                    status = "success";
+                    status = "enable";
+                    user.StatusId = 1;
+                    db.SaveChanges();
+               
                 }
+                else
+                {
+                    user.StatusId = 2;
+                    status = "disable";
+                    db.SaveChanges();
+
+                }
+
             }
+
             return Content(status);
         }
 
