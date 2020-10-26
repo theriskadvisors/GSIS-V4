@@ -44,7 +44,6 @@ namespace SEA_Application.Controllers
             var StudentFeeMultiplier = db.StudentFeeMultipliers.Where(x => x.StudentId == StudentId).FirstOrDefault();
             string[] MonthNames = new string[12] { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December", };
 
-
             if (StudentFee == null)
             {
                 foreach (var MonthName in MonthNames)
@@ -59,9 +58,7 @@ namespace SEA_Application.Controllers
                     BiliingMonthList.Add(BillingMonth);
 
                 }
-
             }
-
             else
             {
                 foreach (var MonthName in MonthNames)

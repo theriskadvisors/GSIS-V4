@@ -1,0 +1,177 @@
+﻿@model SEA_Application.Controllers.ChartOfAccountsController.TrialBalanceSheet
+@{
+    ViewBag.Title = "TrialBalance";
+    Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+}
+
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<div class="row">
+
+
+    <div class="col-md-12">
+
+        <br />
+
+        <label>Select Date</label>
+
+        <input type="hidden" id="ToDate">
+        <img src="~/Content/Images/calendar.png" id="ToDateTrigger" width="25">
+
+        <br />
+        <div id="DateToView">
+
+        </div>
+
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body p-5">
+
+                <table class="table table-bordered table-striped table-hover">
+                    <thead>
+                        @*<tr class="text-light bg-dark">*@
+                        <tr>
+
+                            <th scope="col" style="">Account Title</th>
+                            <th scope="col">Debit </th>
+                            <th scope="col">Credit</th>
+
+                        </tr>
+                    </thead>
+                    <tbody id="tbody">
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+
+        $("#PageHeader").html("Trial Balance ");
+        $("#BreadCrumbs").append(' <li> <a href="/FinanceSummary/Index"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Trial Balance</a></li>');
+
+
+
+        $('#ToDate').datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+
+
+        $(function () {
+            $('#ToDate').datepicker();
+            $('#ToDateTrigger').click(function () {
+
+                $('#ToDate').datepicker('show');
+
+            });
+        });
+
+        $.ajax({
+            type: "POST",
+            url: "/ChartOfAccounts/GetTrialBalanceList",
+            success: function (data) {
+
+
+
+                var dataitem = data.TrialBalanceTotal;
+
+                $.each(dataitem, function (i, item) {
+                    debugger
+
+                    $("#tbody").append("<tr><td style='font-size:20px;'> " + item.HeadName + " </td> <td></td><td></td></tr>");
+
+                    var item1 = item.TrailBalanceList;
+
+
+                    $.each(item1, function (i, item) {
+
+                        $("#tbody").append("<tr><td > " + item.LedgerName + " </td> <td> " + item.DebitAmount + "</td><td>" + item.CreditAmount + "</td></tr>");
+
+
+                    })
+
+
+                })
+
+
+                $("#tbody").append("<tr><td style='font-size:20px;'> Total </td> <td> " + data.DebitTotal + "</td><td>" + data.CreditTotal + "</td></tr>");
+
+
+            }
+        })
+
+
+
+
+        $("#ToDate").change(function () {
+
+            var ToDateVal = $(this).val();
+
+
+            
+                var d = new Date(ToDateVal);
+                var day = d.getDate();
+                var month = d.getMonth() + 1;
+                var year = d.getFullYear();
+
+                var monthName = GetMonthName(month);
+
+                var ToDateFormat = day + "-" + monthName + "-" + year;
+
+                $("#DateToView").html('<h5>Selected Date :  <span id="ToDateView">' + ToDateFormat + ' </span></h5>');
+        
+            $.ajax({
+                type: "POST",
+                url: "/ChartOfAccounts/GetTrialBalanceByDate",
+                data: { "ToDate": ToDateVal },
+                success: function (data) {
+                    $("#tbody").html("");
+                    var dataitem = data.TrialBalanceTotal;
+
+                    $.each(dataitem, function (i, item) {
+                        debugger
+
+                        $("#tbody").append("<tr><td style='font-size:20px;'> " + item.HeadName + " </td> <td></td><td></td></tr>");
+
+                        var item1 = item.TrailBalanceList;
+
+
+                        $.each(item1, function (i, item) {
+
+                            $("#tbody").append("<tr><td > " + item.LedgerName + " </td> <td> " + item.DebitAmount + "</td><td>" + item.CreditAmount + "</td></tr>");
+
+
+                        })
+
+
+                    })
+
+
+                    $("#tbody").append("<tr><td style='font-size:20px;'> Total </td> <td> " + data.DebitTotal + "</td><td>" + data.CreditTotal + "</td></tr>");
+
+
+                }
+            })
+
+
+        })
+
+    })
+        function GetMonthName(monthNumber) {
+        var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+        return months[monthNumber - 1];
+    }
+</script>
