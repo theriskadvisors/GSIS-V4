@@ -221,8 +221,7 @@ namespace SEA_Application.Controllers
 
         public ActionResult SubjectTopics(int id)
         {
-
-
+            
             ViewBag.SubjectId = id;
 
 

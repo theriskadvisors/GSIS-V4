@@ -59,13 +59,14 @@ namespace SEA_Application.Controllers
 
                     //var today = TimeZoneInfo.ConvertTimeFromUtc(TimeZoneInfo.ConvertTimeToUtc(DateTime.Now, TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time")), TimeZoneInfo.Local);
                     TimeZoneInfo PK_ZONE = TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time");
-                    DateTime today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow.Date , PK_ZONE);
+                    DateTime today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow , PK_ZONE);
+
+                  //var DatetimeG = GetLocalDateTime.GetLocalDateTimeFunction();
+
                     //today = today.AddHours(23);
                     var LessonList = (from Lesson in db.AspnetLessons.Where(x => x.Status == true)
                                       where Lesson.TopicId == a.Id && Lesson.StartDate <= today
                                       select Lesson).ToList();
-
-
 
                     TopicObj.TopicId = a.Id;
                     TopicObj.TopicName = a.Name;
