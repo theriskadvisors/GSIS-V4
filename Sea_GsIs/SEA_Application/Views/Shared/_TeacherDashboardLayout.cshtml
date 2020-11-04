@@ -340,6 +340,21 @@
                         </a>
                     </li>
 
+                    @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm1", @class = "form_padding_20" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+
+                        <li class="nav-item" id="">
+                            <a href="javascript:document.getElementById('logoutForm1').submit()" class="nav-link">
+                                <i class="fa fa-sign-out"></i>
+                                <p>Log out</p>
+                            </a>
+                        </li>
+                    }
+
+
+
                 </ul>
             </div>
         </div>

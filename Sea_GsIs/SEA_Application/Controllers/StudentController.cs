@@ -57,6 +57,9 @@ namespace SEA_Application.Controllers
 
                     //  var LessonList = db.AspnetLessons.Where(x => x.TopicId == a.Id).ToList();
 
+
+
+
                     //var today = TimeZoneInfo.ConvertTimeFromUtc(TimeZoneInfo.ConvertTimeToUtc(DateTime.Now, TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time")), TimeZoneInfo.Local);
                     TimeZoneInfo PK_ZONE = TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time");
                     DateTime today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow , PK_ZONE);

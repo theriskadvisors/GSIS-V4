@@ -188,16 +188,7 @@
                         </a>
                     </li>
 
-                    <li class="nav-item" id="studentattendance">
-                        <a href="@Url.Action("StudentAttendance", "AspnetLessons")" class="nav-link ">
-                            <i class="sea-dash">
-                                <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
-                            </i>
-                            <p>Student Attendance</p>
-                        </a>
-                    </li>
 
-                    
                     <li class="nav-item" id="AdminLessons">
                         <a href="@Url.Action("ViewLessonsToAdmin", "AspnetLessons")" class="nav-link ">
                             <i class="sea-dash">
@@ -316,6 +307,20 @@
                             <p>Help Desk</p>
                         </a>
                     </li>
+
+                    @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm1", @class = "form_padding_20" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+
+                        <li class="nav-item" id="">
+                            <a href="javascript:document.getElementById('logoutForm1').submit()" class="nav-link">
+                                <i class="fa fa-sign-out"></i>
+                                <p>Log out</p>
+                            </a>
+                        </li>
+                    }
+
 
                 </ul>
             </div>
