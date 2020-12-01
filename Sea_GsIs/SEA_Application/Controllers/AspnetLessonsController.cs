@@ -36,13 +36,13 @@ namespace SEA_Application.Controllers
             if (StudentID != null)
             {
                 AspNetUser user = db.AspNetUsers.Where(x => x.UserName == StudentID).FirstOrDefault();
-//                user.StatusId = 2;
+                //                user.StatusId = 2;
                 if (user.StatusId == 2)
                 {
                     status = "enable";
                     user.StatusId = 1;
                     db.SaveChanges();
-               
+
                 }
                 else
                 {
@@ -104,6 +104,7 @@ namespace SEA_Application.Controllers
                                   LessonStartDate = lesson.StartDate,
                                   LessonIsActive = lesson.IsActive
                               }).Distinct().ToList();
+
 
             return Json(AllLessons, JsonRequestBehavior.AllowGet);
         }
@@ -379,6 +380,10 @@ namespace SEA_Application.Controllers
 
                     var eventList = db.Events.Where(x => x.LessonID == id).FirstOrDefault();
 
+                    var branchid = db.AspnetLessons.Where(x => x.Id == Lesson.Id).Select(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.BranchId).FirstOrDefault();
+                    var AllBranchManagerList = db.AspNetUsers.Where(x => x.AspNetRoles.Select(y => y.Name).Contains("Branch_Principal") && x.AspNetBranches.Any(z => z.Id == branchid)).ToList();
+
+
                     if (eventList == null)
                     {
                         var events = new Event();
@@ -415,12 +420,38 @@ namespace SEA_Application.Controllers
                             db.AspnetEvent_User.Add(event_teacher);
                             db.SaveChanges();
                         }
+
+                        foreach (var item in AllBranchManagerList)
+                        {
+
+                            var event_user1 = new AspnetEvent_User();
+                            event_user1.userid = item.Id;
+                            event_user1.eventid = events.EventID;
+                            db.AspnetEvent_User.Add(event_user1);
+                            db.SaveChanges();
+
+                        }
+
                     }
                     else
                     {
                         eventList.SubjectClass = Lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name;
                         eventList.ThemeColor = "Green";
                         db.SaveChanges();
+
+
+                        foreach (var item in AllBranchManagerList)
+                        {
+
+                            var event_user1 = new AspnetEvent_User();
+                            event_user1.userid = item.Id;
+                            event_user1.eventid = eventList.EventID;
+                            db.AspnetEvent_User.Add(event_user1);
+                            db.SaveChanges();
+
+                        }
+
+
                     }
 
                     var events1 = new Event();
@@ -727,6 +758,9 @@ namespace SEA_Application.Controllers
             var branchid = db.AspnetLessons.Where(x => x.Id == Lesson.Id).Select(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.BranchId).FirstOrDefault();
             var branchAdmin = db.AspNetBranch_Admins.Where(x => x.BranchId == branchid).Select(x => x.AdminId).ToList();
 
+            //  var parents = db.AspNetUsers.Where(x => x.AspNetRoles.Select(y => y.Name).Contains("Parent")  || x.AspNetRoles.Select(y=>y.Name).Contains("Teacher")  && x.StatusId == null).ToList();
+            //ViewBag.BranchPrincipalId = new SelectList(db.AspNetUsers.Where(x => x.AspNetRoles.Select(y => y.Name).Contains("Branch_Principal")), "Id", "Email"); C: \Users\TRA\Documents\GitHub\GSIS - V4\Sea_GsIs\SEA_Application\Controllers\AspNetBranchesController.cs  41  82
+
             foreach (var item in branchAdmin)
             {
                 var event_user1 = new AspnetEvent_User();
@@ -735,7 +769,6 @@ namespace SEA_Application.Controllers
                 db.AspnetEvent_User.Add(event_user1);
                 db.SaveChanges();
             }
-
 
             string fileName1 = null;
             if (Assignment.ContentLength > 0)
@@ -1108,9 +1141,6 @@ namespace SEA_Application.Controllers
                 var GenericObject = db.AspnetGenericBranchClassSubjects.Where(x => x.Id == GenericBranchClassSubjectSectionId).FirstOrDefault();
 
 
-
-
-
                 var Branches = (from branch in db.AspNetBranches
                                 join branchclasssubject in db.AspnetGenericBranchClassSubjects on branch.Id equals branchclasssubject.BranchId
                                 select new
@@ -1183,8 +1213,6 @@ namespace SEA_Application.Controllers
 
 
                 ViewBag.LessonDueDate = DueDateInString;
-
-
 
             }
 
@@ -2931,8 +2959,6 @@ namespace SEA_Application.Controllers
 
                     AspnetStudentAttachment studentAttachment = new AspnetStudentAttachment();
 
-
-
                     studentAttachment.Name = attachment.Name;
                     studentAttachment.Path = attachment.Path;
                     studentAttachment.CreationDate = DateTime.Now;
@@ -3119,8 +3145,34 @@ namespace SEA_Application.Controllers
         }
         public ActionResult InactiveLessons(string idlist)
         {
+
+
             var LessonsIds = idlist.Split(',');
             // var LessonIdsInt = LessonsIds.ToList<int>();
+
+            foreach (var lessonID in LessonsIds)
+            {
+                int Id = Convert.ToInt32(lessonID);
+
+
+                var EventToDelete = db.Events.Where(x => x.LessonID == Id).ToList();
+
+                foreach (var item in EventToDelete)
+                {
+
+                    var DeleteAllEventUsers = db.AspnetEvent_User.Where(x => x.eventid == item.EventID).ToList();
+
+                    db.AspnetEvent_User.RemoveRange(DeleteAllEventUsers);
+                    db.SaveChanges();
+
+                }
+
+
+                db.Events.RemoveRange(EventToDelete);
+                db.SaveChanges();
+
+            }
+
 
             foreach (var LessonId in LessonsIds)
             {
@@ -3133,7 +3185,6 @@ namespace SEA_Application.Controllers
                 db.SaveChanges();
 
             }
-
 
 
             return RedirectToAction("ViewTopicsAndLessons", "AspnetSubjectTopics", new { @NavigateTo = "Lesson" });

@@ -15,7 +15,6 @@
 
 }
 
-
 <link href="~/Content/css/AttendanceStyle.css" rel="stylesheet" />
 
 <div class="content">
@@ -26,9 +25,7 @@
                     <div class="row">
                         <div class="col-sm-12 col-md-6 col-lg-7">
 
-
                             <h1 class="">Lesson Attendance</h1>
-
 
                         </div>
                         <div class="col-sm-12 col-md-6 col-lg-5 align-items-center d-flex justify-content-end">
@@ -37,8 +34,6 @@
                             <button id="DownloadReportButton" type="button" class="btn btn-primary  pull-left rounded rounded-lg createBtn coursesBtn mr-3">
                                 Download Report
                             </button>
-
-
 
                         </div>
 
@@ -53,7 +48,6 @@
             <div class="card">
                 <div class="p-5">
                     <div class="row datatablesData AttendanceTableCon">
-
 
                         <div class="col-md-8 attendance-subheading">
                             <span id="heading"> @ViewBag.LessonName (@ViewBag.Type)</span> <br>
@@ -75,9 +69,6 @@
                                     All Courses
                                 </button>*@
                         </div>
-
-
-
 
                     </div>
                     <div class="row" >
@@ -144,10 +135,7 @@
 
         });
 
-
     });
-
-
 
     var LessonID = $("#LessonID").val();
     $.ajax({

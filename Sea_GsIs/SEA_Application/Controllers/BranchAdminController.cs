@@ -88,7 +88,23 @@ namespace SEA_Application.Controllers
             ViewBag.Branches = branches;
 
             var ID = User.Identity.GetUserId();
-            var branchID = db.AspNetBranch_Admins.Where(x => x.AdminId == ID).Select(x => x.BranchId).FirstOrDefault();
+
+
+            var UserRole = db.GetUserRoleById(ID).FirstOrDefault();
+
+            // var UserRoleInString = UserRole.FirstOrDefault();
+            int branchID = 0;
+            if (UserRole == "Branch_Principal")
+            {
+                branchID =  db.AspNetEmployees.Where(x => x.UserId == ID).FirstOrDefault().BranchId.Value;
+            }
+            
+            else
+            {
+               branchID = db.AspNetBranch_Admins.Where(x => x.AdminId == ID).Select(x => x.BranchId).FirstOrDefault();
+            }
+
+
             var Classes1 = db.AspNetBranch_Class.Where(x => x.BranchId == branchID).Select(x => x.AspNetClass.Name).Distinct().ToList();
 
             

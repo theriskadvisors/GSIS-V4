@@ -110,6 +110,22 @@
                         </a>
                     </li>
 
+                    @*<li class="nav-item" id="studentattendance">
+                        <a href="@Url.Action("StudentAttendance", "AspnetLessons")" class="nav-link ">
+                            <i class="fal fa-clipboard-user"></i>
+                            <p>Students Attendance</p>
+                        </a>
+                    </li>*@
+
+                    <li id="BranchAdminHome" class="nav-item ">
+                        <a href="@Url.Action("StudentAttendance", "AspnetLessons")" class="nav-link ">
+                            <i class="sea-dash">
+                                <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/icon-home.png" alt="">
+                            </i>
+                            <p>Student Attendance</p>
+                        </a>
+                    </li>
+
                     <li id="BranchAdminHome" class="nav-item hidden">
                         <a href="@Url.Action("TeacherAttendance", "BranchAdmin")" class="nav-link ">
                             <i class="sea-dash">

@@ -20,8 +20,8 @@ namespace SEA_Application.Controllers
 
 
         public JsonResult GetEvents()
-        {           
-                var id = User.Identity.GetUserId();
+        {
+            var id = User.Identity.GetUserId();
 
             //var events = from x in db.Events
             //             where x.UserId == id
@@ -29,7 +29,7 @@ namespace SEA_Application.Controllers
             var events = db.AspnetEvent_User.Where(x => x.userid == id).Select(x => new
             { SecTitle = x.Event.Sec_Title, _id = x.Event.EventID, description = x.Event.Description1, end = x.Event.End, allDay = x.Event.IsFullDay, textColor = "#ffffff", title = x.Event.Subject1, backgroundColor = x.Event.ThemeColor, start = x.Event.Start, x.Event.IsPublic, instructor = x.AspNetUser.Name, subjectClass = x.Event.SubjectClass, x.Event.Url, type = "Appointment", calendar = "Sales", LessonName = x.Event.AspnetLesson.Name, className = x.Event.AspnetLesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name, Section = x.Event.AspnetLesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name }).ToList();
 
-            var eventList = events.Select(x => new { SecTitle = x.SecTitle, title = x.title,  Section = x.Section, className = x.className, LessonName = x.LessonName, calendar = x.calendar, Url = x.Url, subjectClass = x.subjectClass, instructor = x.instructor, _id = x._id, description = x.description, end = TimeZoneInfo.ConvertTimeFromUtc(TimeZoneInfo.ConvertTimeToUtc(x.end.Value , TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time")),TimeZoneInfo.Local) , allDay = x.allDay, textColor = x.textColor, backgroundColor = x.backgroundColor, start = TimeZoneInfo.ConvertTimeFromUtc(TimeZoneInfo.ConvertTimeToUtc(x.start,TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time")), TimeZoneInfo.Local), IsPublic = x.IsPublic, });
+            var eventList = events.Select(x => new { SecTitle = x.SecTitle, title = x.title, Section = x.Section, className = x.className, LessonName = x.LessonName, calendar = x.calendar, Url = x.Url, subjectClass = x.subjectClass, instructor = x.instructor, _id = x._id, description = x.description, end = TimeZoneInfo.ConvertTimeFromUtc(TimeZoneInfo.ConvertTimeToUtc(x.end.Value, TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time")), TimeZoneInfo.Local), allDay = x.allDay, textColor = x.textColor, backgroundColor = x.backgroundColor, start = TimeZoneInfo.ConvertTimeFromUtc(TimeZoneInfo.ConvertTimeToUtc(x.start, TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time")), TimeZoneInfo.Local), IsPublic = x.IsPublic, });
 
             if (User.IsInRole("Student"))
             {
@@ -46,7 +46,7 @@ namespace SEA_Application.Controllers
                     eventstimatable.className = item.className;
                     eventstimatable.LessonName = item.LessonName;
                     eventstimatable.calendar = item.calendar;
-                    if(item.start.Date <= today.Date)
+                    if (item.start.Date <= today.Date)
                     { eventstimatable.Url = item.Url; }
                     else
                     { eventstimatable.Url = "#"; }
@@ -65,7 +65,7 @@ namespace SEA_Application.Controllers
                 return new JsonResult { Data = eventstimatableList, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
             }
 
-            return new JsonResult { Data = eventList, JsonRequestBehavior = JsonRequestBehavior.AllowGet };   
+            return new JsonResult { Data = eventList, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
 
         public class eventstimatable

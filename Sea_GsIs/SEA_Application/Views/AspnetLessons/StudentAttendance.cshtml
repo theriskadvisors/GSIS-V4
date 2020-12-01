@@ -1,9 +1,17 @@
 ﻿
-@{
-    ViewBag.Title = "StudentAttendance";
-    Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
-}
 
+
+@{
+   ViewBag.Title = "StudentAttendance";
+    if (User.IsInRole("Branch_Admin") || User.IsInRole("Branch_Principal"))
+    {
+        Layout = "~/Views/Shared/_BranchAdminDashboardLayout.cshtml";
+    }
+    else if (User.IsInRole("Teacher"))
+    {
+       Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
+    }
+}
 
 <script>
 
@@ -20,6 +28,8 @@
             processData: false,
             contentType: false,
             success: function (data) {
+
+                debugger
                 var sch = JSON.parse(data);
                 console.log(sch);
                 var $el = $("#BranchId");
@@ -175,7 +185,7 @@
                         var $el = $("#SubjectId");
                         $el.empty();
 
-                     
+
                         if (sch.length > 0) {
                             $el.append($("<option></option>")
                                 .attr("value", "").text('Select Subject'));
@@ -209,9 +219,9 @@
             var SectionId = $(this).val();
             var BranchId = $("#BranchId").val();
             var ClassId = $("#ClassId").val();
-          
 
-            if (BranchId != "" && ClassId != "" &&  SectionId != "") {
+
+            if (BranchId != "" && ClassId != "" && SectionId != "") {
 
                 $.ajax({
                     type: "POST",

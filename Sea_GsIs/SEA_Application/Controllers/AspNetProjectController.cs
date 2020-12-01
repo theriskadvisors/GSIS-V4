@@ -52,39 +52,82 @@ namespace SEA_Application.Controllers
             return Content(status);
         }
 
-
         public ActionResult AllBranches()
         {
             var ID = User.Identity.GetUserId();
-            var Branches = (from branch in db.AspNetBranches
-                            join branchclasssubject in db.AspnetGenericBranchClassSubjects on branch.Id equals branchclasssubject.BranchId
-                            join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.BranchId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId
-                            where enrollment.AspNetEmployee.UserId == ID
-                            select new
-                            {
-                                branch.Id,
-                                branch.Name,
-                            }).Distinct();
-            string status = Newtonsoft.Json.JsonConvert.SerializeObject(Branches);
-            return Content(status);
+
+            var UserRole = db.GetUserRoleById(ID).FirstOrDefault();
+
+            if (UserRole == "Branch_Admin" || UserRole == "Branch_Principal")
+            {
+                var BranchId = db.AspNetEmployees.Where(x => x.UserId == ID).FirstOrDefault().BranchId;
+                var Branches = db.AspNetBranches.Where(x => x.Id == BranchId).Select(x => new { x.Id, x.Name }).ToList();
+                string status = Newtonsoft.Json.JsonConvert.SerializeObject(Branches);
+                return Content(status);
+            }
+
+            else
+            {
+
+                var Branches = (from branch in db.AspNetBranches
+                                join branchclasssubject in db.AspnetGenericBranchClassSubjects on branch.Id equals branchclasssubject.BranchId
+                                join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.BranchId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId
+                                where enrollment.AspNetEmployee.UserId == ID
+                                select new
+                                {
+                                    branch.Id,
+                                    branch.Name,
+                                }).Distinct();
+                string status = Newtonsoft.Json.JsonConvert.SerializeObject(Branches);
+                return Content(status);
+            }
+
+
         }
 
         public ActionResult ClassesByBranch(int BranchId)
         {
             // var BranchClasses  =  db.AspNetBranch_Class.Where(x => x.BranchId == BranchId).ToList().Select(x => new { x.Id, x.AspNetClass.Name });
+
             var ID = User.Identity.GetUserId();
-            var Classes = (from classs in db.AspNetClasses
-                           join branchclasssubject in db.AspnetGenericBranchClassSubjects on classs.Id equals branchclasssubject.ClassId
-                           join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.ClassId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetClass.Id
-                           where (branchclasssubject.BranchId == BranchId && enrollment.AspNetEmployee.UserId == ID)
-                           select new
-                           {
-                               classs.Id,
-                               classs.Name,
-                           }).Distinct();
-            string status = Newtonsoft.Json.JsonConvert.SerializeObject(Classes);
+
+            var UserRole = db.GetUserRoleById(ID).FirstOrDefault();
+
+            if (UserRole == "Branch_Admin" || UserRole == "Branch_Principal")
+            {
+                var Classes = (from classs in db.AspNetClasses
+                               join branchclasssubject in db.AspnetGenericBranchClassSubjects on classs.Id equals branchclasssubject.ClassId
+                               where (branchclasssubject.BranchId == BranchId)
+                               select new
+                               {
+                                   classs.Id,
+                                   classs.Name,
+                               }).Distinct();
+
+                string status = Newtonsoft.Json.JsonConvert.SerializeObject(Classes);
+                return Content(status);
+            }
+
+
+            else
+            {
+                var Classes = (from classs in db.AspNetClasses
+                               join branchclasssubject in db.AspnetGenericBranchClassSubjects on classs.Id equals branchclasssubject.ClassId
+                               join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.ClassId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetClass.Id
+                               where (branchclasssubject.BranchId == BranchId && enrollment.AspNetEmployee.UserId == ID)
+                               select new
+                               {
+                                   classs.Id,
+                                   classs.Name,
+                               }).Distinct();
+                string status = Newtonsoft.Json.JsonConvert.SerializeObject(Classes);
+                return Content(status);
+            }
+
+
+
             // return Json(SubjectsByClass, JsonRequestBehavior.AllowGet);
-            return Content(status);
+            //  return Content(status);
         }
 
         public ActionResult SectionByClasses(int ClassId)
@@ -93,11 +136,30 @@ namespace SEA_Application.Controllers
 
             //var Sections = db.AspNetTeacher_Enrollments.Where(x => x.AspNetEmployee.UserId == ID).Select(x => new { x.AspNetBranchClass_Sections.AspNetSection.Id, x.AspNetBranchClass_Sections.AspNetSection.Name }).Distinct();
 
-            var Sections = db.AspNetTeacher_Enrollments.Where(x => x.AspNetEmployee.UserId == ID && x.AspNetBranchClass_Sections.AspNetBranch_Class.ClassId == ClassId).Select(x => new
+            var UserRole = db.GetUserRoleById(ID).FirstOrDefault();
+
+            if (UserRole == "Branch_Admin" || UserRole == "Branch_Principal")
             {
-                Id = x.AspNetBranchClass_Sections.AspNetSection.Id,
-                Name = x.AspNetBranchClass_Sections.AspNetSection.Name
-            }).Distinct();
+
+                var Sections = db.AspNetBranchClass_Sections.Where(x => x.AspNetBranch_Class.ClassId == ClassId).Select(x => new { x.AspNetSection.Id, x.AspNetSection.Name }).Distinct(); //  ClassId == ClassId).Select(x => new
+                string status = Newtonsoft.Json.JsonConvert.SerializeObject(Sections);
+
+                return Json(status, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                var Sections = db.AspNetTeacher_Enrollments.Where(x => x.AspNetEmployee.UserId == ID && x.AspNetBranchClass_Sections.AspNetBranch_Class.ClassId == ClassId).Select(x => new
+                {
+                    Id = x.AspNetBranchClass_Sections.AspNetSection.Id,
+                    Name = x.AspNetBranchClass_Sections.AspNetSection.Name
+                }).Distinct();
+
+                string status = Newtonsoft.Json.JsonConvert.SerializeObject(Sections);
+                return Json(status, JsonRequestBehavior.AllowGet);
+            }
+
+
+
 
             //var Sections = (from section in db.AspNetSections
             //                join branchclasssubject in db.AspnetGenericBranchClassSubjects on section.Id equals branchclasssubject.AspNetSection.Id
@@ -109,27 +171,55 @@ namespace SEA_Application.Controllers
             //                    section.Name,
 
             //                }).Distinct();
-            string status = Newtonsoft.Json.JsonConvert.SerializeObject(Sections);
-            return Json(status, JsonRequestBehavior.AllowGet);
+
         }
 
 
         public ActionResult SubjectsByClass(int SectionId)
         {
             // var BranchClasses  =  db.AspNetBranch_Class.Where(x => x.BranchId == BranchId).ToList().Select(x => new { x.Id, x.AspNetClass.Name });
+
             var ID = User.Identity.GetUserId();
-            var Subjects = (from subject in db.AspNetCourses
-                            join branchclasssubject in db.AspnetGenericBranchClassSubjects on subject.Id equals branchclasssubject.SubjectId
-                            join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.AspNetCours.Id equals enrollment.AspNetClass_Courses.CourseId
-                            where (branchclasssubject.SectionId == SectionId && enrollment.AspNetEmployee.UserId == ID)
-                            select new
-                            {
-                                subject.Id,
-                                subject.Name,
-                            }).Distinct();
-            string status = Newtonsoft.Json.JsonConvert.SerializeObject(Subjects);
-            // return Json(SubjectsByClass, JsonRequestBehavior.AllowGet);
-            return Content(status);
+
+            //var Sections = db.AspNetTeacher_Enrollments.Where(x => x.AspNetEmployee.UserId == ID).Select(x => new { x.AspNetBranchClass_Sections.AspNetSection.Id, x.AspNetBranchClass_Sections.AspNetSection.Name }).Distinct();
+
+            var UserRole = db.GetUserRoleById(ID).FirstOrDefault();
+
+            if (UserRole == "Branch_Admin" || UserRole == "Branch_Principal")
+            {
+
+                var Subjects = (from subject in db.AspNetCourses
+                                join branchclasssubject in db.AspnetGenericBranchClassSubjects on subject.Id equals branchclasssubject.SubjectId
+                               // join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.AspNetCours.Id equals enrollment.AspNetClass_Courses.CourseId
+                                where (branchclasssubject.SectionId == SectionId )
+                                select new
+                                {
+                                    subject.Id,
+                                    subject.Name,
+                                }).Distinct();
+                string status = Newtonsoft.Json.JsonConvert.SerializeObject(Subjects);
+                // return Json(SubjectsByClass, JsonRequestBehavior.AllowGet);
+                return Content(status);
+
+            }
+            else
+            {
+               // var ID = User.Identity.GetUserId();
+                var Subjects = (from subject in db.AspNetCourses
+                                join branchclasssubject in db.AspnetGenericBranchClassSubjects on subject.Id equals branchclasssubject.SubjectId
+                                join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.AspNetCours.Id equals enrollment.AspNetClass_Courses.CourseId
+                                where (branchclasssubject.SectionId == SectionId && enrollment.AspNetEmployee.UserId == ID)
+                                select new
+                                {
+                                    subject.Id,
+                                    subject.Name,
+                                }).Distinct();
+                string status = Newtonsoft.Json.JsonConvert.SerializeObject(Subjects);
+                // return Json(SubjectsByClass, JsonRequestBehavior.AllowGet);
+                return Content(status);
+
+            }
+
         }
 
 
