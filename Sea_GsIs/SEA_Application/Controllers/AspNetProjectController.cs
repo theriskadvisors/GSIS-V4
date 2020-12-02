@@ -258,6 +258,7 @@ namespace SEA_Application.Controllers
 
             var AllStudents = (from enrollment in db.AspNetStudent_Enrollments.Where(x => x.SectionId == BranchClassSectionId)
                                join student in db.AspNetStudents on enrollment.StudentId equals student.Id
+                               where student.AspNetUser.StatusId != 2
                                select new
                                {
                                    student.Id,

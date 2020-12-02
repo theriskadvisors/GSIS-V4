@@ -137,12 +137,15 @@ namespace SEA_Application.Controllers
                                 LessonStatus = track.MeetingJoinStatus,
                                 LessonStartDate = track.MeetingJoinTime.ToString()
                             }).ToList();
+
                 var students = (from enrollment in db.AspNetStudent_Enrollments
                                 join lesson in db.AspnetLessons on enrollment.AspNetClass_Courses.CourseId equals lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SubjectId
+                                join student in db.AspNetStudents on enrollment.StudentId equals student.Id
                                 where enrollment.AspNetClass_Courses.ClassId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.ClassId
                                 && enrollment.AspNetBranchClass_Sections.SectionId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SectionId
                                 && enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.BranchId
                                 && lesson.Id == LessonID
+                                where student.AspNetUser.StatusId != 2
                                 select new { StudentName = enrollment.AspNetStudent.AspNetUser.Name, LessonStatus = "Absent", LessonStartDate = "" }).Distinct().ToList();
                 foreach (var item in students)
                 {
@@ -166,10 +169,12 @@ namespace SEA_Application.Controllers
                             }).ToList();
                 var students = (from enrollment in db.AspNetStudent_Enrollments
                                 join lesson in db.AspnetLessons on enrollment.AspNetClass_Courses.CourseId equals lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SubjectId
+                                join student in db.AspNetStudents on enrollment.StudentId equals student.Id
                                 where enrollment.AspNetClass_Courses.ClassId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.ClassId
                                 && enrollment.AspNetBranchClass_Sections.SectionId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SectionId
                                 && enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.BranchId
                                 && lesson.Id == LessonID
+                                where student.AspNetUser.StatusId != 2
                                 select new { StudentName = enrollment.AspNetStudent.AspNetUser.Name, LessonStatus = "Absent", LessonStartDate = "" }).Distinct().ToList();
 
                 foreach (var item in students)
@@ -323,24 +328,26 @@ namespace SEA_Application.Controllers
 
             var StudentUserId = db.AspNetStudents.Where(x => x.Id == StudentId).FirstOrDefault().UserId;
             var students = (from enrollment in db.AspNetStudent_Enrollments
+                          //  join student in db.AspNetStudents on enrollment.StudentId equals student.Id
                             join lesson in db.AspnetLessons on enrollment.AspNetClass_Courses.CourseId equals lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SubjectId
                             join lessonTracking in db.StudentLessonTrackings on lesson.Id equals lessonTracking.LessonId into egroup
                             from lessonTracking in egroup.DefaultIfEmpty()
                             where enrollment.AspNetClass_Courses.ClassId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.ClassId
                             && enrollment.AspNetBranchClass_Sections.SectionId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SectionId
                             && enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.BranchId
-                            where lesson.Status == true && lesson.IsActive == true && lesson.ContentType == "Link" && enrollment.StudentId == StudentId && lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SubjectId == SubjectId
+                            where lesson.Status == true && lesson.IsActive == true && lesson.ContentType == "Link" && enrollment.StudentId == StudentId && lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SubjectId == SubjectId// && student.AspNetUser.StatusId != 2
                             select new { LessonName = lesson.Name, LessonType = lesson.ContentType, SubjectName = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name, StudentName = enrollment.AspNetStudent.AspNetUser.Name, LessonStatus = lessonTracking.MeetingJoinStatus != null ? lessonTracking.MeetingJoinStatus : "Absent", LessonStartDate = "" }).Distinct().ToList();
 
 
             var students1 = (from enrollment in db.AspNetStudent_Enrollments
+                            // join student in db.AspNetStudents on enrollment.StudentId equals student.Id
                              join lesson in db.AspnetLessons on enrollment.AspNetClass_Courses.CourseId equals lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SubjectId
                              join lessonTracking in db.StudentLessonTrackings on lesson.Id equals lessonTracking.LessonId into egroup
                              from lessonTracking in egroup.DefaultIfEmpty()
                              where enrollment.AspNetClass_Courses.ClassId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.ClassId
                              && enrollment.AspNetBranchClass_Sections.SectionId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SectionId
                              && enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId == lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.BranchId
-                             where lesson.Status == true && lesson.IsActive == true && lesson.ContentType != "Link" && enrollment.StudentId == StudentId && lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SubjectId == SubjectId
+                             where lesson.Status == true && lesson.IsActive == true && lesson.ContentType != "Link" && enrollment.StudentId == StudentId && lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SubjectId == SubjectId //&& student.AspNetUser.StatusId != 2
                              select new { LessonName = lesson.Name, LessonType = lesson.ContentType, SubjectName = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name, StudentName = enrollment.AspNetStudent.AspNetUser.Name, LessonStatus = lessonTracking.LessonStatus != null ? lessonTracking.LessonStatus : "Absent", LessonStartDate = "" }).Distinct().ToList();
 
             students1.AddRange(students);
