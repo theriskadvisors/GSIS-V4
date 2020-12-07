@@ -1614,7 +1614,7 @@ namespace SEA_Application.Controllers
             var StdID = User.Identity.GetUserId();
             var student_id = db.AspNetStudents.Where(x => x.UserId == StdID).Select(x => x.Id).FirstOrDefault();
             var student_performed_quizes = db.Student_Quiz_Scoring.Where(x => x.StudentId == student_id && x.AspnetQuiz.IsPublished == true).Select(x => x.AspnetQuiz.Id).Distinct().ToList();
-            var all_quizes = db.AspnetQuizs.Where(x => x.IsPublished == true && (x.StartTime <= PKTime && PKTime <= System.Data.Entity.DbFunctions.AddMinutes(x.StartTime, 15))).Select(x => x.Id).ToList();
+            var all_quizes = db.AspnetQuizs.Where(x => x.IsPublished == true && (x.StartTime <= PKTime && PKTime <= System.Data.Entity.DbFunctions.AddMinutes(x.StartTime, x.QuizTime))).Select(x => x.Id).ToList();
             var Unperformed_quizes = all_quizes.Except(student_performed_quizes).ToList();
 
             return Json(Unperformed_quizes, JsonRequestBehavior.AllowGet);
