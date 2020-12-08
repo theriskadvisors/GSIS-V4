@@ -9,7 +9,7 @@ namespace SEA_Application.Models
     public class QuestionAnswerViewModel
     {
         [Display(Name = "Topic Id ")]
-        public int TopicId { get; set; }
+        public int[] TopicId { get; set; }
         
         public int Id { get; set; }
 
