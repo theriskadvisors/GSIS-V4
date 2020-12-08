@@ -596,7 +596,6 @@
                                                 @*@Html.ListBox("TopicId", null, htmlAttributes: new { @class = "form-control", @style = "height:400px;" })*@
                                                 <select multiple style="height:400px;overflow-x:scroll" class="form-control" id="TopicId" name="TopicId" required></select>
 
-
                                             </div>
 
                                         </div>
@@ -609,7 +608,6 @@
 
                                             <div class="box-body">
                                                 <select multiple style="height:400px;overflow-x:scroll" class="form-control" id="QuestionID" name="QuestionID" required></select>
-
                                             </div>
                                         </div>
                                     </div>
@@ -666,7 +664,7 @@
 
         $("#TopicId").click(function () {
             var selectedTopic = $("#TopicId").val();
-
+           // alert(selectedTopic);
           //  alert(selectedTopic);
 
             //debugger

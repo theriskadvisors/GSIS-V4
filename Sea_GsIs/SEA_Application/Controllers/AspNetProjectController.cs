@@ -190,8 +190,8 @@ namespace SEA_Application.Controllers
 
                 var Subjects = (from subject in db.AspNetCourses
                                 join branchclasssubject in db.AspnetGenericBranchClassSubjects on subject.Id equals branchclasssubject.SubjectId
-                               // join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.AspNetCours.Id equals enrollment.AspNetClass_Courses.CourseId
-                                where (branchclasssubject.SectionId == SectionId )
+                                // join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.AspNetCours.Id equals enrollment.AspNetClass_Courses.CourseId
+                                where (branchclasssubject.SectionId == SectionId)
                                 select new
                                 {
                                     subject.Id,
@@ -204,7 +204,7 @@ namespace SEA_Application.Controllers
             }
             else
             {
-               // var ID = User.Identity.GetUserId();
+                // var ID = User.Identity.GetUserId();
                 var Subjects = (from subject in db.AspNetCourses
                                 join branchclasssubject in db.AspnetGenericBranchClassSubjects on subject.Id equals branchclasssubject.SubjectId
                                 join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.AspNetCours.Id equals enrollment.AspNetClass_Courses.CourseId
@@ -219,6 +219,61 @@ namespace SEA_Application.Controllers
                 return Content(status);
 
             }
+
+        }
+
+        public ActionResult SubjectsByMultiSections(int[] SectionIds)
+        {
+            var ID = User.Identity.GetUserId();
+
+            var Subjects = (from subject in db.AspNetCourses
+                            join branchclasssubject in db.AspnetGenericBranchClassSubjects on subject.Id equals branchclasssubject.SubjectId
+                            join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.AspNetCours.Id equals enrollment.AspNetClass_Courses.CourseId
+                            // where (branchclasssubject.SectionId == SectionId && enrollment.AspNetEmployee.UserId == ID)
+                            where (SectionIds.Contains(branchclasssubject.SectionId.Value) && enrollment.AspNetEmployee.UserId == ID)
+
+
+                            select new
+                            {
+                                subject.Id,
+                                subject.Name,
+                                // Name = branchclasssubject.AspNetCours.Name + " - " +branchclasssubject.AspNetSection.Name,  
+                            }).Distinct();
+            //    string status = Newtonsoft.Json.JsonConvert.SerializeObject(Subjects);
+            return Json(Subjects, JsonRequestBehavior.AllowGet);
+            //return Content(status);
+
+
+        }
+        public ActionResult GetSubjectsByMultiValues(int BranchId, int ClassId, int SubjectId, int[] SectionIds)
+        {
+
+            //    var Generic = db.AspnetGenericBranchClassSubjects.Where(x => x.BranchId == BranchId && x.ClassId == ClassId && x.SubjectId == SubjectId && x.SectionId == SectionId).FirstOrDefault();
+
+            var Generic = db.AspnetGenericBranchClassSubjects.Where(x => x.BranchId == BranchId && x.ClassId == ClassId && x.SubjectId == SubjectId && SectionIds.Contains(x.SectionId.Value)).ToList();
+
+            // if(Generic != null)
+
+            if (Generic.Count() != 0)
+            {
+
+                // var id = Generic.Id;
+
+                var GenericIds = Generic.Select(x => x.Id).ToList();
+
+                var Topics = db.AspnetSubjectTopics.Where(x => GenericIds.Contains(x.GenericBranchClassSubjectId.Value)).ToList().Select(x => new { x.Id, Name = x.Name + "-" + x.AspnetGenericBranchClassSubject.AspNetSection.Name });
+
+                //                string AllTopics = Newtonsoft.Json.JsonConvert.SerializeObject(Topics);
+
+                return Json(Topics, JsonRequestBehavior.AllowGet);
+
+                //              return Content(AllTopics);
+            }
+
+            return Json("", JsonRequestBehavior.AllowGet);
+
+            //  return Json("", JsonRequestBehavior.AllowGet);
+
 
         }
 
@@ -265,6 +320,7 @@ namespace SEA_Application.Controllers
                                    student.Name,
 
                                }).Distinct();
+
             string status = Newtonsoft.Json.JsonConvert.SerializeObject(AllStudents);
             // return Json(SubjectsByClass, JsonRequestBehavior.AllowGet);
             return Content(status);

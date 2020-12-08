@@ -119,7 +119,7 @@ namespace SEA_Application.Controllers
             }
 
 
-          //  var user = User.Identity.GetUserId();
+            //  var user = User.Identity.GetUserId();
 
             var AllQuiz = (from quiz in db.Quiz_Topic_Questions
                            join enrollment in db.AspNetTeacher_Enrollments on quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.BranchId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId
@@ -200,111 +200,116 @@ namespace SEA_Application.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(QuestionAnswerViewModel QuestionAnswerViewModel, HttpPostedFileBase image)
         {
-
-            var id = User.Identity.GetUserId();
-            var username = db.AspNetUsers.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault();
-
-            AspnetQuestion Question = new AspnetQuestion();
-            Question.Name = QuestionAnswerViewModel.QuestionName;
-
-            if (Request.Form["QuestionIsActive"] == "on")
+            foreach (var item in QuestionAnswerViewModel.TopicId)
             {
-                Question.Is_Active = true;
-            }
-            else
-                Question.Is_Active = false;
 
-            Question.TopicID = QuestionAnswerViewModel.TopicId;
-            Question.Is_Quiz = false;
-            Question.Type = QuestionAnswerViewModel.QuestionType;
-            //   Question.LessonId = QuestionAnswerViewModel.LessonId;
-            Question.AnswerId = null;
-            Question.CreatedBy = username;
-            DateTime PkTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, PK_ZONE);
+                var id = User.Identity.GetUserId();
+                var username = db.AspNetUsers.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault();
 
-            if (image != null)
-            {
-                var fileName = Path.GetFileName(image.FileName);
-                var extension = Path.GetExtension(image.FileName);
-                image.SaveAs(Server.MapPath("~/Content/QuestionPhotos/") + image.FileName);
-                Question.Photo = image.FileName;
-            }
+                AspnetQuestion Question = new AspnetQuestion();
+                Question.Name = QuestionAnswerViewModel.QuestionName;
 
-            //Question.CreationDate = DateTime.Now;
-            Question.CreationDate = PkTime;
-            db.AspnetQuestions.Add(Question);
-            db.SaveChanges();
-            var QuestionType = QuestionAnswerViewModel.QuestionType;
-            if (QuestionType == "MCQ" || QuestionType == "TF")
-            {
-                AspnetOption Op1 = new AspnetOption();
-                Op1.Name = QuestionAnswerViewModel.OptionNameOne;
-                Op1.QuestionId = Question.Id;
-                //Op1.CreationDate = DateTime.Now;
-                Op1.CreationDate = PkTime;
-                db.AspnetOptions.Add(Op1);
-                db.SaveChanges();
-                AspnetOption Op2 = new AspnetOption();
-                Op2.Name = QuestionAnswerViewModel.QuestionNameTwo;
-                Op2.QuestionId = Question.Id;
-                //Op2.CreationDate = DateTime.Now;
-                Op2.CreationDate = PkTime;
-                db.AspnetOptions.Add(Op2);
-                db.SaveChanges();
-
-                AspnetOption Op3 = new AspnetOption();
-                Op3.Name = QuestionAnswerViewModel.QuestionNameThree;
-                Op3.QuestionId = Question.Id;
-                //Op3.CreationDate = DateTime.Now;
-                Op3.CreationDate = PkTime;
-                db.AspnetOptions.Add(Op3);
-                db.SaveChanges();
-
-                AspnetOption Op4 = new AspnetOption();
-                Op4.Name = QuestionAnswerViewModel.QuesitonNameFour;
-                Op4.QuestionId = Question.Id;
-                //Op4.CreationDate = DateTime.Now;
-                Op4.CreationDate = PkTime;
-                db.AspnetOptions.Add(Op4);
-                db.SaveChanges();
-
-                int AnswerId;
-
-                if (QuestionAnswerViewModel.Answer == "a")
+                if (Request.Form["QuestionIsActive"] == "on")
                 {
-                    AnswerId = Op1.Id;
+                    Question.Is_Active = true;
+                }
+                else
+                    Question.Is_Active = false;
+
+                Question.TopicID = item;
+                Question.Is_Quiz = false;
+                Question.Type = QuestionAnswerViewModel.QuestionType;
+                //   Question.LessonId = QuestionAnswerViewModel.LessonId;
+                Question.AnswerId = null;
+                Question.CreatedBy = username;
+                DateTime PkTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, PK_ZONE);
+
+                if (image != null)
+                {
+                    var fileName = Path.GetFileName(image.FileName);
+                    var extension = Path.GetExtension(image.FileName);
+                    image.SaveAs(Server.MapPath("~/Content/QuestionPhotos/") + image.FileName);
+                    Question.Photo = image.FileName;
                 }
 
-                else if (QuestionAnswerViewModel.Answer == "b")
+                //Question.CreationDate = DateTime.Now;
+                Question.CreationDate = PkTime;
+                db.AspnetQuestions.Add(Question);
+                db.SaveChanges();
+                var QuestionType = QuestionAnswerViewModel.QuestionType;
+                if (QuestionType == "MCQ" || QuestionType == "TF")
                 {
-                    AnswerId = Op2.Id;
-                }
+                    AspnetOption Op1 = new AspnetOption();
+                    Op1.Name = QuestionAnswerViewModel.OptionNameOne;
+                    Op1.QuestionId = Question.Id;
+                    //Op1.CreationDate = DateTime.Now;
+                    Op1.CreationDate = PkTime;
+                    db.AspnetOptions.Add(Op1);
+                    db.SaveChanges();
+                    AspnetOption Op2 = new AspnetOption();
+                    Op2.Name = QuestionAnswerViewModel.QuestionNameTwo;
+                    Op2.QuestionId = Question.Id;
+                    //Op2.CreationDate = DateTime.Now;
+                    Op2.CreationDate = PkTime;
+                    db.AspnetOptions.Add(Op2);
+                    db.SaveChanges();
 
-                else if (QuestionAnswerViewModel.Answer == "c")
-                {
-                    AnswerId = Op3.Id;
+                    AspnetOption Op3 = new AspnetOption();
+                    Op3.Name = QuestionAnswerViewModel.QuestionNameThree;
+                    Op3.QuestionId = Question.Id;
+                    //Op3.CreationDate = DateTime.Now;
+                    Op3.CreationDate = PkTime;
+                    db.AspnetOptions.Add(Op3);
+                    db.SaveChanges();
+
+                    AspnetOption Op4 = new AspnetOption();
+                    Op4.Name = QuestionAnswerViewModel.QuesitonNameFour;
+                    Op4.QuestionId = Question.Id;
+                    //Op4.CreationDate = DateTime.Now;
+                    Op4.CreationDate = PkTime;
+                    db.AspnetOptions.Add(Op4);
+                    db.SaveChanges();
+
+                    int AnswerId;
+
+                    if (QuestionAnswerViewModel.Answer == "a")
+                    {
+                        AnswerId = Op1.Id;
+                    }
+
+                    else if (QuestionAnswerViewModel.Answer == "b")
+                    {
+                        AnswerId = Op2.Id;
+                    }
+
+                    else if (QuestionAnswerViewModel.Answer == "c")
+                    {
+                        AnswerId = Op3.Id;
+                    }
+                    else
+                    {
+                        AnswerId = Op4.Id;
+                    }
+                    Question.AnswerId = AnswerId;
+                    db.SaveChanges();
                 }
                 else
                 {
-                    AnswerId = Op4.Id;
+                    AspnetOption Op = new AspnetOption();
+                    Op.Name = QuestionAnswerViewModel.FillAnswer;
+                    Op.QuestionId = Question.Id;
+                    //Op.CreationDate = DateTime.Now;
+                    Op.CreationDate = PkTime;
+                    db.AspnetOptions.Add(Op);
+                    db.SaveChanges();
+                    int AnswerId;
+                    AnswerId = Op.Id;
+                    Question.AnswerId = AnswerId;
+                    db.SaveChanges();
                 }
-                Question.AnswerId = AnswerId;
-                db.SaveChanges();
             }
-            else
-            {
-                AspnetOption Op = new AspnetOption();
-                Op.Name = QuestionAnswerViewModel.FillAnswer;
-                Op.QuestionId = Question.Id;
-                //Op.CreationDate = DateTime.Now;
-                Op.CreationDate = PkTime;
-                db.AspnetOptions.Add(Op);
-                db.SaveChanges();
-                int AnswerId;
-                AnswerId = Op.Id;
-                Question.AnswerId = AnswerId;
-                db.SaveChanges();
-            }
+
+
             ViewBag.LessonId = new SelectList(db.AspnetLessons, "Id", "Name");
             return RedirectToAction("ViewQuestionAndQuiz");
         }

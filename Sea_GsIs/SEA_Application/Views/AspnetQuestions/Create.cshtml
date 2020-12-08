@@ -385,11 +385,12 @@
                     });
                 }
                 else {
+                    debugger
                     var $el = $("#ClassId");
                     $el.empty();
                     var $e2 = $("#SubId");
                     $e2.empty();
-                    var $e3 = $(".TopIdDDL");
+                    var $e3 = $("#TopicId");
                     $e3.empty();
                     var $e4 = $("#LessonId");
                     $e4.empty();
@@ -400,10 +401,6 @@
                 }
 
             });
-
-
-
-
 
             $('#ClassId').change(function () {
 
@@ -433,7 +430,7 @@
 
                             if (sch.length > 0) {
                                 $e5.append($("<option></option>")
-                                    .attr("value", "").text('Select Section'));
+                                    .attr("value", "").attr('disabled', 'disabled').text('Select Section'));
                                 for (i = 0; i < sch.length; i++) {
 
                                     $e5.append($("<option></option>")
@@ -450,10 +447,13 @@
 
                 else {
 
+                      var $e3 = $("#TopicId");
+
                     var $el = $(".SubIdDDL");
                     $el.empty();
-                    var $e3 = $(".TopIdDDL");
+                 var $e3 = $("#TopicId");
                     $e3.empty();
+                   // TopicIdDDL
                     var $e4 = $("#LessonId");
                     $e4.empty();
 
@@ -462,22 +462,35 @@
                 }
 
             });
-            $('#SectionId').change(function () {
+
+
+            $('#SectionId').click(function () {
 
                 var SectionId = $(this).val();
+
+            //    alert(SectionId);
                 //Class = UserName;
 
                 if (SectionId != "") {
 
                     $.ajax({
-                        type: "POST",
-                        cache: false,
-                        url: "/AspNetProject/SubjectsByClass?SectionId=" + SectionId,
-                        processData: false,
-                        contentType: false,
-                        success: function (data) {
-                            var sch = JSON.parse(data);
-                            console.log(sch);
+                        //type: "POST",
+
+                        //url: "/AspNetProject/SubjectsByMultiSections?SectionIds=" + SectionId,
+                        //dataType: 'json',
+                        //cache: false,
+                        //traditional: true,
+
+                            url: '@Url.Action("SubjectsByMultiSections","AspNetProject")',
+                            type: 'POST',
+                            dataType: 'json',
+                            cache: false,
+                            traditional: true,
+                            data: { SectionIds: SectionId },
+
+                             success: function (data) {
+                            // var sch = JSON.parse(data);
+                            //   console.log(sch);
                             var $el = $("#SubId");
                             $el.empty();
                             var $e3 = $(".TopicIdDDL");
@@ -486,19 +499,22 @@
                             var $e4 = $("#LessonId");
                             $e4.empty();
 
-                            if (sch.length > 0) {
-                                $el.append($("<option></option>")
-                                    .attr("value", "").text('Select Subject'));
-                                for (i = 0; i < sch.length; i++) {
 
-                                    $el.append($("<option></option>")
-                                        .attr("value", sch[i].Id).text(sch[i].Name));
-                                }
-                            }
-                            else {
-                                $el.append($("<option></option>")
-                                    .attr("value", '').text('Select Subject'));
-                            }
+                            $el.append($("<option  ></option>")
+                                .attr("value", "").text('Select Subject'));
+
+
+                            $.each(data, function (i, item) {
+
+                                //debugger
+                                // var classname = $("#ClassID option[value='" + item.ClassID + "']").text();
+                               $el.append('<option value=' + item.Id + '>' + item.Name + ' </option>');
+                            });
+
+                            //else {
+                            //    $el.append($("<option></option>")
+                            //        .attr("value", '').text('Select Subject'));
+                            //}
                         }
                     });
                 }
@@ -518,43 +534,69 @@
 
 
 
+
+
             $('#SubId').change(function () {
                 debugger
                 var BranchId = $("#BranchId").val();
                 var ClassId = $("#ClassId").val();
                 var SubjectId = $(this).val();
-                var SectionId = $("#SectionId").val();
+                var SectionIds = $("#SectionId").val();
 
 
                 if (SubjectId != "" && BranchId != "" && ClassId != "") {
 
                     $.ajax({
-                        type: "POST",
-                        cache: false,
-                        //url: "/AspNetProject/GetTopic?BranchId=" + subid,
-                        url: "/AspNetProject/GetSubjects?BranchId=" + BranchId + "&&ClassId=" + ClassId + "&&SubjectId=" + SubjectId + "&&SectionId=" + SectionId,
-                        processData: false,
-                        contentType: false,
-                        success: function (data) {
-                            var sch = JSON.parse(data);
-                            console.log(sch);
+
+
+                        //type: "POST",
+                        //cache: false,
+                        //url: "/AspNetProject/GetSubjectsByMultiValues?BranchId=" + BranchId + "&&ClassId=" + ClassId + "&&SubjectId=" + SubjectId + "&&SectionId=" + SectionId,
+                        //processData: false,
+                        //contentType: false,
+
+                            url: '@Url.Action("GetSubjectsByMultiValues","AspNetProject")',
+                            type: 'POST',
+                            dataType: 'json',
+                            cache: false,
+                            traditional: true,
+                            data: { BranchId: BranchId,ClassId :ClassId, SubjectId:SubjectId, SectionIds:SectionIds},
+
+                            success: function (data) {
+                          //  var sch = JSON.parse(data);
+                            //console.log(sch);
                             var $el = $(".TopicIdDDL");
                             $el.empty();
                             var $e4 = $("#LessonId");
                             $e4.empty();
-                            if (sch.length > 0) {
-                                $el.append($("<option></option>")
-                                    .attr("value", "").text('Select Topic'));
-                                for (i = 0; i < sch.length; i++) {
 
-                                    $el.append($("<option></option>")
-                                        .attr("value", sch[i].Id).text(sch[i].Name));
-                                }
-                            }
-                            else {
-                                $el.append($("<option></option>")
-                                    .attr("value", '').text('Select'));
-                            }
+
+
+                            //if (sch.length > 0) {
+                            //    $el.append($("<option></option>")
+                            //        .attr("value", "").text('Select Topic'));
+                            //    for (i = 0; i < sch.length; i++) {
+
+                            //        $el.append($("<option></option>")
+                            //            .attr("value", sch[i].Id).text(sch[i].Name));
+                            //    }
+                            //}
+                            $el.append($("<option disabled></option>")
+                                 .attr("value", "").text('Select Topic'));
+
+                             $.each(data, function (i, item) {
+
+                                //debugger
+                                // var classname = $("#ClassID option[value='" + item.ClassID + "']").text();
+                               $el.append('<option value=' + item.Id + '>' + item.Name + ' </option>');
+
+                             });
+
+
+                            //else {
+                            //    $el.append($("<option></option>")
+                            //        .attr("value", '').text('Select'));
+                            //}
                         }
                     });
 
@@ -616,9 +658,6 @@
                         <div class="col-md-6 pl-5 pr-5 ">
                             <div class="form-group bmd-form-group is-filled">
 
-
-
-
                                 @Html.LabelFor(model => model.QuestionName, htmlAttributes: new { @class = "bmd-label-floating" })
 
                                 @Html.EditorFor(model => model.QuestionName, new { htmlAttributes = new { id = "textareastyle", @class = "form-control", @required = true } })
@@ -673,7 +712,9 @@
                                 <div class="form-group col-md-12 bmd-form-group">
                                     <label for="" class="bmd-label-static pl-2">Select Section  *</label>
 
-                                    <select class="form-control" id="SectionId" name="SectionId" required></select>
+                                    @*<select class="form-control" id="SectionId" name="SectionId" required></select>*@
+
+                                    <select multiple style="height:200px;overflow-x:scroll" class="form-control" id="SectionId" name="SectionId" required></select>
 
                                 </div>
                             </div>
@@ -682,16 +723,20 @@
                                 <label for="" class="control-label">Subject* </label>
 
                                 <select class="form-control SubIdDDL" id="SubId" name="SubId" required></select>
+
+                                @*<select multiple style="height:200px;overflow-x:scroll" class="form-control SubIdDDL" id="SubId" name="SubId" required></select>*@
+
+
                             </div>
 
                             <div class="form-group  ">
                                 <label for="" class="control-label">Topic* </label>
 
-                                <select class="form-control TopicIdDDL round-border Floating_text" id="TopicId" name="TopicId" required></select>
+                                @*<select class="form-control TopicIdDDL round-border Floating_text" id="TopicId" name="TopicId" required></select>*@
+
+                                <select multiple style="height:200px;overflow-x:scroll"  class="form-control TopicIdDDL" id="TopicId" name="TopicId" required></select>
+
                             </div>
-
-
-
 
                         </div> <!--column end -->
 
@@ -859,4 +904,3 @@
     })
 
 </script>
- 
