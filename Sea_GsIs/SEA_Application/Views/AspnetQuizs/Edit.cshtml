@@ -412,7 +412,7 @@
                         <label class="control-label">Start Date</label>
 
 
-                        <input class="form-control" type="date" name="Start_Date" value="@ViewBag.StartDate" />
+                        <input class="form-control" type="date" name="Start_Date" required value="@ViewBag.StartDate" />
                         @Html.ValidationMessageFor(model => model.Start_Date, "", new { @class = "text-danger" })
 
                     </div>
@@ -421,7 +421,8 @@
                         @*@Html.LabelFor(model => model.Due_Date, htmlAttributes: new { @class = "control-label" })*@
 
                         <label class="control-label">Due Date</label>
-                        <input type="date" class="form-control" name="Due_Date" value="@ViewBag.DueDate" />
+
+                        <input type="date" class="form-control" name="Due_Date" required value="@ViewBag.DueDate" />
 
                         @Html.ValidationMessageFor(model => model.Due_Date, "", new { @class = "text-danger" })
 

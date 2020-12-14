@@ -155,14 +155,22 @@
                         "/" +
                         value1.getFullYear();
 
+                    var DueDate = "";
+                    if (data[index].QuizDueDate != null) {
 
-                    var value2 = new Date(parseInt(data[index].QuizDueDate.replace(/(^.*\()|([+-].*$)/g, '')));
-                    var dat2 = value2.getMonth() +
-                        1 +
-                        "/" +
-                        value2.getDate() +
-                        "/" +
-                        value2.getFullYear();
+
+                        var value2 = new Date(parseInt(data[index].QuizDueDate.replace(/(^.*\()|([+-].*$)/g, '')));
+                        var dat2 = value2.getMonth() +
+                            1 +
+                            "/" +
+                            value2.getDate() +
+                            "/" +
+                            value2.getFullYear();
+
+                        DueDate = dat2;
+                    }
+                   
+
 
                     var value3 = new Date(parseInt(data[index].QuizCreationDate.replace(/(^.*\()|([+-].*$)/g, '')));
                     var dat3 = value3.getMonth() +
@@ -172,7 +180,7 @@
                         "/" +
                         value3.getFullYear();
                     
-                    table1.fnAddData([data[index].Class + "<input  type=hidden value=" + data[index].QuizId + ">", data[index].Section, data[index].Subject, data[index].Topic, data[index].QuizName, data[index].QuizDescription, dat1, dat2, dat3, "<button class='btn buttonload btn-sm btn-primary' id='" + data[index].QuizId + "' onclick='start1(this)'><i class='fa fa-spinner'></i> Details</button>"]);
+                    table1.fnAddData([data[index].Class + "<input  type=hidden value=" + data[index].QuizId + ">", data[index].Section, data[index].Subject, data[index].Topic, data[index].QuizName, data[index].QuizDescription, dat1, DueDate, dat3, "<button class='btn buttonload btn-sm btn-primary' id='" + data[index].QuizId + "' onclick='start1(this)'><i class='fa fa-spinner'></i> Details</button>"]);
 
                 })
                 table1.fnDraw();
@@ -237,7 +245,10 @@
         event.stopPropagation();
         var id = $(btn).attr("id");
         $(btn).children('i').addClass('fa-spin');
-        window.location.href = "/AspNetStudents/QuizDetailsByAdmin?id=" + id
+
+    //    window.location.href = "/AspNetStudents/QuizDetailsByAdmin?id=" + id
+          window.open("/AspNetStudents/QuizDetailsByAdmin?id="+id);
+
     }
 
 

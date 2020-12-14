@@ -86,7 +86,7 @@ namespace SEA_Application.Controllers
         {
             var ID = User.Identity.GetUserId();
 
-            var TestSubjects = db.TestSubjects.Where(x=> x.CreatedBy == ID).Select(x => new { x.Id, x.Title, x.Description, x.StartDate, x.EndTime, x.FileName, x.AspNetCours.Name, x.TotalMarks });
+            var TestSubjects = db.TestSubjects.Where(x => x.CreatedBy == ID).Select(x => new { x.Id, x.Title, x.Description, x.StartDate, x.EndTime, x.FileName, x.AspNetCours.Name, x.TotalMarks });
 
             return Json(TestSubjects, JsonRequestBehavior.AllowGet);
 
@@ -148,30 +148,30 @@ namespace SEA_Application.Controllers
             //               }).Distinct().ToList();
 
             var quizlst = (from std in db.Student_Quiz_Scoring
-                          join quiz in db.Quiz_Topic_Questions on std.QuizId equals quiz.QuizId
-                          join enrollment in db.AspNetTeacher_Enrollments on quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.BranchId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId
-                          where quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.ClassId == enrollment.AspNetClass_Courses.ClassId
-                          && quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SectionId == enrollment.AspNetBranchClass_Sections.SectionId
-                          && quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SubjectId == enrollment.AspNetClass_Courses.CourseId
-                          && enrollment.AspNetEmployee.UserId == user
-                          select new
-                          {
-                              QuizID = quiz.AspnetQuiz.Id,
-                              QuizName = quiz.AspnetQuiz.Name,
-                              QuizDesription = quiz.AspnetQuiz.Description,
-                              StartDate = quiz.AspnetQuiz.Start_Date.ToString(),
-                              DueDate = quiz.AspnetQuiz.Due_Date,
+                           join quiz in db.Quiz_Topic_Questions on std.QuizId equals quiz.QuizId
+                           join enrollment in db.AspNetTeacher_Enrollments on quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.BranchId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId
+                           where quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.ClassId == enrollment.AspNetClass_Courses.ClassId
+                           && quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SectionId == enrollment.AspNetBranchClass_Sections.SectionId
+                           && quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SubjectId == enrollment.AspNetClass_Courses.CourseId
+                           && enrollment.AspNetEmployee.UserId == user
+                           select new
+                           {
+                               QuizID = quiz.AspnetQuiz.Id,
+                               QuizName = quiz.AspnetQuiz.Name,
+                               QuizDesription = quiz.AspnetQuiz.Description,
+                               StartDate = quiz.AspnetQuiz.Start_Date.ToString(),
+                               DueDate = quiz.AspnetQuiz.Due_Date,
 
-                              QuizCreatedBy = quiz.AspnetQuiz.Created_By,
-                              QuizCreationDate = quiz.AspnetQuiz.CreationDate,
-                              IsPublished = quiz.AspnetQuiz.IsPublished,
-                              Class = quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
-                              Subject = quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
-                              Section = quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
-                              Topic = quiz.AspnetSubjectTopic.Name,
-                              StudentName = std.AspNetStudent.Name,
-                              StudentID = std.AspNetStudent.Id
-                          }).Distinct().ToList();
+                               QuizCreatedBy = quiz.AspnetQuiz.Created_By,
+                               QuizCreationDate = quiz.AspnetQuiz.CreationDate,
+                               IsPublished = quiz.AspnetQuiz.IsPublished,
+                               Class = quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                               Subject = quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                               Section = quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                               Topic = quiz.AspnetSubjectTopic.Name,
+                               StudentName = std.AspNetStudent.Name,
+                               StudentID = std.AspNetStudent.Id
+                           }).Distinct().ToList();
             return Json(quizlst, JsonRequestBehavior.AllowGet);
         }
 
@@ -446,7 +446,7 @@ namespace SEA_Application.Controllers
 
 
             var AllQuestion = (from topic in db.AspnetSubjectTopics
-                               join question in db.AspnetQuestions.Where(x=> x.Is_Active == true) on topic.Id equals question.TopicID
+                               join question in db.AspnetQuestions.Where(x => x.Is_Active == true) on topic.Id equals question.TopicID
                                where bdoIds.Contains(topic.Id) /*&& question.Is_Quiz == true*/
                                select new
                                {
@@ -495,8 +495,6 @@ namespace SEA_Application.Controllers
             //ViewBag.StartTime = aspnetQuiz.StartTime;
             if (aspnetQuiz.Start_Date != null && aspnetQuiz.StartTime != null)
             {
-
-
                 DateTime LessonStartDate = Convert.ToDateTime(aspnetQuiz.Start_Date);
                 string StartDateOfLEsson = LessonStartDate.ToString("yyyy-MM-dd");
                 ViewBag.LessonStartDate = StartDateOfLEsson;
@@ -504,13 +502,17 @@ namespace SEA_Application.Controllers
                 ViewBag.StartTime = StartTimeOfLEsson;
 
             }
-
-
-
-
             DateTime Date1 = Convert.ToDateTime(aspnetQuiz.Due_Date);
             string DueDate = Date1.ToString("yyyy-MM-dd");
-            ViewBag.DueDate = DueDate;
+            if (DueDate == "0001-01-01")
+            {
+                ViewBag.DueDate = null;
+
+            }
+            else
+            {
+                ViewBag.DueDate = DueDate;
+            }
 
             var AllTopicIDs = db.Quiz_Topic_Questions.Where(x => x.QuizId == id).Select(x => x.TopicId).ToList();
             var AllQuestionIDS = db.Quiz_Topic_Questions.Where(x => x.QuizId == id).Select(x => x.QuestionId).ToList();
@@ -598,7 +600,7 @@ namespace SEA_Application.Controllers
             if (ModelState.IsValid)
             {
                 AspnetQuiz quiz = db.AspnetQuizs.Where(x => x.Id == aspnetQuiz.Id).FirstOrDefault();
-              
+
                 DateTime startDate = DateTime.Parse(aspnetQuiz.Start_Date.ToString());
                 DateTime start = DateTime.Parse(aspnetQuiz.StartTime.ToString());
                 quiz.StartTime = startDate.Date.Add(start.TimeOfDay);
@@ -640,19 +642,19 @@ namespace SEA_Application.Controllers
         {
             string Status = "error";
 
-            List<Quiz_Topic_Questions> Qt = db.Quiz_Topic_Questions.Where(x=>x.QuizId == QuizID).ToList();
+            List<Quiz_Topic_Questions> Qt = db.Quiz_Topic_Questions.Where(x => x.QuizId == QuizID).ToList();
 
             db.Quiz_Topic_Questions.RemoveRange(Qt);
-           if(db.SaveChanges()>0)
-           {
-               AspnetQuiz Quiz = db.AspnetQuizs.Find(QuizID);
-               db.AspnetQuizs.Remove(Quiz);
-               if (db.SaveChanges() > 0)
-               {
+            if (db.SaveChanges() > 0)
+            {
+                AspnetQuiz Quiz = db.AspnetQuizs.Find(QuizID);
+                db.AspnetQuizs.Remove(Quiz);
+                if (db.SaveChanges() > 0)
+                {
 
-                   Status = "Success";
-               }
-           }
+                    Status = "Success";
+                }
+            }
 
             return Content(Status);
         }

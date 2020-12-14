@@ -131,8 +131,9 @@
 
         var id = $(btn).attr("id");
         $(btn).children('i').addClass('fa-spin');
-        window.location.href = "/AspNetStudents/QuizDetailsByAdmin?id=" + id
+        //window.location.href = "/AspNetStudents/QuizDetailsByAdmin?id=" + id
 
+        window.open("/AspNetStudents/QuizDetailsByAdmin?id="+id);
     }
 </script>
 
