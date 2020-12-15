@@ -7,9 +7,12 @@
     .table-responsive {
         display: block;
         width: 100%;
-        overflow-x: hidden;
+        Wx ` overflow-x: hidden;
         -webkit-overflow-scrolling: touch;
 </style>
+@*<link href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.6/semantic.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/1.10.15/css/dataTables.semanticui.min.css" rel="stylesheet" />*@
+
 
 <div class="card">
     <div class="card-body p-4">
@@ -19,9 +22,15 @@
                     <div style="display: none">
                     </div>
                     <div class="table-responsive">
-                        <table id="datatable1" class="table hover  table-bordered" cellspacing="0">
+                        <table id="datatable1" class="table hover display table-bordered" cellspacing="0">
                             <thead>
                                 <tr>
+
+
+                                    <th class="hidden">
+                                               Id
+                                    </th>
+
                                     <th>
                                         Date Created
                                     </th>
@@ -53,6 +62,9 @@
                             <tbody id="LessonsList"></tbody>
                             <tfoot>
                                 <tr>
+                                    <th class="hidden">
+                                        Id
+                                    </th>
                                     <th>
                                         Date Created
                                     </th>
@@ -102,6 +114,7 @@
         }
 </style>
 
+
 <script>
 
     $(document).ready(function () {
@@ -112,68 +125,84 @@
         $("#BreadCrumbs").append(' <li> <a href="/BranchAdmin/Index"> Home </a> <span>&gt;</span></li>');
         $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#"> Lessons</a></li>');
 
-        $('#datatable1 tfoot th').each(function () {
-            var title = $(this).text();
-            $(this).html('<input type="text" class="round-border input-search" style="border-color:#00b8ec; border-radius:5px;width:100%" placeholder="Search ' + title + '" />');
-        });
+        //$('#datatable1 tfoot th').each(function () {
+        //    var title = $(this).text();
+        //    $(this).html('<input type="text" class="round-border input-search" style="border-color:#00b8ec; border-radius:5px;width:100%" placeholder="Search ' + title + '" />');
+        //});
 
-        $.ajax({
-            type: "POST",
-            url: "/AspnetLessons/AllLessonForAdmin",
-            data: {},
+        //$.ajax({
+        //    type: "POST",
+        //    url: "/AspnetLessons/AllLessonForAdmin",
+        //    data: {},
 
-            success: function (data) {
+        //    success: function (data) {
 
-                var status;
-                table1.fnClearTable();
+        //        var status;
+        //        table1.fnClearTable();
 
-                $.each(data, function (index) {
-
-                 
-                    if (data[index].LessonIsActive == false && data[index].LessonStatus == false) {
-                        status = "InActive";
-                    }
-                    else if (data[index].LessonIsActive == true && data[index].LessonStatus == true) {
-                        status = "Published";
-                    }
-                    else if (data[index].LessonStatus == true)
-                    {
-                          status = "Published";
-                    }
-                    else {
-                        status = 'Created';
-                    }
-                   
-                        var value = new Date(parseInt(data[index].LessonDate.replace(/(^.*\()|([+-].*$)/g, '')));
-                        var dat = value.getMonth() +
-                            1 +
-                            "/" +
-                            value.getDate() +
-                            "/" +
-                            value.getFullYear();// + " " +
+        //        $.each(data, function (index) {
 
 
-                        var value1 = new Date(parseInt(data[index].LessonStartDate.replace(/(^.*\()|([+-].*$)/g, '')));
-                        var dat1 = value1.getMonth() +
-                            1 +
-                            "/" +
-                            value1.getDate() +
-                            "/" +
-                            value1.getFullYear();// + " " +
-                        // value.getTime().toString();
-                        table1.fnAddData([dat + "<input  type=hidden value=" + data[index].LessonId + ">", dat1, data[index].LessonClass, data[index].LessonSection, data[index].LessonSubject, data[index].LessonSubjectTopicName, data[index].LessonName, status]);
+        //            if (data[index].LessonIsActive == false && data[index].LessonStatus == false) {
+        //                status = "InActive";
+        //            }
+        //            else if (data[index].LessonIsActive == true && data[index].LessonStatus == true) {
+        //                status = "Published";
+        //            }
+        //            else if (data[index].LessonStatus == true)
+        //            {
+        //                  status = "Published";
+        //            }
+        //            else {
+        //                status = 'Created';
+        //            }
 
-                        // table1.fnAddData([data[index].LessonName + "<input  type=hidden value=" + data[index].LessonId + ">", data[index].LessonDuration, data[index].LessonSubjectTopicName, data[index].LessonSubject, data[index].LessonClass, data[index].LessonSection, "Published", data[index].LessonDate]);
-                        //    table1.fnAddData([data[index].LessonDate + "<input  type=hidden value=" + data[index].LessonId + ">", data[index].LessonClass, data[index].LessonSection, data[index].LessonSubject, data[index].LessonSubjectTopicName, data[index].LessonName, "Published"]);
+        //                var value = new Date(parseInt(data[index].LessonDate.replace(/(^.*\()|([+-].*$)/g, '')));
+        //                var dat = value.getMonth() +
+        //                    1 +
+        //                    "/" +
+        //                    value.getDate() +
+        //                    "/" +
+        //                    value.getFullYear();// + " " +
 
-                })
-                table1.fnDraw();
-            }
-        })
 
+        //                var value1 = new Date(parseInt(data[index].LessonStartDate.replace(/(^.*\()|([+-].*$)/g, '')));
+        //                var dat1 = value1.getMonth() +
+        //                    1 +
+        //                    "/" +
+        //                    value1.getDate() +
+        //                    "/" +
+        //                    value1.getFullYear();// + " " +
+        //                // value.getTime().toString();
+        //                table1.fnAddData([dat + "<input  type=hidden value=" + data[index].LessonId + ">", dat1, data[index].LessonClass, data[index].LessonSection, data[index].LessonSubject, data[index].LessonSubjectTopicName, data[index].LessonName, status]);
+
+        //                // table1.fnAddData([data[index].LessonName + "<input  type=hidden value=" + data[index].LessonId + ">", data[index].LessonDuration, data[index].LessonSubjectTopicName, data[index].LessonSubject, data[index].LessonClass, data[index].LessonSection, "Published", data[index].LessonDate]);
+        //                //    table1.fnAddData([data[index].LessonDate + "<input  type=hidden value=" + data[index].LessonId + ">", data[index].LessonClass, data[index].LessonSection, data[index].LessonSubject, data[index].LessonSubjectTopicName, data[index].LessonName, "Published"]);
+
+        //        })
+        //        table1.fnDraw();
+        //    }
+        //})
+
+        //$('#datatable1').on('click', 'tbody tr', function () {
+        //    var td = $(this).children("td");
+        //    var LessonId = $(td[0]).children("input").val();
+
+        //    //alert($(td[0]).html());
+        //    //    var Id = parseInt($(td[0]).html())
+        //    var Id = parseInt(LessonId);
+
+        //    // alert(Id);
+        //    // alert(Id);
+        //    //userName = userName.trim();
+        //    var url = "/AspnetLessons/Edit?id=" + Id;
+        //    window.open(url, '_blank');
+        //});
+
+        
         $('#datatable1').on('click', 'tbody tr', function () {
             var td = $(this).children("td");
-            var LessonId = $(td[0]).children("input").val();
+            var LessonId = $(td[0]).html();
 
             //alert($(td[0]).html());
             //    var Id = parseInt($(td[0]).html())
@@ -187,60 +216,135 @@
         });
 
 
+        var datatableInstance = $("#datatable1").DataTable({
 
-        var table1 = $('#datatable1').dataTable({
-            initComplete: function () {
-                // Apply the search
-                this.api().columns().every(function () {
-                    var that = this;
-
-                    $('input', this.footer()).on('keyup change clear', function () {
-                        if (that.search() !== this.value) {
-                            that.search(this.value).draw();
-                        }
-                    });
-                });
+            "ajax": {
+                "url": "/AspnetLessons/AllLessonForAdmin",
+                "type": "POST",
+                "datatype": "json"
             },
-            "order": [[0, "desc"]],
-            buttons: [
+            "columns": [
                 {
-                    text: ''
+                    "data": "LessonId", "name": "LessonId" , "class":"hidden",
+                },
+
+                {
+                    "data": "LessonDate", "name": "LessonDate",
+                    "render": function (jsonDate) {
+
+                        var value = new Date(parseInt(jsonDate.replace(/(^.*\()|([+-].*$)/g, '')));
+                        var dat = value.getMonth() +
+                            1 +
+                            "/" +
+                            value.getDate() +
+                            "/" +
+                            value.getFullYear();// + " " +
+
+                        return dat;
+                    }
+
                 },
                 {
-                    text: '',
-                    action: function (e, dt, button, config) {
-                        window.location.href = '#';
+                    "data": "LessonStartDate", "name": "LessonStartDate",
+                    "render": function (jsonDate) {
+
+                        var value1 = new Date(parseInt(jsonDate.replace(/(^.*\()|([+-].*$)/g, '')));
+                        var dat1 = value1.getMonth() +
+                            1 +
+                            "/" +
+                            value1.getDate() +
+                            "/" +
+                            value1.getFullYear();// + " " +
+
+                        return dat1;
+                    }
+
+                },
+                { "data": "LessonClass", "name": "LessonClass" },
+                { "data": "LessonSection", "name": "LessonSection" },
+                { "data": "LessonSubject", "name": "LessonSubject" },
+                { "data": "LessonSubjectTopicName", "name": "LessonSubjectTopicName" },
+                { "data": "LessonName", "name": "LessonName" },
+                {
+                    "data": "LessonStatus1", "name": "LessonStatus1", 
+
+                  
+                    "render": function (LessonStatus1) {
+
+                        var status;
+                       // alert(LessonStatus);
+                       // alert(LessonIsActive);
+
+                        //if (LessonStatus == false && LessonIsActive == false) {
+                        //    status = "InActive";
+                          
+                        //}
+                        //else if (LessonStatus == true && LessonIsActive == true) {
+                        //    status = "Published";
+                        //}
+                        //else if (LessonStatus == true) {
+                        //    status = "Published";
+                        //}
+                        //else {
+                        //    status = 'Created';
+                        //}
+
+                         if (LessonStatus1 == "False-False") {
+                            status = "InActive";
+                          
+                        }
+                        else if (LessonStatus1 == "True-True" ) {
+                            status = "Published";
+                        }
+                         else if (LessonStatus1 == "True-False") {
+
+                            status = "Published";
+                        }
+                        else {
+                            status = 'Created';
+                        }
+
+                        return status;
                     }
                 },
-                {
-                    text: ''
-                }
+
             ],
+            "serverSide": "true",
+            //"order": [0,"asc"]
+            "processing": "true",
+            "searchable": "false",
             "language": {
-                "lengthMenu": "<div class=\"d-flex showEntriesCon\">\n" +
-                    "  <div class=\"p-2\">Show </div> <div class=\"showEntries\"> _MENU_\n" +
-                    "  </div>\n" +
-                    "  </div>",
-                "info": "<div class='showingEntriesOfTotal'>Showing <span class=\"text-info\">_START_ to _END_</span> of _TOTAL_ entries</div>",
-                "paginate": {
-                    "first": "Firstt",
-                    "last": "Lastt",
-                    "next": ' <img src="~/Content/assets/assets/icons/Arrow2.png" alt=""> ',
-                    "previous": ' <img src="~/Content/assets/assets/icons/Arrow1.png" alt=""> '
-                }
-            },
-            "searching": true,
-            // dom: '<"class">Blfrtip',
-            dom: "<'row mb-3'<'col-sm-12 col-md-2 col-lg-2'l><'col-sm-12 col-md-10 col-lg-10 datatableButtonsCon text-right'Bf>>" +
-                "<'row'<'col-sm-12 datatablesData'tr>>" +
-                "<'row mt-4'<'col-sm-12 col-md-4 col-lg-6 infoCon'i><'col-sm-12 col-md-8 col-lg-6 pagCon'p>>",
+
+                "processing": "processing... please wait"
+            }
+
+
+
+
+
+        });//end of datatable
+
+        $('#datatable1 tfoot th').each(function () {
+            var title = $('#datatable1 thead th').eq($(this).index()).text();
+            $(this).html('<input class="round-border input-search" style="border-color:#00b8ec; border-radius:5px;width:100%;  type="text" placeholder="Search ' + title + '" />');
         });
+
+
+        datatableInstance.columns().every(function () {
+            var dataTableColumn = this;
+
+            $(this.footer()).find('input').on('keyup change', function () {
+               //   e.preventDefault();
+                dataTableColumn.search(this.value).draw();
+            });
+        });
+
 
         $("#datatable1_paginate").addClass("pull-right");
         $("#datatable1_filter").hide();
         $('#datatable1 tfoot tr').appendTo('#datatable1 thead');
-        //$(".input-search").last().width("75%");
+
     })//document ready
 
-    
+
 </script>

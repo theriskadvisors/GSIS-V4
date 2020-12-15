@@ -72,6 +72,110 @@ namespace SEA_Application.Controllers
 
         public ActionResult AllLessonForAdmin()
         {
+
+            int start = Convert.ToInt32(Request["start"]);
+            int length = Convert.ToInt32(Request["length"]);
+            string searchValue = Request["search[value]"];
+
+            var LessonCreationDate = Request.Form.GetValues("columns[1][search][value]").FirstOrDefault();
+
+
+            var LessonStartDate = Request.Form.GetValues("columns[2][search][value]").FirstOrDefault();
+            var LessonClass = Request.Form.GetValues("columns[3][search][value]").FirstOrDefault();
+            var LessonSection = Request.Form.GetValues("columns[4][search][value]").FirstOrDefault();
+            var LessonSubject = Request.Form.GetValues("columns[5][search][value]").FirstOrDefault();
+            var LessonTopicName = Request.Form.GetValues("columns[6][search][value]").FirstOrDefault();
+            var LessonName = Request.Form.GetValues("columns[7][search][value]").FirstOrDefault();
+            var LessonStatus = Request.Form.GetValues("columns[8][search][value]").FirstOrDefault();
+
+
+            string status = LessonStatus.ToLower();
+            string Published = "published";
+            string InActive = "inactive";
+            string Created = "created";
+
+            bool? LessonStatusbool=null;
+            bool? LessonIsActive=null;
+            if(LessonStatus != "")
+            {
+
+            if (Published.Contains(status) )
+            {
+                LessonStatusbool = true;
+                //LessonIsActive = true;
+                LessonIsActive = true;
+            }else if (InActive.Contains(status))
+            {
+                LessonStatusbool = false;
+                LessonIsActive = false;
+            }
+            else
+            {
+                LessonStatusbool = false;
+                LessonIsActive = true;
+            }
+
+            }
+
+
+            //if(statusSearch)
+
+            //  var datetimeday = DateTime.Now.Day;
+            ///  var datetimeMonth = DateTime.Now.Month;
+            // var datetimeyear = DateTime.Now.Year;
+
+            var CreationDate = LessonCreationDate.Split('/').ToList();
+            var Startdate  = LessonStartDate.Split('/').ToList();
+
+
+            // string day, month, year = "";
+            string day = "", month = "", year = "";
+
+            var countForCreationDate = CreationDate.Count();
+
+            if (countForCreationDate == 1)
+            {
+                month = CreationDate[0];
+                //  day = CreationDate[0];
+                //   year = CreationDate[0]; 
+            }
+            else if (countForCreationDate == 2)
+            {
+                month = CreationDate[0];
+                day = CreationDate[1];
+                //  year = CreationDate[0];
+            }
+            else
+            {
+                month = CreationDate[0];
+                day = CreationDate[1];
+                year = CreationDate[2];
+            }
+
+
+
+            var countForStartDate = Startdate.Count();
+            string dayStartDate = "", monthStartDate = "", yearStartDate = "";
+
+            if (countForStartDate == 1)
+            {
+                monthStartDate = Startdate[0];
+                //  day = CreationDate[0];
+                //   year = CreationDate[0]; 
+            }
+            else if (countForStartDate == 2)
+            {
+                monthStartDate = Startdate[0];
+                dayStartDate = Startdate[1];
+                //  year = CreationDate[0];
+            }
+            else
+            {
+                monthStartDate = Startdate[0];
+                dayStartDate = Startdate[1];
+                yearStartDate = Startdate[2];
+            }
+
             var loggedInUserId = User.Identity.GetUserId();
             int branchId;
             if (User.IsInRole("Branch_Admin"))
@@ -96,6 +200,7 @@ namespace SEA_Application.Controllers
                                   LessonDuration = lesson.DurationMinutes,
                                   LessonDescription = lesson.Description,
                                   LessonStatus = lesson.Status,
+                                  LessonStatus1 = lesson.Status.ToString()+"-"+lesson.IsActive.ToString(),
                                   LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
                                   LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
                                   LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
@@ -103,11 +208,87 @@ namespace SEA_Application.Controllers
                                   LessonDate = lesson.CreationDate,
                                   LessonStartDate = lesson.StartDate,
                                   LessonIsActive = lesson.IsActive
-                              }).Distinct().ToList();
+                                  //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
+                              }).Where(x => x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
+
+            int totalrows = AllLessons.Count;
 
 
-            return Json(AllLessons, JsonRequestBehavior.AllowGet);
+
+          //  LessonStatusbool
+           // LessonIsActive 
+            if (LessonStatusbool !=null || LessonIsActive !=null)
+            {
+                AllLessons = AllLessons.Where(x => x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive).ToList();
+                totalrows = AllLessons.Count;
+
+            }
+
+            if (countForCreationDate == 1)
+            {
+                //x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month))
+
+                AllLessons = AllLessons.Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month))).ToList();
+                totalrows = AllLessons.Count;
+            }
+            else
+            {
+
+                AllLessons = AllLessons.Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year)).ToList();
+                totalrows = AllLessons.Count;
+            }
+
+
+
+            if (countForStartDate == 1)
+            {
+                //x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month))
+
+                AllLessons = AllLessons.Where(x => (x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Day.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Year.ToString().Contains(monthStartDate))).ToList();
+                totalrows = AllLessons.Count;
+            }
+            else
+            {
+
+                AllLessons = AllLessons.Where(x => x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate)).ToList();
+                totalrows = AllLessons.Count;
+            }
+
+
+
+
+
+
+            int totalrowsafterfiltering = AllLessons.Count;
+            AllLessons = AllLessons.Skip(start).Take(length).ToList();
+
+            //var jsonResult = Json(AllLessons, JsonRequestBehavior.AllowGet);
+            //jsonResult.MaxJsonLength = int.MaxValue;
+            //return jsonResult;
+
+
+            return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+
+
+            return Json("", JsonRequestBehavior.AllowGet);
+
         }
+
+        //public class AdminLessons
+        //{
+        //    public int LessonsId { get; set; }
+        //    public DateTime DateCreated { get; set; }
+        //    public DateTime StartDate { get; set; }
+        //    public string ClassName { get; set; }
+        //    public string SectionName { get; set; }
+        //    public string SubjectName { get; set; }
+        //    public string TopicName { get; set; }
+        //    public string LessonsName { get; set; }
+        //    public bool Status { get; set; }
+
+
+        //}
 
         public ActionResult ViewAttendance(int id, string BranchName, string ClassName, string SectionName, string SubjectName, string LessonName, string StartDate, string Type)
         {
@@ -328,7 +509,7 @@ namespace SEA_Application.Controllers
 
             var StudentUserId = db.AspNetStudents.Where(x => x.Id == StudentId).FirstOrDefault().UserId;
             var students = (from enrollment in db.AspNetStudent_Enrollments
-                          //  join student in db.AspNetStudents on enrollment.StudentId equals student.Id
+                                //  join student in db.AspNetStudents on enrollment.StudentId equals student.Id
                             join lesson in db.AspnetLessons on enrollment.AspNetClass_Courses.CourseId equals lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SubjectId
                             join lessonTracking in db.StudentLessonTrackings on lesson.Id equals lessonTracking.LessonId into egroup
                             from lessonTracking in egroup.DefaultIfEmpty()
@@ -340,7 +521,7 @@ namespace SEA_Application.Controllers
 
 
             var students1 = (from enrollment in db.AspNetStudent_Enrollments
-                            // join student in db.AspNetStudents on enrollment.StudentId equals student.Id
+                                 // join student in db.AspNetStudents on enrollment.StudentId equals student.Id
                              join lesson in db.AspnetLessons on enrollment.AspNetClass_Courses.CourseId equals lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SubjectId
                              join lessonTracking in db.StudentLessonTrackings on lesson.Id equals lessonTracking.LessonId into egroup
                              from lessonTracking in egroup.DefaultIfEmpty()
