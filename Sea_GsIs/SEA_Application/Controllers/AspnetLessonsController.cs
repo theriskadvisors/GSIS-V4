@@ -71,11 +71,21 @@ namespace SEA_Application.Controllers
         }
 
         public ActionResult AllLessonForAdmin()
-        {
+       {
 
             int start = Convert.ToInt32(Request["start"]);
             int length = Convert.ToInt32(Request["length"]);
             string searchValue = Request["search[value]"];
+
+
+            int pageNo = 1;
+
+            if (start >= length)
+            {
+
+                pageNo = (start / length) + 1;
+
+            }
 
             var LessonCreationDate = Request.Form.GetValues("columns[1][search][value]").FirstOrDefault();
 
@@ -94,26 +104,27 @@ namespace SEA_Application.Controllers
             string InActive = "inactive";
             string Created = "created";
 
-            bool? LessonStatusbool=null;
-            bool? LessonIsActive=null;
-            if(LessonStatus != "")
+            bool? LessonStatusbool = null;
+            bool? LessonIsActive = null;
+            if (LessonStatus != "")
             {
 
-            if (Published.Contains(status) )
-            {
-                LessonStatusbool = true;
-                //LessonIsActive = true;
-                LessonIsActive = true;
-            }else if (InActive.Contains(status))
-            {
-                LessonStatusbool = false;
-                LessonIsActive = false;
-            }
-            else
-            {
-                LessonStatusbool = false;
-                LessonIsActive = true;
-            }
+                if (Published.Contains(status))
+                {
+                    LessonStatusbool = true;
+                    //LessonIsActive = true;
+                    LessonIsActive = true;
+                }
+                else if (InActive.Contains(status))
+                {
+                    LessonStatusbool = false;
+                    LessonIsActive = false;
+                }
+                else
+                {
+                    LessonStatusbool = false;
+                    LessonIsActive = true;
+                }
 
             }
 
@@ -125,7 +136,7 @@ namespace SEA_Application.Controllers
             // var datetimeyear = DateTime.Now.Year;
 
             var CreationDate = LessonCreationDate.Split('/').ToList();
-            var Startdate  = LessonStartDate.Split('/').ToList();
+            var Startdate = LessonStartDate.Split('/').ToList();
 
 
             // string day, month, year = "";
@@ -190,85 +201,1127 @@ namespace SEA_Application.Controllers
             }
 
 
-            var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
-                              select new
-                              {
-                                  LessonId = lesson.Id,
-                                  LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
-                                  LessonName = lesson.Name,
-                                  LessonVidoeUrl = lesson.Video_Url,
-                                  LessonDuration = lesson.DurationMinutes,
-                                  LessonDescription = lesson.Description,
-                                  LessonStatus = lesson.Status,
-                                  LessonStatus1 = lesson.Status.ToString()+"-"+lesson.IsActive.ToString(),
-                                  LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
-                                  LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
-                                  LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
-                                  //  LessonDate = lesson.CreationDate.ToString()
-                                  LessonDate = lesson.CreationDate,
-                                  LessonStartDate = lesson.StartDate,
-                                  LessonIsActive = lesson.IsActive
-                                  //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
-                              }).Where(x => x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
-
-            int totalrows = AllLessons.Count;
-
-
-
-          //  LessonStatusbool
-           // LessonIsActive 
-            if (LessonStatusbool !=null || LessonIsActive !=null)
+            try
             {
-                AllLessons = AllLessons.Where(x => x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive).ToList();
-                totalrows = AllLessons.Count;
+                int totalrows = 0;
+
+                // int totalrows = AllLessons.Where(x => x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList().Count();
+                //      if (LessonStartDate == "" && LessonClass == "" && LessonSection == "" && LessonSubject == "" && LessonTopicName == "" && LessonName == "" && LessonStatus == "")
+                if (LessonStartDate == "" && LessonCreationDate == "" && LessonStatus == "")
+                {
+
+                    totalrows = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                 select new
+                                 {
+                                     LessonId = lesson.Id,
+                                     LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                     LessonName = lesson.Name,
+                                     LessonVidoeUrl = lesson.Video_Url,
+                                     LessonDuration = lesson.DurationMinutes,
+                                     LessonDescription = lesson.Description,
+                                     LessonStatus = lesson.Status,
+                                     LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                     LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                     LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                     LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                     LessonDate = lesson.CreationDate,
+                                     LessonStartDate = lesson.StartDate,
+                                     LessonIsActive = lesson.IsActive
+                                 }).Where(x => x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+
+
+                    var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                      select new
+                                      {
+                                          LessonId = lesson.Id,
+                                          LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                          LessonName = lesson.Name,
+                                          LessonVidoeUrl = lesson.Video_Url,
+                                          LessonDuration = lesson.DurationMinutes,
+                                          LessonDescription = lesson.Description,
+                                          LessonStatus = lesson.Status,
+                                          LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                          LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                          LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                          LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                          //  LessonDate = lesson.CreationDate.ToString()
+                                          LessonDate = lesson.CreationDate,
+                                          LessonStartDate = lesson.StartDate,
+                                          LessonIsActive = lesson.IsActive
+                                          //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
+                                      }).Where(x => x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+
+                    int totalrowsafterfiltering = totalrows;
+                    return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+                }
+
+                //  LessonStatusbool
+                // LessonIsActive 
+                //     else if ((LessonStatusbool != null || LessonIsActive != null) )
+                else if (LessonStatus != "" && LessonCreationDate == "" && LessonStartDate == "")
+                {
+
+                    totalrows = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                 select new
+                                 {
+                                     LessonId = lesson.Id,
+                                     LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                     LessonName = lesson.Name,
+                                     LessonVidoeUrl = lesson.Video_Url,
+                                     LessonDuration = lesson.DurationMinutes,
+                                     LessonDescription = lesson.Description,
+                                     LessonStatus = lesson.Status,
+                                     LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                     LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                     LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                     LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                     LessonDate = lesson.CreationDate,
+                                     LessonStartDate = lesson.StartDate,
+                                     LessonIsActive = lesson.IsActive
+                                 }).Where(x => x.LessonClass.ToLower().Contains(LessonClass) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+
+
+                    var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                      select new
+                                      {
+                                          LessonId = lesson.Id,
+                                          LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                          LessonName = lesson.Name,
+                                          LessonVidoeUrl = lesson.Video_Url,
+                                          LessonDuration = lesson.DurationMinutes,
+                                          LessonDescription = lesson.Description,
+                                          LessonStatus = lesson.Status,
+                                          LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                          LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                          LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                          LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                          //  LessonDate = lesson.CreationDate.ToString()
+                                          LessonDate = lesson.CreationDate,
+                                          LessonStartDate = lesson.StartDate,
+                                          LessonIsActive = lesson.IsActive
+                                          //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
+                                      }).Where(x => x.LessonClass.ToLower().Contains(LessonClass) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+
+                    int totalrowsafterfiltering = totalrows;
+                    return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+
+                    // AllLessons = AllLessons.Where(x => x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive);
+                    // totalrows = AllLessons.Count();
+
+                }
+
+                else if (LessonStatus == "" && LessonCreationDate != "" && LessonStartDate == "")
+                {
+                    if (countForCreationDate == 1)
+                    {
+
+                        totalrows = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                     select new
+                                     {
+                                         LessonId = lesson.Id,
+                                         LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                         LessonName = lesson.Name,
+                                         LessonVidoeUrl = lesson.Video_Url,
+                                         LessonDuration = lesson.DurationMinutes,
+                                         LessonDescription = lesson.Description,
+                                         LessonStatus = lesson.Status,
+                                         LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                         LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                         LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                         LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                         LessonDate = lesson.CreationDate,
+                                         LessonStartDate = lesson.StartDate,
+                                         LessonIsActive = lesson.IsActive
+                                     }).Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month)) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+
+
+
+
+                        var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                          select new
+                                          {
+                                              LessonId = lesson.Id,
+                                              LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                              LessonName = lesson.Name,
+                                              LessonVidoeUrl = lesson.Video_Url,
+                                              LessonDuration = lesson.DurationMinutes,
+                                              LessonDescription = lesson.Description,
+                                              LessonStatus = lesson.Status,
+                                              LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                              LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                              LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                              LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                              //  LessonDate = lesson.CreationDate.ToString()
+                                              LessonDate = lesson.CreationDate,
+                                              LessonStartDate = lesson.StartDate,
+                                              LessonIsActive = lesson.IsActive
+                                              //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
+                                          }).Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month)) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+
+                        int totalrowsafterfiltering = totalrows;
+                        return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+
+                    }
+                    else
+                    {
+
+
+                        totalrows = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                     select new
+                                     {
+                                         LessonId = lesson.Id,
+                                         LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                         LessonName = lesson.Name,
+                                         LessonVidoeUrl = lesson.Video_Url,
+                                         LessonDuration = lesson.DurationMinutes,
+                                         LessonDescription = lesson.Description,
+                                         LessonStatus = lesson.Status,
+                                         LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                         LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                         LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                         LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                         LessonDate = lesson.CreationDate,
+                                         LessonStartDate = lesson.StartDate,
+                                         LessonIsActive = lesson.IsActive
+                                     }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+
+
+
+
+                        var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                          select new
+                                          {
+                                              LessonId = lesson.Id,
+                                              LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                              LessonName = lesson.Name,
+                                              LessonVidoeUrl = lesson.Video_Url,
+                                              LessonDuration = lesson.DurationMinutes,
+                                              LessonDescription = lesson.Description,
+                                              LessonStatus = lesson.Status,
+                                              LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                              LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                              LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                              LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                              //  LessonDate = lesson.CreationDate.ToString()
+                                              LessonDate = lesson.CreationDate,
+                                              LessonStartDate = lesson.StartDate,
+                                              LessonIsActive = lesson.IsActive
+                                              //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
+                                          }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+
+                        int totalrowsafterfiltering = totalrows;
+                        return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+                    }
+
+
+                }
+
+                else if (LessonStatus == "" && LessonCreationDate == "" && LessonStartDate != "")
+                {
+
+
+                    if (countForStartDate == 1)
+                    {
+                        totalrows = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                     select new
+                                     {
+                                         LessonId = lesson.Id,
+                                         LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                         LessonName = lesson.Name,
+                                         LessonVidoeUrl = lesson.Video_Url,
+                                         LessonDuration = lesson.DurationMinutes,
+                                         LessonDescription = lesson.Description,
+                                         LessonStatus = lesson.Status,
+                                         LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                         LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                         LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                         LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                         LessonDate = lesson.CreationDate,
+                                         LessonStartDate = lesson.StartDate,
+                                         LessonIsActive = lesson.IsActive
+                                     }).Where(x => (x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Day.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Year.ToString().Contains(monthStartDate)) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+
+
+
+
+                        var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                          select new
+                                          {
+                                              LessonId = lesson.Id,
+                                              LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                              LessonName = lesson.Name,
+                                              LessonVidoeUrl = lesson.Video_Url,
+                                              LessonDuration = lesson.DurationMinutes,
+                                              LessonDescription = lesson.Description,
+                                              LessonStatus = lesson.Status,
+                                              LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                              LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                              LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                              LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                              //  LessonDate = lesson.CreationDate.ToString()
+                                              LessonDate = lesson.CreationDate,
+                                              LessonStartDate = lesson.StartDate,
+                                              LessonIsActive = lesson.IsActive
+                                              //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
+                                          }).Where(x => (x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Day.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Year.ToString().Contains(monthStartDate)) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+
+
+                        int totalrowsafterfiltering = totalrows;
+                        return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+
+                    }
+                    else
+                    {
+
+                        totalrows = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                     select new
+                                     {
+                                         LessonId = lesson.Id,
+                                         LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                         LessonName = lesson.Name,
+                                         LessonVidoeUrl = lesson.Video_Url,
+                                         LessonDuration = lesson.DurationMinutes,
+                                         LessonDescription = lesson.Description,
+                                         LessonStatus = lesson.Status,
+                                         LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                         LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                         LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                         LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                         LessonDate = lesson.CreationDate,
+                                         LessonStartDate = lesson.StartDate,
+                                         LessonIsActive = lesson.IsActive
+                                     }).Where(x => x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+
+
+
+
+                        var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                          select new
+                                          {
+                                              LessonId = lesson.Id,
+                                              LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                              LessonName = lesson.Name,
+                                              LessonVidoeUrl = lesson.Video_Url,
+                                              LessonDuration = lesson.DurationMinutes,
+                                              LessonDescription = lesson.Description,
+                                              LessonStatus = lesson.Status,
+                                              LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                              LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                              LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                              LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                              //  LessonDate = lesson.CreationDate.ToString()
+                                              LessonDate = lesson.CreationDate,
+                                              LessonStartDate = lesson.StartDate,
+                                              LessonIsActive = lesson.IsActive
+                                              //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
+                                          }).Where(x => x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+
+
+                        int totalrowsafterfiltering = totalrows;
+                        return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+                    }
+
+                }
+                else if (LessonStatus != "" && LessonCreationDate != "" && LessonStartDate == "")
+                {
+                    if (countForCreationDate == 1)
+                    {
+
+                        totalrows = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                     select new
+                                     {
+                                         LessonId = lesson.Id,
+                                         LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                         LessonName = lesson.Name,
+                                         LessonVidoeUrl = lesson.Video_Url,
+                                         LessonDuration = lesson.DurationMinutes,
+                                         LessonDescription = lesson.Description,
+                                         LessonStatus = lesson.Status,
+                                         LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                         LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                         LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                         LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                         LessonDate = lesson.CreationDate,
+                                         LessonStartDate = lesson.StartDate,
+                                         LessonIsActive = lesson.IsActive
+                                     }).Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month)) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+
+
+
+
+                        var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                          select new
+                                          {
+                                              LessonId = lesson.Id,
+                                              LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                              LessonName = lesson.Name,
+                                              LessonVidoeUrl = lesson.Video_Url,
+                                              LessonDuration = lesson.DurationMinutes,
+                                              LessonDescription = lesson.Description,
+                                              LessonStatus = lesson.Status,
+                                              LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                              LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                              LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                              LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                              //  LessonDate = lesson.CreationDate.ToString()
+                                              LessonDate = lesson.CreationDate,
+                                              LessonStartDate = lesson.StartDate,
+                                              LessonIsActive = lesson.IsActive
+                                              //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
+                                          }).Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month)) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+
+                        int totalrowsafterfiltering = totalrows;
+                        return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+                    }
+                    else
+                    {
+
+                        totalrows = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                     select new
+                                     {
+                                         LessonId = lesson.Id,
+                                         LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                         LessonName = lesson.Name,
+                                         LessonVidoeUrl = lesson.Video_Url,
+                                         LessonDuration = lesson.DurationMinutes,
+                                         LessonDescription = lesson.Description,
+                                         LessonStatus = lesson.Status,
+                                         LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                         LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                         LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                         LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                         LessonDate = lesson.CreationDate,
+                                         LessonStartDate = lesson.StartDate,
+                                         LessonIsActive = lesson.IsActive
+                                     }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+
+
+
+
+                        var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                          select new
+                                          {
+                                              LessonId = lesson.Id,
+                                              LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                              LessonName = lesson.Name,
+                                              LessonVidoeUrl = lesson.Video_Url,
+                                              LessonDuration = lesson.DurationMinutes,
+                                              LessonDescription = lesson.Description,
+                                              LessonStatus = lesson.Status,
+                                              LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                              LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                              LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                              LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                              //  LessonDate = lesson.CreationDate.ToString()
+                                              LessonDate = lesson.CreationDate,
+                                              LessonStartDate = lesson.StartDate,
+                                              LessonIsActive = lesson.IsActive
+                                              //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
+                                          }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+
+
+
+
+                        int totalrowsafterfiltering = totalrows;
+                        return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+                    }
+
+
+                }
+                else if (LessonStatus != "" && LessonCreationDate == "" && LessonStartDate != "")
+                {
+
+                    if (countForStartDate == 1)
+                    {
+
+
+                        totalrows = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                     select new
+                                     {
+                                         LessonId = lesson.Id,
+                                         LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                         LessonName = lesson.Name,
+                                         LessonVidoeUrl = lesson.Video_Url,
+                                         LessonDuration = lesson.DurationMinutes,
+                                         LessonDescription = lesson.Description,
+                                         LessonStatus = lesson.Status,
+                                         LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                         LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                         LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                         LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                         LessonDate = lesson.CreationDate,
+                                         LessonStartDate = lesson.StartDate,
+                                         LessonIsActive = lesson.IsActive
+                                     }).Where(x => (x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Day.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Year.ToString().Contains(monthStartDate)) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+
+
+                        var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                          select new
+                                          {
+                                              LessonId = lesson.Id,
+                                              LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                              LessonName = lesson.Name,
+                                              LessonVidoeUrl = lesson.Video_Url,
+                                              LessonDuration = lesson.DurationMinutes,
+                                              LessonDescription = lesson.Description,
+                                              LessonStatus = lesson.Status,
+                                              LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                              LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                              LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                              LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                              //  LessonDate = lesson.CreationDate.ToString()
+                                              LessonDate = lesson.CreationDate,
+                                              LessonStartDate = lesson.StartDate,
+                                              LessonIsActive = lesson.IsActive
+                                              //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
+                                          }).Where(x => (x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Day.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Year.ToString().Contains(monthStartDate)) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+
+                        int totalrowsafterfiltering = totalrows;
+                        return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+
+                    }
+                    else
+
+                    {
+
+
+                        totalrows = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                     select new
+                                     {
+                                         LessonId = lesson.Id,
+                                         LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                         LessonName = lesson.Name,
+                                         LessonVidoeUrl = lesson.Video_Url,
+                                         LessonDuration = lesson.DurationMinutes,
+                                         LessonDescription = lesson.Description,
+                                         LessonStatus = lesson.Status,
+                                         LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                         LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                         LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                         LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                         LessonDate = lesson.CreationDate,
+                                         LessonStartDate = lesson.StartDate,
+                                         LessonIsActive = lesson.IsActive
+                                     }).Where(x => x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+
+
+                        var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                          select new
+                                          {
+                                              LessonId = lesson.Id,
+                                              LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                              LessonName = lesson.Name,
+                                              LessonVidoeUrl = lesson.Video_Url,
+                                              LessonDuration = lesson.DurationMinutes,
+                                              LessonDescription = lesson.Description,
+                                              LessonStatus = lesson.Status,
+                                              LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                              LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                              LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                              LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                              //  LessonDate = lesson.CreationDate.ToString()
+                                              LessonDate = lesson.CreationDate,
+                                              LessonStartDate = lesson.StartDate,
+                                              LessonIsActive = lesson.IsActive
+                                              //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
+                                          }).Where(x => x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+
+                        int totalrowsafterfiltering = totalrows;
+                        return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+
+                    }
+                }
+                else if (LessonStatus == "" && LessonCreationDate != "" && LessonStartDate != "")
+                {
+
+                    //  if (countForStartDate == 1)
+                    //{
+
+                    if (countForCreationDate == 1 && countForStartDate == 1)
+                    {
+
+
+                        totalrows = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                     select new
+                                     {
+                                         LessonId = lesson.Id,
+                                         LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                         LessonName = lesson.Name,
+                                         LessonVidoeUrl = lesson.Video_Url,
+                                         LessonDuration = lesson.DurationMinutes,
+                                         LessonDescription = lesson.Description,
+                                         LessonStatus = lesson.Status,
+                                         LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                         LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                         LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                         LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                         LessonDate = lesson.CreationDate,
+                                         LessonStartDate = lesson.StartDate,
+                                         LessonIsActive = lesson.IsActive
+                                     }).Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month)) &&  (x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Day.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Year.ToString().Contains(monthStartDate)) &&  x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+
+
+                        var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                          select new
+                                          {
+                                              LessonId = lesson.Id,
+                                              LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                              LessonName = lesson.Name,
+                                              LessonVidoeUrl = lesson.Video_Url,
+                                              LessonDuration = lesson.DurationMinutes,
+                                              LessonDescription = lesson.Description,
+                                              LessonStatus = lesson.Status,
+                                              LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                              LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                              LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                              LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                              //  LessonDate = lesson.CreationDate.ToString()
+                                              LessonDate = lesson.CreationDate,
+                                              LessonStartDate = lesson.StartDate,
+                                              LessonIsActive = lesson.IsActive
+                                              //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
+                                          }).Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month)) && (x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Day.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Year.ToString().Contains(monthStartDate)) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+
+                        int totalrowsafterfiltering = totalrows;
+                        return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+                    }
+                    
+                    else if (countForCreationDate == 1 && countForStartDate != 1)
+                    {
+
+                        totalrows = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                     select new
+                                     {
+                                         LessonId = lesson.Id,
+                                         LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                         LessonName = lesson.Name,
+                                         LessonVidoeUrl = lesson.Video_Url,
+                                         LessonDuration = lesson.DurationMinutes,
+                                         LessonDescription = lesson.Description,
+                                         LessonStatus = lesson.Status,
+                                         LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                         LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                         LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                         LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                         LessonDate = lesson.CreationDate,
+                                         LessonStartDate = lesson.StartDate,
+                                         LessonIsActive = lesson.IsActive
+                                     }).Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month)) &&  x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+
+
+                        var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                          select new
+                                          {
+                                              LessonId = lesson.Id,
+                                              LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                              LessonName = lesson.Name,
+                                              LessonVidoeUrl = lesson.Video_Url,
+                                              LessonDuration = lesson.DurationMinutes,
+                                              LessonDescription = lesson.Description,
+                                              LessonStatus = lesson.Status,
+                                              LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                              LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                              LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                              LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                              //  LessonDate = lesson.CreationDate.ToString()
+                                              LessonDate = lesson.CreationDate,
+                                              LessonStartDate = lesson.StartDate,
+                                              LessonIsActive = lesson.IsActive
+                                              //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
+                                          }).Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month)) &&  x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+
+                        int totalrowsafterfiltering = totalrows;
+                        return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+
+
+                    }
+
+                    else if (countForCreationDate != 1 && countForStartDate == 1)
+                    {
+
+
+
+                        totalrows = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                     select new
+                                     {
+                                         LessonId = lesson.Id,
+                                         LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                         LessonName = lesson.Name,
+                                         LessonVidoeUrl = lesson.Video_Url,
+                                         LessonDuration = lesson.DurationMinutes,
+                                         LessonDescription = lesson.Description,
+                                         LessonStatus = lesson.Status,
+                                         LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                         LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                         LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                         LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                         LessonDate = lesson.CreationDate,
+                                         LessonStartDate = lesson.StartDate,
+                                         LessonIsActive = lesson.IsActive
+                                   }).Where(x => (x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Day.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Year.ToString().Contains(monthStartDate)) &&  x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) &&  x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+
+
+                        var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                          select new
+                                          {
+                                              LessonId = lesson.Id,
+                                              LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                              LessonName = lesson.Name,
+                                              LessonVidoeUrl = lesson.Video_Url,
+                                              LessonDuration = lesson.DurationMinutes,
+                                              LessonDescription = lesson.Description,
+                                              LessonStatus = lesson.Status,
+                                              LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                              LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                              LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                              LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                              //  LessonDate = lesson.CreationDate.ToString()
+                                              LessonDate = lesson.CreationDate,
+                                              LessonStartDate = lesson.StartDate,
+                                              LessonIsActive = lesson.IsActive
+                                              //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
+                                          }).Where(x => (x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Day.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Year.ToString().Contains(monthStartDate)) && x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+
+                        int totalrowsafterfiltering = totalrows;
+                        return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+                    }
+                    else if (countForCreationDate != 1 && countForStartDate != 1)
+                    {
+
+
+                        totalrows = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                     select new
+                                     {
+                                         LessonId = lesson.Id,
+                                         LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                         LessonName = lesson.Name,
+                                         LessonVidoeUrl = lesson.Video_Url,
+                                         LessonDuration = lesson.DurationMinutes,
+                                         LessonDescription = lesson.Description,
+                                         LessonStatus = lesson.Status,
+                                         LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                         LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                         LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                         LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                         LessonDate = lesson.CreationDate,
+                                         LessonStartDate = lesson.StartDate,
+                                         LessonIsActive = lesson.IsActive
+                                     }).Where(x => x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) && x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+
+
+                        var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                          select new
+                                          {
+                                              LessonId = lesson.Id,
+                                              LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                              LessonName = lesson.Name,
+                                              LessonVidoeUrl = lesson.Video_Url,
+                                              LessonDuration = lesson.DurationMinutes,
+                                              LessonDescription = lesson.Description,
+                                              LessonStatus = lesson.Status,
+                                              LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                              LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                              LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                              LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                              //  LessonDate = lesson.CreationDate.ToString()
+                                              LessonDate = lesson.CreationDate,
+                                              LessonStartDate = lesson.StartDate,
+                                              LessonIsActive = lesson.IsActive
+                                              //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
+                                          }).Where(x => x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) &&  x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+
+                        int totalrowsafterfiltering = totalrows;
+                        return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+
+                    }
+
+
+
+                }
+                else if (LessonStatus != "" && LessonCreationDate != "" && LessonStartDate != "")
+                {
+
+                    if (countForCreationDate == 1 && countForStartDate == 1)
+                    {
+
+
+                        totalrows = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                     select new
+                                     {
+                                         LessonId = lesson.Id,
+                                         LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                         LessonName = lesson.Name,
+                                         LessonVidoeUrl = lesson.Video_Url,
+                                         LessonDuration = lesson.DurationMinutes,
+                                         LessonDescription = lesson.Description,
+                                         LessonStatus = lesson.Status,
+                                         LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                         LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                         LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                         LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                         LessonDate = lesson.CreationDate,
+                                         LessonStartDate = lesson.StartDate,
+                                         LessonIsActive = lesson.IsActive
+                                     }).Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month)) && (x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Day.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Year.ToString().Contains(monthStartDate)) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+
+
+                        var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                          select new
+                                          {
+                                              LessonId = lesson.Id,
+                                              LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                              LessonName = lesson.Name,
+                                              LessonVidoeUrl = lesson.Video_Url,
+                                              LessonDuration = lesson.DurationMinutes,
+                                              LessonDescription = lesson.Description,
+                                              LessonStatus = lesson.Status,
+                                              LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                              LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                              LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                              LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                              //  LessonDate = lesson.CreationDate.ToString()
+                                              LessonDate = lesson.CreationDate,
+                                              LessonStartDate = lesson.StartDate,
+                                              LessonIsActive = lesson.IsActive
+                                              //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
+                                          }).Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month)) && (x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Day.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Year.ToString().Contains(monthStartDate)) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+
+                        int totalrowsafterfiltering = totalrows;
+                        return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+                    }
+
+                    else if (countForCreationDate == 1 && countForStartDate != 1)
+                    {
+
+                        totalrows = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                     select new
+                                     {
+                                         LessonId = lesson.Id,
+                                         LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                         LessonName = lesson.Name,
+                                         LessonVidoeUrl = lesson.Video_Url,
+                                         LessonDuration = lesson.DurationMinutes,
+                                         LessonDescription = lesson.Description,
+                                         LessonStatus = lesson.Status,
+                                         LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                         LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                         LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                         LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                         LessonDate = lesson.CreationDate,
+                                         LessonStartDate = lesson.StartDate,
+                                         LessonIsActive = lesson.IsActive
+                                     }).Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month)) && x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) &&  x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+
+
+                        var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                          select new
+                                          {
+                                              LessonId = lesson.Id,
+                                              LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                              LessonName = lesson.Name,
+                                              LessonVidoeUrl = lesson.Video_Url,
+                                              LessonDuration = lesson.DurationMinutes,
+                                              LessonDescription = lesson.Description,
+                                              LessonStatus = lesson.Status,
+                                              LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                              LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                              LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                              LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                              //  LessonDate = lesson.CreationDate.ToString()
+                                              LessonDate = lesson.CreationDate,
+                                              LessonStartDate = lesson.StartDate,
+                                              LessonIsActive = lesson.IsActive
+                                              //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
+                                          }).Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month)) && x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive  && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+
+                        int totalrowsafterfiltering = totalrows;
+                        return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+
+
+                    }
+
+                    else if (countForCreationDate != 1 && countForStartDate == 1)
+                    {
+
+
+
+                        totalrows = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                     select new
+                                     {
+                                         LessonId = lesson.Id,
+                                         LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                         LessonName = lesson.Name,
+                                         LessonVidoeUrl = lesson.Video_Url,
+                                         LessonDuration = lesson.DurationMinutes,
+                                         LessonDescription = lesson.Description,
+                                         LessonStatus = lesson.Status,
+                                         LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                         LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                         LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                         LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                         LessonDate = lesson.CreationDate,
+                                         LessonStartDate = lesson.StartDate,
+                                         LessonIsActive = lesson.IsActive
+                                     }).Where(x => (x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Day.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Year.ToString().Contains(monthStartDate)) && x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+
+
+                        var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                          select new
+                                          {
+                                              LessonId = lesson.Id,
+                                              LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                              LessonName = lesson.Name,
+                                              LessonVidoeUrl = lesson.Video_Url,
+                                              LessonDuration = lesson.DurationMinutes,
+                                              LessonDescription = lesson.Description,
+                                              LessonStatus = lesson.Status,
+                                              LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                              LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                              LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                              LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                              //  LessonDate = lesson.CreationDate.ToString()
+                                              LessonDate = lesson.CreationDate,
+                                              LessonStartDate = lesson.StartDate,
+                                              LessonIsActive = lesson.IsActive
+                                              //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
+                                          }).Where(x => (x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Day.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Year.ToString().Contains(monthStartDate)) && x.LessonDate.Value.Day.ToString().Contains(day)  && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+
+                        int totalrowsafterfiltering = totalrows;
+                        return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+                    }
+                    else if (countForCreationDate != 1 && countForStartDate != 1)
+                    {
+
+
+                        totalrows = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                     select new
+                                     {
+                                         LessonId = lesson.Id,
+                                         LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                         LessonName = lesson.Name,
+                                         LessonVidoeUrl = lesson.Video_Url,
+                                         LessonDuration = lesson.DurationMinutes,
+                                         LessonDescription = lesson.Description,
+                                         LessonStatus = lesson.Status,
+                                         LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                         LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                         LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                         LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                         LessonDate = lesson.CreationDate,
+                                         LessonStartDate = lesson.StartDate,
+                                         LessonIsActive = lesson.IsActive
+                                     }).Where(x => x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) && x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+
+
+                        var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                          select new
+                                          {
+                                              LessonId = lesson.Id,
+                                              LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                              LessonName = lesson.Name,
+                                              LessonVidoeUrl = lesson.Video_Url,
+                                              LessonDuration = lesson.DurationMinutes,
+                                              LessonDescription = lesson.Description,
+                                              LessonStatus = lesson.Status,
+                                              LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                              LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                              LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                              LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                              //  LessonDate = lesson.CreationDate.ToString()
+                                              LessonDate = lesson.CreationDate,
+                                              LessonStartDate = lesson.StartDate,
+                                              LessonIsActive = lesson.IsActive
+                                              //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
+                                          }).Where(x => x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) && x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive &&  x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+
+                        int totalrowsafterfiltering = totalrows;
+                        return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+
+                    }
+                }
+                else
+                {
+
+                    totalrows = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                 select new
+                                 {
+                                     LessonId = lesson.Id,
+                                     LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                     LessonName = lesson.Name,
+                                     LessonVidoeUrl = lesson.Video_Url,
+                                     LessonDuration = lesson.DurationMinutes,
+                                     LessonDescription = lesson.Description,
+                                     LessonStatus = lesson.Status,
+                                     LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                     LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                     LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                     LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                     LessonDate = lesson.CreationDate,
+                                     LessonStartDate = lesson.StartDate,
+                                     LessonIsActive = lesson.IsActive
+                                 }).Where(x => x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+
+
+                    var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                      select new
+                                      {
+                                          LessonId = lesson.Id,
+                                          LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                          LessonName = lesson.Name,
+                                          LessonVidoeUrl = lesson.Video_Url,
+                                          LessonDuration = lesson.DurationMinutes,
+                                          LessonDescription = lesson.Description,
+                                          LessonStatus = lesson.Status,
+                                          LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                          LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                          LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                          LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                          //  LessonDate = lesson.CreationDate.ToString()
+                                          LessonDate = lesson.CreationDate,
+                                          LessonStartDate = lesson.StartDate,
+                                          LessonIsActive = lesson.IsActive
+                                          //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
+                                      }).Where(x => x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+
+                    int totalrowsafterfiltering = totalrows;
+                    return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+                }
+
+
+
+                //if (LessonCreationDate != "")
+                //{
+                //    if (countForCreationDate == 1)
+                //    {
+
+
+
+
+                //        //x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month))
+
+                //        //  AllLessons = AllLessons.Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month)));
+                //        // totalrows = AllLessons.Count();
+                //    }
+                //    else
+                //    {
+
+
+
+                //        // AllLessons = AllLessons.Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year));
+                //        //  totalrows = AllLessons.Count();
+                //    }
+                //}
+
+
+                //if (LessonStartDate != "")
+                //{
+
+                //    if (countForStartDate == 1)
+                //    {
+
+
+                //        //x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month))
+
+                //        // AllLessons = AllLessons.Where(x => (x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Day.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Year.ToString().Contains(monthStartDate)));
+                //        // totalrows = AllLessons.Count();
+                //    }
+                //    else
+                //    {
+
+
+
+                //        //  AllLessons = AllLessons.Where(x => x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate));
+                //        // totalrows = AllLessons.Count();
+                //    }
+                //}
+
+
+
+                // AllLessons.Count;
+                // var  AllLessons1 = AllLessons.Skip(start).Take(length).ToList();
+
+                // var AllLessons1 = AllLessons.OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+                //var jsonResult = Json(AllLessons, JsonRequestBehavior.AllowGet);
+                //jsonResult.MaxJsonLength = int.MaxValue;
+                //return jsonResult;
+
+                //    int totalrowsafterfiltering = totalrows;
+                //  return Json(new { data = AllLessons1, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
+
+
+
+            } // end of try block
+            catch (Exception ex1)
+            {
+                var ex = ex1.Message;
+
+
+              int   totalrows = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                             select new
+                             {
+                                 LessonId = lesson.Id,
+                                 LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                 LessonName = lesson.Name,
+                                 LessonVidoeUrl = lesson.Video_Url,
+                                 LessonDuration = lesson.DurationMinutes,
+                                 LessonDescription = lesson.Description,
+                                 LessonStatus = lesson.Status,
+                                 LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                 LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                 LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                 LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                 LessonDate = lesson.CreationDate,
+                                 LessonStartDate = lesson.StartDate,
+                                 LessonIsActive = lesson.IsActive
+                             }).Where(x => x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+
+
+                var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                  select new
+                                  {
+                                      LessonId = lesson.Id,
+                                      LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                      LessonName = lesson.Name,
+                                      LessonVidoeUrl = lesson.Video_Url,
+                                      LessonDuration = lesson.DurationMinutes,
+                                      LessonDescription = lesson.Description,
+                                      LessonStatus = lesson.Status,
+                                      LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                      LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                      LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                      LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                      //  LessonDate = lesson.CreationDate.ToString()
+                                      LessonDate = lesson.CreationDate,
+                                      LessonStartDate = lesson.StartDate,
+                                      LessonIsActive = lesson.IsActive
+                                      //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
+                                  }).Where(x => x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+
+                int totalrowsafterfiltering = totalrows;
+                return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
+
 
             }
-
-            if (countForCreationDate == 1)
-            {
-                //x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month))
-
-                AllLessons = AllLessons.Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month))).ToList();
-                totalrows = AllLessons.Count;
-            }
-            else
-            {
-
-                AllLessons = AllLessons.Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year)).ToList();
-                totalrows = AllLessons.Count;
-            }
-
-
-
-            if (countForStartDate == 1)
-            {
-                //x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month))
-
-                AllLessons = AllLessons.Where(x => (x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Day.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Year.ToString().Contains(monthStartDate))).ToList();
-                totalrows = AllLessons.Count;
-            }
-            else
-            {
-
-                AllLessons = AllLessons.Where(x => x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate)).ToList();
-                totalrows = AllLessons.Count;
-            }
-
-
-
-
-
-
-            int totalrowsafterfiltering = AllLessons.Count;
-            AllLessons = AllLessons.Skip(start).Take(length).ToList();
-
-            //var jsonResult = Json(AllLessons, JsonRequestBehavior.AllowGet);
-            //jsonResult.MaxJsonLength = int.MaxValue;
-            //return jsonResult;
-
-
-            return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
-
 
 
             return Json("", JsonRequestBehavior.AllowGet);
