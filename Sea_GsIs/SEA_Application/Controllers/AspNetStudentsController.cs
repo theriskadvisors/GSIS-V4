@@ -451,11 +451,22 @@ namespace SEA_Application.Controllers
                 return View("StudentsLoader");
             }
         }
-        public JsonResult GetStudents(DataTablesParam param)
-       {
+        [HttpPost]
+        public ActionResult GetStudents(DataTablesParam param)
+        {
             var loggedInUserId = User.Identity.GetUserId();
             int branchId;
+            //try
+            //{
 
+            //    var contactName = Request.Form.GetValues("columns[0][search][value]").FirstOrDefault();
+            //    var country = Request.Form.GetValues("columns[3][search][value]").FirstOrDefault();
+
+            //}
+            //catch (Exception ex)
+            //{
+            //    var nsg= ex.Message;
+            //}
             if (User.IsInRole("Accountant"))
             {
                 //var studentList = (from stdnt in db.AspNetStudents
@@ -627,7 +638,7 @@ namespace SEA_Application.Controllers
 
 
 
-        }
+        }//end of action method GetStudents()
         public ActionResult SiblingList()
         {
 
@@ -1605,7 +1616,7 @@ namespace SEA_Application.Controllers
             return Json(count, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult Quiz_student_check()
+        public JsonResult Quiz_student_check() 
         {
             TimeZoneInfo PK_ZONE = TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time");
             DateTime PKTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, PK_ZONE);
@@ -1690,6 +1701,10 @@ namespace SEA_Application.Controllers
 
         public ActionResult GetStudentsQuiz()
         {
+           
+
+
+
             var StdID = User.Identity.GetUserId();
             TimeZoneInfo PK_ZONE = TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time");
             DateTime today = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, PK_ZONE);
@@ -1707,7 +1722,8 @@ namespace SEA_Application.Controllers
                           {
                               QuizName = QTQ.AspnetQuiz.Name,
                               QuizDescription = QTQ.AspnetQuiz.Description,
-                              StartDate = QTQ.AspnetQuiz.StartTime,
+                              StartDate = QTQ.AspnetQuiz.Start_Date,
+                            ///  StartDate = QTQ.AspnetQuiz.StartTime,
                               DueDate = QTQ.AspnetQuiz.Due_Date.ToString(),
                               Duration = QTQ.AspnetQuiz.QuizTime,
                               Meeting = QTQ.AspnetQuiz.MeetingLink,
