@@ -123,6 +123,8 @@ namespace SEA_Application.Controllers
         {
             var user = User.Identity.GetUserId();
 
+          int Employeeid =   db.AspNetEmployees.Where(x => x.UserId == user).Select(x => x.Id).FirstOrDefault();
+
             //var AllQuiz = (from quiz in db.Quiz_Topic_Questions
             //               join enrollment in db.AspNetTeacher_Enrollments on quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.BranchId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId
             //               join std in db.Student_Quiz_Scoring on quiz.QuizId equals std.QuizId
@@ -147,31 +149,37 @@ namespace SEA_Application.Controllers
             //                   StudentName = std.AspNetStudent.Name,
             //               }).Distinct().ToList();
 
-            var quizlst = (from std in db.Student_Quiz_Scoring
-                           join quiz in db.Quiz_Topic_Questions on std.QuizId equals quiz.QuizId
-                           join enrollment in db.AspNetTeacher_Enrollments on quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.BranchId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId
-                           where quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.ClassId == enrollment.AspNetClass_Courses.ClassId
-                           && quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SectionId == enrollment.AspNetBranchClass_Sections.SectionId
-                           && quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SubjectId == enrollment.AspNetClass_Courses.CourseId
-                           && enrollment.AspNetEmployee.UserId == user
-                           select new
-                           {
-                               QuizID = quiz.AspnetQuiz.Id,
-                               QuizName = quiz.AspnetQuiz.Name,
-                               QuizDesription = quiz.AspnetQuiz.Description,
-                               StartDate = quiz.AspnetQuiz.Start_Date.ToString(),
-                               DueDate = quiz.AspnetQuiz.Due_Date,
 
-                               QuizCreatedBy = quiz.AspnetQuiz.Created_By,
-                               QuizCreationDate = quiz.AspnetQuiz.CreationDate,
-                               IsPublished = quiz.AspnetQuiz.IsPublished,
-                               Class = quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
-                               Subject = quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
-                               Section = quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
-                               Topic = quiz.AspnetSubjectTopic.Name,
-                               StudentName = std.AspNetStudent.Name,
-                               StudentID = std.AspNetStudent.Id
-                           }).Distinct().ToList();
+
+            //var quizlst = (from std in db.Student_Quiz_Scoring
+            //               join quiz in db.Quiz_Topic_Questions on std.QuizId equals quiz.QuizId
+            //               join enrollment in db.AspNetTeacher_Enrollments on quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.BranchId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId
+            //               where quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.ClassId == enrollment.AspNetClass_Courses.ClassId
+            //               && quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SectionId == enrollment.AspNetBranchClass_Sections.SectionId
+            //               && quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.SubjectId == enrollment.AspNetClass_Courses.CourseId
+            //               && enrollment.AspNetEmployee.UserId == user
+            //               select new
+            //               {
+            //                   QuizID = quiz.AspnetQuiz.Id,
+            //                   QuizName = quiz.AspnetQuiz.Name,
+            //                   QuizDesription = quiz.AspnetQuiz.Description,
+            //                   StartDate = quiz.AspnetQuiz.Start_Date.ToString(),
+            //                   DueDate = quiz.AspnetQuiz.Due_Date,
+
+            //                   QuizCreatedBy = quiz.AspnetQuiz.Created_By,
+            //                   QuizCreationDate = quiz.AspnetQuiz.CreationDate,
+            //                   IsPublished = quiz.AspnetQuiz.IsPublished,
+            //                   Class = quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+            //                   Subject = quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+            //                   Section = quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+            //                   Topic = quiz.AspnetSubjectTopic.Name,
+            //                   StudentName = std.AspNetStudent.Name,
+            //                   StudentID = std.AspNetStudent.Id
+            //               }).Distinct().ToList();
+
+
+            var quizlst = db.StudentQuizsListByTeacher(Employeeid).ToList();
+
             return Json(quizlst, JsonRequestBehavior.AllowGet);
         }
 

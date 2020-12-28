@@ -100,7 +100,17 @@
                 table.fnClearTable();
                 $.each(data, function (i, item) {
 
-                    table.fnAddData([item.Class, item.StudentName, item.Subject, item.Section, item.QuizName, item.QuizDesription, item.StartDate, "<button class='btn buttonload btn-sm btn-primary'    id='" + item.QuizID + "'  name='" + item.StudentID +"'     onclick='start1(this)'><i class='fa fa-spinner'></i>Details</button>"]);
+                       var value1 = new Date(parseInt(item.StartDate.replace(/(^.*\()|([+-].*$)/g, '')));
+                        var dat1 = value1.getMonth() +
+                            1 +
+                            "/" +
+                            value1.getDate() +
+                            "/" +
+                            value1.getFullYear();// + " " +
+
+
+            
+                    table.fnAddData([item.Class, item.StudentName, item.Subject, item.Section, item.QuizName, item.QuizDesription, dat1, "<button class='btn buttonload btn-sm btn-primary'    id='" + item.QuizID + "'  name='" + item.StudentID +"'     onclick='start1(this)'><i class='fa fa-spinner'></i>Details</button>"]);
                 })
             }
         })
