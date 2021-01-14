@@ -138,40 +138,52 @@ namespace SEA_Application.Controllers
         [HttpPost]
         public ActionResult LessonPlan(LessonPlan LP, IEnumerable<HttpPostedFileBase> files)
         {
-            if (LP != null)
+            var dbTransaction = db.Database.BeginTransaction();
+            try
             {
-                var fileName = "";
-                var AllFiles = "";
-
-                LP.CreationDate = DateTime.Now;
-                LP.Status = false;
-                LP.CreatedBy = User.Identity.GetUserId();
-                db.LessonPlans.Add(LP);
-                db.SaveChanges();
-
-                if (files != null)
+                if (LP != null)
                 {
-                    foreach (var file1 in files)
+                    var fileName = "";
+                    var AllFiles = "";
+
+                    LP.CreationDate = DateTime.Now;
+                    LP.Status = false;
+                    LP.CreatedBy = User.Identity.GetUserId();
+                    db.LessonPlans.Add(LP);
+                    db.SaveChanges();
+
+                    if (files != null)
                     {
-                        if (file1 != null && file1.ContentLength > 0)
+                        foreach (var file1 in files)
                         {
-                            var name = Path.GetFileNameWithoutExtension(file1.FileName);
-                            var ext = Path.GetExtension(file1.FileName);
-                            // fileName = name + "_LS_" + LessonID + Student.Id + ext;	
-                            fileName = name + "_LP_" + LP.Id + ext;
-                            AllFiles += fileName + "/";
-                            file1.SaveAs(Path.Combine(Server.MapPath("~/Content/LessonPlanAttachments/"), fileName));
+                            if (file1 != null && file1.ContentLength > 0)
+                            {
+                                var name = Path.GetFileNameWithoutExtension(file1.FileName);
+                                var ext = Path.GetExtension(file1.FileName);
+                                // fileName = name + "_LS_" + LessonID + Student.Id + ext;	
+                                fileName = name + "_LP_" + LP.Id + ext;
+                                AllFiles += fileName + "/";
+                                file1.SaveAs(Path.Combine(Server.MapPath("~/Content/LessonPlanAttachments/"), fileName));
+                            }
                         }
                     }
-                }
-                if (AllFiles != "")
-                {
-                    LessonPlan LessonPlanToUpdate = db.LessonPlans.Where(x => x.Id == LP.Id).FirstOrDefault();
-                    LessonPlanToUpdate.LessonPlanAttachments = AllFiles;
-                    db.SaveChanges();
+                    if (AllFiles != "")
+                    {
+                        LessonPlan LessonPlanToUpdate = db.LessonPlans.Where(x => x.Id == LP.Id).FirstOrDefault();
+                        LessonPlanToUpdate.LessonPlanAttachments = AllFiles;
+                        db.SaveChanges();
+                    }
+
                 }
 
+                dbTransaction.Commit();
             }
+            catch(Exception ex)
+            {
+                var msg = ex.Message;
+                dbTransaction.Dispose();
+            }
+
 
             return Json("Success", JsonRequestBehavior.AllowGet);
 
