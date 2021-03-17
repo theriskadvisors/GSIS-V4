@@ -2,13 +2,24 @@
 
 @{
 
-    Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
+      if (User.IsInRole("Branch_Admin"))
+    {
+        Layout = "~/Views/Shared/_BranchAdminDashboardLayout.cshtml";
+        
+    }
+    else
+    {
+           Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
+    }
 }
 
 
 <style>
     .card .card-body .form-group {
         margin: 15px 0 0;
+    }
+    .Floating_text {
+        border: 2px solid #EEEEEE !important;
     }
 
     .tab {

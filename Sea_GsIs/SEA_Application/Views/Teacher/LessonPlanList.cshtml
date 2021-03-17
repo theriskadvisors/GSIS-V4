@@ -2,7 +2,18 @@
 @{
     ViewBag.Title = "LessonPlanList";
     Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
+
+    if (User.IsInRole("Branch_Admin"))
+    {
+        Layout = "~/Views/Shared/_BranchAdminDashboardLayout.cshtml";
+    }
+    else
+    {
+           Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
+    }
+
 }
+
 
 
 <script>
@@ -74,7 +85,7 @@
             $(".btn-secondary").remove();
         }
         else {
-           // alert("not Admin");
+            // alert("not Admin");
         }
 
 
@@ -86,7 +97,7 @@
         $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Lesson Plan </a></li>');
 
 
-        
+
         $.ajax({
             type: "POST",
             url: "/Teacher/GetLessonPlanList",
@@ -112,9 +123,18 @@
 
                     }
 
+                    
+                    var value = new Date(parseInt(data[index].Date.replace(/(^.*\()|([+-].*$)/g, '')));
+                    var dat = value.getMonth() +
+                        1 +
+                        "/" +
+                        value.getDate() +
+                        "/" +
+                        value.getFullYear();// + " " +
 
-                    table.fnAddData([data[index].ClassName + "<input  type=hidden value=" + data[index].Id + ">", data[index].SubjectName, data[index].TopicName, data[index].Week, status]);
-                       })
+
+                    table.fnAddData([data[index].ClassName + "<input  type=hidden value=" + data[index].Id + ">", data[index].SubjectName, data[index].TopicName, data[index].Week, status,dat]);
+                })
                 table.fnDraw();
             }
         })
@@ -123,9 +143,9 @@
             debugger;
             var td = $(this).children("td");
 
-           var userName = $(td[0]).children("input").val();
+            var userName = $(td[0]).children("input").val();
 
-           // alert(userName);
+            // alert(userName);
             // userName = userName.trim();
 
             window.location.href = "/Teacher/EditLessonPlan?ID=" + userName;
@@ -187,7 +207,7 @@
                     <table class="table hover table-bordered table-striped" id="datatable">
                         <thead>
                             <tr>
-                            
+
 
                                 <th>
                                     Class Name
@@ -203,22 +223,20 @@
                                     Week
                                 </th>
 
-                              
+
                                 <th>
                                     Status
                                 </th>
+                                <th>Date</th> 
                             </tr>
                         </thead>
-                        <tbody  id="LessonPlanList">
-                         
-
-
+                        <tbody id="LessonPlanList">
                         </tbody>
 
                         <tfoot>
 
                             <tr>
-                               
+
 
                                 <th>
                                     Class Name
@@ -234,10 +252,11 @@
                                     Week
                                 </th>
 
-                               
+
                                 <th>
                                     Status
                                 </th>
+                                <th>Date</th>
                             </tr>
 
                         </tfoot>

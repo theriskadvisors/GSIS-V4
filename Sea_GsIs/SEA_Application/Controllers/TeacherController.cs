@@ -59,11 +59,14 @@ namespace SEA_Application.Controllers
 
             int ClassId = LP.ClassID.Value;
 
+            //Wrong SectionId  LP.SectionID;
+            int ActualSectionId = db.AspnetSubjectTopics.Where(x => x.Id == LP.TopicID).Select(x => x.AspnetGenericBranchClassSubject.SectionId.Value).FirstOrDefault();
 
             ViewBag.UserRole = "";
 
             ViewBag.ID = ID;
-            ViewBag.SectionID = LP.SectionID;
+            // ViewBag.SectionID = LP.SectionID;
+             ViewBag.SectionID = ActualSectionId;
             ViewBag.ClassID = LP.ClassID;
             ViewBag.TopicID = LP.TopicID;
             ViewBag.SubjectID = LP.SubjectID;
@@ -73,7 +76,8 @@ namespace SEA_Application.Controllers
                 ViewBag.UserRole = "Admin";
                 ViewBag.ClassName = db.AspNetClasses.Where(x => x.Id == ClassId).FirstOrDefault().Name;
                 ViewBag.SubjectName = db.AspNetCourses.Where(x => x.Id == LP.SubjectID).FirstOrDefault().Name;
-                ViewBag.SectionName = db.AspNetSections.Where(x => x.Id == LP.SectionID).FirstOrDefault().Name;
+                //ViewBag.SectionName = db.AspNetSections.Where(x => x.Id == LP.SectionID).FirstOrDefault().Name;
+                ViewBag.SectionName = db.AspNetSections.Where(x => x.Id == ActualSectionId).FirstOrDefault().Name;
                 ViewBag.TopicName = db.AspnetSubjectTopics.Where(x => x.Id == LP.TopicID).FirstOrDefault().Name;
 
             }
@@ -89,6 +93,29 @@ namespace SEA_Application.Controllers
 
             try
             {
+
+                var ID = User.Identity.GetUserId();
+
+                var BranchID = (from branch in db.AspNetBranches
+                                join branchclasssubject in db.AspnetGenericBranchClassSubjects on branch.Id equals branchclasssubject.BranchId
+                                join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.BranchId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId
+                                where enrollment.AspNetEmployee.UserId == ID
+                                select new
+                                {
+                                    branch.Id,
+
+                                }).Distinct().FirstOrDefault().Id;
+
+                int ClassId = LP.ClassID.Value;
+                int SectionId = LP.SectionID.Value;
+
+
+                int BranchClassSectionId = db.AspNetBranchClass_Sections.Where(x => x.AspNetBranch_Class.BranchId == BranchID && x.AspNetBranch_Class.ClassId == ClassId).Select(x => x.Id).FirstOrDefault();
+
+
+                LP.SectionID = BranchClassSectionId;
+
+
                 var fileName = "";
                 var AllFiles = "";
 
@@ -115,13 +142,13 @@ namespace SEA_Application.Controllers
                 }
                 if (AllFiles != "")
                 {
-                   // LessonPlan LessonPlanToUpdate = db.LessonPlans.Where(x => x.Id == LP.Id).FirstOrDefault();
+                    // LessonPlan LessonPlanToUpdate = db.LessonPlans.Where(x => x.Id == LP.Id).FirstOrDefault();
                     LessonPlanToUpdate.LessonPlanAttachments = AllFiles;
                     LP.LessonPlanAttachments = AllFiles;
-                   // db.SaveChanges();
+                    // db.SaveChanges();
                 }
 
-                
+
                 Sea_Entities db1 = new Sea_Entities();
                 db1.Entry(LP).State = EntityState.Modified;
                 db1.SaveChanges();
@@ -138,6 +165,28 @@ namespace SEA_Application.Controllers
         [HttpPost]
         public ActionResult LessonPlan(LessonPlan LP, IEnumerable<HttpPostedFileBase> files)
         {
+            var ID = User.Identity.GetUserId();
+
+            var BranchID = (from branch in db.AspNetBranches
+                            join branchclasssubject in db.AspnetGenericBranchClassSubjects on branch.Id equals branchclasssubject.BranchId
+                            join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.BranchId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId
+                            where enrollment.AspNetEmployee.UserId == ID
+                            select new
+                            {
+                                branch.Id,
+
+                            }).Distinct().FirstOrDefault().Id;
+
+            int ClassId = LP.ClassID.Value;
+            int SectionId = LP.SectionID.Value;
+
+
+            int BranchClassSectionId = db.AspNetBranchClass_Sections.Where(x => x.AspNetBranch_Class.BranchId == BranchID && x.AspNetBranch_Class.ClassId == ClassId).Select(x => x.Id).FirstOrDefault();
+
+
+            LP.SectionID = BranchClassSectionId;
+
+
             var dbTransaction = db.Database.BeginTransaction();
             try
             {
@@ -178,7 +227,7 @@ namespace SEA_Application.Controllers
 
                 dbTransaction.Commit();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 var msg = ex.Message;
                 dbTransaction.Dispose();
@@ -223,6 +272,7 @@ namespace SEA_Application.Controllers
                                          Week = lessonPlan.Week,
                                          Chapter = lessonPlan.Chapter,
                                          Status = lessonPlan.Status,
+                                         Date = lessonPlan.LessonPlanDate.Value,
 
                                      }).Distinct().ToList();
                 return Json(AllLessonPlan, JsonRequestBehavior.AllowGet);
@@ -245,6 +295,7 @@ namespace SEA_Application.Controllers
                                          Week = lessonPlan.Week,
                                          Chapter = lessonPlan.Chapter,
                                          Status = lessonPlan.Status,
+                                         Date = lessonPlan.LessonPlanDate.Value,
 
                                      }).Distinct().ToList();
                 return Json(AllLessonPlan, JsonRequestBehavior.AllowGet);
@@ -428,9 +479,6 @@ namespace SEA_Application.Controllers
 
             return View();
         }
-
-
-
 
         public ActionResult LoadStudentList(int id)
         {
