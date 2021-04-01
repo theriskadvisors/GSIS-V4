@@ -1826,7 +1826,6 @@ namespace SEA_Application.Controllers
                 ViewBag.SubId = GenericObject.SubjectId;
                 ViewBag.TopicId = aspnetSubjectTopic.Id;
 
-
                 // ViewBag.CTId = Subject.SubjectType;
 
                 return View();
@@ -4305,6 +4304,31 @@ namespace SEA_Application.Controllers
 
         }
 
+        public ActionResult DeleteLessonsBeforeAugust()
+        {
+
+            // db.AspnetLessons.Where(x=>x.CreationDate < '2020-08-01')
+
+            DateTime date = Convert.ToDateTime("2020-08-01");
+
+
+           var AllLessonIdsToDelete =  db.AspnetLessons.Where(x => x.CreationDate < date).Select(x=>x.Id).ToList();
+            //16426
+
+           // DeleteLessonFunction(16426);
+
+            foreach (var id in AllLessonIdsToDelete)
+            {
+
+
+             DeleteLessonFunction(id);
+
+            }
+
+
+            return Json("success", JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult DeleteLessons(int? id)
         {
             int? LessonId = id;
@@ -4381,6 +4405,102 @@ namespace SEA_Application.Controllers
 
             TempData["LessonDeleted"] = "Deleted";
             return RedirectToAction("ViewTopicsAndLessons", "AspnetSubjectTopics", new { @NavigateTo = "Lesson" });
+            // return RedirectToAction("ViewTopicsAndLessons", "AspnetSubjectTopics");
+
+        }
+
+
+        public void DeleteLessonFunction(int? id)
+        {
+            var dbTransaction = db.Database.BeginTransaction();
+
+            try
+            {
+
+
+            int? LessonId = id;
+
+            IEnumerable<AspnetComment> CommentsToDelete = db.AspnetComment_Head.Where(x => x.LessonId == LessonId).SelectMany(x => x.AspnetComments);
+            db.AspnetComments.RemoveRange(CommentsToDelete);
+            db.SaveChanges();
+
+            List<AspnetComment_Head> ListCommentHeadToDelete = db.AspnetComment_Head.Where(x => x.LessonId == LessonId).ToList();
+            db.AspnetComment_Head.RemoveRange(ListCommentHeadToDelete);
+            db.SaveChanges();
+
+            var AssignmentToDelete = db.AspnetStudentAssignments.Where(x => x.LessonId == LessonId).FirstOrDefault();
+            if (AssignmentToDelete != null)
+            {
+
+                db.AspnetStudentAssignments.Remove(AssignmentToDelete);
+                db.SaveChanges();
+            }
+
+            List<AspnetStudentAttachment> StudentAttachmentListToDelete = db.AspnetStudentAttachments.Where(x => x.LessonId == LessonId).ToList();
+            db.AspnetStudentAttachments.RemoveRange(StudentAttachmentListToDelete);
+            db.SaveChanges();
+
+
+            List<AspnetStudentLink> StudentLinkListToDelete = db.AspnetStudentLinks.Where(x => x.LessonId == LessonId).ToList();
+            db.AspnetStudentLinks.RemoveRange(StudentLinkListToDelete);
+            db.SaveChanges();
+
+
+            List<Event> AllEvents = db.Events.Where(x => x.LessonID == LessonId).ToList();
+
+            foreach (var item in AllEvents)
+            {
+                var event_users = db.AspnetEvent_User.Where(x => x.eventid == item.EventID).ToList();
+                db.AspnetEvent_User.RemoveRange(event_users);
+                db.SaveChanges();
+            }
+
+            db.Events.RemoveRange(AllEvents);
+            db.SaveChanges();
+
+            List<AspnetStudentAssignmentSubmission> StudentAssignmentSubmissionListToDelete = db.AspnetStudentAssignmentSubmissions.Where(x => x.LessonId == LessonId).ToList();
+            db.AspnetStudentAssignmentSubmissions.RemoveRange(StudentAssignmentSubmissionListToDelete);
+            db.SaveChanges();
+
+            List<StudentLessonTracking> StudentLessonTrackingListToDelete = db.StudentLessonTrackings.Where(x => x.LessonId == LessonId).ToList();
+            db.StudentLessonTrackings.RemoveRange(StudentLessonTrackingListToDelete);
+            db.SaveChanges();
+
+            List<Student_Quiz_Scoring> StudentQuizScoringToDelete = db.AspnetQuestions.Where(x => x.LessonId == LessonId).SelectMany(x => x.Student_Quiz_Scoring).ToList();
+            db.Student_Quiz_Scoring.RemoveRange(StudentQuizScoringToDelete);
+            db.SaveChanges();
+
+            List<Lesson_Session> LessonSessionToDelete = db.Lesson_Session.Where(x => x.LessonId == LessonId).ToList();
+            db.Lesson_Session.RemoveRange(LessonSessionToDelete);
+            db.SaveChanges();
+
+            List<Quiz_Topic_Questions> QuizTopicQuestionnsToDelete = db.AspnetQuestions.Where(x => x.LessonId == LessonId).SelectMany(x => x.Quiz_Topic_Questions).ToList();
+            db.Quiz_Topic_Questions.RemoveRange(QuizTopicQuestionnsToDelete);
+            db.SaveChanges();
+
+            List<AspnetQuestion> QuestionListToDelete = db.AspnetQuestions.Where(x => x.LessonId == LessonId).ToList();
+            db.AspnetQuestions.RemoveRange(QuestionListToDelete);
+            db.SaveChanges();
+
+            AspnetLesson LessonToDelete = db.AspnetLessons.Where(x => x.Id == LessonId).FirstOrDefault();
+            if (LessonToDelete != null)
+            {
+                db.AspnetLessons.Remove(LessonToDelete);
+                db.SaveChanges();
+
+            }
+
+                dbTransaction.Commit();
+            }//end of try block
+
+            catch(Exception ex )
+            {
+                dbTransaction.Dispose();
+
+                var msg = ex.Message;
+            }
+            //TempData["LessonDeleted"] = "Deleted";
+            //  return RedirectToAction("ViewTopicsAndLessons", "AspnetSubjectTopics", new { @NavigateTo = "Lesson" });
             // return RedirectToAction("ViewTopicsAndLessons", "AspnetSubjectTopics");
 
         }
