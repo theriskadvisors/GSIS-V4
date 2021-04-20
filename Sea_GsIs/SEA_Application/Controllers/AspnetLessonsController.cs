@@ -2091,7 +2091,18 @@ namespace SEA_Application.Controllers
 
             // Lesson.EncryptedID.Replace('/', 's').Replace('-','s').Replace('+','s').Replace('%','s').Replace('&','s');
 
+            var stringlength = newString.Length;
+
+            if (newString.Length>1500)
+            {
+
+
+              newString = newString.Substring(0, 1500);
+         
+            }
+
             Lesson.EncryptedID = newString;
+
 
             //Lesson_Session lessonSession = new Lesson_Session();
             //lessonSession.LessonId = Lesson.Id;
@@ -4232,6 +4243,16 @@ namespace SEA_Application.Controllers
             var newString = Regex.Replace(LessonID, @"[^0-9a-zA-Z]+", "s");
 
             // Lesson.EncryptedID.Replace('/', 's').Replace('-','s').Replace('+','s').Replace('%','s').Replace('&','s');
+
+            var stringlength = newString.Length;
+
+            if (newString.Length > 1500)
+            {
+
+
+                newString = newString.Substring(0, 1500);
+
+            }
 
             Lesson.EncryptedID = newString;
 
