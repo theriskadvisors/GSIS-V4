@@ -3211,7 +3211,11 @@ namespace SEA_Application.Controllers
 
             var Topics = db.AspnetSubjectTopics.Where(x => x.GenericBranchClassSubjectId == genericTableIid).ToList().Select(x => new { x.Id, x.Name });
 
-            var AssignmentType = db.AspnetStudentAssignments.ToList().Select(x => new { Id = x.AssignmentType, Name = x.AssignmentType }).Distinct();
+            // var AssignmentType = db.AspnetStudentAssignments.ToList().Select(x => new { Id = x.AssignmentType, Name = x.AssignmentType }).Distinct();
+
+             var AssignmentType = db.AspnetStudentAssignments.Select(x => new { Id = x.AssignmentType, Name = x.AssignmentType }).Distinct().Where(x=>x.Name !="" && x.Id !="" && x.Name != null && x.Id !=null).ToList();
+
+
             //  string AllTopics = Newtonsoft.Json.JsonConvert.SerializeObject(Topics);
 
 
