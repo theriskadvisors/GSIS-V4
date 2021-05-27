@@ -16,6 +16,10 @@ namespace SEA_Application.Controllers
     {
         private Sea_Entities db = new Sea_Entities();
         // GET: Teacher
+
+
+
+        [Authorize(Roles = "Teacher")]
         public ActionResult Index()
         {
             //int teacherId = GetLoggedInTeacherId();
@@ -47,12 +51,13 @@ namespace SEA_Application.Controllers
 
         //    return View(lp);
         //}
-
+        [Authorize(Roles = "Teacher")]
         public ActionResult LessonPlan()
         {
 
             return View();
         }
+        [Authorize(Roles = "Teacher,Branch_Admin")]
         public ActionResult EditLessonPlan(int ID)
         {
             LessonPlan LP = db.LessonPlans.Where(x => x.Id == ID).FirstOrDefault();
@@ -237,6 +242,7 @@ namespace SEA_Application.Controllers
             return Json("Success", JsonRequestBehavior.AllowGet);
 
         }
+        [Authorize(Roles = "Teacher,Branch_Admin")]
 
         public ActionResult LessonPlanList()
         {
@@ -417,6 +423,8 @@ namespace SEA_Application.Controllers
             return Json(result, JsonRequestBehavior.AllowGet);
 
         }
+
+        [Authorize(Roles = "Teacher")]
         public ActionResult TeacherSubject()
         {
             return View();

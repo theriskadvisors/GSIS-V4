@@ -296,11 +296,30 @@
                 url: "/StudentCourses/MeetingInfo",
                 data: { "LessonID": LessonID },
                 success: function (data) {
+                    debugger
+                    // if (data == "Success") {
+
                     //  location.reload();
                     window.open(MeetingLinkSrc);
+                    //}
+                    // else {
+
+                    //  window.location.href = "/Student/Index";
+                    //}
+
+                },
+                error: function (jqXHR, exception) {
+                    debugger
+
+
+                    if (jqXHR.status == 403) {
+                        // var response = $.parseJSON(jqXHR.responseText);
+                        // window.location = response.LogOnUrl;
+                        window.location.href = "/Student/Index";
+                    }
                 }
             })
-            window.open(MeetingLinkSrc);
+            // window.open(MeetingLinkSrc);
         });
 
 
@@ -715,10 +734,19 @@
                         $("#AssignmentSubmitButton").css('display', 'none');
 
                     },
-                    error: function () {
+                    error: function (jqXHR, exception) {
                         $("#AssignmentSubmitButton").val("Submit");
                         alert("There was error uploading files! Kindly select the files and submit again");
                         $("#AssignmentSubmitButton").attr('disabled', false);
+
+
+                        if (jqXHR.status == 403) {
+                            // var response = $.parseJSON(jqXHR.responseText);
+                            // window.location = response.LogOnUrl;
+                            window.location.href = "/Student/Index";
+                        }
+
+
                     }
                 });
             }
@@ -792,6 +820,17 @@
                         toastr.error('Error ! Lesson is already completed');
                     }
 
+                },
+                error: function (jqXHR, exception) {
+                    debugger
+
+                    if (jqXHR.status == 403) {
+                        // var response = $.parseJSON(jqXHR.responseText);
+                        // window.location = response.LogOnUrl;
+                        window.location.href = "/Student/Index";
+                    }
+
+
                 }
             })
 
@@ -819,6 +858,18 @@
                     success: function (data) {
 
                         location.reload();
+
+                    },
+
+                    error: function (jqXHR, exception) {
+                        debugger
+
+                        if (jqXHR.status == 403) {
+                            // var response = $.parseJSON(jqXHR.responseText);
+                            // window.location = response.LogOnUrl;
+                            window.location.href = "/Student/Index";
+                        }
+
 
                     }
 

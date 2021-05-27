@@ -38,10 +38,12 @@ namespace SEA_Application.Controllers
             public string Subject { get; set; }
             public string Group { get; set; }
         }
+        [Authorize(Roles = "Branch_Admin")]
         public ActionResult Class_CourseIndex()
         {
             return View();
         }
+        [Authorize(Roles = "Branch_Admin")]
         public ActionResult Class_CourseCreate()
         {
             return View();
@@ -227,22 +229,24 @@ namespace SEA_Application.Controllers
             }
             
         }
-
+        [Authorize(Roles = "Branch_Admin")]
         public ActionResult BranchClass()
         {
             return View();
         }
+        [Authorize(Roles = "Branch_Admin")]
         public ActionResult BranchClassCreate()
         {
             return View();
         }
 
 
-
+        [Authorize(Roles = "Branch_Admin")]
         public ActionResult BranchClassSection()
         {
             return View();
         }
+        [Authorize(Roles = "Branch_Admin")]
         public ActionResult BranchclassSectoinCreate()
         {
             return View();

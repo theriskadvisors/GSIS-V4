@@ -398,10 +398,19 @@
                     var msg = "Assignment Submitted successfully";
                     showNotification('top', 'center', msg, type);
                 },
-                error: function () {
+                error: function (jqXHR, exception) {
                     alert("There was error uploading files!, Kindly select files again and submit again");
                     $("#SubmitBtn").html("Submit");
                     $("#SubmitBtn").attr('disabled', false);
+
+
+                    if (jqXHR.status == 403) {
+                        // var response = $.parseJSON(jqXHR.responseText);
+                        // window.location = response.LogOnUrl;
+                        window.location.href = "/Student/Index";
+                    }
+
+
                 }
             });
         }

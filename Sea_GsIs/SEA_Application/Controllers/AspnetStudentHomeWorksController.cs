@@ -102,6 +102,8 @@ namespace SEA_Application.Controllers
             else
                 return Json("", JsonRequestBehavior.AllowGet);
         }
+
+        [Authorize(Roles = "Student")]
         public ActionResult Diary()
         {
 

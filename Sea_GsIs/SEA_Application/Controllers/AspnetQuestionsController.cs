@@ -23,6 +23,8 @@ namespace SEA_Application.Controllers
             var aspnetQuestions = db.AspnetQuestions.Include(a => a.AspnetLesson).Include(a => a.AspnetOption);
             return View(aspnetQuestions.ToList());
         }
+
+        [Authorize(Roles = "Teacher")]
         public ActionResult ViewQuestionAndQuiz()
         {
             var aspnetQuestions = db.AspnetQuestions.Include(a => a.AspnetLesson).Include(a => a.AspnetOption);
@@ -161,6 +163,7 @@ namespace SEA_Application.Controllers
         }
 
         // GET: AspnetQuestions/Create
+        [Authorize(Roles = "Teacher")]
         public ActionResult Create(int id)
         {
             if (id == 0)
@@ -337,6 +340,7 @@ namespace SEA_Application.Controllers
         }
 
         // GET: AspnetQuestions/Edit/5
+        [Authorize(Roles = "Teacher")]
         public ActionResult Edit(int? id)
         {
             if (id == null)

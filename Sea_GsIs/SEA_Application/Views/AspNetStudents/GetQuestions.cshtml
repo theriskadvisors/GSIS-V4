@@ -116,7 +116,19 @@
                     //var result = JSON.parse(data);
                     alert("Quizz Submitted !");
                     window.location.href = "/AspNetStudents/Quizes";
-                }
+                },
+
+                error: function (jqXHR, exception) {
+                    debugger
+
+                    if (jqXHR.status == 403) {
+                        // var response = $.parseJSON(jqXHR.responseText);
+                        // window.location = response.LogOnUrl;
+                        window.location.href = "/Student/Index";
+                    }
+
+
+                }// end of error
             });
 
         });

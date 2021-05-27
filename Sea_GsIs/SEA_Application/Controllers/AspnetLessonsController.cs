@@ -58,15 +58,10 @@ namespace SEA_Application.Controllers
         }
 
 
-
+        [Authorize(Roles = "Branch_Admin")]
         public ActionResult ViewLessonsToAdmin()
         {
-
-
-
             //   List<AspnetLesson> lessons = db.AspnetLessons
-
-
             return View();
         }
 
@@ -1441,6 +1436,8 @@ namespace SEA_Application.Controllers
             return Content(Status);
         }
 
+        // [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = "Teacher,Branch_Admin")]
         public ActionResult StudentAttendance()
         {
 
@@ -1528,7 +1525,7 @@ namespace SEA_Application.Controllers
 
 
         //}
-
+        [Authorize(Roles = "Teacher,Branch_Admin")]
         public ActionResult GetStudentAttendance(int BranchId, int ClassId, int SectionId, int SubjectId, int StudentId)
         {
             ViewBag.BranchId = BranchId;
@@ -1981,7 +1978,7 @@ namespace SEA_Application.Controllers
             return Content(status);
 
         }
-
+        [Authorize(Roles = "Teacher")]
         public ActionResult Create(int id)
         {
             if (id != 0)
@@ -2049,6 +2046,7 @@ namespace SEA_Application.Controllers
         // POST: AspnetLessons/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+       // [Authorize(Roles = "Teacher,Branch_Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(LessonViewModel LessonViewModel)
@@ -2950,6 +2948,8 @@ namespace SEA_Application.Controllers
             return View(lessonViewModel);
         }
         // GET: AspnetLessons/Edit/5
+
+        [Authorize(Roles = "Teacher,Branch_Admin")]
         public ActionResult Edit(int? id)
         {
             if (id == null)

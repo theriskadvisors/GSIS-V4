@@ -1570,6 +1570,7 @@ namespace SEA_Application.Controllers
             }
             return Json(JsonRequestBehavior.AllowGet);
         }
+        [Authorize(Roles = "Branch_Admin")]
         public ActionResult TeacherClassSubject_Create()
         {
             return View();

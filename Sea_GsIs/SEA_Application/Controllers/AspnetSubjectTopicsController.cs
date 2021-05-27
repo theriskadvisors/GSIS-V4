@@ -34,6 +34,7 @@ namespace SEA_Application.Controllers
             //  return View();
         }
 
+        [Authorize(Roles = "Teacher")]
         public ActionResult ViewTopicsAndLessons(string NavigateTo = "Topic")
         {
             //var aspnetSubjectTopics = db.AspnetSubjectTopics.Include(a => a.GenericSubject);
@@ -138,6 +139,7 @@ namespace SEA_Application.Controllers
             return View(aspnetSubjectTopic);
         }
 
+        [Authorize(Roles = "Teacher")]
         // GET: AspnetSubjectTopics/Create
         public ActionResult Create()
         {
@@ -234,6 +236,8 @@ namespace SEA_Application.Controllers
 
 
         // GET: AspnetSubjectTopics/Edit/5
+
+        [Authorize(Roles = "Teacher")]
         public ActionResult Edit(int? id)
         {
             if (id == null)

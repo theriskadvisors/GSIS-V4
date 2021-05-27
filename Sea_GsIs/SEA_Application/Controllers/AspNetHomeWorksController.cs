@@ -18,6 +18,9 @@ namespace SEA_Application.Controllers
         private Sea_Entities db = new Sea_Entities();
 
         // GET: AspNetHomeWorks
+
+        [Authorize(Roles = "Teacher")]
+
         public ActionResult Index()
         {
             var uid = User.Identity.GetUserId();

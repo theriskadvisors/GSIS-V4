@@ -89,7 +89,7 @@ namespace SEA_Application.Controllers
 
             return View();
         }
-
+        [Authorize]
         public ActionResult StudentLessons(int id)
         {
 

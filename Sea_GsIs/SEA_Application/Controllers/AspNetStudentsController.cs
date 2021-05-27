@@ -868,6 +868,7 @@ namespace SEA_Application.Controllers
         }
 
 
+        [Authorize(Roles = "Branch_Admin")]
         public ActionResult StudentClass()
         {
             var loggedInUserId = User.Identity.GetUserId();
@@ -1155,6 +1156,7 @@ namespace SEA_Application.Controllers
         }
 
         // GET: AspNetStudents/Create
+        [Authorize(Roles = "Teacher,Branch_Admin")]
         public ActionResult Create()
         {
             ViewBag.Error = TempData["ErrorMessage"] as string;
@@ -1177,7 +1179,8 @@ namespace SEA_Application.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 
         // POST: AspNetStudents/Create
-
+       // [Authorize(Roles = "Teacher,Branch_Admin")]
+       [AjaxAuthorize]
         [HttpPost]
         public async Task<ActionResult> Create(StudentRegistrationViewModel studentRegistrationViewModel /*, HttpPostedFileBase file*/ )
         {
@@ -1650,6 +1653,7 @@ namespace SEA_Application.Controllers
             public string Photo;
         }
 
+        [Authorize(Roles = "Student")]
         public ViewResult Quizes()
         {
             return View();
@@ -1735,6 +1739,8 @@ namespace SEA_Application.Controllers
             return Json(quizes, JsonRequestBehavior.AllowGet);
 
         }
+
+        [Authorize(Roles = "Teacher")]
         public ActionResult QuizDetails(int Id, int StudentId)
         {
             ViewBag.QuizTime = db.AspnetQuizs.Where(x => x.Id == Id).Select(x => x.QuizTime).FirstOrDefault();
@@ -1777,6 +1783,8 @@ namespace SEA_Application.Controllers
         }
 
         //Question of a Quiz;
+
+        [AjaxAuthorize]
         public ActionResult GetQuestions(int Id)
         {
             ViewBag.QuizTime = db.AspnetQuizs.Where(x => x.Id == Id).FirstOrDefault().QuizTime;
@@ -1873,6 +1881,7 @@ namespace SEA_Application.Controllers
             public int QuizId;
             public List<int> QuestionId;
         }
+        [Authorize(Roles = "Student")]
         public ActionResult submit_question(string Question, string Answer, int QuizID)
         {
 

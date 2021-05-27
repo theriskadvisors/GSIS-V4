@@ -474,8 +474,16 @@
 
 
                             }
+                        },
 
+                        error: function (jqXHR, exception) {
+                            debugger
 
+                            if (jqXHR.status == 403) {
+                                // var response = $.parseJSON(jqXHR.responseText);
+                                // window.location = response.LogOnUrl;
+                                window.location.href = "/Student/Index";
+                            }
                         }
 
                     })
@@ -678,11 +686,11 @@
         if (Total > 12 || Total < 0) {
 
             $("#MonthsError").html("Months total cannot be less than 0 or greater than 12");
-                  
+
             $("#submit").prop("disabled", true);
 
         }
-        
+
     }
 
     function CalculateDiscountedAmount(e) {
@@ -1409,31 +1417,31 @@
 
 
 @*<div>
-    <div class="box-header with-border"><h3 class="orange">Upload Excel File &nbsp; <i class="fa fa-file-excel-o" aria-hidden="true"></i></h3></div>
-    <div class="form-three widget-shadow">
-        @using (Html.BeginForm("StudentsfromFile", "BranchAdmin", FormMethod.Post, new { enctype = "multipart/form-data" }))
-        {
-            @Html.AntiForgeryToken()
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="box-header with-border"><h3 class="orange">Upload Excel File &nbsp; <i class="fa fa-file-excel-o" aria-hidden="true"></i></h3></div>
+        <div class="form-three widget-shadow">
+            @using (Html.BeginForm("StudentsfromFile", "BranchAdmin", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-            <input id="teachers" required="required" name="students" type="file" />
-            <div class="form-group">
-                <div class="control-label col-md-3"><b></b></div>
-                <div class="col-md-4">
-
-                </div>
-            </div>
-            <br />
-            <br />
-
-            <div class="box-footer">
+                <input id="teachers" required="required" name="students" type="file" />
                 <div class="form-group">
-                    <div class="col-md-10" style="padding-left:0px">
-                        <input class="col-md-2" type="submit" value="Submit" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />
+                    <div class="control-label col-md-3"><b></b></div>
+                    <div class="col-md-4">
+
                     </div>
                 </div>
-            </div>
+                <br />
+                <br />
 
-        }
-    </div>
-</div>*@
+                <div class="box-footer">
+                    <div class="form-group">
+                        <div class="col-md-10" style="padding-left:0px">
+                            <input class="col-md-2" type="submit" value="Submit" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat" />
+                        </div>
+                    </div>
+                </div>
+
+            }
+        </div>
+    </div>*@

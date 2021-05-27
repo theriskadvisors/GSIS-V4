@@ -13,9 +13,11 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
+//using static SEA_Application.Controllers.AjaxAuthorizationController;
 
 namespace SEA_Application.Controllers
 {
+    //[Authorize(Roles = "Student")]
     public class StudentCoursesController : Controller
     {
         public static List<question1> QuestionsStaticList = new List<question1>();
@@ -26,17 +28,24 @@ namespace SEA_Application.Controllers
         //   public static int SessionID = Convert.ToInt32(SessionIDStaticController.GlobalSessionID);
 
 
+        [Authorize(Roles = "Student")]
         public ActionResult Index()
         {
 
-
-
             return View();
         }
-
+   
+        //[Authorize(Roles = "Admin,Principal,Accountant,Student,Teacher,Staff,PhotoCopier,Receptionist")]
+        // [Authorize(Roles = "Student")]
+        [AjaxAuthorize]
         public ActionResult MeetingInfo(int LessonID)
         {
-            var StudentID = User.Identity.GetUserId();
+            //var Status = "Fail";
+            //if (!User.Identity.IsAuthenticated)
+            //{
+            //    return Json(Status);
+            //}
+             var StudentID = User.Identity.GetUserId();
 
             TimeZoneInfo PK_ZONE = TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time");
             DateTime PKTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, PK_ZONE);
@@ -115,7 +124,8 @@ namespace SEA_Application.Controllers
                 }
 
             }
-            return View();
+           // Status = "Success";
+            return Json("");
         }
 
         public ActionResult AttendanceChecker(int LessonId)
@@ -218,7 +228,7 @@ namespace SEA_Application.Controllers
 
 
         }
-
+        [Authorize(Roles = "Student")]
         public ActionResult SubjectTopics(int id)
         {
             
@@ -228,6 +238,7 @@ namespace SEA_Application.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Student")]
         public ActionResult StudentLessons(string id)
         {
             var Lesson = db.AspnetLessons.Where(x => x.EncryptedID == id).FirstOrDefault();
@@ -315,7 +326,7 @@ namespace SEA_Application.Controllers
 
             return Json(Lesson, JsonRequestBehavior.AllowGet);
         }
-
+        [Authorize(Roles = "Student")]
         public ActionResult Test(int id)
         {
 
@@ -454,6 +465,8 @@ namespace SEA_Application.Controllers
             return Json(questionList_MCQS, JsonRequestBehavior.AllowGet);
 
         }
+
+        [Authorize(Roles = "Student")]
         public ActionResult TestResult()
         {
 
@@ -624,6 +637,9 @@ namespace SEA_Application.Controllers
             }
             return Json(status, JsonRequestBehavior.AllowGet);
         }
+
+        //[Authorize(Roles = "Student")]
+         [AjaxAuthorize]
         public ActionResult UpdateStudentLessonTracking(int LessonId)
         {
             string status = "";
@@ -884,6 +900,7 @@ namespace SEA_Application.Controllers
 
             return Json(new { TeacherResubmittedFile = TeacherResubmittedFile, StudentResubmittedFile = StudentResubmittedFile, Resubmission = Resubmission, AssignDesc = AssignDesc, TotalMarks = TotalMarks, ObtainedMarks = ObtainedMarks, AssignmentSubmissionId = AssignmentSubmissionId, TeacherAssignmentFileName = TeacherAssignmentFileName, SubmittedAssignmentFileName = SubmittedAssignmentFileName, AssignmentExist = AssignmentExist, StudentAssigmentName = AssignName, FileName = FileName, StudentAssignmentDueDate = DueDate, StudentAssignmentId = AssignmentId, TeacherComments = TeacherComments }, JsonRequestBehavior.AllowGet);
         }
+        [Authorize]
         public ActionResult DownloadFileOfTeacherAssignment(int id, string Name)
         {
           
@@ -894,13 +911,14 @@ namespace SEA_Application.Controllers
             return File(filepath, MimeMapping.GetMimeMapping(filepath), Name);
 
         }
-
+        [Authorize]
         public ActionResult DownloadStudentResubmittedAssignment(int id, string Name)
         {
             AspnetStudentAssignmentSubmission studentAssignment = db.AspnetStudentAssignmentSubmissions.Find(id);
             var filepath = System.IO.Path.Combine(Server.MapPath("~/Content/StudentAssignments/"), Name);
             return File(filepath, MimeMapping.GetMimeMapping(filepath), Name);
         }
+        [Authorize]
         public ActionResult DownloadTeacherResubmittedAssignment(int id, string Name)
         {
             AspnetStudentAssignmentSubmission studentAssignment = db.AspnetStudentAssignmentSubmissions.Find(id);
@@ -908,6 +926,9 @@ namespace SEA_Application.Controllers
             return File(filepath, MimeMapping.GetMimeMapping(filepath), Name);
         }
 
+
+
+        [Authorize]
         public ActionResult DownloadFileOfStudentAssignment(int id, string Name)
         {
 
@@ -932,7 +953,7 @@ namespace SEA_Application.Controllers
 
             return Json(new { StuAttachment = StudentAttachments, StuLinks = StudentLinks }, JsonRequestBehavior.AllowGet);
         }
-
+        [Authorize]
         public ActionResult DownloadFile(int id)
         {
 
@@ -943,7 +964,7 @@ namespace SEA_Application.Controllers
 
 
         }
-
+        [Authorize]
         public ActionResult DownloadFileOfAssignment(string id)
         {
             int idd = Convert.ToInt32(id);
@@ -1038,7 +1059,7 @@ namespace SEA_Application.Controllers
 
         //    return Json(IsSubmitted, JsonRequestBehavior.AllowGet);
         //}// Student Assignment Submission
-
+        [AjaxAuthorize]
         public ActionResult StudentAssignmentSubmission(int LessonID, IEnumerable<HttpPostedFileBase> file)
         {
             var UserId1 = User.Identity.GetUserId();
@@ -1221,7 +1242,7 @@ namespace SEA_Application.Controllers
             return Json(IsSubmitted, JsonRequestBehavior.AllowGet);
         }// Student Assignment Submission
 
-
+        [AjaxAuthorize]
         public ActionResult SaveCommentHead(int LessonID, string Title, string Body)
         {
 
@@ -1386,6 +1407,7 @@ namespace SEA_Application.Controllers
 
             return Json(AllCommentHead, JsonRequestBehavior.AllowGet);
         }
+        [Authorize(Roles = "Student")]
         public ActionResult CommentsPage(int? CommentHeadId)
         {
             //var commentHead = db.Comment_Head.Where(x => x.Id == CommentHeadId).FirstOrDefault();
@@ -1395,6 +1417,8 @@ namespace SEA_Application.Controllers
 
         }
 
+
+        [Authorize(Roles = "Student")]
         public ActionResult CommentsPage1(string id)
         {
             ViewBag.CommentHeadId = db.AspnetComment_Head.Where(x => x.EncryptedID == id).FirstOrDefault().Id;
@@ -1576,6 +1600,7 @@ namespace SEA_Application.Controllers
             return Json(Comments, JsonRequestBehavior.AllowGet);
         }
 
+        [Authorize(Roles = "Student")]
         public ActionResult StudentTests()
         {
 
@@ -1597,6 +1622,7 @@ namespace SEA_Application.Controllers
             return Json(TestSubjects, JsonRequestBehavior.AllowGet);
 
         }
+        [Authorize(Roles = "Student")]
         public ActionResult StudentSubmitTest(int id)
         {
             var UserId = User.Identity.GetUserId();
@@ -1634,7 +1660,7 @@ namespace SEA_Application.Controllers
 
             return View(); //Json(StudentTestSubjects);
         }
-
+        [Authorize]
         public ActionResult DownloadTest(int id)
         {
 
@@ -1644,7 +1670,7 @@ namespace SEA_Application.Controllers
             return File(filepath, MimeMapping.GetMimeMapping(filepath), SubjectTest.FileName);
 
         }
-
+        [Authorize]
         public ActionResult DownloadTeacherSubmittedFile(int id)
         {
 

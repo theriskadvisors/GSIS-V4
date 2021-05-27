@@ -22,6 +22,8 @@ namespace SEA_Application.Controllers
     {
 
         private Sea_Entities db = new Sea_Entities();
+
+        [Authorize(Roles = "Teacher")]
         public ActionResult Index()
         {
 
@@ -30,6 +32,8 @@ namespace SEA_Application.Controllers
 
         }
 
+
+        [Authorize(Roles = "Teacher")]
         [HttpGet]
         public ActionResult TeacherComments(int id)
         {
@@ -109,7 +113,7 @@ namespace SEA_Application.Controllers
             return Json("", JsonRequestBehavior.AllowGet);
 
         }
-
+        [AjaxAuthorize]
         public JsonResult TeacherAssignmentSubmission(int id, string TeacherComments, float ObtainedMarks, IEnumerable<HttpPostedFileBase> file, bool IsResubmissionRequired)
         {
             var CheckResubmission = db.AspnetStudentAssignmentSubmissions.Where(x => x.Id == id && x.ResubmitRequired == true).FirstOrDefault();
@@ -186,6 +190,7 @@ namespace SEA_Application.Controllers
             return Json("", JsonRequestBehavior.AllowGet);
         }
 
+        [Authorize(Roles = "Teacher")]
         public ActionResult StudentLessonTracking()
         {
 
@@ -300,6 +305,7 @@ namespace SEA_Application.Controllers
 
         }
 
+        [Authorize(Roles = "Teacher")]
         public ActionResult StudentAssignments()
         {
             //var UserId = User.Identity.GetUserId();
@@ -433,7 +439,7 @@ namespace SEA_Application.Controllers
             return View();
         }
 
-
+        [Authorize]
         public ActionResult DownloadFileOfAssignment(int id, string Name)
         {
             AspnetStudentAssignmentSubmission studentAssignment = db.AspnetStudentAssignmentSubmissions.Find(id);
@@ -442,7 +448,7 @@ namespace SEA_Application.Controllers
 
             return File(filepath, MimeMapping.GetMimeMapping(filepath), Name);
         }
-
+        [Authorize]
         public ActionResult DownloadResubmittedFileOfAssignment(int id, string Name)
         {
             AspnetStudentAssignmentSubmission studentAssignment = db.AspnetStudentAssignmentSubmissions.Find(id);

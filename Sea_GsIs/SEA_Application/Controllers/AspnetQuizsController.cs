@@ -67,6 +67,8 @@ namespace SEA_Application.Controllers
         }
 
         // GET: AspnetQuizs/Create
+
+        [Authorize(Roles = "Teacher")]
         public ActionResult Create()
         {
             // ViewBag.TopicId = new SelectList(db.AspnetSubjectTopics, "Id", "Name");
@@ -75,6 +77,8 @@ namespace SEA_Application.Controllers
 
             return View();
         }
+
+        [Authorize(Roles = "Teacher")]
 
         public ActionResult AllTestList()
         {
@@ -193,6 +197,7 @@ namespace SEA_Application.Controllers
 
         }
 
+        [Authorize(Roles = "Teacher")]
         [HttpGet]
         public ActionResult StudentTests()
         {
@@ -421,7 +426,7 @@ namespace SEA_Application.Controllers
 
             return RedirectToAction("ViewQuestionAndQuiz", "AspnetQuestions");
         }
-
+        [Authorize(Roles = "Teacher")]
         public ActionResult QuizList()
         {
             return View();
@@ -481,6 +486,7 @@ namespace SEA_Application.Controllers
 
 
         // GET: AspnetQuizs/Edit/5
+        [Authorize(Roles = "Teacher")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
