@@ -887,7 +887,7 @@ namespace SEA_Application.Controllers
             var students = (from stdnt in db.AspNetStudents
                             join usr in db.AspNetUsers
                             on stdnt.UserId equals usr.Id
-                            where stdnt.UserId == usr.Id && usr.StatusId != 2 && stdnt.BranchId == branchId
+                            where stdnt.UserId == usr.Id && usr.StatusId != 2 //&& stdnt.BranchId == branchId
                             select new { usr.Id, Name = stdnt.Name + "(" + usr.UserName + ")", stdnt.RollNo, stdnt.CellNo, usr.Image }).OrderBy(x => x.Name).ToList();
 
             ViewBag.StudentList = new SelectList(students, "Id", "Name");
@@ -956,9 +956,10 @@ namespace SEA_Application.Controllers
                 ClassId = Student.ClassId.ToString();
 
                 var SectionName = db.AspNetStudent_Enrollments.Where(x => x.StudentId == Student.Id).Select(x => x.AspNetBranchClass_Sections.AspNetSection.Name).FirstOrDefault();
+                var BranchName = db.AspNetStudent_Enrollments.Where(x => x.StudentId == Student.Id).Select(x => x.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetBranch.Name).FirstOrDefault();
                 if (AllStudents != null)
                 {
-                    IsStudentEntroll = className + "-" + SectionName;
+                    IsStudentEntroll = BranchName+ "-" + className + "-" + SectionName;
                 }
             }
 
