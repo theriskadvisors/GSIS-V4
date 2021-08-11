@@ -1570,7 +1570,7 @@ namespace SEA_Application.Controllers
             }
             return Json(JsonRequestBehavior.AllowGet);
         }
-        [Authorize(Roles = "Branch_Admin")]
+        [Authorize(Roles = "Branch_Admin,Branch_Principal")]
         public ActionResult TeacherClassSubject_Create()
         {
             return View();
@@ -1603,6 +1603,11 @@ namespace SEA_Application.Controllers
                     ApplicationDbContext context = new ApplicationDbContext();
                     for (int rowIterator = 2; rowIterator <= noOfRow; rowIterator++)
                     {
+                        if(RowNumber == 17)
+                        {
+
+                        }
+
                         RowNumber = rowIterator;
                         AspNetTeacher_Enrollments classcourse = new AspNetTeacher_Enrollments();
                         var generic = new AspnetGenericBranchClassSubject();

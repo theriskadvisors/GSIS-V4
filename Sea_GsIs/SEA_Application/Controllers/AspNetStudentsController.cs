@@ -867,8 +867,8 @@ namespace SEA_Application.Controllers
 
         }
 
-
-        [Authorize(Roles = "Branch_Admin")]
+        [Authorize(Roles = "Branch_Admin,Branch_Principal")]
+       // [Authorize(Roles = "Branch_Admin")]
         public ActionResult StudentClass()
         {
             var loggedInUserId = User.Identity.GetUserId();
@@ -1157,7 +1157,7 @@ namespace SEA_Application.Controllers
         }
 
         // GET: AspNetStudents/Create
-        [Authorize(Roles = "Teacher,Branch_Admin")]
+        [Authorize(Roles = "Teacher,Branch_Admin,Branch_Principal")]
         public ActionResult Create()
         {
             ViewBag.Error = TempData["ErrorMessage"] as string;

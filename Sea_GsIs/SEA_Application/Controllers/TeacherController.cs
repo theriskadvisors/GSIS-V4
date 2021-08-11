@@ -57,7 +57,7 @@ namespace SEA_Application.Controllers
 
             return View();
         }
-        [Authorize(Roles = "Teacher,Branch_Admin")]
+        [Authorize(Roles = "Teacher,Branch_Admin,Branch_Principal")]
         public ActionResult EditLessonPlan(int ID)
         {
             LessonPlan LP = db.LessonPlans.Where(x => x.Id == ID).FirstOrDefault();
@@ -242,7 +242,7 @@ namespace SEA_Application.Controllers
             return Json("Success", JsonRequestBehavior.AllowGet);
 
         }
-        [Authorize(Roles = "Teacher,Branch_Admin")]
+        [Authorize(Roles = "Teacher,Branch_Admin,Branch_Principal")]
 
         public ActionResult LessonPlanList()
         {

@@ -58,7 +58,7 @@ namespace SEA_Application.Controllers
         }
 
 
-        [Authorize(Roles = "Branch_Admin")]
+        [Authorize(Roles = "Branch_Admin,Branch_Principal")]
         public ActionResult ViewLessonsToAdmin()
         {
             //   List<AspnetLesson> lessons = db.AspnetLessons
@@ -1437,7 +1437,7 @@ namespace SEA_Application.Controllers
         }
 
         // [Authorize(Roles = "Teacher")]
-        [Authorize(Roles = "Teacher,Branch_Admin")]
+        [Authorize(Roles = "Teacher,Branch_Admin,Branch_Principal")]
         public ActionResult StudentAttendance()
         {
 
@@ -1525,7 +1525,7 @@ namespace SEA_Application.Controllers
 
 
         //}
-        [Authorize(Roles = "Teacher,Branch_Admin")]
+        [Authorize(Roles = "Teacher,Branch_Admin,Branch_Principal")]
         public ActionResult GetStudentAttendance(int BranchId, int ClassId, int SectionId, int SubjectId, int StudentId)
         {
             ViewBag.BranchId = BranchId;
@@ -2949,7 +2949,7 @@ namespace SEA_Application.Controllers
         }
         // GET: AspnetLessons/Edit/5
 
-        [Authorize(Roles = "Teacher,Branch_Admin")]
+        [Authorize(Roles = "Teacher,Branch_Admin,Branch_Principal")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
