@@ -1,0 +1,340 @@
+﻿@{
+    Layout = "~/Views/Shared/_BranchAdminDashboardLayout.cshtml";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<style>
+
+    select.form-control option:first-child {
+        color: black !important;
+    }
+</style>
+
+
+
+@using (Html.BeginForm("TeacherEnrollment", "Teacher", FormMethod.Post))
+{
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body p-5">
+
+                    @Html.AntiForgeryToken()
+
+
+                    <div class="col-md-6 pl-5 pr-5  border-color-sea">
+
+                        <div class="form-group bmd-form-group my-3 is-filled">
+                            <label class="control-label">Select Teacher <span class="red-mark">*</span> </label>
+                            @*@Html.DropDownList("StudentList", null, "Select Student", htmlAttributes: new { @class = "form-control select2dropdown", @required = true })*@
+
+                            <select class="form-control select2dropdown" name="TeacherId" id="TeacherId" required></select>
+                        </div>
+
+                        <div class="form-group bmd-form-group my-3 is-filled">
+                            <label class="control-label">Select Class <span class="red-mark">*</span> </label>
+                            @*@Html.DropDownList("ClassId", null, "Select Class", htmlAttributes: new { @class = "form-control", @required = true })*@
+                            <select class="form-control" name="ClassId" id="ClassId" required></select>
+
+                        </div>
+                        
+
+
+                        <div class="form-row mt-3">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <label for="" class="control-label">Select Section*</label>
+                                <select class="form-control" id="SectionId" name="SectionId" required></select>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-row mt-3">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <label for="" class="control-label">Select Subject*</label>
+                                <select class="form-control" id="Courses" name="Courses" required></select>
+                            </div>
+                        </div>
+
+                        <div class="form-row mt-3">
+                            <div class="form-group col-md-12 bmd-form-group">
+
+                                <span id="Error" style="color:red"></span>
+
+                            </div>
+                        </div>
+
+
+                    </div><!--End Column-->
+
+                    <br />
+
+                    <div class="col-md-8 pl-5 pr-5 ">
+
+                        <button type="submit" id="submit" class="btn btn-primary  rounded rounded-lg">  Save  </button>
+                        <button type="button" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                            <i class="material-icons mr-2">cached</i>  Cancel
+                        </button>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#PageHeader").html("Teacher Courses");
+
+        $("#BreadCrumbs").append(' <li> <a href="#"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Teacher Courses</a></li>');
+
+
+
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "/AspNetProject/AllTeachersList",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#TeacherId");
+                $el.empty();
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").text('Select Teacher'));
+                    for (i = 0; i < sch.length; i++) {
+
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i].Id).text(sch[i].Name));
+                    }
+                }
+                else {
+                    $el.append($("<option></option>")
+                        .attr("value", '').text('Select Teacher'));
+                }
+              //  $('#BranchId option[value="' + BranchIdForLesson + '"]').prop('selected', true);
+            }
+        }); //end of All 
+
+
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "/AspNetProject/AllBranchClassList",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#ClassId");
+                $el.empty();
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").text('Select Class'));
+                    for (i = 0; i < sch.length; i++) {
+
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i].BranchClassId).text(sch[i].BranchClassName));
+                    }
+                }
+                else {
+                    $el.append($("<option></option>")
+                        .attr("value", '').text('Select Class'));
+                }
+                //  $('#BranchId option[value="' + BranchIdForLesson + '"]').prop('selected', true);
+            }
+        }); //end of All 
+
+
+        $("#TeacherId").change(function () {
+
+          //  var TeacherId = $(this).val();
+             CheckTeacherAlreadyEnroll();
+
+        })
+
+        $('#ClassId').change(function () {
+
+            var StudentClassId = $(this).val();
+            getSections(StudentClassId);
+            getCourses(StudentClassId);
+
+            CheckTeacherAlreadyEnroll();
+
+        });
+        $("#SectionId").change(function () {
+
+            CheckTeacherAlreadyEnroll();
+
+        })
+        $("#Courses").change(function () {
+
+            CheckTeacherAlreadyEnroll();
+
+        })
+
+        $('.select2dropdown option[value=""]').removeAttr("selected");
+        var data1 = $('.select2dropdown').select2()
+            .on("select2:select", function (e) {
+                var selected_element = $(e.currentTarget);
+                var select_val = selected_element.val();
+               // var id = $(this).children(".select2-hidden-accessible").context.id;
+            });
+
+    })
+
+
+    function getSections(id) {
+        //alert(id);
+
+        var classId = id;
+
+
+        //console.log(subid);
+
+        if (classId != "") {
+
+            $.ajax({
+                type: "POST",
+                cache: false,
+                url: "/AspNetStudents/GetSections?ClassId=" + classId,
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    var sch = JSON.parse(data);
+                    console.log(sch);
+                    var $el = $("#SectionId");
+                    $el.empty();
+                    if (sch.length > 0) {
+                        $el.append($("<option></option>")
+                            .attr("value", "").text('Select Section'));
+                        for (i = 0; i < sch.length; i++) {
+
+                            $el.append($("<option></option>")
+                                .attr("value", sch[i].Id).text(sch[i].Name));
+                        }
+                    }
+                    else {
+                        $el.append($("<option></option>")
+                            .attr("value", '').text('Select'));
+                    }
+                }
+            });
+
+           // CheckTeacherAlreadyEnroll();
+
+        }
+        else {
+
+            var $el = $("#SectionId");
+            $el.empty();
+        }
+
+    }
+
+    function getCourses(id) {
+
+        var ClassId = id;
+
+
+        if (ClassId != "") {
+
+            $.ajax({
+
+                type: "POST",
+                url: "/AspNetStudents/GetCourses?ClassId=" + ClassId,
+                processData: false,
+                contentType: false,
+                //data: { "SubjectId": SubjectId },
+                success: function (data) {
+                    // $('#TopicId').html('');
+                    //$('#QuestionID').html('');
+                    var sch = JSON.parse(data);
+                    //$.each(data, function (i, item) {
+
+                    //    debugger
+                    //    // var classname = $("#ClassID option[value='" + item.ClassID + "']").text();
+                    //    $('#TopicId').append('<option value=' + item.Id + '>' + item.Name + ' </option>');
+
+                    //});
+                    var $el = $("#Courses");
+                    $el.empty();
+
+                    if (sch.length > 0) {
+                        for (i = 0; i < sch.length; i++) {
+
+                            $el.append($("<option></option>")
+                                .attr("value", sch[i].Id).text(sch[i].Name));
+                        }
+                    }
+                    else {
+                        $el.append($("<option></option>")
+                            .attr("value", '').text('Select Subjects'));
+                    }
+
+                }
+
+
+            })
+          ///  CheckTeacherAlreadyEnroll();
+        }
+        else {
+
+            var $e2 = $("#Courses");
+            $e2.empty();
+        }
+
+    } //get courses
+
+    function CheckTeacherAlreadyEnroll() {
+
+        debugger
+
+        var TeacherId = $("#TeacherId").val();
+        var ClassId = $("#ClassId").val();
+        var SectionId = $("#SectionId").val();
+        var CourseId = $("#Courses").val();
+
+    
+
+        if (TeacherId != "" && TeacherId != null && ClassId != "" && ClassId != null && SectionId != "" && SectionId != null && CourseId != "" && CourseId != null) {
+
+            $.ajax({
+
+                type: "POST",
+                url: "/Teacher/CheckTeacherClassAndCourses?TeacherId=" + TeacherId + "&&ClassId=" + ClassId + "&&SectionId=" + SectionId + "&&CourseId=" + CourseId,
+                success: function (data) {
+                    debugger
+                    $("#Error").html("");
+
+                    //StudentClassId = data.ClassId;
+
+                    if (data.IsTeacherEntroll == "No") {
+
+                        $("#submit").prop('disabled', false);
+                    } else {
+                        $("#submit").prop('disabled', true);
+
+                        $("#Error").html("Selected subject is already assign to selected teacher in selected branch class section.");
+                    }
+
+
+                }
+            })
+
+        }
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+

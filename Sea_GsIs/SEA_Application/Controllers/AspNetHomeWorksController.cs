@@ -93,7 +93,7 @@ namespace SEA_Application.Controllers
         //}
         // GET: AspNetHomeWorks/Details/5
 
-        public JsonResult SubjectByTeahcer(int SectionId)
+        public JsonResult SubjectByTeahcer(int BranchId, int ClassId, int SectionId)
         {
             if (SectionId != 0)
             {
@@ -107,7 +107,10 @@ namespace SEA_Application.Controllers
                 var Subjects = (from subject in db.AspNetCourses
                                 join branchclasssubject in db.AspnetGenericBranchClassSubjects on subject.Id equals branchclasssubject.SubjectId
                                 join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.AspNetCours.Id equals enrollment.AspNetClass_Courses.CourseId
-                                where (branchclasssubject.SectionId == SectionId && enrollment.AspNetEmployee.UserId == ID)
+                                where (branchclasssubject.SectionId == SectionId && branchclasssubject.BranchId == BranchId && branchclasssubject.ClassId == ClassId
+                                && enrollment.AspNetBranchClass_Sections.SectionId == SectionId && enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId == BranchId
+                                && enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.ClassId == ClassId
+                                && enrollment.AspNetEmployee.UserId == ID)
                                 select new
                                 {
                                     subject.Id,
@@ -166,7 +169,7 @@ namespace SEA_Application.Controllers
 
             int BranchClassId = db.AspNetBranch_Class.Where(x => x.BranchId == aspNetHomework.BranchId && x.ClassId == aspNetHomework.ClassId).FirstOrDefault().Id;
             int BranchClassSectionId = db.AspNetBranchClass_Sections.Where(x => x.BranchClassId == BranchClassId && x.SectionId == aspNetHomework.SectionId).FirstOrDefault().Id;
-            
+
             AspNetHomeWork aspNetHomeworks = new AspNetHomeWork();
             aspNetHomeworks.ClassId = aspNetHomework.ClassId;
             aspNetHomeworks.SectionId = BranchClassSectionId;
@@ -277,21 +280,21 @@ namespace SEA_Application.Controllers
             return Json("", JsonRequestBehavior.AllowGet);
         }
 
-         public ActionResult UpdateDiary(Homework aspNetHomework)
-         {
+        public ActionResult UpdateDiary(Homework aspNetHomework)
+        {
             int BranchClassId = db.AspNetBranch_Class.Where(x => x.BranchId == aspNetHomework.BranchId && x.ClassId == aspNetHomework.ClassId).FirstOrDefault().Id;
 
             int BranchClassSectionId = db.AspNetBranchClass_Sections.Where(x => x.BranchClassId == BranchClassId && x.SectionId == aspNetHomework.SectionId).FirstOrDefault().Id;
 
 
-            AspNetHomeWork HomeWorkToUpdate =    db.AspNetHomeWorks.Where(x => x.Id == aspNetHomework.HomeworkId).FirstOrDefault();
+            AspNetHomeWork HomeWorkToUpdate = db.AspNetHomeWorks.Where(x => x.Id == aspNetHomework.HomeworkId).FirstOrDefault();
             HomeWorkToUpdate.Id = aspNetHomework.HomeworkId;
             HomeWorkToUpdate.Date = aspNetHomework.Date;
             HomeWorkToUpdate.SectionId = BranchClassSectionId;
             HomeWorkToUpdate.ClassId = aspNetHomework.ClassId;
             db.SaveChanges();
 
-            List<AspNetSubjectHomeWork> SubjectHomeworkToRemove= db.AspNetSubjectHomeWorks.Where(x => x.HomeWorkId == aspNetHomework.HomeworkId).ToList();
+            List<AspNetSubjectHomeWork> SubjectHomeworkToRemove = db.AspNetSubjectHomeWorks.Where(x => x.HomeWorkId == aspNetHomework.HomeworkId).ToList();
             db.AspNetSubjectHomeWorks.RemoveRange(SubjectHomeworkToRemove);
             db.SaveChanges();
 
@@ -392,7 +395,7 @@ namespace SEA_Application.Controllers
 
 
             return Json("", JsonRequestBehavior.AllowGet);
-            }
+        }
 
         public class Section_Subject
         {
@@ -435,7 +438,7 @@ namespace SEA_Application.Controllers
 
             return View();
         }
-      
+
         public JsonResult Upload()
         {
             var id = db.AspNetHomeWorks.OrderByDescending(u => u.Id).Select(x => x.Id).FirstOrDefault();
@@ -472,7 +475,7 @@ namespace SEA_Application.Controllers
 
         public JsonResult EditUploadDiary(int HomeworkId)
         {
-           // var id = db.AspNetHomeWork..Select(x => x.Id).FirstOrDefault();
+            // var id = db.AspNetHomeWork..Select(x => x.Id).FirstOrDefault();
 
             var AllFiles = "";
             for (int i = 0; i < Request.Files.Count; i++)

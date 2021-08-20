@@ -1022,11 +1022,8 @@ namespace SEA_Application.Controllers
         [HttpGet]
         public ActionResult StudentEntrollment(int a)
         {
-
-
             return View();
         }
-
 
         [HttpPost]
         public ActionResult StudentEntrollment()

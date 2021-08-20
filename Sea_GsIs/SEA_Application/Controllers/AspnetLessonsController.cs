@@ -66,7 +66,7 @@ namespace SEA_Application.Controllers
         }
 
         public ActionResult AllLessonForAdmin()
-       {
+        {
 
             int start = Convert.ToInt32(Request["start"]);
             int length = Convert.ToInt32(Request["length"]);
@@ -763,7 +763,7 @@ namespace SEA_Application.Controllers
                                          LessonDate = lesson.CreationDate,
                                          LessonStartDate = lesson.StartDate,
                                          LessonIsActive = lesson.IsActive
-                                     }).Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month)) &&  (x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Day.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Year.ToString().Contains(monthStartDate)) &&  x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+                                     }).Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month)) && (x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Day.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Year.ToString().Contains(monthStartDate)) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
 
 
                         var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
@@ -791,7 +791,7 @@ namespace SEA_Application.Controllers
                         return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
 
                     }
-                    
+
                     else if (countForCreationDate == 1 && countForStartDate != 1)
                     {
 
@@ -812,7 +812,7 @@ namespace SEA_Application.Controllers
                                          LessonDate = lesson.CreationDate,
                                          LessonStartDate = lesson.StartDate,
                                          LessonIsActive = lesson.IsActive
-                                     }).Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month)) &&  x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+                                     }).Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month)) && x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
 
 
                         var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
@@ -834,7 +834,7 @@ namespace SEA_Application.Controllers
                                               LessonStartDate = lesson.StartDate,
                                               LessonIsActive = lesson.IsActive
                                               //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
-                                          }).Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month)) &&  x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+                                          }).Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month)) && x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
 
                         int totalrowsafterfiltering = totalrows;
                         return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
@@ -865,7 +865,7 @@ namespace SEA_Application.Controllers
                                          LessonDate = lesson.CreationDate,
                                          LessonStartDate = lesson.StartDate,
                                          LessonIsActive = lesson.IsActive
-                                   }).Where(x => (x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Day.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Year.ToString().Contains(monthStartDate)) &&  x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) &&  x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+                                     }).Where(x => (x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Day.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Year.ToString().Contains(monthStartDate)) && x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
 
 
                         var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
@@ -936,7 +936,7 @@ namespace SEA_Application.Controllers
                                               LessonStartDate = lesson.StartDate,
                                               LessonIsActive = lesson.IsActive
                                               //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
-                                          }).Where(x => x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) &&  x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+                                          }).Where(x => x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) && x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
 
                         int totalrowsafterfiltering = totalrows;
                         return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
@@ -1020,7 +1020,7 @@ namespace SEA_Application.Controllers
                                          LessonDate = lesson.CreationDate,
                                          LessonStartDate = lesson.StartDate,
                                          LessonIsActive = lesson.IsActive
-                                     }).Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month)) && x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) &&  x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+                                     }).Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month)) && x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
 
 
                         var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
@@ -1042,7 +1042,7 @@ namespace SEA_Application.Controllers
                                               LessonStartDate = lesson.StartDate,
                                               LessonIsActive = lesson.IsActive
                                               //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
-                                          }).Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month)) && x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive  && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+                                          }).Where(x => (x.LessonDate.Value.Month.ToString().Contains(month) || x.LessonDate.Value.Day.ToString().Contains(month) || x.LessonDate.Value.Year.ToString().Contains(month)) && x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
 
                         int totalrowsafterfiltering = totalrows;
                         return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
@@ -1095,7 +1095,7 @@ namespace SEA_Application.Controllers
                                               LessonStartDate = lesson.StartDate,
                                               LessonIsActive = lesson.IsActive
                                               //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
-                                          }).Where(x => (x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Day.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Year.ToString().Contains(monthStartDate)) && x.LessonDate.Value.Day.ToString().Contains(day)  && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+                                          }).Where(x => (x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Day.ToString().Contains(monthStartDate) || x.LessonStartDate.Value.Year.ToString().Contains(monthStartDate)) && x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
 
                         int totalrowsafterfiltering = totalrows;
                         return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
@@ -1144,7 +1144,7 @@ namespace SEA_Application.Controllers
                                               LessonStartDate = lesson.StartDate,
                                               LessonIsActive = lesson.IsActive
                                               //  }).Where(x => x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonStartDate.ToString().Contains(LessonStartDate) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().ToList();
-                                          }).Where(x => x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) && x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive &&  x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
+                                          }).Where(x => x.LessonStartDate.Value.Day.ToString().Contains(dayStartDate) && x.LessonStartDate.Value.Month.ToString().Contains(monthStartDate) && x.LessonStartDate.Value.Year.ToString().Contains(yearStartDate) && x.LessonDate.Value.Day.ToString().Contains(day) && x.LessonDate.Value.Month.ToString().Contains(month) && x.LessonDate.Value.Year.ToString().Contains(year) && x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonStatus == LessonStatusbool && x.LessonIsActive == LessonIsActive && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).OrderBy(x => x.LessonName).Skip((pageNo - 1) * length).Take(length).Distinct().ToList();
 
                         int totalrowsafterfiltering = totalrows;
                         return Json(new { data = AllLessons, draw = Request["draw"], recordsTotal = totalrows, recordsFiltered = totalrowsafterfiltering }, JsonRequestBehavior.AllowGet);
@@ -1271,24 +1271,24 @@ namespace SEA_Application.Controllers
                 var ex = ex1.Message;
 
 
-              int   totalrows = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
-                             select new
-                             {
-                                 LessonId = lesson.Id,
-                                 LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
-                                 LessonName = lesson.Name,
-                                 LessonVidoeUrl = lesson.Video_Url,
-                                 LessonDuration = lesson.DurationMinutes,
-                                 LessonDescription = lesson.Description,
-                                 LessonStatus = lesson.Status,
-                                 LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
-                                 LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
-                                 LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
-                                 LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
-                                 LessonDate = lesson.CreationDate,
-                                 LessonStartDate = lesson.StartDate,
-                                 LessonIsActive = lesson.IsActive
-                             }).Where(x => x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
+                int totalrows = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
+                                 select new
+                                 {
+                                     LessonId = lesson.Id,
+                                     LessonSubjectTopicName = lesson.AspnetSubjectTopic.Name,
+                                     LessonName = lesson.Name,
+                                     LessonVidoeUrl = lesson.Video_Url,
+                                     LessonDuration = lesson.DurationMinutes,
+                                     LessonDescription = lesson.Description,
+                                     LessonStatus = lesson.Status,
+                                     LessonStatus1 = lesson.Status.ToString() + "-" + lesson.IsActive.ToString(),
+                                     LessonSubject = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetCours.Name,
+                                     LessonClass = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetClass.Name,
+                                     LessonSection = lesson.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetSection.Name,
+                                     LessonDate = lesson.CreationDate,
+                                     LessonStartDate = lesson.StartDate,
+                                     LessonIsActive = lesson.IsActive
+                                 }).Where(x => x.LessonClass.ToLower().Contains(LessonClass) && x.LessonSection.ToLower().Contains(LessonSection) && x.LessonSubject.ToLower().Contains(LessonSubject) && x.LessonSubjectTopicName.ToLower().ToLower().Contains(LessonTopicName) && x.LessonName.ToLower().Contains(LessonName)).Distinct().Count();
 
 
                 var AllLessons = (from lesson in db.AspnetLessons.Where(x => x.AspnetSubjectTopic.AspnetGenericBranchClassSubject.AspNetBranch.Id == branchId)
@@ -1606,7 +1606,7 @@ namespace SEA_Application.Controllers
 
             }
 
-         //   PublishLessonsFunction(42351);
+            //   PublishLessonsFunction(42351);
 
 
             return Json("Success", JsonRequestBehavior.AllowGet);
@@ -2046,7 +2046,7 @@ namespace SEA_Application.Controllers
         // POST: AspnetLessons/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
-       // [Authorize(Roles = "Teacher,Branch_Admin")]
+        // [Authorize(Roles = "Teacher,Branch_Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Create(LessonViewModel LessonViewModel)
@@ -2091,12 +2091,12 @@ namespace SEA_Application.Controllers
 
             var stringlength = newString.Length;
 
-            if (newString.Length>1500)
+            if (newString.Length > 1500)
             {
 
 
-              newString = newString.Substring(0, 1500);
-         
+                newString = newString.Substring(0, 1500);
+
             }
 
             Lesson.EncryptedID = newString;
@@ -3166,7 +3166,7 @@ namespace SEA_Application.Controllers
 
             var Branches = (from branch in db.AspNetBranches
                             join branchclasssubject in db.AspnetGenericBranchClassSubjects on branch.Id equals branchclasssubject.BranchId
-                            join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.BranchId equals enrollment.AspNetEmployee.BranchId
+                            join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.BranchId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId
                             where enrollment.AspNetEmployee.UserId == TeacherUserId
                             select new
                             {
@@ -3178,7 +3178,7 @@ namespace SEA_Application.Controllers
             var Classes = (from classs in db.AspNetClasses
                            join branchclasssubject in db.AspnetGenericBranchClassSubjects on classs.Id equals branchclasssubject.ClassId
                            join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.ClassId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetClass.Id
-                           where (branchclasssubject.BranchId == GenericObject.BranchId && enrollment.AspNetEmployee.UserId == TeacherUserId)
+                           where (branchclasssubject.BranchId == GenericObject.BranchId && enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetBranch.Id == GenericObject.BranchId && enrollment.AspNetEmployee.UserId == TeacherUserId)
                            select new
                            {
                                classs.Id,
@@ -3186,8 +3186,7 @@ namespace SEA_Application.Controllers
                            }).Distinct();
 
 
-
-            var Sections = db.AspNetTeacher_Enrollments.Where(x => x.AspNetEmployee.UserId == TeacherUserId && x.AspNetBranchClass_Sections.AspNetBranch_Class.ClassId == GenericObject.ClassId).Select(x => new
+            var Sections = db.AspNetTeacher_Enrollments.Where(x => x.AspNetEmployee.UserId == TeacherUserId && x.AspNetBranchClass_Sections.AspNetBranch_Class.ClassId == GenericObject.ClassId && x.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId == GenericObject.BranchId).Select(x => new
             {
                 Id = x.AspNetBranchClass_Sections.AspNetSection.Id,
                 Name = x.AspNetBranchClass_Sections.AspNetSection.Name
@@ -3197,7 +3196,13 @@ namespace SEA_Application.Controllers
             var Subjects = (from subject in db.AspNetCourses
                             join branchclasssubject in db.AspnetGenericBranchClassSubjects on subject.Id equals branchclasssubject.SubjectId
                             join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.AspNetCours.Id equals enrollment.AspNetClass_Courses.CourseId
-                            where (branchclasssubject.SectionId == GenericObject.SectionId && enrollment.AspNetEmployee.UserId == TeacherUserId)
+                            // where (branchclasssubject.SectionId == GenericObject.SectionId && enrollment.AspNetEmployee.UserId == TeacherUserId)
+                            where (branchclasssubject.SectionId == GenericObject.SectionId && branchclasssubject.BranchId == GenericObject.BranchId && branchclasssubject.ClassId == GenericObject.ClassId
+                             && enrollment.AspNetBranchClass_Sections.SectionId == GenericObject.SectionId && enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId == GenericObject.BranchId
+                             && enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.ClassId == GenericObject.ClassId
+
+                           && enrollment.AspNetEmployee.UserId == TeacherUserId)
+
                             select new
                             {
                                 subject.Id,
@@ -3213,7 +3218,7 @@ namespace SEA_Application.Controllers
 
             // var AssignmentType = db.AspnetStudentAssignments.ToList().Select(x => new { Id = x.AssignmentType, Name = x.AssignmentType }).Distinct();
 
-             var AssignmentType = db.AspnetStudentAssignments.Select(x => new { Id = x.AssignmentType, Name = x.AssignmentType }).Distinct().Where(x=>x.Name !="" && x.Id !="" && x.Name != null && x.Id !=null).ToList();
+            var AssignmentType = db.AspnetStudentAssignments.Select(x => new { Id = x.AssignmentType, Name = x.AssignmentType }).Distinct().Where(x => x.Name != "" && x.Id != "" && x.Name != null && x.Id != null).ToList();
 
 
             //  string AllTopics = Newtonsoft.Json.JsonConvert.SerializeObject(Topics);
@@ -4143,9 +4148,22 @@ namespace SEA_Application.Controllers
             var GenericObject = db.AspnetGenericBranchClassSubjects.Where(x => x.Id == GenericBranchClassSubjectSectionId).FirstOrDefault();
 
             var ID = User.Identity.GetUserId();
+
+            //var Branches = (from branch in db.AspNetBranches
+            //                join branchclasssubject in db.AspnetGenericBranchClassSubjects on branch.Id equals branchclasssubject.BranchId
+            //                join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.BranchId equals enrollment.AspNetEmployee.BranchId
+            //                where enrollment.AspNetEmployee.UserId == ID
+            //                select new
+            //                {
+            //                    branch.Id,
+            //                    branch.Name,
+            //                }).Distinct();
+
             var Branches = (from branch in db.AspNetBranches
                             join branchclasssubject in db.AspnetGenericBranchClassSubjects on branch.Id equals branchclasssubject.BranchId
-                            join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.BranchId equals enrollment.AspNetEmployee.BranchId
+                            //join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.BranchId equals enrollment.AspNetEmployee.BranchId
+                            join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.BranchId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId
+
                             where enrollment.AspNetEmployee.UserId == ID
                             select new
                             {
@@ -4154,10 +4172,22 @@ namespace SEA_Application.Controllers
                             }).Distinct();
 
 
+
+
+            //var Classes = (from classs in db.AspNetClasses
+            //               join branchclasssubject in db.AspnetGenericBranchClassSubjects on classs.Id equals branchclasssubject.ClassId
+            //               join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.ClassId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetClass.Id
+            //               where (branchclasssubject.BranchId == GenericObject.BranchId && enrollment.AspNetEmployee.UserId == ID)
+            //               select new
+            //               {
+            //                   classs.Id,
+            //                   classs.Name,
+            //               }).Distinct();
+
             var Classes = (from classs in db.AspNetClasses
                            join branchclasssubject in db.AspnetGenericBranchClassSubjects on classs.Id equals branchclasssubject.ClassId
                            join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.ClassId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetClass.Id
-                           where (branchclasssubject.BranchId == GenericObject.BranchId && enrollment.AspNetEmployee.UserId == ID)
+                           where (branchclasssubject.BranchId == GenericObject.BranchId && enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetBranch.Id == GenericObject.BranchId && enrollment.AspNetEmployee.UserId == ID)
                            select new
                            {
                                classs.Id,
@@ -4165,21 +4195,45 @@ namespace SEA_Application.Controllers
                            }).Distinct();
 
 
-            var Sections = db.AspNetTeacher_Enrollments.Where(x => x.AspNetEmployee.UserId == ID && x.AspNetBranchClass_Sections.AspNetBranch_Class.ClassId == GenericObject.ClassId).Select(x => new
+
+            //var Sections = db.AspNetTeacher_Enrollments.Where(x => x.AspNetEmployee.UserId == ID && x.AspNetBranchClass_Sections.AspNetBranch_Class.ClassId == GenericObject.ClassId).Select(x => new
+            //{
+            //    Id = x.AspNetBranchClass_Sections.AspNetSection.Id,
+            //    Name = x.AspNetBranchClass_Sections.AspNetSection.Name
+            //}).Distinct();
+
+
+            var Sections = db.AspNetTeacher_Enrollments.Where(x => x.AspNetEmployee.UserId == ID && x.AspNetBranchClass_Sections.AspNetBranch_Class.ClassId == GenericObject.ClassId && x.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId == GenericObject.BranchId).Select(x => new
             {
                 Id = x.AspNetBranchClass_Sections.AspNetSection.Id,
                 Name = x.AspNetBranchClass_Sections.AspNetSection.Name
             }).Distinct();
 
+
+            //var Subjects = (from subject in db.AspNetCourses
+            //                join branchclasssubject in db.AspnetGenericBranchClassSubjects on subject.Id equals branchclasssubject.SubjectId
+            //                join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.AspNetCours.Id equals enrollment.AspNetClass_Courses.CourseId
+            //                where (branchclasssubject.SectionId == GenericObject.SectionId && enrollment.AspNetEmployee.UserId == ID)
+            //                select new
+            //                {
+            //                    subject.Id,
+            //                    subject.Name,
+            //                }).Distinct();
+
             var Subjects = (from subject in db.AspNetCourses
                             join branchclasssubject in db.AspnetGenericBranchClassSubjects on subject.Id equals branchclasssubject.SubjectId
                             join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.AspNetCours.Id equals enrollment.AspNetClass_Courses.CourseId
-                            where (branchclasssubject.SectionId == GenericObject.SectionId && enrollment.AspNetEmployee.UserId == ID)
+                            where (branchclasssubject.SectionId == GenericObject.SectionId && branchclasssubject.BranchId == GenericObject.BranchId && branchclasssubject.ClassId == GenericObject.ClassId
+                              && enrollment.AspNetBranchClass_Sections.SectionId == GenericObject.SectionId && enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId == GenericObject.BranchId
+                              && enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.ClassId == GenericObject.ClassId
+
+                            && enrollment.AspNetEmployee.UserId == ID)
                             select new
                             {
                                 subject.Id,
                                 subject.Name,
                             }).Distinct();
+
 
 
             var Generic = db.AspnetGenericBranchClassSubjects.Where(x => x.BranchId == GenericObject.BranchId && x.ClassId == GenericObject.ClassId && x.SubjectId == GenericObject.SubjectId && x.SectionId == GenericObject.SectionId).FirstOrDefault();
@@ -4512,16 +4566,16 @@ namespace SEA_Application.Controllers
             DateTime date = Convert.ToDateTime("2020-08-01");
 
 
-           var AllLessonIdsToDelete =  db.AspnetLessons.Where(x => x.CreationDate < date).Select(x=>x.Id).ToList();
+            var AllLessonIdsToDelete = db.AspnetLessons.Where(x => x.CreationDate < date).Select(x => x.Id).ToList();
             //16426
 
-           // DeleteLessonFunction(16426);
+            // DeleteLessonFunction(16426);
 
             foreach (var id in AllLessonIdsToDelete)
             {
 
 
-             DeleteLessonFunction(id);
+                DeleteLessonFunction(id);
 
             }
 
@@ -4618,82 +4672,82 @@ namespace SEA_Application.Controllers
             {
 
 
-            int? LessonId = id;
+                int? LessonId = id;
 
-            IEnumerable<AspnetComment> CommentsToDelete = db.AspnetComment_Head.Where(x => x.LessonId == LessonId).SelectMany(x => x.AspnetComments);
-            db.AspnetComments.RemoveRange(CommentsToDelete);
-            db.SaveChanges();
-
-            List<AspnetComment_Head> ListCommentHeadToDelete = db.AspnetComment_Head.Where(x => x.LessonId == LessonId).ToList();
-            db.AspnetComment_Head.RemoveRange(ListCommentHeadToDelete);
-            db.SaveChanges();
-
-            var AssignmentToDelete = db.AspnetStudentAssignments.Where(x => x.LessonId == LessonId).FirstOrDefault();
-            if (AssignmentToDelete != null)
-            {
-
-                db.AspnetStudentAssignments.Remove(AssignmentToDelete);
-                db.SaveChanges();
-            }
-
-            List<AspnetStudentAttachment> StudentAttachmentListToDelete = db.AspnetStudentAttachments.Where(x => x.LessonId == LessonId).ToList();
-            db.AspnetStudentAttachments.RemoveRange(StudentAttachmentListToDelete);
-            db.SaveChanges();
-
-
-            List<AspnetStudentLink> StudentLinkListToDelete = db.AspnetStudentLinks.Where(x => x.LessonId == LessonId).ToList();
-            db.AspnetStudentLinks.RemoveRange(StudentLinkListToDelete);
-            db.SaveChanges();
-
-
-            List<Event> AllEvents = db.Events.Where(x => x.LessonID == LessonId).ToList();
-
-            foreach (var item in AllEvents)
-            {
-                var event_users = db.AspnetEvent_User.Where(x => x.eventid == item.EventID).ToList();
-                db.AspnetEvent_User.RemoveRange(event_users);
-                db.SaveChanges();
-            }
-
-            db.Events.RemoveRange(AllEvents);
-            db.SaveChanges();
-
-            List<AspnetStudentAssignmentSubmission> StudentAssignmentSubmissionListToDelete = db.AspnetStudentAssignmentSubmissions.Where(x => x.LessonId == LessonId).ToList();
-            db.AspnetStudentAssignmentSubmissions.RemoveRange(StudentAssignmentSubmissionListToDelete);
-            db.SaveChanges();
-
-            List<StudentLessonTracking> StudentLessonTrackingListToDelete = db.StudentLessonTrackings.Where(x => x.LessonId == LessonId).ToList();
-            db.StudentLessonTrackings.RemoveRange(StudentLessonTrackingListToDelete);
-            db.SaveChanges();
-
-            List<Student_Quiz_Scoring> StudentQuizScoringToDelete = db.AspnetQuestions.Where(x => x.LessonId == LessonId).SelectMany(x => x.Student_Quiz_Scoring).ToList();
-            db.Student_Quiz_Scoring.RemoveRange(StudentQuizScoringToDelete);
-            db.SaveChanges();
-
-            List<Lesson_Session> LessonSessionToDelete = db.Lesson_Session.Where(x => x.LessonId == LessonId).ToList();
-            db.Lesson_Session.RemoveRange(LessonSessionToDelete);
-            db.SaveChanges();
-
-            List<Quiz_Topic_Questions> QuizTopicQuestionnsToDelete = db.AspnetQuestions.Where(x => x.LessonId == LessonId).SelectMany(x => x.Quiz_Topic_Questions).ToList();
-            db.Quiz_Topic_Questions.RemoveRange(QuizTopicQuestionnsToDelete);
-            db.SaveChanges();
-
-            List<AspnetQuestion> QuestionListToDelete = db.AspnetQuestions.Where(x => x.LessonId == LessonId).ToList();
-            db.AspnetQuestions.RemoveRange(QuestionListToDelete);
-            db.SaveChanges();
-
-            AspnetLesson LessonToDelete = db.AspnetLessons.Where(x => x.Id == LessonId).FirstOrDefault();
-            if (LessonToDelete != null)
-            {
-                db.AspnetLessons.Remove(LessonToDelete);
+                IEnumerable<AspnetComment> CommentsToDelete = db.AspnetComment_Head.Where(x => x.LessonId == LessonId).SelectMany(x => x.AspnetComments);
+                db.AspnetComments.RemoveRange(CommentsToDelete);
                 db.SaveChanges();
 
-            }
+                List<AspnetComment_Head> ListCommentHeadToDelete = db.AspnetComment_Head.Where(x => x.LessonId == LessonId).ToList();
+                db.AspnetComment_Head.RemoveRange(ListCommentHeadToDelete);
+                db.SaveChanges();
+
+                var AssignmentToDelete = db.AspnetStudentAssignments.Where(x => x.LessonId == LessonId).FirstOrDefault();
+                if (AssignmentToDelete != null)
+                {
+
+                    db.AspnetStudentAssignments.Remove(AssignmentToDelete);
+                    db.SaveChanges();
+                }
+
+                List<AspnetStudentAttachment> StudentAttachmentListToDelete = db.AspnetStudentAttachments.Where(x => x.LessonId == LessonId).ToList();
+                db.AspnetStudentAttachments.RemoveRange(StudentAttachmentListToDelete);
+                db.SaveChanges();
+
+
+                List<AspnetStudentLink> StudentLinkListToDelete = db.AspnetStudentLinks.Where(x => x.LessonId == LessonId).ToList();
+                db.AspnetStudentLinks.RemoveRange(StudentLinkListToDelete);
+                db.SaveChanges();
+
+
+                List<Event> AllEvents = db.Events.Where(x => x.LessonID == LessonId).ToList();
+
+                foreach (var item in AllEvents)
+                {
+                    var event_users = db.AspnetEvent_User.Where(x => x.eventid == item.EventID).ToList();
+                    db.AspnetEvent_User.RemoveRange(event_users);
+                    db.SaveChanges();
+                }
+
+                db.Events.RemoveRange(AllEvents);
+                db.SaveChanges();
+
+                List<AspnetStudentAssignmentSubmission> StudentAssignmentSubmissionListToDelete = db.AspnetStudentAssignmentSubmissions.Where(x => x.LessonId == LessonId).ToList();
+                db.AspnetStudentAssignmentSubmissions.RemoveRange(StudentAssignmentSubmissionListToDelete);
+                db.SaveChanges();
+
+                List<StudentLessonTracking> StudentLessonTrackingListToDelete = db.StudentLessonTrackings.Where(x => x.LessonId == LessonId).ToList();
+                db.StudentLessonTrackings.RemoveRange(StudentLessonTrackingListToDelete);
+                db.SaveChanges();
+
+                List<Student_Quiz_Scoring> StudentQuizScoringToDelete = db.AspnetQuestions.Where(x => x.LessonId == LessonId).SelectMany(x => x.Student_Quiz_Scoring).ToList();
+                db.Student_Quiz_Scoring.RemoveRange(StudentQuizScoringToDelete);
+                db.SaveChanges();
+
+                List<Lesson_Session> LessonSessionToDelete = db.Lesson_Session.Where(x => x.LessonId == LessonId).ToList();
+                db.Lesson_Session.RemoveRange(LessonSessionToDelete);
+                db.SaveChanges();
+
+                List<Quiz_Topic_Questions> QuizTopicQuestionnsToDelete = db.AspnetQuestions.Where(x => x.LessonId == LessonId).SelectMany(x => x.Quiz_Topic_Questions).ToList();
+                db.Quiz_Topic_Questions.RemoveRange(QuizTopicQuestionnsToDelete);
+                db.SaveChanges();
+
+                List<AspnetQuestion> QuestionListToDelete = db.AspnetQuestions.Where(x => x.LessonId == LessonId).ToList();
+                db.AspnetQuestions.RemoveRange(QuestionListToDelete);
+                db.SaveChanges();
+
+                AspnetLesson LessonToDelete = db.AspnetLessons.Where(x => x.Id == LessonId).FirstOrDefault();
+                if (LessonToDelete != null)
+                {
+                    db.AspnetLessons.Remove(LessonToDelete);
+                    db.SaveChanges();
+
+                }
 
                 dbTransaction.Commit();
             }//end of try block
 
-            catch(Exception ex )
+            catch (Exception ex)
             {
                 dbTransaction.Dispose();
 
@@ -4714,9 +4768,9 @@ namespace SEA_Application.Controllers
             var AllLessonIdsToDelete = db.AspnetLessons.Where(x => x.CreationDate > date).Select(x => x.Id).ToList();
 
 
-          //  DeleteInactiveLessonsList(new List<int> { 4742 });
+            //  DeleteInactiveLessonsList(new List<int> { 4742 });
 
-           // DeleteInactiveLessonsList(AllLessonIdsToDelete);
+            // DeleteInactiveLessonsList(AllLessonIdsToDelete);
 
 
 
@@ -4727,8 +4781,8 @@ namespace SEA_Application.Controllers
         public void DeleteInactiveLessonsList(List<int> Ids)
         {
 
-         //   var LessonsIds = idlist.Split(',');
-            
+            //   var LessonsIds = idlist.Split(',');
+
 
             foreach (var lessonID in Ids)
             {

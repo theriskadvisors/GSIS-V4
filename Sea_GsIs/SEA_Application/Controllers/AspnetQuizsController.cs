@@ -127,7 +127,7 @@ namespace SEA_Application.Controllers
         {
             var user = User.Identity.GetUserId();
 
-          int Employeeid =   db.AspNetEmployees.Where(x => x.UserId == user).Select(x => x.Id).FirstOrDefault();
+            int Employeeid = db.AspNetEmployees.Where(x => x.UserId == user).Select(x => x.Id).FirstOrDefault();
 
             //var AllQuiz = (from quiz in db.Quiz_Topic_Questions
             //               join enrollment in db.AspNetTeacher_Enrollments on quiz.AspnetSubjectTopic.AspnetGenericBranchClassSubject.BranchId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId
@@ -555,7 +555,7 @@ namespace SEA_Application.Controllers
 
             var Branches = (from branch in db.AspNetBranches
                             join branchclasssubject in db.AspnetGenericBranchClassSubjects on branch.Id equals branchclasssubject.BranchId
-                            join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.BranchId equals enrollment.AspNetEmployee.BranchId
+                            join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.BranchId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId
                             where enrollment.AspNetEmployee.UserId == TeacherUserId
                             select new
                             {
@@ -566,14 +566,16 @@ namespace SEA_Application.Controllers
             var Classes = (from classs in db.AspNetClasses
                            join branchclasssubject in db.AspnetGenericBranchClassSubjects on classs.Id equals branchclasssubject.ClassId
                            join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.ClassId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetClass.Id
-                           where (branchclasssubject.BranchId == GenericObject.BranchId && enrollment.AspNetEmployee.UserId == TeacherUserId)
+                           // where (branchclasssubject.BranchId == GenericObject.BranchId && enrollment.AspNetEmployee.UserId == TeacherUserId)
+                           where (branchclasssubject.BranchId == GenericObject.BranchId && enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetBranch.Id == GenericObject.BranchId && enrollment.AspNetEmployee.UserId == TeacherUserId)
+
                            select new
                            {
                                classs.Id,
                                classs.Name,
                            }).Distinct();
 
-            var Sections = db.AspNetTeacher_Enrollments.Where(x => x.AspNetEmployee.UserId == TeacherUserId && x.AspNetBranchClass_Sections.AspNetBranch_Class.ClassId == GenericObject.ClassId).Select(x => new
+            var Sections = db.AspNetTeacher_Enrollments.Where(x => x.AspNetEmployee.UserId == TeacherUserId && x.AspNetBranchClass_Sections.AspNetBranch_Class.ClassId == GenericObject.ClassId && x.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId == GenericObject.BranchId).Select(x => new
             {
                 Id = x.AspNetBranchClass_Sections.AspNetSection.Id,
                 Name = x.AspNetBranchClass_Sections.AspNetSection.Name
@@ -583,7 +585,12 @@ namespace SEA_Application.Controllers
             var Subjects = (from subject in db.AspNetCourses
                             join branchclasssubject in db.AspnetGenericBranchClassSubjects on subject.Id equals branchclasssubject.SubjectId
                             join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.AspNetCours.Id equals enrollment.AspNetClass_Courses.CourseId
-                            where (branchclasssubject.SectionId == GenericObject.SectionId && enrollment.AspNetEmployee.UserId == TeacherUserId)
+                            //  where (branchclasssubject.SectionId == GenericObject.SectionId && enrollment.AspNetEmployee.UserId == TeacherUserId)
+                            where (branchclasssubject.SectionId == GenericObject.SectionId && branchclasssubject.BranchId == GenericObject.BranchId && branchclasssubject.ClassId == GenericObject.ClassId
+                            && enrollment.AspNetBranchClass_Sections.SectionId == GenericObject.SectionId && enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId == GenericObject.BranchId
+                            && enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.ClassId == GenericObject.ClassId
+                            && enrollment.AspNetEmployee.UserId == TeacherUserId)
+
                             select new
                             {
                                 subject.Id,

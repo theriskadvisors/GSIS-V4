@@ -98,8 +98,10 @@
                $.ajax({
             type: "POST",
             cache: false,
-            url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId,
-            processData: false,
+          //  url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId,
+                   url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId + "&&BranchId=" + BranchId,
+
+                   processData: false,
             contentType: false,
             success: function (data) {
                 var sch = JSON.parse(data);
@@ -127,7 +129,8 @@
             });
 
                 $.get('@Url.Action("SubjectByTeahcer")',
-                    {SectionId:SectionId},
+                   // {SectionId:SectionId},
+                    { BranchId: BranchId, ClassId: ClassId, SectionId: SectionId },
                         function (data) {
 
                         $("#HomeworkDetailTbody").html('');
@@ -145,24 +148,24 @@
                                  $.each(data, function (i, item) {
 
                                      $("#HomeworkDetailTbody tr").each(function () {
-                                       
+
                                          var RowId = $(this).attr('id');
 
                                        if (RowId == item.SubjectID) {
 
                                            var td = $(this).children("td").find("textarea").val(item.HomeworkDetail);
                                        }
-                                       
+
 
                                      });
-                                  
+
                                 });
 
 
                            });
 
 
-                              
+
                             });
 
                 $.ajax({
@@ -277,7 +280,9 @@
         });
             $('#ClassId').change(function () {
 
-            var ClassId = $(this).val();
+                var ClassId = $(this).val();
+                var BranchId = $("#BranchId").val();
+
             //Class = UserName;
 
             if (ClassId != "") {
@@ -285,7 +290,9 @@
                 $.ajax({
                     type: "POST",
                     cache: false,
-                    url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId,
+                   // url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId,
+                    url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId + "&&BranchId=" + BranchId,
+
                     processData: false,
                     contentType: false,
                     success: function (data) {
@@ -384,8 +391,10 @@
                if (SectionId != "") {
 
                     $.get('@Url.Action("SubjectByTeahcer")',
-                            {SectionId:SectionId},
-                             function (data) {
+                           // {SectionId:SectionId},
+                        { BranchId: BranchId, ClassId: ClassId, SectionId: SectionId },
+
+                        function (data) {
 
                                 $("#HomeworkDetailTbody").html('');
                                 $.each(data, function (i, item) {
@@ -579,7 +588,7 @@
                     <div class="row">
                         <div class="col-md-6 pl-5 pr-5 leftCol">
 
-                            @Html.HiddenFor(x=>x.HomeworkId)
+                            @Html.HiddenFor(x => x.HomeworkId)
                             <div class="form-row mt-4">
                                 <div class="form-group col-md-12 bmd-form-group">
                                     <label for="" class="bmd-label-static pl-2">Select Branch*</label>

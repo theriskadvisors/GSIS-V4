@@ -108,10 +108,11 @@
 
         });
 
-
         $('#ClassId').change(function () {
 
             var ClassId = $(this).val();
+            var BranchId = $("#BranchId").val();
+
             //Class = UserName;
 
             if (ClassId != "") {
@@ -119,7 +120,9 @@
                 $.ajax({
                     type: "POST",
                     cache: false,
-                    url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId,
+                   // url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId,
+                    url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId + "&&BranchId=" + BranchId,
+
                     processData: false,
                     contentType: false,
                     success: function (data) {
@@ -165,7 +168,11 @@
 
         $('#SectionId').change(function () {
 
+           // var SectionId = $(this).val();
+
             var SectionId = $(this).val();
+            var BranchId = $("#BranchId").val();
+            var ClassId = $("#ClassId").val();
             //Class = UserName;
 
             if (SectionId != "") {
@@ -173,7 +180,9 @@
                 $.ajax({
                     type: "POST",
                     cache: false,
-                    url: "/AspNetProject/SubjectsByClass?SectionId=" + SectionId,
+                  //  url: "/AspNetProject/SubjectsByClass?SectionId=" + SectionId,
+                    url: "/AspNetProject/SubjectsByClass?BranchId=" + BranchId + "&&ClassId=" + ClassId + "&&SectionId=" + SectionId,
+
                     processData: false,
                     contentType: false,
                     success: function (data) {

@@ -184,7 +184,7 @@
                         var $e2 = $("#SubjectId");
                         $e2.empty();
 
-                             var $e3 = $("#SectionId");
+                        var $e3 = $("#SectionId");
                         $e3.empty();
                         if (sch.length > 0) {
                             $el.append($("<option></option>")
@@ -208,8 +208,8 @@
                 var $e2 = $("#SubjectId");
                 $e2.empty();
 
-                    var $e3 = $("#SectionId");
-                        $e3.empty();
+                var $e3 = $("#SectionId");
+                $e3.empty();
 
             }
 
@@ -218,6 +218,10 @@
         $('#ClassId').change(function () {
 
             var ClassId = $(this).val();
+            var BranchId = $("#BranchId").val();
+
+           // $("")
+           // alert(ClassId);
             //Class = UserName;
 
             if (ClassId != "") {
@@ -225,7 +229,9 @@
                 $.ajax({
                     type: "POST",
                     cache: false,
-                    url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId,
+                    //url: '/AspNetProject/SectionByClasses',
+                    url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId + "&&BranchId=" + BranchId,
+
                     processData: false,
                     contentType: false,
                     success: function (data) {
@@ -235,7 +241,7 @@
                         $el.empty();
                         var $e2 = $("#SubjectId");
                         $e2.empty();
-                        debugger    
+                        debugger
 
                         if (sch.length > 0) {
                             $el.append($("<option></option>")
@@ -268,9 +274,11 @@
 
 
 
-          $('#SectionId').change(function () {
+        $('#SectionId').change(function () {
 
             var SectionId = $(this).val();
+            var BranchId = $("#BranchId").val();
+            var ClassId = $("#ClassId").val();
             //Class = UserName;
 
             if (SectionId != "") {
@@ -278,7 +286,10 @@
                 $.ajax({
                     type: "POST",
                     cache: false,
-                    url: "/AspNetProject/SubjectsByClass?SectionId=" + SectionId,
+                    //url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId + "&&BranchId=" + BranchId,
+                    
+                    url: "/AspNetProject/SubjectsByClass?BranchId=" + BranchId + "&&ClassId=" + ClassId + "&&SectionId=" + SectionId,
+                    //?ClassId=" + ClassId + "&&BranchId=" + BranchId,
                     processData: false,
                     contentType: false,
                     success: function (data) {
@@ -286,11 +297,11 @@
                         console.log(sch);
                         var $el = $("#SubjectId");
                         $el.empty();
-                    
+
 
                         if (sch.length > 0) {
                             $el.append($("<option></option>")
-                                .attr("value", "").text('Select Section'));
+                                .attr("value", "").text('Select Subject'));
                             for (i = 0; i < sch.length; i++) {
 
                                 $el.append($("<option></option>")
@@ -310,7 +321,7 @@
                 var $el = $("#SubjectId");
                 $el.empty();
 
-          
+
 
             }
 

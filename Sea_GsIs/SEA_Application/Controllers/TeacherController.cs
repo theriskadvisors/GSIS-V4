@@ -44,7 +44,6 @@ namespace SEA_Application.Controllers
             return View();
         }
 
-
         //public ActionResult LessonPlanList()
         //{
         //    List<LessonPlan> lp = db.LessonPlans.ToList();
@@ -66,19 +65,23 @@ namespace SEA_Application.Controllers
 
             //Wrong SectionId  LP.SectionID;
             int ActualSectionId = db.AspnetSubjectTopics.Where(x => x.Id == LP.TopicID).Select(x => x.AspnetGenericBranchClassSubject.SectionId.Value).FirstOrDefault();
+            int BranchId = db.AspnetSubjectTopics.Where(x => x.Id == LP.TopicID).Select(x => x.AspnetGenericBranchClassSubject.BranchId.Value).FirstOrDefault();
 
             ViewBag.UserRole = "";
 
             ViewBag.ID = ID;
             // ViewBag.SectionID = LP.SectionID;
-             ViewBag.SectionID = ActualSectionId;
+            ViewBag.SectionID = ActualSectionId;
             ViewBag.ClassID = LP.ClassID;
             ViewBag.TopicID = LP.TopicID;
             ViewBag.SubjectID = LP.SubjectID;
+            ViewBag.BranchID = BranchId;
+
 
             if (User.IsInRole("Branch_Admin"))
             {
                 ViewBag.UserRole = "Admin";
+                ViewBag.BranchName = db.AspNetBranches.Where(x => x.Id == BranchId).FirstOrDefault().Name;
                 ViewBag.ClassName = db.AspNetClasses.Where(x => x.Id == ClassId).FirstOrDefault().Name;
                 ViewBag.SubjectName = db.AspNetCourses.Where(x => x.Id == LP.SubjectID).FirstOrDefault().Name;
                 //ViewBag.SectionName = db.AspNetSections.Where(x => x.Id == LP.SectionID).FirstOrDefault().Name;
@@ -86,8 +89,6 @@ namespace SEA_Application.Controllers
                 ViewBag.TopicName = db.AspnetSubjectTopics.Where(x => x.Id == LP.TopicID).FirstOrDefault().Name;
 
             }
-
-
 
             return View(LP);
         }
@@ -101,15 +102,19 @@ namespace SEA_Application.Controllers
 
                 var ID = User.Identity.GetUserId();
 
-                var BranchID = (from branch in db.AspNetBranches
-                                join branchclasssubject in db.AspnetGenericBranchClassSubjects on branch.Id equals branchclasssubject.BranchId
-                                join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.BranchId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId
-                                where enrollment.AspNetEmployee.UserId == ID
-                                select new
-                                {
-                                    branch.Id,
+                //var BranchID = (from branch in db.AspNetBranches
+                //                join branchclasssubject in db.AspnetGenericBranchClassSubjects on branch.Id equals branchclasssubject.BranchId
+                //                join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.BranchId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId
+                //                where enrollment.AspNetEmployee.UserId == ID
+                //                select new
+                //                {
+                //                    branch.Id,
 
-                                }).Distinct().FirstOrDefault().Id;
+                //                }).Distinct().FirstOrDefault().Id;
+
+                var BranchID1 = Request.Form["BranchID"];
+
+                var BranchID = Convert.ToInt32(Request.Form["BranchID"]);
 
                 int ClassId = LP.ClassID.Value;
                 int SectionId = LP.SectionID.Value;
@@ -172,15 +177,17 @@ namespace SEA_Application.Controllers
         {
             var ID = User.Identity.GetUserId();
 
-            var BranchID = (from branch in db.AspNetBranches
-                            join branchclasssubject in db.AspnetGenericBranchClassSubjects on branch.Id equals branchclasssubject.BranchId
-                            join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.BranchId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId
-                            where enrollment.AspNetEmployee.UserId == ID
-                            select new
-                            {
-                                branch.Id,
+            var BranchID = Convert.ToInt32(Request.Form["BranchID"]);
 
-                            }).Distinct().FirstOrDefault().Id;
+            //var BranchID = (from branch in db.AspNetBranches
+            //                join branchclasssubject in db.AspnetGenericBranchClassSubjects on branch.Id equals branchclasssubject.BranchId
+            //                join enrollment in db.AspNetTeacher_Enrollments on branchclasssubject.BranchId equals enrollment.AspNetBranchClass_Sections.AspNetBranch_Class.BranchId
+            //                where enrollment.AspNetEmployee.UserId == ID
+            //                select new
+            //                {
+            //                    branch.Id,
+
+            //                }).Distinct().FirstOrDefault().Id;
 
             int ClassId = LP.ClassID.Value;
             int SectionId = LP.SectionID.Value;
@@ -255,6 +262,98 @@ namespace SEA_Application.Controllers
 
             return View();
         }
+        [HttpGet]
+        public ActionResult TeacherEnrollment()
+        {
+
+            return View();
+        }
+        [HttpPost]
+        public ActionResult TeacherEnrollment(int? b)
+        {
+
+            var dbTransaction = db.Database.BeginTransaction();
+            try
+            {
+                var ClassId = Convert.ToInt32(Request.Form["ClassId"]);
+                var TeacherId = Request.Form["TeacherId"];
+                var SectionId = Convert.ToInt32(Request.Form["SectionId"]);
+                var Courses = Convert.ToInt32(Request.Form["Courses"]);
+
+
+                var Teacher = db.AspNetEmployees.Where(x => x.UserId == TeacherId).Select(x => x.Id).FirstOrDefault();
+                var SessionId = db.AspNetSessions.Where(x => x.StatusId == 1).Select(x => x.Id).FirstOrDefault();
+
+                AspNetTeacher_Enrollments TeacherEnrollment = new AspNetTeacher_Enrollments();
+
+                TeacherEnrollment.SectionId = SectionId;
+                TeacherEnrollment.SessionId = SessionId;
+                TeacherEnrollment.CourseId = Courses;
+                TeacherEnrollment.TeacherId = Teacher;
+
+                db.AspNetTeacher_Enrollments.Add(TeacherEnrollment);
+                db.SaveChanges();
+
+                var BranchId = db.AspNetBranch_Class.Where(x => x.Id == ClassId).Select(x => x.BranchId).FirstOrDefault();
+                var ClassIdOfClass = db.AspNetBranch_Class.Where(x => x.Id == ClassId).Select(x => x.ClassId).FirstOrDefault();
+                var SectionIdOfSection = db.AspNetBranchClass_Sections.Where(x => x.Id == SectionId).Select(x => x.SectionId).FirstOrDefault();
+                var SubjectIdofSubject = db.AspNetClass_Courses.Where(x => x.Id == Courses).Select(x => x.CourseId).FirstOrDefault();
+
+                var generictest = db.AspnetGenericBranchClassSubjects.Where(x => x.BranchId == BranchId && x.ClassId == ClassIdOfClass &&
+                                                x.SectionId == SectionIdOfSection && x.SubjectId == SubjectIdofSubject).FirstOrDefault();
+
+                if (generictest == null)
+                {
+                    var generic = new AspnetGenericBranchClassSubject();
+
+                    generic.BranchId = BranchId;
+                    generic.ClassId = ClassIdOfClass;
+                    generic.SectionId = SectionIdOfSection;
+                    generic.SubjectId = SubjectIdofSubject;
+
+                    db.AspnetGenericBranchClassSubjects.Add(generic);
+                    db.SaveChanges();
+                }
+
+                dbTransaction.Commit();
+                return RedirectToAction("TeacherEnrollment", "Teacher");
+
+              //  return RedirectToAction("TeacherClassSubject", "BranchAdmin");
+            }
+            catch (Exception e)
+            {  
+                dbTransaction.Dispose();
+                return RedirectToAction("TeacherEnrollment", "Teacher");
+
+               // return RedirectToAction("TeacherEnrollment", "BranchAdmin", model);
+            }
+
+           // return RedirectToAction("TeacherEnrollment", "Teacher");
+
+        }
+        //CheckTeacherClassAndCourses
+
+
+        public ActionResult CheckTeacherClassAndCourses(string TeacherId, int ClassId, int SectionId, int CourseId)
+        {
+            var Teacher = db.AspNetEmployees.Where(x => x.UserId == TeacherId).Select(x => x.Id).FirstOrDefault();
+
+            string IsTeacherEntroll = "No";
+
+            var TeacherEnrollment = db.AspNetTeacher_Enrollments.Where(x => x.TeacherId == Teacher && x.SectionId == SectionId && x.CourseId == CourseId).FirstOrDefault();
+
+            //AspNetStudent Student = db.AspNetStudents.Where(x => x.UserId == StudentId).FirstOrDefault();
+
+            if (TeacherEnrollment != null)
+            {
+                IsTeacherEntroll = "Yes";
+            }
+
+
+            return Json(new { IsTeacherEntroll = IsTeacherEntroll }, JsonRequestBehavior.AllowGet);
+        }
+
+
         public ActionResult GetLessonPlanList()
         {
 
@@ -310,6 +409,10 @@ namespace SEA_Application.Controllers
 
 
         }
+
+
+
+
         public ActionResult PublishLesson(int id)
         {
             LessonPlan LessonPlanToUpdate = db.LessonPlans.Where(x => x.Id == id).FirstOrDefault();

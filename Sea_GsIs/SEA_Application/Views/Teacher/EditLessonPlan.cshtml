@@ -5,7 +5,7 @@
       if (User.IsInRole("Branch_Admin"))
     {
         Layout = "~/Views/Shared/_BranchAdminDashboardLayout.cshtml";
-        
+
     }
     else
     {
@@ -18,6 +18,7 @@
     .card .card-body .form-group {
         margin: 15px 0 0;
     }
+
     .Floating_text {
         border: 2px solid #EEEEEE !important;
     }
@@ -149,6 +150,7 @@
         var Class;
 
         //  var BranchIdForLesson = $("#BranchIdForLesson").val();
+        var BranchIdForLesson = $("#BranchId").val();
         var ClassIdForLesson = $("#ClassId").val();
         var SectionIdForLesson = $("#SectionId").val();
         var SubjectIdForLesson = $("#SubjectId").val();
@@ -164,20 +166,82 @@
             var SubjectName = $("#SubjectName").val();
             var SectionName = $("#SectionName").val();
             var TopicName = $("#TopicName").val();
+            var BranchName = $("#BranchName").val();
 
             $('#ClassID').append('<option> ' + ClassName + '</option>');
             $('#SubjectID').append('<option> ' + SubjectName + '</option>');
             $('#SectionID').append('<option> ' + SectionName + '</option>');
             $('#TopicID').append('<option> ' + TopicName + '</option>');
+            $('#BranchID').append('<option> ' + BranchName + '</option>');
 
         }
         else {
 
 
+            //$.ajax({
+            //    type: "POST",
+            //    cache: false,
+            //    url: "/AspNetProject/AllClasses_LP",
+            //    processData: false,
+            //    contentType: false,
+            //    success: function (data) {
+            //        var sch = JSON.parse(data);
+            //        console.log(sch);
+            //        var $el = $("#ClassID");
+            //        $el.empty();
+            //        if (sch.length > 0) {
+            //            $el.append($("<option></option>")
+            //                .attr("value", "").text('Select Class'));
+            //            for (i = 0; i < sch.length; i++) {
+
+            //                $el.append($("<option></option>")
+            //                    .attr("value", sch[i].Id).text(sch[i].Name));
+            //            }
+            //        }
+            //        else {
+            //            $el.append($("<option></option>")
+            //                .attr("value", '').text('Select Class'));
+            //        }
+            //        $('#ClassID option[value="' + ClassIdForLesson + '"]').prop('selected', true);
+            //    }
+            //});
+
+
+
+
             $.ajax({
                 type: "POST",
                 cache: false,
-                url: "/AspNetProject/AllClasses_LP",
+                url: "/AspNetProject/AllBranches",
+                processData: false,
+                contentType: false,
+                success: function (data) {
+                    var sch = JSON.parse(data);
+                    console.log(sch);
+                    var $el = $("#BranchID");
+                    $el.empty();
+                    if (sch.length > 0) {
+                        $el.append($("<option></option>")
+                            .attr("value", "").text('Select Branch'));
+                        for (i = 0; i < sch.length; i++) {
+
+                            $el.append($("<option></option>")
+                                .attr("value", sch[i].Id).text(sch[i].Name));
+                        }
+                    }
+                    else {
+                        $el.append($("<option></option>")
+                            .attr("value", '').text('Select Branch'));
+                    }
+                    $('#BranchID option[value="' + BranchIdForLesson + '"]').prop('selected', true);
+
+                }
+            });
+
+            $.ajax({
+                type: "POST",
+                cache: false,
+                url: "/AspNetProject/ClassesByBranch?BranchId=" + BranchIdForLesson,
                 processData: false,
                 contentType: false,
                 success: function (data) {
@@ -185,6 +249,7 @@
                     console.log(sch);
                     var $el = $("#ClassID");
                     $el.empty();
+                
                     if (sch.length > 0) {
                         $el.append($("<option></option>")
                             .attr("value", "").text('Select Class'));
@@ -197,16 +262,20 @@
                     else {
                         $el.append($("<option></option>")
                             .attr("value", '').text('Select Class'));
-                    }
-                    $('#ClassID option[value="' + ClassIdForLesson + '"]').prop('selected', true);
+                    }//end of else 
+                    $('#ClassID option[value="' + ClassIdForLesson   + '"]').prop('selected', true);
+
                 }
+
             });
 
 
             $.ajax({
                 type: "POST",
                 cache: false,
-                url: "/AspNetProject/SectionByClasses?ClassId=" + ClassIdForLesson,
+                // url: "/AspNetProject/SectionByClasses?ClassId=" + ClassIdForLesson,
+                url: "/AspNetProject/SectionByClasses?ClassId=" + ClassIdForLesson + "&&BranchId=" + BranchIdForLesson,
+
                 processData: false,
                 contentType: false,
                 success: function (data) {
@@ -239,7 +308,9 @@
             $.ajax({
                 type: "POST",
                 cache: false,
-                url: "/AspNetProject/SubjectsByClass?SectionId=" + SectionIdForLesson,
+                //  url: "/AspNetProject/SubjectsByClass?SectionId=" + SectionIdForLesson,
+                url: "/AspNetProject/SubjectsByClass?BranchId=" + BranchIdForLesson + "&&ClassId=" + ClassIdForLesson + "&&SectionId=" + SectionIdForLesson,
+
                 processData: false,
                 contentType: false,
                 success: function (data) {
@@ -247,8 +318,6 @@
                     console.log(sch);
                     var $el = $(".SubId");
                     $el.empty();
-
-
 
                     if (sch.length > 0) {
                         $el.append($("<option></option>")
@@ -272,7 +341,9 @@
             $.ajax({
                 type: "POST",
                 cache: false,
-                url: "/AspNetProject/GetSubjectsForLessonPlan?ClassId=" + ClassIdForLesson + "&&SubjectId=" + SubjectIdForLesson + "&&SectionId=" + SectionIdForLesson,
+                // url: "/AspNetProject/GetSubjectsForLessonPlan?ClassId=" + ClassIdForLesson + "&&SubjectId=" + SubjectIdForLesson + "&&SectionId=" + SectionIdForLesson,
+                url: "/AspNetProject/GetSubjectsForLessonPlan?BranchId=" + BranchIdForLesson + "&&ClassId=" + ClassIdForLesson + "&&SubjectId=" + SubjectIdForLesson + "&&SectionId=" + SectionIdForLesson,
+
                 processData: false,
                 contentType: false,
                 success: function (data) {
@@ -299,23 +370,79 @@
                 }
             });
 
-        }
+        }//end of else ...
 
         var Id = $("#Id").val();
 
 
+        $('#BranchID').change(function () {
 
+            var BranchId = $(this).val();
+
+            if (BranchId != "") {
+
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/AspNetProject/ClassesByBranch?BranchId=" + BranchId,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#ClassID");
+                        $el.empty();
+                        var $e2 = $("#SubjectID");
+                        $e2.empty();
+                        var $e3 = $(".TopicIdDDL");
+                        $e3.empty();
+                        var $e4 = $("#SectionID");
+                        $e4.empty();
+
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Class'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Class'));
+                        }
+                    }
+                });
+            }
+            else {
+                var $el = $("#ClassID");
+                $el.empty();
+                var $e2 = $("#SubjectID");
+                $e2.empty();
+                var $e3 = $(".TopicIdDDL");
+                $e3.empty();
+                var $e4 = $("#SectionID");
+                $e4.empty();
+
+            }
+
+        });
 
         $('#ClassID').change(function () {
 
             var ClassId = $(this).val();
+            var BranchId = $("#BranchID").val();
 
             if (ClassId != "") {
 
                 $.ajax({
                     type: "POST",
                     cache: false,
-                    url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId,
+                   // url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId,
+                    url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId + "&&BranchId=" + BranchId,
+
                     processData: false,
                     contentType: false,
                     success: function (data) {
@@ -364,6 +491,9 @@
         $('#SectionID').change(function () {
 
             var SectionId = $(this).val();
+            var BranchId = $("#BranchID").val();
+            var ClassId = $("#ClassID").val();
+            //Class = UserName;
             //Class = UserName;
 
             if (SectionId != "") {
@@ -371,7 +501,9 @@
                 $.ajax({
                     type: "POST",
                     cache: false,
-                    url: "/AspNetProject/SubjectsByClass?SectionId=" + SectionId,
+                   // url: "/AspNetProject/SubjectsByClass?SectionId=" + SectionId,
+                    url: "/AspNetProject/SubjectsByClass?BranchId=" + BranchId + "&&ClassId=" + ClassId + "&&SectionId=" + SectionId,
+
                     processData: false,
                     contentType: false,
                     success: function (data) {
@@ -421,13 +553,17 @@
             var ClassId = $("#ClassID").val();
             var SectionId = $("#SectionID").val();
             var SubjectId = $(this).val();
+            var BranchId = $("#BranchID").val();
+
 
             if (SubjectId != "" && ClassId != "") {
 
                 $.ajax({
                     type: "POST",
-                    cache: false,
-                    url: "/AspNetProject/GetSubjectsForLessonPlan?ClassId=" + ClassId + "&&SubjectId=" + SubjectId + "&&SectionId=" + SectionId,
+                    cache: false,   
+                    //  url: "/AspNetProject/GetSubjectsForLessonPlan?ClassId=" + ClassId + "&&SubjectId=" + SubjectId + "&&SectionId=" + SectionId,
+                    url: "/AspNetProject/GetSubjectsForLessonPlan?BranchId=" + BranchId + "&&ClassId=" + ClassId + "&&SubjectId=" + SubjectId + "&&SectionId=" + SectionId,
+
                     processData: false,
                     contentType: false,
                     success: function (data) {
@@ -530,16 +666,19 @@
                         <div class="row">
                             <div class="col-md-6 leftCol">
                                 <input type="text" class="form-control round-border Floating_text" id="Id" name="Id" value="@ViewBag.ID" hidden></input>
-                                <input type="text" class="form-control round-border Floating_text" id="SectionId" name="SectionId" value="@ViewBag.SectionID" hidden></input>
+                                <input type="text" class="form-control round-border Floating_text" id="SectionId" name="" value="@ViewBag.SectionID" hidden></input>
 
-                                <input type="text" class="form-control round-border Floating_text" id="ClassId" name="ClassId" value="@ViewBag.ClassID" hidden></input>
-                                <input type="text" class="form-control round-border Floating_text" id="TopicId" name="ClassId" value="@ViewBag.TopicID" hidden></input>
-                                <input type="text" class="form-control round-border Floating_text" id="SubjectId" name="ClassId" value="@ViewBag.SubjectID" hidden></input>
-                                <input type="text" class="form-control round-border Floating_text" id="WeekVal" name="WeekVal" value="@Model.Week" hidden></input>
+                                <input type="text" class="form-control round-border Floating_text" id="BranchId" name="" value="@ViewBag.BranchID" hidden></input>
+
+                                <input type="text" class="form-control round-border Floating_text" id="ClassId" name="" value="@ViewBag.ClassID" hidden></input>
+                                <input type="text" class="form-control round-border Floating_text" id="TopicId" name="" value="@ViewBag.TopicID" hidden></input>
+                                <input type="text" class="form-control round-border Floating_text" id="SubjectId" name="" value="@ViewBag.SubjectID" hidden></input>
+                                <input type="text" class="form-control round-border Floating_text" id="WeekVal" name="" value="@Model.Week" hidden></input>
 
                                 <input type="text" class="form-control round-border Floating_text" id="UserRole" name="UserRole" value="@ViewBag.UserRole" hidden></input>
                                 <input type="text" class="form-control round-border Floating_text" id="WeekVal" name="WeekVal" value="@Model.Week" hidden></input>
                                 <input type="text" class="form-control round-border Floating_text" id="ClassName" name="ClassName" value="@ViewBag.ClassName" hidden></input>
+                                <input type="text" class="form-control round-border Floating_text" id="BranchName" name="BranchName" value="@ViewBag.BranchName" hidden></input>
                                 <input type="text" class="form-control round-border Floating_text" id="SubjectName" name="SubjectName" value="@ViewBag.SubjectName" hidden></input>
                                 <input type="text" class="form-control round-border Floating_text" id="SectionName" name="SectionName" value="@ViewBag.SectionName" hidden></input>
                                 <input type="text" class="form-control round-border Floating_text" id="TopicName" name="TopicName" value="@ViewBag.TopicName" hidden></input>
@@ -547,6 +686,12 @@
                                 <input type="hidden" name="CreatedBy" id="CreatedBy" value="@Model.CreatedBy" />
                                 <input type="hidden" name="CreationDate" id="CreationDate" value="@Model.CreationDate" />
 
+                                <div class="form-group col-md-12 bmd-form-group">
+                                    <label class="bmd-label-floating" style="background: white;margin-left: 0.5rem;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Select Branch<span class="red-mark">*</span> </label>
+
+                                    <select class="form-control round-border Floating_text" id="BranchID" name="BranchID" required></select>
+
+                                </div>
                                 <div class="form-group col-md-12 bmd-form-group">
                                     <label class="bmd-label-floating" style="background: white;margin-left: 0.5rem;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Select Class<span class="red-mark">*</span> </label>
 
@@ -563,7 +708,7 @@
                                     <label class="bmd-label-floating" style="background: white;margin-left: 0.5rem;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Select Week<span class="red-mark">*</span> </label>
 
                                     <select class="form-control round-border Floating_text" id="Week" name="Week" value="@Model.Week" required>
-                                        
+
                                         <option value="">Select One</option>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
@@ -595,9 +740,9 @@
                                     </select>
                                 </div>
                                 @*<div class="form-group col-md-12 bmd-form-group">
-                                        <label class="bmd-label-floating" style="background: white;margin-left: 0.5rem;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Select Chapter<span class="red-mark">*</span> </label>
-                                        <input value="@Model.Chapter" type="text" class="form-control round-border Floating_text" id="Chapter" name="Chapter"></input>
-                                    </div>*@
+                                    <label class="bmd-label-floating" style="background: white;margin-left: 0.5rem;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Select Chapter<span class="red-mark">*</span> </label>
+                                    <input value="@Model.Chapter" type="text" class="form-control round-border Floating_text" id="Chapter" name="Chapter"></input>
+                                </div>*@
 
                                 <div class="form-group col-md-12 bmd-form-group">
                                     <div class="file-field d-flex">
@@ -615,19 +760,19 @@
                                         @if (Model.LessonPlanAttachments != null)
                                         {
 
-                                            foreach(var attachment in   Model.LessonPlanAttachments.Split('/').ToList())
-                                            {
+                                        foreach(var attachment in   Model.LessonPlanAttachments.Split('/').ToList())
+                                        {
 
-                                                <br>
-                                                <a style="color:blue;text-decoration:underline" href="/Teacher/DownloadLessonPlanAttachment?Name=@attachment" >@attachment</a>
-                                        
+                                        <br>
+                                        <a style="color:blue;text-decoration:underline" href="/Teacher/DownloadLessonPlanAttachment?Name=@attachment">@attachment</a>
+
                                         }
 
                                         }
                                     </div>
                                 </div>
                                 @*<span id="AssingmentFileToShow"></span>
-                                    <span style="color:blue" id="AssignmentMessage"></span>*@
+                                <span style="color:blue" id="AssignmentMessage"></span>*@
 
 
 
@@ -863,11 +1008,11 @@
                     </button>
                     @if (User.IsInRole("Teacher"))
                     {
-                        <input type="submit" name="name" value="Update" class=" btn btn-primary rounded rounded-lg" style="float: right;" />
+                    <input type="submit" name="name" value="Update" class=" btn btn-primary rounded rounded-lg" style="float: right;" />
                     }
                     @if (User.IsInRole("Branch_Admin"))
                     {
-                        <input type="button" id="Publish" name="Publish" value="Publish" class=" btn btn-primary rounded rounded-lg" style="float: right;" />
+                    <input type="button" id="Publish" name="Publish" value="Publish" class=" btn btn-primary rounded rounded-lg" style="float: right;" />
                     }
                 </div>
             </div>

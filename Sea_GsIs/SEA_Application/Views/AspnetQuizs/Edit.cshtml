@@ -86,6 +86,8 @@
         $('#ClassId').change(function () {
 
             var ClassId = $(this).val();
+            var BranchId = $("#BranchId").val();
+
             //Class = UserName;
 
             if (ClassId != "") {
@@ -93,7 +95,9 @@
                 $.ajax({
                     type: "POST",
                     cache: false,
-                    url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId,
+                   // url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId,
+                    url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId + "&&BranchId=" + BranchId,
+
                     processData: false,
                     contentType: false,
                     success: function (data) {
@@ -145,6 +149,8 @@
         $('#SectionId').change(function () {
 
             var SectionId = $(this).val();
+            var BranchId = $("#BranchId").val();
+            var ClassId = $("#ClassId").val();
             //Class = UserName;
 
             if (SectionId != "") {
@@ -152,7 +158,8 @@
                 $.ajax({
                     type: "POST",
                     cache: false,
-                    url: "/AspNetProject/SubjectsByClass?SectionId=" + SectionId,
+                  //  url: "/AspNetProject/SubjectsByClass?SectionId=" + SectionId,
+                    url: "/AspNetProject/SubjectsByClass?BranchId=" + BranchId + "&&ClassId=" + ClassId + "&&SectionId=" + SectionId,
                     processData: false,
                     contentType: false,
                     success: function (data) {
@@ -381,158 +388,158 @@
                 {
                     @Html.AntiForgeryToken()
 
-                <div class="col-md-6 pl-5 pr-5  border-color-sea">
+                    <div class="col-md-6 pl-5 pr-5  border-color-sea">
 
 
 
-                    <input class="form-control" type="text" id="QuizID" value="@ViewBag.QuizID" hidden />
+                        <input class="form-control" type="text" id="QuizID" value="@ViewBag.QuizID" hidden />
 
 
-                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                    @Html.HiddenFor(model => model.Id)
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        @Html.HiddenFor(model => model.Id)
 
-                    <div class="form-group bmd-form-group my-3">
-                        @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "bmd-label-floating" })
+                        <div class="form-group bmd-form-group my-3">
+                            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "bmd-label-floating" })
 
-                        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @required = true } })
-                        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                            @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", @required = true } })
+                            @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
 
-                    </div>
-
-                    <div class="form-group bmd-form-group my-3">
-                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "bmd-label-floating" })
-
-                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-
-                    </div>
-
-                    <div class="form-group">
-
-                        <label class="control-label">Start Date</label>
-
-
-                        <input class="form-control" type="date" name="Start_Date" required value="@ViewBag.StartDate" />
-                        @Html.ValidationMessageFor(model => model.Start_Date, "", new { @class = "text-danger" })
-
-                    </div>
-
-                    <div class="form-group">
-                        @*@Html.LabelFor(model => model.Due_Date, htmlAttributes: new { @class = "control-label" })*@
-
-                        <label class="control-label">Due Date</label>
-
-                        <input type="date" class="form-control" name="Due_Date" required value="@ViewBag.DueDate" />
-
-                        @Html.ValidationMessageFor(model => model.Due_Date, "", new { @class = "text-danger" })
-
-                    </div>
-
-
-                    <div class="form-group">
-
-
-                        <label class="control-label">Duration(Minutes) </label>
-
-
-                        @Html.EditorFor(model => model.QuizTime, new { htmlAttributes = new { type = "number", @class = "form-control", @required = true } })
-                        @Html.ValidationMessageFor(model => model.QuizTime, "", new { @class = "text-danger" })
-
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label">Meeting Link </label>
-                        @Html.EditorFor(model => model.MeetingLink, new { htmlAttributes = new { type = "string", @class = "form-control", } }) @*@required = true*@
-                        @Html.ValidationMessageFor(model => model.MeetingLink, "", new { @class = "text-danger" })
-
-                    </div>
-
-                    <div class="form-row mt-3">
-                        <div class="form-group col-md-12 bmd-form-group">
-                            <label for="" class="bmd-label-static pl-2">Select Branch*</label>
-                            @Html.DropDownList("BranchId", null, htmlAttributes: new { @class = "form-control", @required = true })
-                            @*<select class="form-control SubIdDDL" id="SubId" name="SubId" required></select>*@
                         </div>
-                    </div>
 
+                        <div class="form-group bmd-form-group my-3">
+                            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "bmd-label-floating" })
 
-                    <div class="form-row mt-3">
-                        <div class="form-group col-md-12 bmd-form-group">
-                            <label for="" class="bmd-label-static pl-2">Select class*</label>
-                            @Html.DropDownList("ClassId", null, htmlAttributes: new { @class = "form-control", @required = true })
-                            @*<select class="form-control SubIdDDL" id="SubId" name="SubId" required></select>*@
+                            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+
                         </div>
-                    </div>
 
-                    <div class="form-row mt-3">
-                        <div class="form-group col-md-12 bmd-form-group">
-                            <label for="" class="bmd-label-static pl-2">Select Section*</label>
-                            @Html.DropDownList("SectionId", null, htmlAttributes: new { @class = "form-control", @required = true })
-                            @*<select class="form-control SubIdDDL" id="SubId" name="SubId" required></select>*@
+                        <div class="form-group">
+
+                            <label class="control-label">Start Date</label>
+
+
+                            <input class="form-control" type="date" name="Start_Date" required value="@ViewBag.StartDate" />
+                            @Html.ValidationMessageFor(model => model.Start_Date, "", new { @class = "text-danger" })
+
                         </div>
-                    </div>
-                    <div class="form-row mt-3">
-                        <div class="form-group col-md-12 bmd-form-group">
-                            <label for="" class="bmd-label-static pl-2">Select Subject*</label>
-                            @Html.DropDownList("SubId", null, htmlAttributes: new { @class = "form-control SubIdDDL", @required = true })
-                            @*<select class="form-control SubIdDDL" id="SubId" name="SubId" required></select>*@
+
+                        <div class="form-group">
+                            @*@Html.LabelFor(model => model.Due_Date, htmlAttributes: new { @class = "control-label" })*@
+
+                            <label class="control-label">Due Date</label>
+
+                            <input type="date" class="form-control" name="Due_Date" required value="@ViewBag.DueDate" />
+
+                            @Html.ValidationMessageFor(model => model.Due_Date, "", new { @class = "text-danger" })
+
                         </div>
-                    </div>
-
-                    <div class="form-group col-md-4" style="padding-left: 0px;">
-                        <label class="bmd-label-floating" style="background: white;margin-left: 0.5rem;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Start Time <span class="red-mark">*</span> </label>
-                        <input type="time" name="StartTime" id="StartTime"  value="@ViewBag.StartTime" class="round-border Floating_text form-control" required/>
-                        @Html.ValidationMessageFor(model => model.StartTime, "", new { @class = "text-danger" })
-                    </div>
-
-                    <div class="form-group">
-
-                        <div class="col-md-12">
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="box box-primary">
-                                        <div class="box-header with-border"><h3 class="orange">Topics:<span class="red-mark">*</span></h3></div>
 
 
-                                        <div class="box-body">
-                                            @Html.ListBox("TopicId", null, htmlAttributes: new { @required = true, @class = "form-control", @style = "height:400px;" })
-                                        </div>
-                                    </div>
-                                </div>
+                        <div class="form-group">
 
 
-                                <div class="col-md-6">
-                                    <div class="box box-primary">
-                                        <div class="box-header with-border"><h3 class="orange">Questions:<span class="red-mark">*</span></h3></div>
-
-                                        <div class="box-body">
-                                            @Html.ListBox("QuestionID", null, htmlAttributes: new { @required = true, @class = "form-control", @style = "height:400px;" })
-
-                                        </div>
-                                    </div>
-                                </div>
+                            <label class="control-label">Duration(Minutes) </label>
 
 
+                            @Html.EditorFor(model => model.QuizTime, new { htmlAttributes = new { type = "number", @class = "form-control", @required = true } })
+                            @Html.ValidationMessageFor(model => model.QuizTime, "", new { @class = "text-danger" })
 
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label">Meeting Link </label>
+                            @Html.EditorFor(model => model.MeetingLink, new { htmlAttributes = new { type = "string", @class = "form-control", } }) @*@required = true*@
+                            @Html.ValidationMessageFor(model => model.MeetingLink, "", new { @class = "text-danger" })
+
+                        </div>
+
+                        <div class="form-row mt-3">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <label for="" class="bmd-label-static pl-2">Select Branch*</label>
+                                @Html.DropDownList("BranchId", null, htmlAttributes: new { @class = "form-control", @required = true })
+                                @*<select class="form-control SubIdDDL" id="SubId" name="SubId" required></select>*@
                             </div>
                         </div>
+
+
+                        <div class="form-row mt-3">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <label for="" class="bmd-label-static pl-2">Select class*</label>
+                                @Html.DropDownList("ClassId", null, htmlAttributes: new { @class = "form-control", @required = true })
+                                @*<select class="form-control SubIdDDL" id="SubId" name="SubId" required></select>*@
+                            </div>
+                        </div>
+
+                        <div class="form-row mt-3">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <label for="" class="bmd-label-static pl-2">Select Section*</label>
+                                @Html.DropDownList("SectionId", null, htmlAttributes: new { @class = "form-control", @required = true })
+                                @*<select class="form-control SubIdDDL" id="SubId" name="SubId" required></select>*@
+                            </div>
+                        </div>
+                        <div class="form-row mt-3">
+                            <div class="form-group col-md-12 bmd-form-group">
+                                <label for="" class="bmd-label-static pl-2">Select Subject*</label>
+                                @Html.DropDownList("SubId", null, htmlAttributes: new { @class = "form-control SubIdDDL", @required = true })
+                                @*<select class="form-control SubIdDDL" id="SubId" name="SubId" required></select>*@
+                            </div>
+                        </div>
+
+                        <div class="form-group col-md-4" style="padding-left: 0px;">
+                            <label class="bmd-label-floating" style="background: white;margin-left: 0.5rem;border-left: 4px solid white;border-right: 4px solid white;transform: translateY(-1.75rem);top: 1.3rem;color: #AAAAAA;">Start Time <span class="red-mark">*</span> </label>
+                            <input type="time" name="StartTime" id="StartTime" value="@ViewBag.StartTime" class="round-border Floating_text form-control" required />
+                            @Html.ValidationMessageFor(model => model.StartTime, "", new { @class = "text-danger" })
+                        </div>
+
+                        <div class="form-group">
+
+                            <div class="col-md-12">
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="box box-primary">
+                                            <div class="box-header with-border"><h3 class="orange">Topics:<span class="red-mark">*</span></h3></div>
+
+
+                                            <div class="box-body">
+                                                @Html.ListBox("TopicId", null, htmlAttributes: new { @required = true, @class = "form-control", @style = "height:400px;" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-md-6">
+                                        <div class="box box-primary">
+                                            <div class="box-header with-border"><h3 class="orange">Questions:<span class="red-mark">*</span></h3></div>
+
+                                            <div class="box-body">
+                                                @Html.ListBox("QuestionID", null, htmlAttributes: new { @required = true, @class = "form-control", @style = "height:400px;" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <br>
+
+                        <hr class="mt-5 mb-4">
+                        @if (User.IsInRole("Teacher"))
+                        {
+
+                            <button type="button" class="btn btn-danger pull-right rounded rounded-lg" id="delete"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Delete &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </button>
+                            <button type="submit" class="btn btn-primary pull-right rounded rounded-lg"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Save &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </button>
+                            <button type="button" id="btnCancel" class="btn btn-primary pull-right rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                                <i class="material-icons mr-2">cached</i>  Cancel &nbsp; &nbsp;
+                            </button>
+                            <div class="clearfix"></div>
+                        }
                     </div>
-
-                    <br>
-
-                    <hr class="mt-5 mb-4">
-                    @if (User.IsInRole("Teacher"))
-                    {
-
-                        <button type="button" class="btn btn-danger pull-right rounded rounded-lg" id="delete"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Delete &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </button>
-                        <button type="submit" class="btn btn-primary pull-right rounded rounded-lg"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Save &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </button>
-                        <button type="button" id="btnCancel" class="btn btn-primary pull-right rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
-                            <i class="material-icons mr-2">cached</i>  Cancel &nbsp; &nbsp;
-                        </button>
-                        <div class="clearfix"></div>
-                    }
-                </div>
 
                 }
             </div>

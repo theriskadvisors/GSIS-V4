@@ -687,6 +687,10 @@ namespace SEA_Application.Controllers
             if (ModelState.IsValid)
             {
                 db.Entry(aspNetEmployee).State = EntityState.Modified;
+                db.Entry(aspNetEmployee).Property(x => x.JoiningDate).IsModified = false;
+                db.Entry(aspNetEmployee).Property(x => x.BirthDate).IsModified = false;
+
+
                 db.SaveChanges();
                 return RedirectToAction("TeacherIndex");
             }

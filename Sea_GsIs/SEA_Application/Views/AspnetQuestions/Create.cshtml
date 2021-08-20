@@ -203,7 +203,7 @@
             $.ajax({
                 type: "POST",
                 cache: false,
-                url: "/AspNetProject/SectionByClasses?ClassId=" + ClassIdForLesson,
+                url: "/AspNetProject/SectionByClasses?ClassId=" + ClassIdForLesson + "&&BranchId=" + BranchIdForLesson,
                 processData: false,
                 contentType: false,
                 success: function (data) {
@@ -218,7 +218,7 @@
 
                     if (sch.length > 0) {
                         $e4.append($("<option></option>")
-                            .attr("value", "").text('Select Section'));
+                            .attr("value", "").attr('disabled', 'disabled').text('Select Section'));
                         for (i = 0; i < sch.length; i++) {
 
                             $e4.append($("<option></option>")
@@ -238,7 +238,7 @@
             $.ajax({
                 type: "POST",
                 cache: false,
-                url: "/AspNetProject/SubjectsByClass?SectionId=" + SectionIdForLesson,
+                url: "/AspNetProject/SubjectsByClass?BranchId=" + BranchIdForLesson + "&&ClassId=" + ClassIdForLesson + "&&SectionId=" + SectionIdForLesson,
                 processData: false,
                 contentType: false,
                 success: function (data) {
@@ -284,7 +284,7 @@
 
                     if (sch.length > 0) {
                         $el.append($("<option></option>")
-                            .attr("value", "").text('Select Topic'));
+                            .attr("value", "").attr('disabled', 'disabled').text('Select Topic'));
                         for (i = 0; i < sch.length; i++) {
 
                             $el.append($("<option></option>")
@@ -333,11 +333,15 @@
                 }
             });
 
+        }//end of if
+
             //$("#submit").click(function () {
             //    $('#submit').prop('disabled', true);
             //});
 
             $('#BranchId').change(function () {
+
+                debugger
 
                 var BranchId = $(this).val();
 
@@ -405,6 +409,8 @@
             $('#ClassId').change(function () {
 
                 var ClassId = $(this).val();
+                var BranchId = $("#BranchId").val();
+
                 //Class = UserName;
 
                 if (ClassId != "") {
@@ -412,7 +418,9 @@
                     $.ajax({
                         type: "POST",
                         cache: false,
-                        url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId,
+                       // url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId,
+                        url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId + "&&BranchId=" + BranchId,
+
                         processData: false,
                         contentType: false,
                         success: function (data) {
@@ -420,7 +428,9 @@
                             console.log(sch);
                             var $el = $(".SubIdDDL");
                             $el.empty();
-                            var $e3 = $(".TopIdDDL");
+                           // var $e3 = $(".TopIdDDL");
+                           // $e3.empty();
+                            var $e3 = $(".TopicIdDDL");
                             $e3.empty();
                             var $e4 = $("#LessonId");
                             $e4.empty();
@@ -467,6 +477,8 @@
             $('#SectionId').click(function () {
 
                 var SectionId = $(this).val();
+                var BranchId = $("#BranchId").val();
+                var ClassId = $("#ClassId").val();
 
             //    alert(SectionId);
                 //Class = UserName;
@@ -485,8 +497,8 @@
                             type: 'POST',
                             dataType: 'json',
                             cache: false,
-                            traditional: true,
-                            data: { SectionIds: SectionId },
+                        traditional: true,
+                        data: { SectionIds: SectionId, BranchId: BranchId, ClassId: ClassId },
 
                              success: function (data) {
                             // var sch = JSON.parse(data);
@@ -630,7 +642,7 @@
 
 
 
-        }//end of if
+      
 
     })
 </script>
