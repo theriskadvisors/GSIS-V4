@@ -1219,7 +1219,7 @@
 
                                     <div class="form-group">
                                         <label class="control-label">Assignment Type</label>
-                                        @Html.DropDownList("AssignmentType", null, htmlAttributes: new { @class = "form-control", @required = true })
+                                        @Html.DropDownList("AssignmentType", null, htmlAttributes: new { @class = "form-control" })   <!-- ,@@required = true -->
                                         @*@Html.EditorFor(model => model.AssignmentType, new { htmlAttributes = new { @type = "number", @class = "form-control" } })*@
                                         @*<input type="text" name="TotalMarks" id="TotalMarks" value="" class="form-control" />*@
 
