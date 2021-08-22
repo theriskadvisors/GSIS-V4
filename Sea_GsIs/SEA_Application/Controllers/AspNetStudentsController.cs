@@ -503,8 +503,8 @@ namespace SEA_Application.Controllers
 
                 if (param.sSearch != null)
                 {
-                  //  var a  = db.AllStudentsList().Where(x=>x)
-                    totalCount = db.AllStudentsList().Select( x=> new { x.Name, x.TotalWithoutAdmission, x.RollNo, x.CellNo, JoiningDate = x.JoiningDate, ClassName = x.ClassName, UserStatus = x.StatusId == 2 ? "Disabled" : "Enabled" }).Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Count();
+                    //  var a  = db.AllStudentsList().Where(x=>x)
+                    totalCount = db.AllStudentsList().Select(x => new { x.Name, x.TotalWithoutAdmission, x.RollNo, x.CellNo, JoiningDate = x.JoiningDate, ClassName = x.ClassName, UserStatus = x.StatusId == 2 ? "Disabled" : "Enabled" }).Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Count();
 
                     var studentList = db.AllStudentsList().Select(x => new { x.Name, x.TotalWithoutAdmission, x.RollNo, x.CellNo, JoiningDate = x.JoiningDate, ClassName = x.ClassName, UserStatus = x.StatusId == 2 ? "Disabled" : "Enabled" }).Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Skip((pageNo - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
                     return Json(new
@@ -563,8 +563,8 @@ namespace SEA_Application.Controllers
                                on stdnt.Id equals stufee.StudentID into egroup
                                from stufee in egroup.DefaultIfEmpty()
                                join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
-                               where stdnt.UserId == usr.Id  && stdnt.BranchId == branchId
-                               select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name,UserStatus = usr.StatusId==2 ? "Disabled":"Enabled" }).Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Distinct().Count();
+                               where stdnt.UserId == usr.Id && stdnt.BranchId == branchId
+                               select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name, UserStatus = usr.StatusId == 2 ? "Disabled" : "Enabled" }).Where(x => x.RollNo.ToLower().Contains(param.sSearch.ToLower()) || x.Name.ToLower().Contains(param.sSearch.ToLower()) || x.ClassName.ToLower().Contains(param.sSearch.ToLower()) || x.CellNo.Contains(param.sSearch)).Distinct().Count();
 
                 var studentList = (from stdnt in db.AspNetStudents
                                    join usr in db.AspNetUsers on stdnt.UserId equals usr.Id
@@ -595,7 +595,7 @@ namespace SEA_Application.Controllers
                                on stdnt.Id equals stufee.StudentID into egroup
                                from stufee in egroup.DefaultIfEmpty()
                                join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
-                               where stdnt.UserId == usr.Id  && stdnt.BranchId == branchId
+                               where stdnt.UserId == usr.Id && stdnt.BranchId == branchId
                                select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name, UserStatus = usr.StatusId == 2 ? "Disabled" : "Enabled" }).Distinct().Count();
 
 
@@ -605,7 +605,7 @@ namespace SEA_Application.Controllers
                                    on stdnt.Id equals stufee.StudentID into egroup
                                    from stufee in egroup.DefaultIfEmpty()
                                    join enrollment in db.AspNetStudent_Enrollments on stdnt.Id equals enrollment.StudentId
-                                   where stdnt.UserId == usr.Id  && stdnt.BranchId == branchId
+                                   where stdnt.UserId == usr.Id && stdnt.BranchId == branchId
                                    select new { stdnt.Name, stufee.TotalWithoutAdmission, stdnt.RollNo, stdnt.CellNo, usr.Image, JoiningDate = stdnt.AspNetUser.CreationDate, ClassName = stdnt.AspNetClass.Name, UserStatus = usr.StatusId == 2 ? "Disabled" : "Enabled" }).Distinct().OrderBy(x => x.Name).Skip((pageNo1 - 1) * param.iDisplayLength).Take(param.iDisplayLength).ToList();
 
 
@@ -693,18 +693,18 @@ namespace SEA_Application.Controllers
 
             var SiblingRecord = db.AspNetStudents.Where(x => x.SiblingId == SiblingId).FirstOrDefault();
 
-                ViewBag.Error = null;
-         
-                foreach (var item in Students)
-                {
-                    int StudentId = Convert.ToInt32(item);
+            ViewBag.Error = null;
 
-                    var StudentToUpdate = db.AspNetStudents.Where(x => x.Id == StudentId).FirstOrDefault();
-                    StudentToUpdate.SiblingId = SiblingId;
-                    db.SaveChanges();
-                }
-           
-            
+            foreach (var item in Students)
+            {
+                int StudentId = Convert.ToInt32(item);
+
+                var StudentToUpdate = db.AspNetStudents.Where(x => x.Id == StudentId).FirstOrDefault();
+                StudentToUpdate.SiblingId = SiblingId;
+                db.SaveChanges();
+            }
+
+
             return RedirectToAction("SiblingList");
         }
 
@@ -868,7 +868,7 @@ namespace SEA_Application.Controllers
         }
 
         [Authorize(Roles = "Branch_Admin,Branch_Principal")]
-       // [Authorize(Roles = "Branch_Admin")]
+        // [Authorize(Roles = "Branch_Admin")]
         public ActionResult StudentClass()
         {
             var loggedInUserId = User.Identity.GetUserId();
@@ -959,7 +959,7 @@ namespace SEA_Application.Controllers
                 var BranchName = db.AspNetStudent_Enrollments.Where(x => x.StudentId == Student.Id).Select(x => x.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetBranch.Name).FirstOrDefault();
                 if (AllStudents != null)
                 {
-                    IsStudentEntroll = BranchName+ "-" + className + "-" + SectionName;
+                    IsStudentEntroll = BranchName + "-" + className + "-" + SectionName;
                 }
             }
 
@@ -1177,8 +1177,8 @@ namespace SEA_Application.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
 
         // POST: AspNetStudents/Create
-       // [Authorize(Roles = "Teacher,Branch_Admin")]
-       [AjaxAuthorize]
+        // [Authorize(Roles = "Teacher,Branch_Admin")]
+        [AjaxAuthorize]
         [HttpPost]
         public async Task<ActionResult> Create(StudentRegistrationViewModel studentRegistrationViewModel /*, HttpPostedFileBase file*/ )
         {
@@ -1617,7 +1617,7 @@ namespace SEA_Application.Controllers
             return Json(count, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult Quiz_student_check() 
+        public JsonResult Quiz_student_check()
         {
             TimeZoneInfo PK_ZONE = TimeZoneInfo.FindSystemTimeZoneById("Pakistan Standard Time");
             DateTime PKTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, PK_ZONE);
@@ -1703,7 +1703,7 @@ namespace SEA_Application.Controllers
 
         public ActionResult GetStudentsQuiz()
         {
-           
+
 
 
 
@@ -1725,7 +1725,7 @@ namespace SEA_Application.Controllers
                               QuizName = QTQ.AspnetQuiz.Name,
                               QuizDescription = QTQ.AspnetQuiz.Description,
                               StartDate = QTQ.AspnetQuiz.Start_Date,
-                            ///  StartDate = QTQ.AspnetQuiz.StartTime,
+                              ///  StartDate = QTQ.AspnetQuiz.StartTime,
                               DueDate = QTQ.AspnetQuiz.Due_Date.ToString(),
                               Duration = QTQ.AspnetQuiz.QuizTime,
                               Meeting = QTQ.AspnetQuiz.MeetingLink,
@@ -2266,6 +2266,42 @@ namespace SEA_Application.Controllers
             //return View(aspNetStudent);
 
         }
+
+        public ActionResult Passwords()
+        {
+
+            var loggedInUserId = User.Identity.GetUserId();
+
+
+            int branchId;
+            if (User.IsInRole("Branch_Admin"))
+            {
+                branchId = db.AspNetBranch_Admins
+                .Where(branchAdmin => branchAdmin.AdminId.Equals(loggedInUserId, StringComparison.OrdinalIgnoreCase))
+                .Select(branchAdmin => branchAdmin.BranchId).FirstOrDefault();
+            }
+            else
+            {
+                branchId = db.AspNetBranches.Where(x => x.BranchPrincipalId == loggedInUserId).Select(x => x.Id).FirstOrDefault();
+            }
+
+            //var UserRole = db.GetUserRoleById(ID).FirstOrDefault();
+            //if (UserRole == "Branch_Admin" || UserRole == "Branch_Principal")
+            //{
+            //}
+
+            var AllStudentsUserNames = db.AspNetStudents.Where(x => x.BranchId == branchId).Select(x => x.AspNetUser.UserName.ToString()).ToList();
+
+
+            //var AllStudentPasswords  =  db.ruffdatas.Where(x => x.UserName.Any(s => AllStudentsUserNames.Contains(s.ToString())));
+
+
+            var Passwords = (from m in db.ruffdatas where AllStudentsUserNames.Contains(m.UserName) select m).ToList() ;
+
+
+            return View(Passwords);
+        }
+
 
         // GET: AspNetStudents/Delete/5
         public ActionResult Delete(int? id)
