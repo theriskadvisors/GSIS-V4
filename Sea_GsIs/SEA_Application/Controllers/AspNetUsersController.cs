@@ -127,23 +127,23 @@ namespace SEA_Application.Controllers
             //        StSu.Students.Add(student);
             //    }
             //}
-    
+
             if (id != 0)
             {
-                 var Students = (from parent in db.AspNetParent_Child
+                var Students = (from parent in db.AspNetParent_Child
                                 join student in db.AspNetStudents on parent.ChildID equals student.UserId
                                 where (student.ClassId == id)
                                 select new { parent.AspNetUser1.Name, parent.AspNetUser1.UserName, parent.AspNetUser1.Email, childName = parent.AspNetUser.Name }).Distinct().ToList();
-                 return Json(Students, JsonRequestBehavior.AllowGet);
+                return Json(Students, JsonRequestBehavior.AllowGet);
             }
             else
             {
-               var   Students = (from parent in db.AspNetParent_Child
+                var Students = (from parent in db.AspNetParent_Child
                                 join student in db.AspNetStudents on parent.ChildID equals student.UserId
-                             
+
                                 select new { parent.AspNetUser1.Name, parent.AspNetUser1.UserName, parent.AspNetUser1.Email, childName = parent.AspNetUser.Name }).Distinct().ToList();
 
-               return Json(Students, JsonRequestBehavior.AllowGet);
+                return Json(Students, JsonRequestBehavior.AllowGet);
             }
 
             //    foreach (var item in Students)
@@ -157,7 +157,7 @@ namespace SEA_Application.Controllers
             //    }
             //}
 
-          //  return Json(Students, JsonRequestBehavior.AllowGet);
+            //  return Json(Students, JsonRequestBehavior.AllowGet);
         }
         public ActionResult ParentRegister()
         {
@@ -191,6 +191,8 @@ namespace SEA_Application.Controllers
             public int count { get; set; }
             public string by { get; set; }
         }
+
+
         public JsonResult GetUserName(string userName)
         {
             check Check = new check();
@@ -229,7 +231,7 @@ namespace SEA_Application.Controllers
                     IEnumerable<string> selectedstudents = Request.Form["StudentID"].Split(',');
                     var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, Name = model.Name, PhoneNumber = Request.Form["fatherCell"] };
                     var result = await UserManager.CreateAsync(user, model.Password);
-                    
+
                     if (result.Succeeded)
                     {
 
@@ -341,7 +343,7 @@ namespace SEA_Application.Controllers
                 db.AspNetParent_Child.Remove(item);
             }
 
-           db.SaveChanges();
+            db.SaveChanges();
 
             db.AspNetUsers.Where(p => p.Id == id).FirstOrDefault().PhoneNumber = Request.Form["fatherCell"];
             db.SaveChanges();
@@ -368,15 +370,15 @@ namespace SEA_Application.Controllers
 
             var childs = db.AspNetParent_Child.Where(x => x.ParentID == parent.UserID).Select(x => x).ToList();
             List<int> Classes = new List<int>();
-         foreach (var item in childs)
+            foreach (var item in childs)
             {
-         //      var subjects = db.AspNetStudent_Subject.Where(x => x.StudentID == item.ChildID).FirstOrDefault();
+                //      var subjects = db.AspNetStudent_Subject.Where(x => x.StudentID == item.ChildID).FirstOrDefault();
 
-            //    var classId = (int)db.AspNetSubjects.Where(x => x.Id == subjects.SubjectID).Select(x => x.ClassID).FirstOrDefault();
-               var classId = (int)db.AspNetStudents.Where(x => x.UserId == item.ChildID).Select(x => x.ClassId).FirstOrDefault();
-             
-             Classes.Add(classId);
-           }
+                //    var classId = (int)db.AspNetSubjects.Where(x => x.Id == subjects.SubjectID).Select(x => x.ClassID).FirstOrDefault();
+                var classId = (int)db.AspNetStudents.Where(x => x.UserId == item.ChildID).Select(x => x.ClassId).FirstOrDefault();
+
+                Classes.Add(classId);
+            }
 
             var Children = db.AspNetParent_Child.Where(x => x.ParentID == parent.UserID).Select(x => x.ChildID).ToList();
 
@@ -397,9 +399,9 @@ namespace SEA_Application.Controllers
                 //}
 
                 var aIDs = db.AspNetParent_Child.Select(r => r.ChildID);
-               var students = (from student in db.AspNetStudents.AsEnumerable().Where(x => x.ClassId == bdoIds)
-                               select new { student.AspNetUser.Id, student.Name, student.AspNetUser.UserName}).ToList();
-             
+                var students = (from student in db.AspNetStudents.AsEnumerable().Where(x => x.ClassId == bdoIds)
+                                select new { student.AspNetUser.Id, student.Name, student.AspNetUser.UserName }).ToList();
+
 
                 //var students = (from student in db.AspNetUsers.AsEnumerable()
                 //                join student_subject in db.AspNetStudent_Subject on student.Id equals student_subject.StudentID
@@ -460,6 +462,106 @@ namespace SEA_Application.Controllers
             ViewBag.StatusId = new SelectList(db.AspNetStatus, "Id", "Name", aspNetUser.StatusId);
             return View(aspNetUser);
         }
+
+        public ActionResult StudentsAndTeachersOfBranch()
+        {
+            var loggedInUserId = User.Identity.GetUserId();
+            int branchId;
+            if (User.IsInRole("Branch_Admin"))
+            {
+                branchId = db.AspNetBranch_Admins
+                .Where(branchAdmin => branchAdmin.AdminId.Equals(loggedInUserId, StringComparison.OrdinalIgnoreCase))
+                .Select(branchAdmin => branchAdmin.BranchId).FirstOrDefault();
+            }
+            else
+            {
+                branchId = db.AspNetBranches.Where(x => x.BranchPrincipalId == loggedInUserId).Select(x => x.Id).FirstOrDefault();
+            }
+
+            List<TeacherAndStudents> TeacherAndStudentsList = new List<TeacherAndStudents>();
+
+            var students = (from stdnt in db.AspNetStudents
+                            join usr in db.AspNetUsers
+                            on stdnt.UserId equals usr.Id
+                            where stdnt.UserId == usr.Id && usr.StatusId != 2 && stdnt.BranchId == branchId //&& stdnt.BranchId == branchId
+                            select new { usr.Id, Name = stdnt.Name + "(" + usr.UserName + ")", stdnt.RollNo, stdnt.CellNo, usr.Image }).OrderBy(x => x.Name).ToList();
+
+            //var TopicList = db.AspnetSubjectTopics.Where(x => x.SubjectId == SubID).ToList().Select(x => new { x.Id, x.Name });
+            //  var AllTeachers = db.AspNetUsers.Where(x => x.AspNetRoles.Select(y => y.Name).Contains("Teacher")).Select(x => new { x.Id, Name = x.Name + " (" + x.UserName + ") " }).ToList();
+
+            var TeacherUsersIds = db.AspNetTeacher_Enrollments.Where(x => x.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetBranch.Id == branchId).Distinct().Select(x => x.AspNetEmployee.UserId).ToList();
+            var AllBranchTeachers = db.AspNetUsers.Where(x => TeacherUsersIds.Contains(x.Id)).Select(x => new { x.Id, Name = x.Name + " (" + x.UserName + ") " }).ToList();
+
+
+            foreach (var item in students)
+            {
+                TeacherAndStudentsList.Add(new TeacherAndStudents { Id = item.Id, Name = item.Name });
+            }
+            foreach (var item in AllBranchTeachers)
+            {
+                TeacherAndStudentsList.Add(new TeacherAndStudents { Id = item.Id, Name = item.Name });
+            }
+
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(TeacherAndStudentsList);
+
+
+            return Content(status);
+        }
+
+        public class TeacherAndStudents
+        {
+            public string Id { get; set; }
+            public string Name { get; set; }
+
+        }
+
+        public ActionResult ResetPassword()
+        {
+
+
+            return View();
+        }
+        [HttpPost]
+        public async Task<ActionResult> ResetPassword(string UserId, string Password, string CnfmPass)
+        {
+
+            var success = "No";
+            var user = db.AspNetUsers.Where(x => x.Id == UserId).FirstOrDefault();
+            string Code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+            var result = await UserManager.ResetPasswordAsync(user.Id, Code, Password);
+            if (result.Succeeded)
+            {
+                success = "Yes";
+
+                var RuffDataToUpdate = db.ruffdatas.Where(x => x.UserName == user.UserName).FirstOrDefault();
+
+                if(RuffDataToUpdate == null)
+                {
+                    ruffdata ruffdata = new ruffdata();
+
+                    ruffdata.Name = user.Name;
+                    ruffdata.UserName = user.UserName;
+                    ruffdata.Password = Password;
+                    ruffdata.CreationDate = GetLocalDateTime.GetLocalDateTimeFunction();
+
+                    db.ruffdatas.Add(ruffdata);
+                    db.SaveChanges();
+
+                }
+                else
+                {
+                    RuffDataToUpdate.Password = Password;
+                    db.SaveChanges();
+
+                }
+            }
+
+
+
+
+            return Json(new { success = success, UserName = user.Name+" ("+user.UserName+")" }, JsonRequestBehavior.AllowGet);
+        }
+
 
         // GET: AspNetUsers/Edit/5
         public ActionResult Edit(string id)

@@ -500,6 +500,7 @@ namespace SEA_Application.Controllers
             }
         }
 
+
         //
         // POST: /Account/ExternalLoginConfirmation
         [HttpPost]
@@ -536,6 +537,12 @@ namespace SEA_Application.Controllers
 
             ViewBag.ReturnUrl = returnUrl;
             return View(model);
+        }
+        [HttpGet]
+        public ActionResult ResetUserPassword()
+        {
+
+            return View();
         }
 
         //

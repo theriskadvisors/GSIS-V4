@@ -1154,7 +1154,7 @@ namespace SEA_Application.Controllers
         }
 
         // GET: AspNetStudents/Create
-        [Authorize(Roles = "Teacher,Branch_Admin,Branch_Principal")]
+        [Authorize(Roles = "Teacher,Branch_Admin,Branch_Principal,Accountant")]
         public ActionResult Create()
         {
             ViewBag.Error = TempData["ErrorMessage"] as string;
@@ -2292,16 +2292,29 @@ namespace SEA_Application.Controllers
 
             var AllStudentsUserNames = db.AspNetStudents.Where(x => x.BranchId == branchId).Select(x => x.AspNetUser.UserName.ToString()).ToList();
 
-
             //var AllStudentPasswords  =  db.ruffdatas.Where(x => x.UserName.Any(s => AllStudentsUserNames.Contains(s.ToString())));
 
+            var StudentPasswords = (from m in db.ruffdatas where AllStudentsUserNames.Contains(m.UserName) select m).ToList() ;
 
-            var Passwords = (from m in db.ruffdatas where AllStudentsUserNames.Contains(m.UserName) select m).ToList() ;
+
+            var TeacherUsersIds = db.AspNetTeacher_Enrollments.Where(x => x.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetBranch.Id == branchId).Distinct().Select(x => x.AspNetEmployee.UserId).ToList();
+            var AllBranchTeachers = db.AspNetUsers.Where(x => TeacherUsersIds.Contains(x.Id)).Select(x => new { x.Id, Name = x.Name + " (" + x.UserName + ") ", x.UserName }).ToList();
+
+            var AllTeachersUserNames = AllBranchTeachers.Select(x => x.UserName).ToList();
+
+            var TeacherPasswords = (from m in db.ruffdatas where AllTeachersUserNames.Contains(m.UserName) select m).ToList();
 
 
-            return View(Passwords);
+            List<ruffdata> AllStudentsAndTeachersPasswords = new List<ruffdata>();
+
+
+            AllStudentsAndTeachersPasswords.AddRange(StudentPasswords);
+            AllStudentsAndTeachersPasswords.AddRange(TeacherPasswords);
+
+
+            return View(AllStudentsAndTeachersPasswords);
         }
-
+       
 
         // GET: AspNetStudents/Delete/5
         public ActionResult Delete(int? id)
