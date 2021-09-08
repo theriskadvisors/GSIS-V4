@@ -290,6 +290,8 @@
 
         $("#MeetingLinkButton").click(function () {
             var LessonID = $("#LessonID").val();
+                  window.open(MeetingLinkSrc);
+
             debugger;
             $.ajax({
                 type: "POST",
@@ -300,7 +302,7 @@
                     // if (data == "Success") {
 
                     //  location.reload();
-                    window.open(MeetingLinkSrc);
+                  //  window.open(MeetingLinkSrc);
                     //}
                     // else {
 
