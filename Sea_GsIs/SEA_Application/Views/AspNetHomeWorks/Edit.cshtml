@@ -568,6 +568,32 @@
         });
 
     })
+
+    function PreviewDocument(attachmentname) {
+
+       // alert(a);
+       // var attachmentname = attachmentname + ".pdf";
+
+
+      // alert(attachmentname);
+
+       // alert("click in working ")
+      // document.getElementById("iframeDisplay").innerHTML = "<iframe src='~\Content\Homework\'" + attachmentname+"+'' height='200' width='300' ></iframe>";
+        //Papers_Lafler_K_72492_Diary_280
+        //var link =   document.getElementById("iframeDisplay").innerHTML = "<iframe src='/Content/Homework/Papers_Lafler_K_72492_Diary_280.pdf' height='200' width='300' ></iframe>";
+        //alert(link);
+
+        //$(link)[0].click();
+
+//        var link = document.getElementById("iframeDisplay").innerHTML = '<iframe id="forPostyouradd" data-src="http://www.w3schools.com" src="about:blank" width="500" height="200" style="background:#ffffff"></iframe>';
+        
+        //$(link)[0].click();
+
+        var win = window.open();
+        win.document.write('<iframe src="/Content/Homework/' + attachmentname+'" width="100%" height="100%"></iframe>');
+       // win.document.write('<iframe src="C:/Users/Shahzad/Desktop/97529_Using_Arrays_in_SAS_Programming.pdf" width="100%" height="500px"></iframe>')
+
+    }
 </script>
 
 <style>
@@ -578,6 +604,7 @@
 
 <form id="DiaryForm">
 
+    @*<div id="iframeDisplay">iframe div</div>*@
 
     <div class="row">
         <div class="col-md-12">
@@ -713,9 +740,30 @@
 
                                         foreach (var attachment in Model.Attachment.Split('/').ToList())
                                         {
+                                            string ext = Path.GetExtension(attachment);
+                                            string fileName = Path.GetFileNameWithoutExtension(attachment);
 
-                                            <br>
-                                            <a style="color:blue;text-decoration:underline" href="/AspnetHomeWorks/DownloadDiaryAttachment?Name=@attachment">@attachment</a>
+                                            if (ext == ".pdf")
+                                            {
+                                                <br>
+                                                //@fileName.ToString()
+
+                                                string Name = fileName.ToString();
+                                                
+                                                <a style="color:blue;cursor:pointer;text-decoration:underline" onclick="PreviewDocument('@attachment')">@attachment</a>
+
+
+                                                @*<button type="button" onclick="PreviewDocument()">View PDF</button>*@
+
+                                                @*<iframe src="~/Content/Homework/@attachment" width="100%" height="500px">
+                                                    </iframe>*@
+                                            }
+                                            else
+                                            {
+                                                <br>
+                                                <a style="cursor:pointer;color:blue;text-decoration:underline" href="/AspnetHomeWorks/DownloadDiaryAttachment?Name=@attachment">@attachment</a>
+
+                                            }
 
                                         }
 

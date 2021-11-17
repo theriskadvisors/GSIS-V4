@@ -64,9 +64,26 @@
 
                                     foreach (var attachment in Model.Attachment.Split('/').ToList())
                                     {
-                                        <a style="color:blue;text-decoration:underline" href="/AspnetHomeWorks/DownloadDiaryAttachment?Name=@attachment">@attachment</a>
-                                        <br>
+
+                                        string ext = Path.GetExtension(attachment);
+                                        string fileName = Path.GetFileNameWithoutExtension(attachment);
+
+                                        @*<a style="color:blue;text-decoration:underline" href="/AspnetHomeWorks/DownloadDiaryAttachment?Name=@attachment">@attachment</a>*@
+                                        if (ext == ".pdf")
+                                        {
+                                         
+                                            <br>
+                                            <a style="color:blue;cursor:pointer;text-decoration:underline" onclick="PreviewDocument('@attachment')">@attachment</a>
+
+                                        }
+                                        else
+                                        {
+                                            <br>
+                                            <a style="cursor:pointer;color:blue;text-decoration:underline" href="/AspnetHomeWorks/DownloadDiaryAttachment?Name=@attachment">@attachment</a>
+
+                                        }
                                     }
+
 
                                 }
 
@@ -156,6 +173,13 @@
                 });
 
 
-                    })//end of document ready
+       })//end of document ready
+
+    function PreviewDocument(attachmentname) {
+
+        var win = window.open();
+        win.document.write('<iframe src="/Content/Homework/' + attachmentname + '" width="100%" height="100%"></iframe>');
+
+    }
 
 </script>
