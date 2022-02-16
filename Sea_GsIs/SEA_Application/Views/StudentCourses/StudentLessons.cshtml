@@ -283,6 +283,7 @@
 
         $("#iframeBtn").click(function () {
             window.open(src);
+          
         });
 
 
@@ -290,7 +291,9 @@
 
         $("#MeetingLinkButton").click(function () {
             var LessonID = $("#LessonID").val();
-                  window.open(MeetingLinkSrc);
+            window.open(MeetingLinkSrc);
+            //alert("Meeting Link");
+          
 
             debugger;
             $.ajax({
@@ -1143,12 +1146,9 @@
 
 
                                                 <div @*class="col-md-10"*@>
-
-
                                                     @*<input type="file" class="btn btn-default" id="SubmitAssignment" name="SubmitAssignment" />
 
-
-                                                        <span style="color:blue" id="AssignmentMessage"></span>*@
+                                                <span style="color:blue" id="AssignmentMessage"></span>*@
 
                                                     <br />
 
@@ -1160,8 +1160,6 @@
 
 
                                             </div>
-
-
 
 
 

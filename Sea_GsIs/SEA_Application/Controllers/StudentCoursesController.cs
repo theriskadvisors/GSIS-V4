@@ -479,8 +479,6 @@ namespace SEA_Application.Controllers
             return View();
         }
 
-
-
         public class question1
         {
             public int id;
@@ -1612,17 +1610,24 @@ namespace SEA_Application.Controllers
         {
             var ID = User.Identity.GetUserId();
 
+            //var TestSubjects = (from enrollment in db.AspNetStudent_Enrollments
+            //                    join x in db.TestSubjects on enrollment.SessionId equals x.BranchClassSectionId
+            //                    where x.AspNetCours.Id == enrollment.AspNetClass_Courses.CourseId
+            //                    select new { x.Id, x.Title, x.Description, x.StartDate, x.EndTime, x.FileName, x.AspNetCours.Name, x.TotalMarks }).Distinct();
+
+
             var TestSubjects = (from enrollment in db.AspNetStudent_Enrollments
-                                join x in db.TestSubjects on enrollment.SessionId equals x.BranchClassSectionId
+                                join x in db.TestSubjects on enrollment.SectionId equals x.BranchClassSectionId
                                 where x.AspNetCours.Id == enrollment.AspNetClass_Courses.CourseId
                                 select new { x.Id, x.Title, x.Description, x.StartDate, x.EndTime, x.FileName, x.AspNetCours.Name, x.TotalMarks }).Distinct();
+
 
             //var TestSubjects = db.TestSubjects.Select(x => new { x.Id, x.Title, x.Description, x.StartDate, x.EndTime, x.FileName, x.AspNetCours.Name, x.TotalMarks });
 
             return Json(TestSubjects, JsonRequestBehavior.AllowGet);
 
         }
-        [Authorize(Roles = "Student")]
+        [Authorize(Roles = "Student,Teacher")]
         public ActionResult StudentSubmitTest(int id)
         {
             var UserId = User.Identity.GetUserId();
