@@ -1,7 +1,10 @@
 ﻿@model SEA_Application.Models.StudentRegistrationViewModel
 
 @{
+    string UserRole = "";
+
     ViewBag.Title = "Create";
+
     if (User.IsInRole("Branch_Admin") || User.IsInRole("Branch_Principal"))
     {
         Layout = "~/Views/Shared/_BranchAdminDashboardLayout.cshtml";
@@ -9,7 +12,27 @@
     else if (User.IsInRole("Accountant"))
     {
         Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+        UserRole = "Accountant";
     }
+    else if (User.IsInRole("Accounting_Head"))
+    {
+        Layout = "~/Views/Shared/_AccountHeadDashboardLayout.cshtml";
+        UserRole = "Accounting_Head";
+    }
+    else if (User.IsInRole("Admission"))
+    {
+        Layout = "~/Views/Shared/_AdmissionDashboardLayout.cshtml";
+        UserRole = "Admission";
+
+    }
+    else
+    {
+        Layout = null;
+
+        UserRole = "null";
+    }
+
+
 }
 
 <script>
@@ -24,6 +47,8 @@
     Vouchers = [];
 
     $(document).ready(function () {
+
+
 
 
         $("#PageHeader").html("Add Student");

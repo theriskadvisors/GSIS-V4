@@ -1,5 +1,8 @@
 ﻿@{
     ViewBag.Title = "StudentIndex";
+
+    string UserRole = "";
+
     if (User.IsInRole("Branch_Admin") || User.IsInRole("Branch_Principal"))
     {
         Layout = "~/Views/Shared/_BranchAdminDashboardLayout.cshtml";
@@ -7,7 +10,28 @@
     else if (User.IsInRole("Accountant"))
     {
         Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+        UserRole = "Accountant";
     }
+    else if (User.IsInRole("Accounting_Head"))
+    {
+        Layout = "~/Views/Shared/_AccountHeadDashboardLayout.cshtml";
+        UserRole = "Accounting_Head";
+    }
+    else if (User.IsInRole("Admission"))
+    {
+        Layout = "~/Views/Shared/_AdmissionDashboardLayout.cshtml";
+        UserRole = "Admission";
+
+    }
+    else
+    {
+        Layout = null;
+
+        UserRole = "null";
+    }
+
+
+
 }
 <style>
     .pagination {
@@ -24,9 +48,18 @@
 
 
 <script>
+
+         var UserRole ='@UserRole';
+
+        var CreateButton = "";
+
+        if (UserRole != "Admission") {
+
+            CreateButton = "/AspnetStudents/Create";
+        }
     $(document).ready(function () {
-        // table = $('#example').dataTable();
-        // drawTable();
+
+
         $("#example_filter").css('display', 'none');
 
         $("#PageHeader").html("Students");
@@ -39,7 +72,7 @@
 
         BindDataTable();
 
-    
+
 
            if ($("#StudentCreatedMsg").val() != "") {
             var type = 'success';
@@ -70,7 +103,7 @@
 
 
 
-   
+
         //$.ajax({
         //    type: "POST",
         //    url: "/AspNetStudents/GetStudents",
@@ -108,7 +141,7 @@
                 {
                     text: '<span class="datatableButtonsEdit"> <img src="/Content/assets/assets/icons/Icon-edit.png" alt=""> Create</span>',
                     action: function (e, dt, button, config) {
-                        window.location.href = '/AspNetStudents/Create';
+                        window.location.href = CreateButton;
                     }
                 },
                 {
@@ -157,7 +190,7 @@
                 { "mData": "ClassName" },
                 { "mData": "TotalWithoutAdmission" },
                    { "mData": "UserStatus" },
-                
+
             ]
 
             });

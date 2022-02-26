@@ -1,0 +1,214 @@
+﻿@model SEA_Application.Models.StudentRegistration
+@{
+
+    Layout = "~/Views/Shared/_AdmissionDashboardLayout.cshtml";
+}
+
+
+<div class="card">
+    <div class="card-body p-5">
+
+        @using (Html.BeginForm("CreateRegistrationForm", "AdmissionDashboard", FormMethod.Post, new { enctype = "multipart/form-data", @class = "forms form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="row">
+                <div class="col-md-6 pl-5 pr-5 border-right border-color-sea ">
+
+                    <h2 class="column-heading mb-4">User Information</h2>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Student Name</label>
+                            <input class="form-control" type="text" name="StudentName" id="studentname" value="" required />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Father Name</label>
+                            <input class="form-control" type="text" name="FatherName" id="fathername" value="" required />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Email</label>
+                            <input class="form-control" type="email" name="Email" id="email" value="" required />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Cell No</label>
+                            <input class="form-control" type="text" name="CellNo" id="cellno" value="" required />
+
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Date of Birth</label>
+                            <input class="form-control" type="date" name="DateBirth" id="birthdate" value="" />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Place of Birth</label>
+                            <input class="form-control" type="text" name="PlaceBirth" id="birthplace" value="" />
+
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Nationality</label>
+                            @Html.DropDownList("NationalityId", null, "Select One", htmlAttributes: new { @class = "form-control round-border", @required = "required" })
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Religion</label>
+                            @Html.DropDownList("ReligionId", null, "Select One", htmlAttributes: new { @class = "form-control round-border", @required = "required" })
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Gender</label>
+                            @Html.DropDownList("GenderId", null, "Select One", htmlAttributes: new { @class = "form-control round-border", @required = "required" })
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Address</label>
+                            <textarea class="form-control" name="Address" id="address" rows="5"></textarea>
+
+
+                        </div>
+                    </div>
+
+
+
+
+                    <div class="form-group bmd-form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Pre Registration Documents</label>
+                            <div class="file-field d-flex">
+                                <div class="btn btn-primary btn-md mb-0">
+                                    <span style="color:white" onclick='event.stopPropagation(); document.getElementById("SubmitAssignment").click();'>Choose files</span>
+                                    <input type="file" class="multiple" name="attachment" id="SubmitAssignment" multiple />
+                                </div>
+
+                                <div class="file-path-wrapper d-flex align-items-end ml-3 w-100">
+                                    <input id="FilePath" class="file-path validate form-control" type="text" readonly disabled placeholder="No file Chosen">
+                                </div>
+                            </div>
+                            <div style="color: #afbccc;font-size: 14px;font-weight: 500;" class="my-3">Max: 32 MB (Filename should be unique)</div>
+                            <div style="color: #afbccc;font-size: 14px;font-weight: 500;" class="my-3" id="SelectedFiles"></div>
+                        </div>
+                    </div>
+
+                </div><!--col 8-->
+
+
+                <div class="col-md-6 pl-5 pr-5 ">
+
+                    <h2 class="column-heading mb-4">Last School Attended</h2>
+
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Last School Attended</label>
+                            <input class="form-control" type="text" name="LastSchoolAttended" id="lastschoolattended" value="" />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label"> From Date</label>
+                            <input class="form-control" type="date" name="LastSchoolAttendedFromDate" id="lastschoolattendedfromdate" value="" />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label"> To Date</label>
+                            <input class="form-control" type="date" name="LastSchoolAttendedToDate" id="lastschoolattendedtodate" value="" />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Reason of Leaving </label>
+                            <textarea class="form-control" name="ReasonLeaving" id="reasonleaving" rows="5"></textarea>
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+            </div><!--end of row-->
+          
+                <div class="col-md-4 pl-5 pr-5 pull-right" >
+                   
+                        <div class="form-group pull-right">
+                            <button type="submit" id="SaveButton" class="btn btn-primary rounded rounded-lg"> Save </button>
+                            <button type="button" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                                <i class="material-icons mr-2">cached</i>  Cancel
+                            </button>
+                        </div>
+
+                </div>
+
+
+
+                }
+            </div>
+        </div>
+
+<script>
+    $(document).ready(function () {
+
+        $("#PageHeader").html("Registration Form");
+
+
+        $('input[type="file"]').change(function (e) {
+            //var fileName = e.target.files[0].name;
+            //document.getElementById("FilePath").placeholder = fileName;
+
+            var fileName = e.target.files[0].name;
+            var fileUpload = $("#SubmitAssignment").get(0).files;
+
+            var fruits = [];
+            if (fileUpload.length > 0) {
+
+                for (var i = 0; i < fileUpload.length; i++) {
+                    fruits.push(fileUpload[i].name + " , ");
+                }
+            }
+
+            $("#SelectedFiles").html(fruits);
+            document.getElementById("FilePath").placeholder = "";
+        });
+
+
+
+    })
+</script>

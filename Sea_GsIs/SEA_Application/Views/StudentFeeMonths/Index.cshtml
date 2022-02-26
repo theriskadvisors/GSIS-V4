@@ -1,7 +1,34 @@
 ﻿@model IEnumerable<SEA_Application.Models.StudentFeeDetail>
 
 @{
-    ViewBag.Title = "Index";
+
+    string UserRole = "";
+
+    if (User.IsInRole("Accountant"))
+    {
+        Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+        UserRole = "Accountant";
+
+    }
+    else if (User.IsInRole("Accounting_Head"))
+    {
+        Layout = "~/Views/Shared/_AccountHeadDashboardLayout.cshtml";
+        UserRole = "Accounting_Head";
+
+    }
+    else if (User.IsInRole("Admission"))
+    {
+        Layout = "~/Views/Shared/_AdmissionDashboardLayout.cshtml";
+        UserRole = "Admission";
+
+    }
+    else
+    {
+        Layout = null;
+        UserRole = "null";
+
+    }
+
 }
 <style>
     .inc-btn {
@@ -119,6 +146,9 @@
 <script>
     $(document).ready(function () {
 
+     var UserRole ='@UserRole';
+
+
         $("#PageHeader").html("Student Fee Months");
 
         $("#BreadCrumbs").append(' <li> <a href="/Account/Dashboard"> Home </a> <span>&gt;</span></li>');
@@ -220,6 +250,15 @@
 <script>
     $(document).ready(function () {
 
+
+          var UserRole ='@UserRole';
+
+        var CreateButton = "";
+        if (UserRole != "Admission") {
+
+            CreateButton = "/StudentChallan/GetChallan";
+        }
+
         GetAllBankCashLedger();
 
         $("#SaveChallanForm").click(function () {
@@ -258,10 +297,15 @@
                     text: '<button onclick="PrintChallan()" value="Get Challan" class="btn btn-default" id="challan-date" ><i class="fa fa-calendar"> </i> Get Challan</button>'
                 },
                 {
+                   
+
                     text: '<span class="datatableButtonsEdit"> <img src="/Content/assets/assets/icons/Icon-edit.png" alt=""> Create</span>',
                     action: function (e, dt, button, config) {
-                        window.location.href = "/StudentChallan/GetChallan";
-                    }
+                        window.location.href = CreateButton;
+                     }
+                   
+
+
                 },
                 {
                     text: '<button onclick="ChangeStatusChallan()" value="Paid" class="btn btn-default"><i class="fa fa-calendar"> </i> Paid</button>'
@@ -396,7 +440,7 @@
                   $("#SaveChallanForm").attr("disabled", false);
                 $("#Error").html("");
 
-                 
+
 
 
                 // window.location.href = "/StudentFeeMonths/ChangeChallanStatus?idlist=" + StdId;
@@ -429,12 +473,12 @@
         }
         else {
             $("#Error").html("Please Select Payment Type ");
-            
+
         }
 
 
     }
-  
+
 
 
     $(document).on("click", ".check_class", function () {
@@ -550,9 +594,9 @@
                 debugger
                 $.each(data, function (i, item) {
 
-                    $("#ModelBody").append('<br><input value  ="' + item.Id + '" type="radio" name ="payment" id="' + item.Id + '" >' + item.Name + ' '); 
+                    $("#ModelBody").append('<br><input value  ="' + item.Id + '" type="radio" name ="payment" id="' + item.Id + '" >' + item.Name + ' ');
 
-                 
+
                 })
 
                    $("#ModelBody").append('<br><span style="color:red" id ="Error"></span>');
@@ -560,7 +604,7 @@
             }
 
         })
-                   
+
     }
     function DeleteChallan(id) {
 
@@ -589,15 +633,15 @@
 
             </div>
             <div class="modal-body" id="ModelBody">
-                @*<p>Some text in the modal.</p>*@
+              
 
                 Paid Date <input type="date" name="PaidDate" id="PaidDate" value="" /><br>
 
-                          
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" id="SaveChallanForm" class="btn btn-primary" >Save</button>
+                <button type="button" id="SaveChallanForm" class="btn btn-primary">Save</button>
             </div>
         </div>
 
@@ -622,8 +666,8 @@
                         <thead>
                             <tr>
                                 <th>
-                                    Challan Id 
-                                    </th>
+                                    Challan Id
+                                </th>
 
                                 <th>
                                     Challan Id
@@ -632,7 +676,7 @@
                                     @Html.DisplayNameFor(model => model.StudentFee.AspNetStudent.Name)
                                 </th>
                                 <th>
-                                  Roll No
+                                    Roll No
                                 </th>
                                 <th>
                                     @Html.DisplayNameFor(model => model.ChallanIssueDate)
@@ -652,12 +696,15 @@
                                 <th>
                                     @Html.DisplayNameFor(model => model.Multiplier)
                                 </th>
-                                <th>
-                                    Action
-                                </th>
-                                <th>
-                                    Action
-                                </th>
+                                @if (!User.IsInRole("Admission"))
+                                {
+                                    <th>
+                                        Action
+                                    </th>
+                                    <th>
+                                        Action
+                                    </th>
+                                }
                             </tr>
                         </thead>
 
@@ -665,140 +712,144 @@
                             @foreach (var item in Model)
                             {
 
-                            <tr>
+                                <tr>
 
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Id)
-                                </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Id)
+                                    </td>
 
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Id)
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.StudentFee.AspNetStudent.Name)
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Id)
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.StudentFee.AspNetStudent.Name)
 
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.StudentFee.AspNetStudent.AspNetUser.UserName)
-                                </td>
-                                <td>
-                                    @*@Html.DisplayFor(modelItem => item.ChallanIssueDate)*@
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.StudentFee.AspNetStudent.AspNetUser.UserName)
+                                    </td>
+                                    <td>
+                                        @*@Html.DisplayFor(modelItem => item.ChallanIssueDate)*@
 
-                                    @string.Format("{0:MM/dd/yyyy}", item.ChallanIssueDate)
+                                        @string.Format("{0:MM/dd/yyyy}", item.ChallanIssueDate)
 
-                                </td>
-                                <td>
+                                    </td>
+                                    <td>
 
-                                    @*@Html.DisplayFor(modelItem => item.ChallanDueDate.Value.ToShortDateString())*@
-                                    @*@Html.DisplayFor(modelItem => item.ChallanDueDate)*@
+                                        @*@Html.DisplayFor(modelItem => item.ChallanDueDate.Value.ToShortDateString())*@
+                                        @*@Html.DisplayFor(modelItem => item.ChallanDueDate)*@
 
-                                    @string.Format("{0:MM/dd/yyyy}", item.ChallanDueDate)
+                                        @string.Format("{0:MM/dd/yyyy}", item.ChallanDueDate)
 
-                                </td>
-                                <td>
+                                    </td>
+                                    <td>
 
-                                    @if (item.Month == 1)
+                                        @if (item.Month == 1)
+                                        {
+                                            <label>January</label>
+                                        }
+                                        else if (item.Month == 2)
+                                        {
+                                            <label>February</label>
+
+                                        }
+                                        else if (item.Month == 3)
+                                        {
+                                            <label>March</label>
+
+                                        }
+
+                                        else if (item.Month == 4)
+                                        {
+
+                                            <label>April</label>
+                                        }
+
+                                        else if (item.Month == 5)
+                                        {
+                                            <label>May</label>
+
+                                        }
+
+                                        else if (item.Month == 6)
+                                        {
+                                            <label>June</label>
+
+                                        }
+
+                                        else if (item.Month == 7)
+                                        {
+                                            <label>July</label>
+
+                                        }
+
+                                        else if (item.Month == 8)
+                                        {
+                                            <label>August</label>
+
+                                        }
+
+                                        else if (item.Month == 9)
+                                        {
+                                            <label>September</label>
+
+                                        }
+
+                                        else if (item.Month == 10)
+                                        {
+                                            <label>October</label>
+
+                                        }
+
+                                        else if (item.Month == 11)
+                                        {
+                                            <label>November</label>
+
+                                        }
+
+                                        else if (item.Month == 12)
+                                        {
+                                            <label>December</label>
+
+                                        }
+
+
+
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Status)
+
+                                    </td>
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.PaidAmount)
+
+                                    </td>
+
+                                    <td>
+                                        @Html.DisplayFor(modelItem => item.Multiplier)
+                                    </td>
+                                    @if (!User.IsInRole("Admission"))
                                     {
-                                        <label>January</label>
-                                    }
-                                    else if (item.Month == 2)
-                                    {
-                                        <label>February</label>
 
-                                    }
-                                    else if (item.Month == 3)
-                                    {
-                                        <label>March</label>
+                                        <td>
+                                            <input type="checkbox" value=@item.Id class="check_class" name="@item.Status" id="test'@item.Id'" /><label for="test'@item.Id'"></label>
+                                        </td>
 
-                                    }
+                                        <td>
+                                            @if (item.Status == "Paid")
+                                            {
+                                                <input disabled type="button" style="color:white !important" value="Delete" onclick="DeleteChallan(@item.Id)" class="btn btn-sm btn-danger" name="" />
+                                            }
+                                            else
+                                            {
+                                                <input type="button" style="color:white !important" value="Delete" onclick="DeleteChallan(@item.Id)" class="btn btn-sm btn-danger" name="" />
+                                            }
 
-                                    else if (item.Month == 4)
-                                    {
-
-                                        <label>April</label>
-                                    }
-
-                                    else if (item.Month == 5)
-                                    {
-                                        <label>May</label>
-
-                                    }
-
-                                    else if (item.Month == 6)
-                                    {
-                                        <label>June</label>
-
-                                    }
-
-                                    else if (item.Month == 7)
-                                    {
-                                        <label>July</label>
-
-                                    }
-
-                                    else if (item.Month == 8)
-                                    {
-                                        <label>August</label>
-
-                                    }
-
-                                    else if (item.Month == 9)
-                                    {
-                                        <label>September</label>
-
-                                    }
-
-                                    else if (item.Month == 10)
-                                    {
-                                        <label>October</label>
-
-                                    }
-
-                                    else if (item.Month == 11)
-                                    {
-                                        <label>November</label>
-
-                                    }
-
-                                    else if (item.Month == 12)
-                                    {
-                                        <label>December</label>
-
+                                        </td>
                                     }
 
 
-
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Status)
-
-                                </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.PaidAmount)
-
-                                </td>
-
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Multiplier)
-                                </td>
-
-                                <td>
-                                    <input type="checkbox" value=@item.Id class="check_class" name="@item.Status" id="test'@item.Id'" /><label for="test'@item.Id'"></label>
-                                </td>
-
-                                <td>
-                                    @if (item.Status == "Paid")
-                                    {
-                                        <input disabled type="button" style="color:white !important" value="Delete" onclick="DeleteChallan(@item.Id)" class="btn btn-sm btn-danger" name="" />
-                                    }
-                                    else
-                                    {
-                                        <input type="button" style="color:white !important" value="Delete" onclick="DeleteChallan(@item.Id)" class="btn btn-sm btn-danger" name="" />
-                                    }
-
-                                </td>
-
-                            </tr>
+                                </tr>
                             }
                         </tbody>
                         <tfoot>
@@ -833,13 +884,18 @@
                                 <th>
                                     @Html.DisplayNameFor(model => model.Multiplier)
                                 </th>
-                                <th>
-                                    Action
-                                </th>
-                                <th>
-                                    Action
-                                </th>
-                            </tr>
+
+                                @if (!User.IsInRole("Admission"))
+                                {
+
+                                    <th>
+                                        Action
+                                    </th>
+                                    <th>
+                                        Action
+                                    </th>
+                                }
+                                </tr>
                         </tfoot>
 
 

@@ -83,6 +83,16 @@ namespace SEA_Application.Controllers
                         System.Web.HttpContext.Current.Session["AccountantID"] = userID;
                         return RedirectToAction("Index", "FinanceSummary");
                     }
+                    else if (UserManager.IsInRole(userID, "Accounting_Head"))
+                    {
+                        System.Web.HttpContext.Current.Session["AccountingHeadID"] = userID;
+                        return RedirectToAction("Dashboard", "AccountHead");
+                    }
+                    else if (UserManager.IsInRole(userID, "Admission"))
+                    {
+                        System.Web.HttpContext.Current.Session["AdmissionID"] = userID;
+                        return RedirectToAction("Dashboard", "AdmissionDashboard");
+                    }
                     else if (UserManager.IsInRole(userID, "Parent"))
                     {
                         System.Web.HttpContext.Current.Session["ParentID"] = userID;
@@ -140,6 +150,16 @@ namespace SEA_Application.Controllers
             {
                 System.Web.HttpContext.Current.Session["AccountantID"] = userID;
                 return RedirectToAction("Index","FinanceSummary");
+            }
+            else if (UserManager.IsInRole(userID, "Accounting_Head"))
+            {
+                System.Web.HttpContext.Current.Session["AccountingHeadID"] = userID;
+                return RedirectToAction("Dashboard", "AccountHead");
+            }
+            else if (UserManager.IsInRole(userID, "Admission"))
+            {
+                System.Web.HttpContext.Current.Session["AdmissionID"] = userID;
+                return RedirectToAction("Dashboard", "AdmissionDashboard");
             }
             else if (UserManager.IsInRole(userID, "Parent"))
             {
@@ -211,6 +231,16 @@ namespace SEA_Application.Controllers
                         {
                             System.Web.HttpContext.Current.Session["AccountantID"] = userID;
                             return RedirectToAction("Index", "FinanceSummary");
+                        }
+                        else if (UserManager.IsInRole(userID, "Accounting_Head"))
+                        {
+                            System.Web.HttpContext.Current.Session["AccountingHeadID"] = userID;
+                            return RedirectToAction("Dashboard", "AccountHead");
+                        }
+                        else if (UserManager.IsInRole(userID, "Admission"))
+                        {
+                            System.Web.HttpContext.Current.Session["AdmissionID"] = userID;
+                            return RedirectToAction("Dashboard", "AdmissionDashboard");
                         }
                         else if (UserManager.IsInRole(userID, "Parent"))
                         {

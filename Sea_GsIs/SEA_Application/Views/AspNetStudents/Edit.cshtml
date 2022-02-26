@@ -10,6 +10,10 @@
     {
         Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
     }
+    else if (User.IsInRole("Accounting_Head"))
+    {
+        Layout = "~/Views/Shared/_AccountHeadDashboardLayout.cshtml";
+    }
 }
 
 <style>

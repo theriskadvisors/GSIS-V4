@@ -1,7 +1,18 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "BalanceSheet";
-    Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+
+    if (User.IsInRole("Accountant"))
+    {
+        Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+    }
+    else if (User.IsInRole("Accounting_Head"))
+    {
+        Layout = "~/Views/Shared/_AccountHeadDashboardLayout.cshtml";
+    }
+    else
+    {
+        Layout = null;
+    }
 }
 
 <style>
@@ -57,12 +68,12 @@
 
     @*<div class="col-md-6 pull-right" style="">
 
-            <h4 style="color:#00b8ec">Profit and Loss Statement</h4>
+        <h4 style="color:#00b8ec">Profit and Loss Statement</h4>
 
-        </div>
-        <div style="clear:both">
+    </div>
+    <div style="clear:both">
 
-        </div>*@
+    </div>*@
 
 </div>
 
@@ -267,7 +278,7 @@
 
     $(document).ready(function () {
 
-      
+
 
         $("#BreadCrumbs").append(' <li> <a href="/Account/Dashboard"> Home </a> <span>&gt;</span></li>');
         $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Summary</a></li>');
@@ -278,7 +289,7 @@
         var ExpenseTotal = 0;
         var NetTotal = 0;
 
-          BalanceSheet();
+        BalanceSheet();
 
         $('#FromDate').datepicker({
             dateFormat: 'yy-mm-dd'
@@ -446,7 +457,7 @@
 
     function BalanceSheet() {
 
-        
+
 
         $.ajax({
             type: "POST",

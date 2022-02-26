@@ -1,0 +1,623 @@
+﻿@model SEA_Application.Controllers.FinanceSummaryController.EmployeeVM
+@{
+    Layout = "~/Views/Shared/_AccountHeadDashboardLayout.cshtml";
+}
+<style>
+
+    #Total_SalaryPayable {
+        background: #90EE90;
+    }
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Firefox */
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+    .error {
+        color: red !important;
+    }
+</style>
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
+<div class="card">
+    <div class="card-body p-5">
+        <form id="EmployeeFinanceForm">
+
+            <div class="row">
+                <div class="col-md-6 pl-5 pr-5  ">
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Select Employee <span class="red-mark">*</span> </label>
+                            @Html.DropDownList("EmployeeList", null, "Select Employee", htmlAttributes: new { @class = "form-control select2dropdown", @required = true })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label"> Date</label>
+                            <input class="form-control" type="date" name="duedate" id="Date" value="" required />
+                            <br>
+                            <span id="error" style="color:red"></span>
+                        </div>
+                    
+
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Joining Date</label>
+                            <input class="form-control" type="text" name="joiningdate" id="JoiningDate" value="" readonly />
+
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">POST</label>
+                            <input class="form-control" type="text" name="post" id="Post" value="" readonly />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Branch</label>
+                            <input class="form-control" type="text" name="branch" id="Branch" value="" readonly />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">CNIC</label>
+                            <input class="form-control" type="text" name="cnic" id="Cnic" value="" readonly />
+
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Bank/Chq</label>
+                            <input class="form-control" type="text" name="bank_chq" id="bank_chq" value="" required />
+
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Salary Offered</label>
+                            <input class="form-control" type="text" name="salary" id="Salary" value="" readonly required />
+
+                        </div>
+                    </div>
+
+                </div><!--end of col 6-->
+            </div><!--end of row-->
+            <br />
+            <br />
+
+            <div class="row">
+                <div class="col-md-6 pl-5 pr-5  ">
+
+                    <div class="col-md-12">
+                        <h2 class="column-heading mb-4">Add</h2>
+                        <hr />
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Arrears</label>
+                            <input class="form-control fields" min="0" type="number" name="Add_Arrears" id="Add_Arrears" value="0" required />
+
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Loan/Advance</label>
+                            <input class="form-control fields" min="0" type="number" name="Add_LoanAdvance" id="Add_LoanAdvance" value="0" required />
+
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Inrmnt</label>
+                            <input class="form-control fields" min="0" type="number" name="Add_Inrmnt" id="Add_Inrmnt" value="0" required />
+
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Others</label>
+                            <input class="form-control fields" min="0" type="number" name="Add_Other" id="Add_Other" value="0" required />
+
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Total Add In Salary</label>
+                            <input class="form-control" min="0" type="number" name="Add_Total_AddInSalary" id="Add_Total_AddInSalary" value="0" required readonly />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Gross Salary</label>
+                            <input class="form-control" min="0" type="number" name="Add_GrossSalary" id="Add_GrossSalary" value="0" required readonly />
+
+                        </div>
+                    </div>
+
+
+                </div><!--end of column6-->
+
+                <div class="col-md-6 pl-5 pr-5  ">
+
+                    <div class="col-md-12">
+                        <h2 class="column-heading mb-4">Less</h2>
+                        <hr />
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Tax Ded</label>
+                            <input class="form-control fields" min="0" type="number" name="Less_TaxDed" id="Less_TaxDed" value="0" required />
+
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Loan/Advance</label>
+                            <input class="form-control fields" min="0" type="number" name="Less_LoanAdvance" id="Less_LoanAdvance" value="0" required />
+
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Security Ded</label>
+                            <input class="form-control fields" min="0" type="number" name="Less_SecurityDed" id="Less_SecurityDed" value="0" required />
+
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Absent Ded</label>
+                            <input class="form-control fields" min="0" type="number" name="Less_AbsentDed" id="Less_AbsentDed" value="0" required />
+
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Others</label>
+                            <input class="form-control fields" min="0" type="number" name="Less_Others" id="Less_Others" value="0" required />
+
+                        </div>
+                    </div>
+
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Total Less in Salary</label>
+                            <input class="form-control" min="0" type="number" name="Less_TotalLessInSalary" id="Less_TotalLessInSalary" value="0" required />
+
+                        </div>
+                    </div>
+
+
+                </div><!--end of column6-->
+
+            </div><!--end of 2nd row-->
+
+            <br />
+            <br />
+            <div class="row">
+                <div class="col-md-6 pl-5 pr-5  ">
+
+
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Total Salary Payable</label>
+                            <input class="form-control" min="0" type="number" name="Total_SalaryPayable" id="Total_SalaryPayable" value="0" required />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Remarks </label>
+                            <textarea class="form-control" name="Remarks" id="Remarks" rows="5"></textarea>
+
+                        </div>
+                    </div>
+
+
+                </div><!--end of column 6-->
+            </div><!--end of row -->
+
+
+            <div class="col-md-4 pl-5 pr-5">
+
+                <div class="form-group ">
+                    @*<span style="color:red"> @ViewBag.Error</span><br>*@
+                    <button type="submit" id="submit" class="btn btn-primary rounded rounded-lg"> Save </button>
+                    <button type="button" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                        <i class="material-icons mr-2">cached</i>  Cancel
+                    </button>
+                </div>
+
+            </div>
+
+
+            </form>
+    </div>
+</div>
+<script>
+
+    $(document).ready(function () {
+
+
+        //$("#btnCancel").click(function () {
+        //   var val =  $("#EmployeeList").val();
+
+        //    alert(val);
+
+        //})
+
+        $("#PageHeader").html("Add Employee Finance ");
+
+
+        $('.select2dropdown option[value=""]').removeAttr("selected");
+        var data1 = $('.select2dropdown').select2()
+            .on("select2:select", function (e) {
+                var selected_element = $(e.currentTarget);
+                var select_val = selected_element.val();
+                //  var id = $(this).children(".select2-hidden-accessible").context.id;
+            });
+
+        $("input[type='date']").change(function () {
+
+            event.stopImmediatePropagation();
+
+            var Date = $("#Date").val();
+            if (Date != "") {
+
+                CheckEmployeeSalary();
+
+            }
+            
+        })
+
+        $("#EmployeeList").change(function () {
+
+            var EmployeeId = $(this).val();
+
+            $("#Post").val("");
+
+            $("#Branch").val("");
+            $("#Cnic").val("");
+            $("#Salary").val(0);
+            $("#JoiningDate").val("");
+
+            if (EmployeeId != "") {
+
+
+                $.ajax({
+
+                    type: "POST",
+                    url: "/FinanceSummary/GetEmployeeDetails?EmployeeId=" + EmployeeId,
+
+                    success: function (data) {
+                        
+                        $("#Post").val(data.Post);
+
+                        $("#Branch").val(data.BranchName);
+                        $("#Cnic").val(data.Cnic);
+                        $("#Salary").val(data.Salary);
+                        $("#JoiningDate").val(data.JoiningDate);
+
+                        ResetFields();
+                        CalculateTotalPayableFee();
+
+
+                    }//end of success method
+                })
+
+              
+                CheckEmployeeSalary();
+            }//if
+
+
+        })
+       
+
+
+
+        $(".fields").on("keyup", function () {
+
+            CalculateTotalPayableFee(this);
+
+        })
+
+        $('#EmployeeFinanceForm').validate({ // initialize the plugin
+            rules: {
+                EmployeeList: {
+                    required: true,
+                    //email: true
+                },
+                bank_chq: {
+                    required: true,
+                   
+                },
+                salary: {
+                    required: true,
+
+                },
+                Add_Arrears: {
+                    required: true,
+                      min:0,
+                }
+
+
+            },
+            submitHandler: function (form) {
+                debugger;
+
+                $("#submit").attr("disabled", true);
+
+                var employeeFinance = {
+
+                    EmployeeId: $("#EmployeeList").val(),
+                    DueDate: $("#Date").val(),
+                    Bank_Chq: $("#bank_chq").val(),
+                    Add_Arrears: $("#Add_Arrears").val(),
+                    Add_LoanAdvance: $("#Add_LoanAdvance").val(),
+                    Add_Inrmnt: $("#Add_Inrmnt").val(),
+                    Add_Other: $("#Add_Other").val(),
+                    Add_Total_AddInSalary: $("#Add_Total_AddInSalary").val(),
+                    Add_GrossSalary: $("#Add_GrossSalary").val(),
+                    Less_TaxDed: $("#Less_TaxDed").val(),
+                    Less_LoanAdvance: $("#Less_LoanAdvance").val(),
+                    Less_SecurityDed: $("#Less_SecurityDed").val(),
+                    Less_AbsentDed: $("#Less_AbsentDed").val(),
+                    Less_Others: $("#Less_Others").val(),
+                    Less_TotalLessInSalary: $("#Less_TotalLessInSalary").val(),
+                    Total_SalaryPayable: $("#Total_SalaryPayable").val(),
+                    Remarks: $("#Remarks").val(),
+
+                };
+
+                $.ajax({
+                    type: "post",
+                    url: "/FinanceSummary/CreateEmployeeFinance",
+                    data: { 'employeeFinance': employeeFinance },
+                    datatype: "json",
+                    cache: false,
+                    success: function (data) {
+                        debugger
+
+                        if (data.IsFinanceCreated == "Yes") {
+
+                           // uploadStudentImage(data.UserId);
+                            window.location.href = "/FinanceSummary/EmployeeFinanceList";
+
+                        }
+                        else {
+
+
+                        }
+                    },
+
+                    error: function (jqXHR, exception) {
+                        debugger
+
+                        if (jqXHR.status == 403) {
+                            // var response = $.parseJSON(jqXHR.responseText);
+                            // window.location = response.LogOnUrl;
+                           // window.location.href = "/Student/Index";
+                            console.log("error");
+                        }
+                    }
+
+                })
+
+            }
+
+        })
+        
+    
+
+
+    })//end of document ready
+
+    function ResetFields() {
+
+        $("#Add_Arrears").val(0);
+        $("#Add_LoanAdvance").val(0);
+        $("#Add_Inrmnt").val(0);
+        $("#Add_Other").val(0);
+        $("#Add_Total_AddInSalary").val(0);
+        $("#Add_GrossSalary").val(0);
+        $("#Less_TaxDed").val(0);
+        $("#Less_LoanAdvance").val(0);
+        $("#Less_SecurityDed").val(0);
+        $("#Less_AbsentDed").val(0);
+        $("#Less_Others").val(0);
+        $("#Less_TotalLessInSalary").val(0);
+        $("#Total_SalaryPayable").val(0);
+
+
+
+    }
+
+
+    function CalculateTotalPayableFee() {
+
+        var Salary = $("#Salary").val();
+
+        if (Salary == "") {
+            Salary = 0;
+        }
+
+        var Add_Arrears = $("#Add_Arrears").val();
+
+        if (Add_Arrears == "") {
+            Add_Arrears = 0;
+        }
+
+        var Add_LoanAdvance = $("#Add_LoanAdvance").val();
+
+        if (Add_LoanAdvance == "") {
+            Add_LoanAdvance = 0;
+        }
+
+        var Add_Inrmnt = $("#Add_Inrmnt").val();
+
+        if (Add_Inrmnt == "") {
+            Add_Inrmnt = 0;
+        }
+
+        var Add_Other = $("#Add_Other").val();
+
+        if (Add_Other == "") {
+            Add_Other = 0;
+        }
+        var Add_Total_AddInSalary = $("#Add_Total_AddInSalary").val();
+
+        if (Add_Total_AddInSalary == "") {
+            Add_Total_AddInSalary = 0;
+        }
+        var Add_GrossSalary = $("#Add_GrossSalary").val();
+
+        if (Add_GrossSalary == "") {
+            Add_GrossSalary = 0;
+        }
+        var Less_TaxDed = $("#Less_TaxDed").val();
+
+        if (Less_TaxDed == "") {
+            Less_TaxDed = 0;
+        }
+        var Less_LoanAdvance = $("#Less_LoanAdvance").val();
+
+        if (Less_LoanAdvance == "") {
+            Less_LoanAdvance = 0;
+        }
+        var Less_SecurityDed = $("#Less_SecurityDed").val();
+
+        if (Less_SecurityDed == "") {
+            Less_SecurityDed = 0;
+        }
+        var Less_AbsentDed = $("#Less_AbsentDed").val();
+
+        if (Less_AbsentDed == "") {
+            Less_AbsentDed = 0;
+        }
+        var Less_Others = $("#Less_Others").val();
+
+        if (Less_Others == "") {
+            Less_Others = 0;
+        }
+        var Less_TotalLessInSalary = $("#Less_TotalLessInSalary").val();
+
+        if (Less_TotalLessInSalary == "") {
+            Less_TotalLessInSalary = 0;
+        }
+
+
+        var TotalAddInSalary = parseFloat(Add_Arrears) + parseFloat(Add_LoanAdvance) + parseFloat(Add_Inrmnt) + parseFloat(Add_Other);
+        var GrossSalary = parseFloat(TotalAddInSalary) + parseFloat(Salary);
+
+        $("#Add_Total_AddInSalary").val(TotalAddInSalary);
+        $("#Add_GrossSalary").val(GrossSalary);
+
+        var TotalLessInSalary = parseFloat(Less_TaxDed) + parseFloat(Less_LoanAdvance) + parseFloat(Less_SecurityDed) + parseFloat(Less_AbsentDed) + parseFloat(Less_Others);
+
+        $("#Less_TotalLessInSalary").val(TotalLessInSalary);
+
+        var FeePayable = 0;
+
+       // Total_SalaryPayable
+
+        FeePayable = parseFloat(GrossSalary) - parseFloat(TotalLessInSalary);
+
+        $("#Total_SalaryPayable").val(FeePayable);
+
+
+    }
+
+    function CheckEmployeeSalary() {
+
+        var EmployeeId = $("#EmployeeList").val();
+        var Date = $("#Date").val();
+        $("#error").html("");
+
+        if (EmployeeId != "" && Date != "") {
+
+          //  alert(EmployeeId + " " + Date);
+
+            $.ajax({
+                type: "post",
+                url: "/FinanceSummary/CheckSalaryCreated",
+                data: { 'EmployeeId': EmployeeId, 'Date': Date },
+                success: function (data) {
+
+                    if (data == "") {
+
+                        $('#submit').prop('disabled', false);
+                        $("#error").html(data);
+                    }
+                    else if (data == "Selected employee salary is paid") {
+
+                        $("#error").html(data);
+                        $('#submit').prop('disabled', true);
+                    }
+                    else {
+
+                        $('#submit').prop('disabled', true);
+                        $("#error").html(data);
+
+                    }
+
+
+                }//end of success 
+
+                })
+
+
+        }
+
+
+    }
+
+
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
+

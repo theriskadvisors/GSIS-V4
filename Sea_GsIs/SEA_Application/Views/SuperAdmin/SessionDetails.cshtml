@@ -3,11 +3,11 @@
 
 <div class="box box-primary">
     <div class="box-body">
-        
+
         @{
             ViewBag.Title = "Edit";
         }
-        
+
         @using (Html.BeginForm("EditSession", "SuperAdmin"))
         {
             @Html.AntiForgeryToken()
@@ -46,7 +46,7 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(model => model.Next, new { @class = "col-md-2 control-label" }) 
+                    @Html.LabelFor(model => model.Next, new { @class = "col-md-2 control-label" })
                     <div class="col-md-6">
                         @*@Html.EditorFor(model => model.Next, new { htmlAttributes = new { @class = "form-control dual" } })*@
                         @Html.DropDownList("Next", null, new { @class = "form-control" })
@@ -54,23 +54,38 @@
                     </div>
                 </div>
                 @*<div class="form-group">
-                    <div class="col-md-offset-2 col-md-2">
-                        <button type="button" id="cancel" class="btn btn-default" onclick="window.history.back()">Back</button>
-                        @Html.ActionLink("Edit", "EditSession", new { id = Model.Id }, new { @class = "btn btn-danger" })
-                        <button type="button" class="btn btn-danger" data-command-remove>Disable</button>
-                    </div>
-                </div>*@
+                        <div class="col-md-offset-2 col-md-2">
+                            <button type="button" id="cancel" class="btn btn-default" onclick="window.history.back()">Back</button>
+                            @Html.ActionLink("Edit", "EditSession", new { id = Model.Id }, new { @class = "btn btn-danger" })
+                            <button type="button" class="btn btn-danger" data-command-remove>Disable</button>
+                        </div>
+                    </div>*@
             </div>
         }
-        <div class="col-md-offset-2 col-md-6">
-            <br />
-            <button class="col-md-2 form-control" onclick="redirect()" style="border-radius:35px;border:hidden;background-color:red;margin-right:10px;color:white;font-size:11px;width:98px;height:38px;font-family:Montserrat"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Return</button>
-            <button class="col-md-2 form-control" onclick="window.location.href = '/SuperAdmin/EditSession?id=@Model.Id'" type="submit" value="Edit" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat">Edit</button>
-            <button type="button" class="col-md-2 form-control" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;margin-left:12px;font-size:11px;width:98px;height:38px;font-family:Montserrat" data-command-remove>Disable</button>
 
-            <br />
-            <br /><br />
-        </div>
+    <div class="col-md-offset-2 col-md-6">
+        <br />
+        <button class="col-md-2 form-control" onclick="redirect()" style="border-radius:35px;border:hidden;background-color:red;margin-right:10px;color:white;font-size:11px;width:98px;height:38px;font-family:Montserrat"><i class="fa fa-arrow-left"></i> &nbsp;&nbsp; Return</button>
+        <button class="col-md-2 form-control" onclick="window.location.href = '/SuperAdmin/EditSession?id=@Model.Id'" type="submit" value="Edit" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;font-size:11px;width:98px;height:38px;font-family:Montserrat">Edit</button>
+        @*<button type="button" class="col-md-2 form-control" style="border-radius:35px;color:white;border:hidden;background-color:#128edb;margin-left:12px;font-size:11px;width:98px;height:38px;font-family:Montserrat" data-command-remove>Disable</button>*@
+
+        @if (Model.StatusId == 1)
+        {
+
+            <button  type="button" class="col-md-2 form-control" style="background:red;border-radius:35px;color:white;border:hidden;margin-left:12px;font-size:11px;width:98px;height:38px;font-family:Montserrat" id="DisableBtn">Disable</button>
+        }
+        else
+        {
+
+            <button type="button" class="col-md-2 form-control" style="background:green;border-radius:35px;color:white;border:hidden;margin-left:12px;font-size:11px;width:98px;height:38px;font-family:Montserrat" id="DisableBtn">Enable</button>
+
+        }
+
+        <br />
+        <br /><br />
+    </div>
+
+
     </div>
 </div>
 <script>
@@ -93,10 +108,10 @@
                     <h3>Do you really want to delete this class?</h3>
                 </div>
                 <div class="modal-body text-danger">
-                    This action is <em>irreversible</em> and will result in the following:
+                    @*This action is <em>irreversible</em> and will result in the following:*@
                     <ul>
-                        <li>Delete the session.</li>
-                        <li>Delete the terms registered under this session.</li>
+                        @*<li>Delete the session.</li>*@
+                        @*<li>Delete the terms registered under this session.</li>*@
                     </ul>
                 </div>
                 <div class="modal-footer">
@@ -139,6 +154,40 @@
         $('#modal-delete-success').on('hidden.bs.modal', function () {
             location.href = '@Url.Action("SessionList")';
         });
+        $("#DisableBtn").click(function () {
+            var id = $("#Id").val();
+
+            $.ajax({
+                type: "POST",
+                url: "/SuperAdmin/SessionActivation",
+                data: { "SessionId": id },
+                success: function (data) {
+                    debugger
+                  //  alert(data);
+                    if (data == "disable") {
+                     //   var type = 'success';
+                       // var msg = "Student disabled";
+                       // showNotification('top', 'center', msg, type);
+                        $("#DisableBtn").html("Enable");
+                        $("#DisableBtn").css('background', 'green');
+
+                    }
+                    else {
+
+                        //var type = 'success';
+                       // var msg = "Student enabled";
+                        //showNotification('top', 'center', msg, type);
+                        $("#DisableBtn").html("Disable");
+                        $("#DisableBtn").css('background', 'red');
+
+                    }
+
+
+                }
+            })
+
+
+        })
     });
 
     (function handleCommandRemove() {

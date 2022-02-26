@@ -18,7 +18,7 @@ using System.Drawing;
 
 namespace SEA_Application.Controllers
 {
-    [Authorize(Roles = "Branch_Admin,Super_Admin,Branch_Principal")]
+    [Authorize(Roles = "Branch_Admin,Super_Admin,Branch_Principal,Accounting_Head")]
     public class AspNetEmployeesController : Controller
     {
         private ApplicationSignInManager _signInManager;
@@ -88,7 +88,7 @@ namespace SEA_Application.Controllers
             //select new { c.Name,c.Id }).ToList();
 
             ViewBag.Subjects = cs;
-           // ViewBag.Subjects = sub;
+            // ViewBag.Subjects = sub;
             return Json(cs, JsonRequestBehavior.AllowGet);
 
         }
@@ -97,7 +97,7 @@ namespace SEA_Application.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind(Include = "Id,Position,DateAvailable,Name,BirthDate,NationalityId,ReligionId,GenderId,CellNo,Landline,SpouseName,SpouseHighestDegree,SpouseOccupation,GrossSalary,BasicSalary,MedicalAllowance,Accomodation,ProvidedFund,Tax,EOP,Salary,JoiningDate,BranchId,Illness,Address,Spouse_Address,File,UserId")] AspNetEmployee aspNetEmployee)
         {
-           // IEnumerable<string> selectedsubjects = Request.Form["subjects"].Split(',');
+            // IEnumerable<string> selectedsubjects = Request.Form["subjects"].Split(',');
 
             var Position = db.AspNetEmployeePositions.Where(x => x.Id == aspNetEmployee.Position).Select(x => x.PositionName).FirstOrDefault();
             var Password = Request.Form["Password"];
@@ -107,9 +107,9 @@ namespace SEA_Application.Controllers
             var FullName = FName + " " + MName + " " + LName;
             if (Position == "Teacher")
             {
-             ApplicationDbContext context = new ApplicationDbContext();
-            var user = new ApplicationUser { UserName = Request.Form["UserName"], Email = Request.Form["Email"], Name = FullName, PhoneNumber = Request.Form["cellNo"] };
-            var result = await UserManager.CreateAsync(user, Password);
+                ApplicationDbContext context = new ApplicationDbContext();
+                var user = new ApplicationUser { UserName = Request.Form["UserName"], Email = Request.Form["Email"], Name = FullName, PhoneNumber = Request.Form["cellNo"] };
+                var result = await UserManager.CreateAsync(user, Password);
 
                 AspNetUser teacher_user = db.AspNetUsers.Where(x => x.UserName == user.UserName).FirstOrDefault();
                 teacher_user.Name = user.Name;
@@ -154,7 +154,7 @@ namespace SEA_Application.Controllers
                     return RedirectToAction("TeacherIndex", "AspNetEmployees", new { Error });
                 }
             }
-            else if(Position=="Accountant")
+            else if (Position == "Accountant")
             {
                 ApplicationDbContext context = new ApplicationDbContext();
 
@@ -228,35 +228,35 @@ namespace SEA_Application.Controllers
                     return RedirectToAction("TeacherIndex", "AspNetEmployees", new { Error });
                 }
             }
-            else if(Position=="Branch Admin")
+            else if (Position == "Branch Admin")
             {
                 ApplicationDbContext context = new ApplicationDbContext();
                 var user = new ApplicationUser { UserName = Request.Form["UserName"], Email = Request.Form["Email"], Name = FullName, PhoneNumber = Request.Form["cellNo"] };
                 var result = await UserManager.CreateAsync(user, Password);
                 try
                 {
-                 AspNetUser Barnchadmin_user = db.AspNetUsers.Where(x => x.UserName == user.UserName).FirstOrDefault();
-                Barnchadmin_user.StatusId = 1;
+                    AspNetUser Barnchadmin_user = db.AspNetUsers.Where(x => x.UserName == user.UserName).FirstOrDefault();
+                    Barnchadmin_user.StatusId = 1;
 
-           
+
                     aspNetEmployee.VirtualRoleId = db.AspNetVirtualRoles.Where(x => x.Name == "Directive Staff").Select(x => x.Id).FirstOrDefault();
-                aspNetEmployee.UserId = user.Id;
-                aspNetEmployee.Name = FullName;
-                if (result.Succeeded)
-                {
-                    var roleStore = new RoleStore<IdentityRole>(context);
-                    var roleManager = new RoleManager<IdentityRole>(roleStore);
+                    aspNetEmployee.UserId = user.Id;
+                    aspNetEmployee.Name = FullName;
+                    if (result.Succeeded)
+                    {
+                        var roleStore = new RoleStore<IdentityRole>(context);
+                        var roleManager = new RoleManager<IdentityRole>(roleStore);
 
-                    var userStore = new UserStore<ApplicationUser>(context);
-                    var userManager = new UserManager<ApplicationUser>(userStore);
-                    userManager.AddToRole(user.Id, "Branch_Admin");
-                    db.AspNetEmployees.Add(aspNetEmployee);
-                    db.SaveChanges();
-                    AspNetBranch_Admins br_ad = new AspNetBranch_Admins();
-                    br_ad.AdminId = user.Id;
-                    br_ad.BranchId = aspNetEmployee.BranchId??default(int);
-                    db.AspNetBranch_Admins.Add(br_ad);
-                    db.SaveChanges();
+                        var userStore = new UserStore<ApplicationUser>(context);
+                        var userManager = new UserManager<ApplicationUser>(userStore);
+                        userManager.AddToRole(user.Id, "Branch_Admin");
+                        db.AspNetEmployees.Add(aspNetEmployee);
+                        db.SaveChanges();
+                        AspNetBranch_Admins br_ad = new AspNetBranch_Admins();
+                        br_ad.AdminId = user.Id;
+                        br_ad.BranchId = aspNetEmployee.BranchId ?? default(int);
+                        db.AspNetBranch_Admins.Add(br_ad);
+                        db.SaveChanges();
                         char[] charArray = FName.ToCharArray();
                         var fletter = charArray[0].ToString();
                         var image = db.AspNetBackGrounds.Where(x => x.Name == fletter).Select(x => x.Picture).FirstOrDefault();
@@ -264,9 +264,9 @@ namespace SEA_Application.Controllers
                         student.Image = image;
                         db.SaveChanges();
                         string Error = "Branch Admin successfully saved.";
-                    return RedirectToAction("TeacherIndex", "AspNetEmployees", new { Error });
-                   }
-                   
+                        return RedirectToAction("TeacherIndex", "AspNetEmployees", new { Error });
+                    }
+
 
                 }
                 catch (Exception e)
@@ -275,7 +275,7 @@ namespace SEA_Application.Controllers
                     return RedirectToAction("Create", "AspNetEmployees");
                 }
             }
-            else if(Position== "Branch Principal")
+            else if (Position == "Branch Principal")
             {
                 ApplicationDbContext context = new ApplicationDbContext();
                 var user = new ApplicationUser { UserName = Request.Form["UserName"], Email = Request.Form["Email"], Name = FullName, PhoneNumber = Request.Form["cellNo"] };
@@ -313,12 +313,12 @@ namespace SEA_Application.Controllers
                 }
             }
             else if (Position == "Guard")
-            {               
+            {
                 aspNetEmployee.VirtualRoleId = db.AspNetVirtualRoles.Where(x => x.Name == "Non Directive Staff").Select(x => x.Id).FirstOrDefault();
                 aspNetEmployee.Name = FullName;
-                    db.AspNetEmployees.Add(aspNetEmployee);
-                    db.SaveChanges();
-                    string Error = "Branch Admin successfully saved.";
+                db.AspNetEmployees.Add(aspNetEmployee);
+                db.SaveChanges();
+                string Error = "Branch Admin successfully saved.";
                 return RedirectToAction("TeacherIndex", "AspNetEmployees", new { Error });
 
             }
@@ -361,14 +361,14 @@ namespace SEA_Application.Controllers
             foreach (var item in emp)
             {
                 var users = db.AspNetUsers.Where(x => x.Id == item.UserId).FirstOrDefault();
-                if (users.StatusId ==2 )
+                if (users.StatusId == 2)
                 {
                     EmployeeList el = new EmployeeList();
                     el.Name = item.Name;
                     el.Position = item.AspNetEmployeePosition.PositionName;
                     el.id = item.Id;
                     el.Gender = item.AspNetGender.Title;
-                   // el.Image = users.Image;
+                    // el.Image = users.Image;
                     el.UserName = users.UserName;
                     emplist.Add(el);
                 }
@@ -391,14 +391,14 @@ namespace SEA_Application.Controllers
                 branchId = db.AspNetBranches.Where(x => x.BranchPrincipalId == loggedInUserId).Select(x => x.Id).FirstOrDefault();
             }
 
-            var emp=db.AspNetEmployees.Where(x=> x.BranchId == branchId).ToList();
+            var emp = db.AspNetEmployees.Where(x => x.BranchId == branchId).ToList();
 
             List<EmployeeList> emplist = new List<EmployeeList>();
-            
+
             foreach (var item in emp)
             {
                 var users = db.AspNetUsers.Where(x => x.Id == item.UserId).FirstOrDefault();
-                if(users.StatusId !=2)
+                if (users.StatusId != 2)
                 {
                     EmployeeList el = new EmployeeList();
                     el.Name = item.Name;
@@ -409,17 +409,17 @@ namespace SEA_Application.Controllers
                     el.Image = users.Image;
                     el.UserName = users.UserName;
                     emplist.Add(el);
-                }               
+                }
             }
-            return Json(emplist,JsonRequestBehavior.AllowGet);
+            return Json(emplist, JsonRequestBehavior.AllowGet);
         }
         public ActionResult Disable_Employee(int id)
         {
-            var uid=db.AspNetEmployees.Where(x => x.Id == id).Select(x => x.UserId).FirstOrDefault();
+            var uid = db.AspNetEmployees.Where(x => x.Id == id).Select(x => x.UserId).FirstOrDefault();
             AspNetUser users = db.AspNetUsers.Where(x => x.Id == uid).FirstOrDefault();
             users.StatusId = 2;
             db.SaveChanges();
-            return RedirectToAction("TeacherIndex","AspNetEmployees");
+            return RedirectToAction("TeacherIndex", "AspNetEmployees");
         }
         public ActionResult EnableEmployee(int id)
         {
@@ -444,7 +444,7 @@ namespace SEA_Application.Controllers
                 foreach (var item in student)
                 {
                     var users = db.AspNetUsers.Where(x => x.Id == item.UserId).FirstOrDefault();
-                    if(users.StatusId==1)
+                    if (users.StatusId == 1)
                     {
                         EmployeeList std = new EmployeeList();
                         std.Name = item.Name;
@@ -454,7 +454,7 @@ namespace SEA_Application.Controllers
                         std.Image = users.Image;
                         emplist.Add(std);
                     }
-                
+
                 }
                 return Json(emplist, JsonRequestBehavior.AllowGet);
             }
@@ -464,7 +464,7 @@ namespace SEA_Application.Controllers
                 foreach (var item in emp)
                 {
                     var users = db.AspNetUsers.Where(x => x.Id == item.UserId).FirstOrDefault();
-                    if(users.StatusId==1)
+                    if (users.StatusId == 1)
                     {
                         EmployeeList el = new EmployeeList();
                         el.Name = item.Name;
@@ -474,11 +474,11 @@ namespace SEA_Application.Controllers
                         el.Image = users.Image;
                         emplist.Add(el);
                     }
-               
+
                 }
                 return Json(emplist, JsonRequestBehavior.AllowGet);
             }
-          
+
         }
         public class EmployeeList
         {
@@ -509,56 +509,256 @@ namespace SEA_Application.Controllers
         [HttpPost]
         public ActionResult Savefile(string ImageName)
         {
-            
-                var uniquename = "";
-                if (Request.Files["Image"] != null)
-                {
 
-                    var file = Request.Files["Image"];
-                    if (file.FileName != null)
-                    {
-                        var ext = System.IO.Path.GetExtension(file.FileName);
-                        uniquename = Guid.NewGuid().ToString() + ext;
-                        var rootpath = Server.MapPath("~/Content/Images");
-                        var filesavepath = rootpath + "/" + uniquename;
-                        file.SaveAs(filesavepath);
-                        AspNetBackGround bg = new AspNetBackGround();
-                        bg.Picture = "../Content/Images/" + uniquename;
-                        bg.Name = ImageName;
-                        db.AspNetBackGrounds.Add(bg);
-                        db.SaveChanges();
-                    }
+            var uniquename = "";
+            if (Request.Files["Image"] != null)
+            {
+
+                var file = Request.Files["Image"];
+                if (file.FileName != null)
+                {
+                    var ext = System.IO.Path.GetExtension(file.FileName);
+                    uniquename = Guid.NewGuid().ToString() + ext;
+                    var rootpath = Server.MapPath("~/Content/Images");
+                    var filesavepath = rootpath + "/" + uniquename;
+                    file.SaveAs(filesavepath);
+                    AspNetBackGround bg = new AspNetBackGround();
+                    bg.Picture = "../Content/Images/" + uniquename;
+                    bg.Name = ImageName;
+                    db.AspNetBackGrounds.Add(bg);
+                    db.SaveChanges();
                 }
-                return RedirectToAction("Create", "AspNetEmployees");
-            
-           
+            }
+            return RedirectToAction("Create", "AspNetEmployees");
+
+
 
         }
+        public ActionResult CreateEmployee()
+        {
+
+            ViewBag.Error = TempData["ErrorMessage"] as string;
+            ViewBag.BranchId = new SelectList(db.AspNetBranches, "Id", "Name");
+            ViewBag.ClassId = new SelectList(db.AspNetClasses, "Id", "Name");
+            ViewBag.GenderId = new SelectList(db.AspNetGenders, "Id", "Title");
+            ViewBag.NationalityId = new SelectList(db.AspNetNationalities, "Id", "Title");
+            ViewBag.ParentId = new SelectList(db.AspNetParents, "Id", "UserId");
+            ViewBag.ReligionId = new SelectList(db.AspNetReligions, "Id", "Title");
+            ViewBag.SectionId = new SelectList(db.AspNetSections, "Id", "Name");
+            ViewBag.PackageId = new SelectList(db.AspNetPackages, "Id", "Title");
+
+            ViewBag.Position = new SelectList(db.AspNetEmployeePositions.Where(x => x.PositionName != "Accountant" && x.PositionName != "Branch Admin" && x.PositionName != "Branch Principal"), "Id", "PositionName");
+
+            return View();
+        }
+        public ActionResult EmployeeIndex()
+        {
+
+            return View();
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> CreateEmployee(EmployeeVM employeeVM, HttpPostedFileBase[] documents)
+        {
+            var IsApplicationUser = Request.Form["ApplicaionUser"];
+            var AppUser = false;
+            var IsUserCreated = false;
+            var Error = "";
+
+            if (IsApplicationUser == "Yes" /*Hard Code*/ && employeeVM.Position == 2)
+            {
+                AppUser = true;
+                ApplicationDbContext context = new ApplicationDbContext();
+                var user = new ApplicationUser { UserName = employeeVM.UserName, Email = employeeVM.Email, Name = employeeVM.Name, PhoneNumber = employeeVM.CellNo };
+                var result = await UserManager.CreateAsync(user, employeeVM.Password);
+                Error = result.Errors.FirstOrDefault();
+                if (result.Succeeded)
+                {
+                    IsUserCreated = true;
+                    //aspNetStudent.Name = FullName;
+                    //aspNetStudent.UserId = user.Id;
+
+                    //db.AspNetStudents.Add(aspNetStudent);
+
+
+                    var roleStore = new RoleStore<IdentityRole>(context);
+                    var roleManager = new RoleManager<IdentityRole>(roleStore);
+                    var userStore = new UserStore<ApplicationUser>(context);
+                    var userManager = new UserManager<ApplicationUser>(userStore);
+
+                    if (employeeVM.Position == 2)//Teacher
+                    {
+                        userManager.AddToRole(user.Id, "Teacher");
+
+                    }
+
+
+                    db.SaveChanges();
+
+                    //char[] charArray = FName.ToCharArray();
+                    //var fletter = charArray[0].ToString();
+                    //AspNetUser student = db.AspNetUsers.Where(x => x.Id == aspNetStudent.UserId).FirstOrDefault();
+
+                    //student.StatusId = 1;
+                    //db.SaveChanges();
+
+                    ruffdata rd = new ruffdata();
+                    rd.Name = employeeVM.Name;
+                    rd.UserName = employeeVM.UserName;
+                    rd.Password = employeeVM.Password;
+                    rd.CreationDate = DateTime.Now;
+                    db.ruffdatas.Add(rd);
+                    db.SaveChanges();
+
+                }// end of if 
+                else
+                {
+                    ViewBag.Error = TempData["ErrorMessage"] as string;
+                    ViewBag.BranchId = new SelectList(db.AspNetBranches, "Id", "Name");
+                    ViewBag.ClassId = new SelectList(db.AspNetClasses, "Id", "Name");
+                    ViewBag.GenderId = new SelectList(db.AspNetGenders, "Id", "Title");
+                    ViewBag.NationalityId = new SelectList(db.AspNetNationalities, "Id", "Title");
+                    ViewBag.ParentId = new SelectList(db.AspNetParents, "Id", "UserId");
+                    ViewBag.ReligionId = new SelectList(db.AspNetReligions, "Id", "Title");
+                    ViewBag.SectionId = new SelectList(db.AspNetSections, "Id", "Name");
+                    ViewBag.PackageId = new SelectList(db.AspNetPackages, "Id", "Title");
+
+                    ViewBag.Position = new SelectList(db.AspNetEmployeePositions.Where(x => x.PositionName != "Accountant" && x.PositionName != "Branch Admin" && x.PositionName != "Branch Principal"), "Id", "PositionName");
+
+                    ViewBag.Error = Error;
+                    return View(employeeVM);
+                }//end of else 
+
+            }
+
+            var User = db.AspNetUsers.Where(x => x.Email == employeeVM.Email).FirstOrDefault();
+
+            AspNetEmployee employee = new AspNetEmployee();
+
+            employee.Name = employeeVM.Name;
+            employee.BranchId = employeeVM.BranchId;
+            employee.Post = employeeVM.Post; 
+            employee.DateAvailable = employeeVM.DateAvailable;
+            employee.JoiningDate = employeeVM.JoiningDate;
+            employee.BirthDate = employeeVM.BirthDate;
+            employee.NationalityId = employeeVM.NationalityId;
+            employee.ReligionId = employeeVM.ReligionId;
+            employee.GenderId = employeeVM.GenderId;
+            employee.CellNo = employeeVM.CellNo;
+            employee.Landline = employeeVM.Landline;
+            employee.Cnic = employeeVM.Cnic;
+            employee.Address = employeeVM.Address;
+            employee.Position = employeeVM.Position;
+            employee.IsApplicationUser = AppUser;
+            employee.Salary = employeeVM.Salary;
+
+            if (employeeVM.Position == 2)//Teacher
+            {
+                employee.VirtualRoleId = 4;
+
+            }
+            else if (employeeVM.Position == 1004)
+            {
+                employee.VirtualRoleId = 2;
+
+            }
+            else if (employeeVM.Position == 1005)
+            {
+                employee.VirtualRoleId = 2;
+
+            }
+            else if (employeeVM.Position == 1006)
+            {
+                employee.VirtualRoleId = 2;
+
+
+            }
+            else
+            {
+
+            }
+
+            if (User != null)
+            {
+                employee.UserId = User.Id;
+            }
+
+            db.AspNetEmployees.Add(employee);
+            db.SaveChanges();
+
+
+            List<EmployeeDocument> EmployeeDocuments = new List<EmployeeDocument>();
+            if (documents.Count() != 0)
+            {
+
+                foreach (var file in documents)
+                {
+
+
+                    if (file != null)
+                    {
+                        EmployeeDocument employeedoc = new EmployeeDocument();
+
+                        var FileName = file.FileName;
+                        FileName = FileName + "_EMPDOC" + employee.Id;
+                        // AllFiles += FileName + "/";
+                        file.SaveAs(Path.Combine(Server.MapPath("~/Content/EmployeeDocuments"), FileName));
+                        employeedoc.Document = FileName;
+                        employeedoc.EmployeeId = employee.Id;
+
+                        EmployeeDocuments.Add(employeedoc);
+
+                    }
+
+                }
+                db.EmployeeDocuments.AddRange(EmployeeDocuments);
+                db.SaveChanges();
+
+            }
+
+            return RedirectToAction("EmployeeIndex");
+
+        }
+
+        public ActionResult EmployeesList()
+        {
+            var EmployeeList = db.AspNetEmployees.Select(x => new { x.Id, x.Name, x.Salary, BranchName = x.AspNetBranch.Name, PositionName = x.AspNetEmployeePosition.PositionName, x.CellNo }).ToList();
+
+            return Json(EmployeeList, JsonRequestBehavior.AllowGet);
+        }
+
+
+
+
         // GET: AspNetEmployees/Create
         public ActionResult Create()
-           
+
         {
             ViewBag.InternalError = TempData["InternalError"] as string;
-            
+
             ViewBag.LoaderError = TempData["ErrorMessage"] as string;
             ViewBag.BranchId = new SelectList(db.AspNetBranches, "Id", "Name");
             ViewBag.ClassId = new SelectList(db.AspNetClasses, "Id", "ClassName");
             ViewBag.GenderId = new SelectList(db.AspNetGenders, "Id", "Title");
             ViewBag.NationalityId = new SelectList(db.AspNetNationalities, "Id", "Title");
-            var id=User.Identity.GetUserId();
+            var id = User.Identity.GetUserId();
             var rolename = db.AspNetUsers.Where(x => x.Id == id).Select(x => x.AspNetRoles.Select(y => y.Name).FirstOrDefault()).FirstOrDefault();
-            if (rolename=="Super_Admin")
+            if (rolename == "Super_Admin")
             {
-                ViewBag.Position = new SelectList(db.AspNetEmployeePositions.Where(x=>x.PositionName=="Branch Admin" ||x.PositionName=="Branch Principal"), "Id", "PositionName");
+                ViewBag.Position = new SelectList(db.AspNetEmployeePositions.Where(x => x.PositionName == "Branch Admin" || x.PositionName == "Branch Principal"), "Id", "PositionName");
 
             }
-            else if(rolename=="Branch_Admin"){
+            else if (rolename == "Branch_Admin")
+            {
                 ViewBag.Position = new SelectList(db.AspNetEmployeePositions.Where(x => x.PositionName != "Branch Admin" && x.PositionName != "Branch Principal"), "Id", "PositionName");
 
             }
             ViewBag.ReligionId = new SelectList(db.AspNetReligions, "Id", "Title");
             return View();
         }
+
+
 
         // POST: AspNetEmployees/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -587,7 +787,7 @@ namespace SEA_Application.Controllers
         {
             try
             {
-               
+
                 if (id == null)
                 {
                     return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
@@ -598,7 +798,7 @@ namespace SEA_Application.Controllers
                 var employee = (from emp in db.AspNetEmployees
                                 join user in db.AspNetUsers on emp.UserId equals user.Id
                                 where user.Id == aspNetEmployee.UserId
-                                select new { user.Email, user.UserName,user.Image,user.AspNetStatu.Name }).FirstOrDefault();
+                                select new { user.Email, user.UserName, user.Image, user.AspNetStatu.Name }).FirstOrDefault();
                 ViewBag.Email = employee.Email;
                 ViewBag.UserName = employee.UserName;
                 ViewBag.Image = employee.Image;
@@ -606,7 +806,7 @@ namespace SEA_Application.Controllers
                 ViewBag.JoiningDate = aspNetEmployee.JoiningDate;
                 if (aspNetEmployee == null)
                 {
-                    
+
                     return RedirectToAction("TeacherIndex");
 
                 }
@@ -617,13 +817,13 @@ namespace SEA_Application.Controllers
                 ViewBag.ReligionId = new SelectList(db.AspNetReligions, "Id", "Title", aspNetEmployee.ReligionId);
                 return View(aspNetEmployee);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 ViewBag.Error = e.Message;
-  
+
                 return RedirectToAction("TeacherIndex");
             }
-          
+
         }
 
         public JsonResult GetUserName(string userName)

@@ -1,7 +1,20 @@
 ﻿@model SEA_Application.Controllers.ChartOfAccountsController.TrialBalanceSheet
 @{
     ViewBag.Title = "TrialBalance";
-    Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+
+
+    if (User.IsInRole("Accountant"))
+    {
+        Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+    }
+    else if (User.IsInRole("Accounting_Head"))
+    {
+        Layout = "~/Views/Shared/_AccountHeadDashboardLayout.cshtml";
+    }
+    else
+    {
+        Layout = null;
+    }
 }
 
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
@@ -34,7 +47,8 @@
 
                 <table class="table table-bordered table-striped table-hover">
                     <thead>
-                        @*<tr class="text-light bg-dark">*@
+                        @*
+                        <tr class="text-light bg-dark">*@
                         <tr>
 
                             <th scope="col" style="">Account Title</th>
@@ -121,18 +135,18 @@
             var ToDateVal = $(this).val();
 
 
-            
-                var d = new Date(ToDateVal);
-                var day = d.getDate();
-                var month = d.getMonth() + 1;
-                var year = d.getFullYear();
 
-                var monthName = GetMonthName(month);
+            var d = new Date(ToDateVal);
+            var day = d.getDate();
+            var month = d.getMonth() + 1;
+            var year = d.getFullYear();
 
-                var ToDateFormat = day + "-" + monthName + "-" + year;
+            var monthName = GetMonthName(month);
 
-                $("#DateToView").html('<h5>Selected Date :  <span id="ToDateView">' + ToDateFormat + ' </span></h5>');
-        
+            var ToDateFormat = day + "-" + monthName + "-" + year;
+
+            $("#DateToView").html('<h5>Selected Date :  <span id="ToDateView">' + ToDateFormat + ' </span></h5>');
+
             $.ajax({
                 type: "POST",
                 url: "/ChartOfAccounts/GetTrialBalanceByDate",
@@ -170,7 +184,7 @@
         })
 
     })
-        function GetMonthName(monthNumber) {
+    function GetMonthName(monthNumber) {
         var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         return months[monthNumber - 1];
     }

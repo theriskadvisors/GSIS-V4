@@ -1,0 +1,158 @@
+﻿
+
+
+@{
+
+    Layout = "~/Views/Shared/_AccountHeadDashboardLayout.cshtml";
+}
+
+<style>
+    #StudentTestList a:hover {
+        text-decoration: underline;
+    }
+
+    #datatable_filter {
+        display: block !important;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+
+
+            <div class="card-body p-4">
+                <div class="tab-content" style="padding: 10px 0px 0px 0px;">
+
+                    <div class="tab-pane active show" id="Topics-attr" role="tabpanel" aria-labelledby="Topics-tab-attr">
+                        <div class="box box-primary">
+                            <div class="box-body">
+                                <div class="box-title"></div>
+                                <div class="table-responsive">
+                                    <table class="table hover  table-striped table-bordered" id="datatable">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    Name
+                                                </th>
+                                                @*<th>
+            UserName
+        </th>
+        <th>
+            Email
+        </th>*@
+                                                <th>
+                                                    Cell No
+                                                </th>
+                                                <th>
+                                                    Branch
+                                                </th>
+                                                <th>
+                                                    Position
+                                                </th>
+                                                <th>
+                                                    Salary
+                                                </th>
+
+                                            </tr>
+
+                                        </thead>
+
+                                        <tbody id="EmployeeList">
+                                        </tbody>
+
+
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+
+    $(document).ready(function () {
+
+
+        $("#PageHeader").html("Employees");
+
+        //$("#BreadCrumbs").append(' <li> <a href="/AdmissionDashboard/Dashboard"> Home </a> <span>&gt;</span></li>');
+        //$("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Employees</a></li>');
+
+
+        var table = $('#datatable').dataTable({
+            buttons: [
+                {
+                    text: '<span class="datatableButtonsReset"> <img src="/Content/assets/assets/icons/Icon-Reset2.png" alt=""> Reset</span>'
+                },
+                {
+                    text: '<span class="datatableButtonsEdit"> <img src="/Content/assets/assets/icons/Icon-edit.png" alt=""> Create</span>',
+                    action: function (e, dt, button, config) {
+                        window.location.href = '/AspnetEmployees/CreateEmployee';
+                    }
+                },
+                {
+                    text: '<span class="datatableButtonsDownload"> <img src="/Content/assets/assets/icons/Icon-download.png" alt=""> Download</span>'
+                }
+            ],
+            "language": {
+                "lengthMenu": "<div class=\"d-flex showEntriesCon\">\n" +
+                    "  <div class=\"p-2\">Show </div> <div class=\"showEntries\"> _MENU_\n" +
+                    "  </div>\n" +
+                    "  </div>",
+                "info": "<div class='showingEntriesOfTotal'>Showing <span class=\"text-info\">_START_ to _END_</span> of _TOTAL_ entries</div>",
+                "paginate": {
+                    "first": "Firstt",
+                    "last": "Lastt",
+                    "next": ' <img src="~/Content/assets/assets/icons/Arrow2.png" alt=""> ',
+                    "previous": ' <img src="~/Content/assets/assets/icons/Arrow1.png" alt=""> '
+                }
+            },
+            "searching": true,
+            // dom: '<"class">Blfrtip',
+            dom: "<'row mb-3'<'col-sm-12 col-md-2 col-lg-2'l><'col-sm-12 col-md-10 col-lg-10 datatableButtonsCon text-right'Bf>>" +
+                "<'row'<'col-sm-12 datatablesData'tr>>" +
+                "<'row mt-4'<'col-sm-12 col-md-4 col-lg-6 infoCon'i><'col-sm-12 col-md-8 col-lg-6 pagCon'p>>",
+        });
+
+//        $("#datatable1_filter").hide();
+
+        $('#datatable').on('click', 'tbody tr', function () {
+            var td = $(this).children("td");
+            var userName = $(td[0]).children("input").val(); //EditStudentReg
+
+           // window.location.href = "/AdmissionDashboard/EditStudentReg?id=" + userName;
+        });
+
+       
+
+        $.ajax({
+            type: "POST",
+            url: "/AspnetEmployees/EmployeesList",
+            data: {},
+
+            success: function (data) {
+                table.fnClearTable();
+                $.each(data, function (index) {
+
+
+                    table.fnAddData([data[index].Name + "<input  type=hidden value=" + data[index].Id + ">", data[index].CellNo, data[index].BranchName, data[index].PositionName, data[index].Salary]);
+
+
+                })
+                table.fnDraw();
+
+            }
+        })
+
+    })//end of document ready
+</script>

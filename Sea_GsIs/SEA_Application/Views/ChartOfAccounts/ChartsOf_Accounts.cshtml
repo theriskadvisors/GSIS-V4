@@ -1,6 +1,18 @@
 ﻿
 @{
-    ViewBag.Title = "ChartsOf_Accounts";
+
+    if (User.IsInRole("Accountant"))
+    {
+        Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+    }
+    else if (User.IsInRole("Accounting_Head"))
+    {
+        Layout = "~/Views/Shared/_AccountHeadDashboardLayout.cshtml";
+    }
+    else
+    {
+        Layout = null;
+    }
 }
 <style>
           #example1 tr > :nth-child(3) {

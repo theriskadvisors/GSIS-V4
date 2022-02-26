@@ -18,6 +18,8 @@ namespace SEA_Application.Controllers
         private Sea_Entities db = new Sea_Entities();
 
         // GET: StudentFeeMonths
+        [Authorize(Roles = "Branch_Principal,Accounting_Head,Accountant,Admission")]
+
         public ActionResult Index()
         {
             // no forign key found

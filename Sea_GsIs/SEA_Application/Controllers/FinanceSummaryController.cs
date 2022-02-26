@@ -9,7 +9,7 @@ using System.Web.Mvc;
 
 namespace SEA_Application.Controllers
 {
-    [Authorize(Roles = "Accountant")]
+    [Authorize(Roles = "Accountant,Accounting_Head")]
     public class FinanceSummaryController : Controller
     {
         Sea_Entities db = new Sea_Entities();
@@ -88,10 +88,10 @@ namespace SEA_Application.Controllers
 
 
                         BillingMonth.TotalNonRecurringFee = TotalNonRecurring;
-                        
+
                         if (MonthStatus == true)
                         {
-                            BillingMonth.Total = Convert.ToInt32( MonthPaidAmount);
+                            BillingMonth.Total = Convert.ToInt32(MonthPaidAmount);
                             BillingMonth.Status = "Paid";
 
                         }
@@ -173,7 +173,7 @@ namespace SEA_Application.Controllers
                         else
                         {
                             BillingMonth.Status = "UnPaid";
-                          
+
                             var GrandTotal = TotalRecurringFee + TotalNonRecurring;
                             BillingMonth.Total = Convert.ToInt32(GrandTotal);
                         }
@@ -213,9 +213,9 @@ namespace SEA_Application.Controllers
                         else
                         {
                             BillingMonth.Status = "UnPaid";
-                            
+
                             var GrandTotal = TotalRecurringFee + TotalNonRecurring;
-                       
+
                             BillingMonth.Total = Convert.ToInt32(GrandTotal);
 
 
@@ -256,9 +256,9 @@ namespace SEA_Application.Controllers
                         else
                         {
                             BillingMonth.Status = "UnPaid";
-                           
+
                             var GrandTotal = TotalRecurringFee + TotalNonRecurring;
-                         
+
                             BillingMonth.Total = Convert.ToInt32(GrandTotal);
                         }
 
@@ -293,9 +293,9 @@ namespace SEA_Application.Controllers
                         else
                         {
                             BillingMonth.Status = "UnPaid";
-                         
+
                             var GrandTotal = TotalRecurringFee + TotalNonRecurring;
-                       
+
                             BillingMonth.Total = Convert.ToInt32(GrandTotal);
                         }
 
@@ -329,9 +329,9 @@ namespace SEA_Application.Controllers
                         else
                         {
                             BillingMonth.Status = "UnPaid";
-                           
+
                             var GrandTotal = TotalRecurringFee + TotalNonRecurring;
-                          
+
                             BillingMonth.Total = Convert.ToInt32(GrandTotal);
                         }
 
@@ -365,9 +365,9 @@ namespace SEA_Application.Controllers
                         else
                         {
                             BillingMonth.Status = "UnPaid";
-                           
+
                             var GrandTotal = TotalRecurringFee + TotalNonRecurring;
-                          
+
                             BillingMonth.Total = Convert.ToInt32(GrandTotal);
                         }
 
@@ -404,9 +404,9 @@ namespace SEA_Application.Controllers
                         else
                         {
                             BillingMonth.Status = "UnPaid";
-                            
+
                             var GrandTotal = TotalRecurringFee + TotalNonRecurring;
-                           
+
                             BillingMonth.Total = Convert.ToInt32(GrandTotal);
                         }
 
@@ -442,9 +442,9 @@ namespace SEA_Application.Controllers
                         else
                         {
                             BillingMonth.Status = "UnPaid";
-                            
+
                             var GrandTotal = TotalRecurringFee + TotalNonRecurring;
-                           
+
                             BillingMonth.Total = Convert.ToInt32(GrandTotal);
                         }
 
@@ -481,9 +481,9 @@ namespace SEA_Application.Controllers
                         {
 
                             BillingMonth.Status = "UnPaid";
-                            
+
                             var GrandTotal = TotalRecurringFee + TotalNonRecurring;
-                            
+
                             BillingMonth.Total = Convert.ToInt32(GrandTotal);
                         }
 
@@ -521,9 +521,9 @@ namespace SEA_Application.Controllers
                         {
 
                             BillingMonth.Status = "UnPaid";
-                           
+
                             var GrandTotal = TotalRecurringFee + TotalNonRecurring;
-                           
+
                             BillingMonth.Total = Convert.ToInt32(GrandTotal);
                         }
 
@@ -820,6 +820,9 @@ namespace SEA_Application.Controllers
                 return new JsonResult { Data = events, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
             }
         }
+
+
+
 
         [HttpPost]
         public JsonResult SaveEvent(Event e)
@@ -1412,6 +1415,7 @@ namespace SEA_Application.Controllers
             }
 
         }
+
         //public ActionResult CashIndex()
         //{
         //    return View();
@@ -1511,6 +1515,323 @@ namespace SEA_Application.Controllers
             }
             return Json(Head_list, JsonRequestBehavior.AllowGet);
         }
+        public ActionResult EmployeeFinanceList()
+        {
+            return View();
+        }
+        public ActionResult EmployeeFinances()
+        {
+            var EmployeeFinances = db.EmployeeFinances.Select(x => new { x.Id, x.AspNetEmployee.Name, x.Bank_Chq, x.DueDate, x.Total_SalaryPayable ,x.Status }).ToList();
+
+            return Json(EmployeeFinances, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult CreateFinance()
+        {
+
+            return View();
+        }
+        [HttpGet]
+        public ActionResult CreateEmployeeFinance()
+        {
+            var AllEmployeesList = db.AspNetEmployees.Select(x => new { x.Id, x.Name }).ToList();
+            ViewBag.EmployeeList = new SelectList(AllEmployeesList, "Id", "Name");
+
+            return View();
+        }
+        [HttpPost]
+        public ActionResult CreateEmployeeFinance(EmployeeVM employeeFinance)
+        {
+            var IsFinanceCreated = "No";
+            var dbTransaction = db.Database.BeginTransaction();
+            try
+            {
+                var Employee = db.AspNetEmployees.Where(x => x.Id == employeeFinance.EmployeeId).FirstOrDefault();
+
+                EmployeeFinance finance = new EmployeeFinance();
+                finance.EmployeeId = employeeFinance.EmployeeId;
+                //finance.Date = employeeFinance.Date;//this date is as Due Date
+                finance.DueDate = employeeFinance.DueDate;//this date is as Due Date
+                finance.Bank_Chq = employeeFinance.Bank_Chq;
+                finance.Add_Arrears = employeeFinance.Add_Arrears;
+                finance.Add_LoanAdvance = employeeFinance.Add_LoanAdvance;
+                finance.Add_Inrmnt = employeeFinance.Add_Inrmnt;
+                finance.Add_Other = employeeFinance.Add_Other;
+                finance.Add_Total_AddInSalary = employeeFinance.Add_Total_AddInSalary;
+                finance.Add_GrossSalary = employeeFinance.Add_GrossSalary;
+
+
+                finance.Less_TaxDed = employeeFinance.Less_TaxDed;
+                finance.Less_LoanAdvance = employeeFinance.Less_LoanAdvance;
+                finance.Less_SecurityDed = employeeFinance.Less_SecurityDed;
+                finance.Less_AbsentDed = employeeFinance.Less_AbsentDed;
+                finance.Less_Others = employeeFinance.Less_Others;
+                finance.Less_TotalLessInSalary = employeeFinance.Less_TotalLessInSalary;
+                finance.Total_SalaryPayable = employeeFinance.Total_SalaryPayable;
+
+                finance.CreationDate = GetLocalDateTime.GetLocalDateTimeFunction();
+                finance.Status = "Created";
+                db.EmployeeFinances.Add(finance);
+                db.SaveChanges();
+
+
+
+                var id = User.Identity.GetUserId();
+                var username = db.AspNetUsers.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault();
+                Voucher voucher = new Voucher();
+                var SessionId = db.AspNetSessions.Where(x => x.IsActive == true).FirstOrDefault().Id;
+                voucher.Name = "Salary Created of Employee " + Employee.Name;
+                voucher.Notes = "";
+                voucher.Date = GetLocalDateTime.GetLocalDateTimeFunction();
+                voucher.CreatedBy = username;
+                voucher.ChallanId = null;
+                int? VoucherObj = db.Vouchers.Max(x => x.VoucherNo);
+                voucher.VoucherNo = Convert.ToInt32(VoucherObj) + 1;
+                db.Vouchers.Add(voucher);
+                db.SaveChanges();
+
+                var EmployeeFinanceToUpdate = db.EmployeeFinances.Where(x => x.Id == finance.Id).FirstOrDefault();
+                EmployeeFinanceToUpdate.CreatedVoucherId = voucher.Id;
+                db.SaveChanges();
+
+
+                var Leadger = db.Ledgers.Where(x => x.Name == "Salary Payable").FirstOrDefault();
+                int AccountReceivableId = Leadger.Id;
+                decimal? CurrentBalance = Leadger.CurrentBalance;
+
+                VoucherRecord voucherRecord = new VoucherRecord();
+                decimal? AfterBalance = CurrentBalance + Convert.ToDecimal(employeeFinance.Total_SalaryPayable);
+                voucherRecord.LedgerId = AccountReceivableId;
+                voucherRecord.Type = "Cr";
+                voucherRecord.Amount = Convert.ToDecimal(employeeFinance.Total_SalaryPayable);
+                voucherRecord.CurrentBalance = CurrentBalance;
+                voucherRecord.AfterBalance = AfterBalance;
+                voucherRecord.VoucherId = voucher.Id;
+                voucherRecord.UserType = "Employee";
+                voucherRecord.UserId = Employee.Id.ToString();
+                voucherRecord.BranchId = Employee.BranchId;
+
+
+                voucherRecord.Description = "Salary Created of Employee " + Employee.Name;
+                Leadger.CurrentBalance = AfterBalance;
+                db.VoucherRecords.Add(voucherRecord);
+                db.SaveChanges();
+
+
+                VoucherRecord voucherRecord1 = new VoucherRecord();
+
+                var LedgerStudentFee = db.Ledgers.Where(x => x.Name == "Staff Salary").FirstOrDefault();
+
+                decimal? CurrentBalanceOfStudentFee = LedgerStudentFee.CurrentBalance;
+                decimal? AfterBalanceOfNotes = CurrentBalanceOfStudentFee + Convert.ToDecimal(employeeFinance.Total_SalaryPayable);
+                voucherRecord1.LedgerId = LedgerStudentFee.Id;
+                voucherRecord1.Type = "Dr";
+                voucherRecord1.Amount = Convert.ToDecimal(employeeFinance.Total_SalaryPayable);
+                voucherRecord1.CurrentBalance = CurrentBalanceOfStudentFee;
+                voucherRecord1.AfterBalance = AfterBalanceOfNotes;
+                voucherRecord1.VoucherId = voucher.Id;
+                voucherRecord1.Description = "Staff Salary Created of Employee " + Employee.Name;
+                voucherRecord1.UserType = "Employee";
+                voucherRecord1.UserId = Employee.Id.ToString();
+                voucherRecord1.BranchId = Employee.BranchId;
+                LedgerStudentFee.CurrentBalance = AfterBalanceOfNotes;
+
+                db.VoucherRecords.Add(voucherRecord1);
+                db.SaveChanges();
+
+                IsFinanceCreated = "Yes";
+
+                dbTransaction.Commit();
+
+                return Json(new { IsFinanceCreated = IsFinanceCreated }, JsonRequestBehavior.AllowGet);
+
+
+            }
+
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+                dbTransaction.Dispose();
+                return Json(new { IsFinanceCreated = IsFinanceCreated }, JsonRequestBehavior.AllowGet);
+
+
+            }
+
+        }
+
+        public ActionResult PaySalary(string idlist, int LedgerId, string PaidDate)
+        {
+            var dbTransaction = db.Database.BeginTransaction();
+            try
+            {
+
+                var EmployeeFinanceIds = idlist.Split(',');
+
+                foreach (var listitem in EmployeeFinanceIds)
+                {
+                    int item = Convert.ToInt32(listitem);
+
+                   EmployeeFinance employeeFinancesToUpdate = db.EmployeeFinances.Where(x => x.Id == item).FirstOrDefault();
+
+                    if(employeeFinancesToUpdate.Status =="Paid")
+                    {
+
+                    }
+                    else
+                    {
+                        employeeFinancesToUpdate.PaidDate = Convert.ToDateTime(PaidDate);
+                        employeeFinancesToUpdate.Status = "Paid";
+                        db.SaveChanges();
+                    }
+
+                    var TotalSalaryPayable = employeeFinancesToUpdate.Total_SalaryPayable;
+
+                    var id = User.Identity.GetUserId();
+                    var username = db.AspNetUsers.Where(x => x.Id == id).Select(x => x.Name).FirstOrDefault();
+                    Voucher voucher = new Voucher();
+                    var SessionId = db.AspNetSessions.Where(x => x.IsActive == true).FirstOrDefault().Id;
+                    voucher.Name = "Employee Salary Paid "+ employeeFinancesToUpdate.AspNetEmployee.Name;
+                    voucher.Notes = "";
+                    voucher.Date = GetLocalDateTime.GetLocalDateTimeFunction();
+                    voucher.CreatedBy = username;
+                    voucher.ChallanId = null;
+                    int? VoucherObj = db.Vouchers.Max(x => x.VoucherNo);
+                    voucher.VoucherNo = Convert.ToInt32(VoucherObj) + 1;
+                    db.Vouchers.Add(voucher);
+                    db.SaveChanges();
+
+                    var EmployeeFinances = db.EmployeeFinances.Where(x => x.Id == employeeFinancesToUpdate.Id).FirstOrDefault();
+                    EmployeeFinances.PaidVoucherId = voucher.Id;
+                    db.SaveChanges();
+
+                    //Salary Payable
+                    var Leadger = db.Ledgers.Where(x => x.Name == "Salary Payable").FirstOrDefault();
+                    int AccountReceivableId = Leadger.Id;
+                    decimal? CurrentBalance = Leadger.CurrentBalance;
+                    VoucherRecord voucherRecord = new VoucherRecord();
+                    decimal? AfterBalance = CurrentBalance - Convert.ToDecimal(TotalSalaryPayable);
+                    voucherRecord.LedgerId = AccountReceivableId;
+                    voucherRecord.Type = "Dr";
+                    voucherRecord.Amount = Convert.ToDecimal(TotalSalaryPayable);
+                    voucherRecord.CurrentBalance = CurrentBalance;
+                    voucherRecord.AfterBalance = AfterBalance;
+                    voucherRecord.VoucherId = voucher.Id;
+                    voucherRecord.UserType = "Employee";
+                    voucherRecord.UserId = EmployeeFinances.EmployeeId.ToString();
+                    voucherRecord.BranchId = EmployeeFinances.AspNetEmployee.BranchId;
+                    voucherRecord.Description = "Employee Salary Paid "+ EmployeeFinances.AspNetEmployee.Name;
+                    Leadger.CurrentBalance = AfterBalance;
+                    db.VoucherRecords.Add(voucherRecord);
+                    db.SaveChanges();
+
+
+
+                    VoucherRecord voucherRecord1 = new VoucherRecord();
+                    var LedgerCash = db.Ledgers.Where(x => x.Id == LedgerId).FirstOrDefault();
+                    decimal? CurrentBalanceOfCash = LedgerCash.CurrentBalance;
+                    decimal? AfterBalanceOfCash = CurrentBalanceOfCash - Convert.ToDecimal(TotalSalaryPayable);
+                    voucherRecord1.LedgerId = LedgerCash.Id;
+                    voucherRecord1.Type = "Cr";
+                    voucherRecord1.Amount = Convert.ToDecimal(TotalSalaryPayable);
+                    voucherRecord1.CurrentBalance = CurrentBalanceOfCash;
+                    voucherRecord1.AfterBalance = AfterBalanceOfCash;
+                    voucherRecord1.VoucherId = voucher.Id;
+                    voucherRecord1.Description = "Employee Salary Paid " + EmployeeFinances.AspNetEmployee.Name;
+                    voucherRecord1.UserType = "Employee";
+                    voucherRecord1.UserId = EmployeeFinances.EmployeeId.ToString();
+                    voucherRecord1.BranchId = EmployeeFinances.AspNetEmployee.BranchId;
+                    LedgerCash.CurrentBalance = AfterBalanceOfCash;
+
+                    db.VoucherRecords.Add(voucherRecord1);
+                    db.SaveChanges();
+
+                }
+            }
+            catch (Exception ex)
+            {
+                dbTransaction.Dispose();
+                ViewBag.Error = "Something went wrong";
+            }
+
+            dbTransaction.Commit();
+            return RedirectToAction("EmployeeFinanceList");
+
+
+        }
+        public ActionResult CheckSalaryCreated(int EmployeeId, string Date)
+        {
+            var DateTimevalue = Convert.ToDateTime(Date);
+
+            //var StringDate = DateTime.ToString();
+
+          //  var SplitDate = StringDate.Split('/').ToList();
+            string day = "", month = "", year = "";
+
+            year = DateTimevalue.Year.ToString() ;
+            month = DateTimevalue.Month.ToString();
+           // day = SplitDate[2];
+
+            var Msg = "";
+
+           var EmployeeFinance =  db.EmployeeFinances.Where(x => x.EmployeeId == EmployeeId && (x.DueDate.Value.Month.ToString() == month && x.DueDate.Value.Year.ToString() == year)).FirstOrDefault();
+
+            if(EmployeeFinance == null)
+            {
+                Msg = "";
+                return Json(Msg, JsonRequestBehavior.AllowGet);
+            }
+            else if (EmployeeFinance.Status == "Paid")
+            {
+                Msg = "Selected employee salary is paid";
+                return Json(Msg, JsonRequestBehavior.AllowGet);
+             }
+            else
+            {
+                Msg = "Salary is already created of selected employee for the selected date.";
+                return Json(Msg, JsonRequestBehavior.AllowGet);
+            }
+
+           // return Json(EmployeeFinance, JsonRequestBehavior.AllowGet);
+        }
+
+
+
+        public JsonResult GetEmployeeDetails(int EmployeeId)
+        {
+
+            var EmployeeDetails = db.AspNetEmployees.Where(x => x.Id == EmployeeId).Select(x => new { x.Id, x.Name, BranchName = x.AspNetBranch.Name, x.JoiningDate, x.Post, x.Cnic, x.Salary }).FirstOrDefault();
+
+            return Json(EmployeeDetails, JsonRequestBehavior.AllowGet);
+        }
+        public class EmployeeVM
+        {
+            public Nullable<int> EmployeeId { get; set; }
+            public Nullable<System.DateTime> Date { get; set; }
+            public Nullable<System.DateTime> DueDate { get; set; }
+            public Nullable<System.DateTime> PaidDate { get; set; }
+
+            public string Bank_Chq { get; set; }
+
+            public Nullable<double> Add_Arrears { get; set; }
+            public Nullable<double> Add_LoanAdvance { get; set; }
+            public Nullable<double> Add_Inrmnt { get; set; }
+            public Nullable<double> Add_Other { get; set; }
+            public Nullable<double> Add_Total_AddInSalary { get; set; }
+            public Nullable<double> Add_GrossSalary { get; set; }
+            public Nullable<double> Less_TaxDed { get; set; }
+            public Nullable<double> Less_LoanAdvance { get; set; }
+            public Nullable<double> Less_SecurityDed { get; set; }
+            public Nullable<double> Less_AbsentDed { get; set; }
+            public Nullable<double> Less_Others { get; set; }
+            public Nullable<double> Less_TotalLessInSalary { get; set; }
+            public Nullable<double> Total_SalaryPayable { get; set; }
+            public string Remarks { get; set; }
+
+
+
+        }
+
 
         public class _Voucher
         {

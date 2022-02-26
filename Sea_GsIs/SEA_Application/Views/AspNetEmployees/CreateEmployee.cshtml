@@ -1,0 +1,455 @@
+﻿@model SEA_Application.Models.EmployeeVM
+@{
+    Layout = "~/Views/Shared/_AccountHeadDashboardLayout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body p-5">
+        @using (Html.BeginForm("CreateEmployee", "AspnetEmployees", FormMethod.Post, new { enctype = "multipart/form-data", @class = "forms form-horizontal", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+
+        <div class="row">
+            <div class="col-md-6 pl-5 pr-5 border-right border-color-sea ">
+
+                <h2 class="column-heading mb-4">User Information</h2>
+
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Name</label>
+                        <input class="form-control" type="text" name="name" id="name" value="" required />
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">POST</label>
+                        <input class="form-control" type="text" name="post" id="post" value=""  />
+
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Is Application User <span class="red-mark">*</span> </label>
+                        <div class="radio RadioButtonsInline">
+                            <label onclick="return false;"><input type="radio" name="ApplicaionUser" onclick="return false;" id="ApplicationYes" value="Yes" readonly> Yes</label>
+                        </div>
+
+                        <div class="radio RadioButtonsInline">
+                            <label onclick="return false;"><input type="radio" name="ApplicaionUser" onclick="return false;" id="ApplicationNo" value="No" checked readonly> No </label>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Position</label>
+                        @Html.DropDownList("Position", null, "Select One", htmlAttributes: new { @class = "form-control", @required = "required" })
+                        @Html.ValidationMessageFor(model => model.Position, "", new { @class = "text-danger", @id = "PositionError" })
+                    </div>
+                </div>
+
+                <div id="AccountInformation" class="hidden">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Email <span class="red-mark">*</span></label>
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control round-border", @type = "email" })
+                            @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger", @id = "Email-Error" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">UserName<span class="red-mark">*</span></label>
+                            <input type="text" id="RollNo" class="form-control round-border" name="UserName" />
+                            <span style="color:red" id="RollNoError"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Password</label>
+                            <input type="password" name="Password" id="Password" class="form-control">
+                            @Html.ValidationMessageFor(model => model.CellNo, "", new { @class = "text-danger", @id = "Password-Error" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Confirm Password</label>
+                            <input type="password" name="ConfirmPassword" id="CnfmPass" class="form-control">
+                            @Html.ValidationMessageFor(model => model.CellNo, "", new { @class = "text-danger !important", @id = "CnfmPass-Error", @style = "color:red" })
+                        </div>
+                    </div>
+
+                </div>
+
+
+
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Branch</label>
+                        @Html.DropDownList("BranchId", null, "Select One", htmlAttributes: new { @class = "form-control round-border", @required = "required" })
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Salary Offered</label>
+                        <input class="form-control" type="text" name="salary" id="salary" value="" />
+
+                    </div>
+                </div>
+                <div class="form-group bmd-form-group">
+                    <div class="col-md-12">
+                        <label class="control-label"> Documents</label>
+                        <div class="file-field d-flex">
+                            <div class="btn btn-primary btn-md mb-0">
+                                <span style="color:white" onclick='event.stopPropagation(); document.getElementById("SubmitAssignment").click();'>Choose files</span>
+                                <input type="file" class="multiple" name="documents" id="SubmitAssignment" multiple />
+                            </div>
+
+                            <div class="file-path-wrapper d-flex align-items-end ml-3 w-100">
+                                <input id="FilePath" class="file-path validate form-control" type="text" readonly disabled placeholder="No file Chosen">
+                            </div>
+                        </div>
+                        <div style="color: #afbccc;font-size: 14px;font-weight: 500;" class="my-3">Max: 32 MB (Filename should be unique)</div>
+                        <div style="color: #afbccc;font-size: 14px;font-weight: 500;" class="my-3" id="SelectedFiles"></div>
+                    </div>
+                </div>
+
+
+
+
+
+            </div><!--end of column 6-->
+
+
+            <div class="col-md-6 pl-5 pr-5 " id="FurtherInformation">
+
+                <h2 class="column-heading mb-4">Further Information</h2>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Date Available</label>
+                        <input class="form-control" type="date" name="dateavailable" id="dateavailable" value="" required />
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Joining Date</label>
+                        <input class="form-control" type="date" name="joiningdate" id="joiningdate" value="" required />
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Birth Date</label>
+                        <input class="form-control" type="date" name="birthdate" id="birthdate" value="" required />
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Nationality</label>
+                        @Html.DropDownList("NationalityId", null, "Select One", htmlAttributes: new { @class = "form-control round-border", @required = "required" })
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Religion</label>
+                        @Html.DropDownList("ReligionId", null, "Select One", htmlAttributes: new { @class = "form-control round-border", @required = "required" })
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Gender</label>
+                        @Html.DropDownList("GenderId", null, "Select One", htmlAttributes: new { @class = "form-control round-border", @required = "required" })
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Cell No</label>
+                        <input class="form-control" type="text" name="cellno" id="cellno" value="" required />
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">LandLine No</label>
+                        <input class="form-control" type="text" name="landline" id="landline" value="" />
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">CNIC</label>
+                        <input class="form-control" type="text" name="cnic" id="cnic" value="" required />
+
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Address</label>
+                        <textarea class="form-control" name="Address" id="address" rows="5"></textarea>
+
+                    </div>
+                </div>
+
+              
+
+
+            </div><!--Further Information-->
+        </div><!--row-->
+
+            <div class="col-md-4 pl-5 pr-5">
+               
+                <div class="form-group ">
+                    <span style="color:red"> @ViewBag.Error</span><br>
+                    <button type="submit" id="submit" class="btn btn-primary rounded rounded-lg"> Save </button>
+                    <button type="button" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                        <i class="material-icons mr-2">cached</i>  Cancel
+                    </button>
+                </div>
+
+            </div>
+
+        }
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+
+        $("#PageHeader").html("Create");
+
+
+        $('input[type="file"]').change(function (e) {
+            //var fileName = e.target.files[0].name;
+            //document.getElementById("FilePath").placeholder = fileName;
+
+            var fileName = e.target.files[0].name;
+            var fileUpload = $("#SubmitAssignment").get(0).files;
+
+            var fruits = [];
+            if (fileUpload.length > 0) {
+
+                for (var i = 0; i < fileUpload.length; i++) {
+                    fruits.push(fileUpload[i].name + " , ");
+                }
+            }
+
+            $("#SelectedFiles").html(fruits);
+            document.getElementById("FilePath").placeholder = "";
+        });
+
+
+        $("#Email").bind('blur', function () {
+            var email = $("#Email").val();
+
+            $.ajax({
+                type: "POST",
+                url: "/AspnetStudents/IsEmailExist",
+                data: { "Email": email },
+                success: function (data) {
+                    console.log(data);
+                    if (data == 0) {
+                        $('#submit').prop('disabled', false);
+                        $('#Email-Error').html("");
+                    }
+                    else {
+                        $('#Email-Error').html("Email Already taken");
+                        $('#submit').prop('disabled', true);
+                    }
+
+                }
+            });
+        });
+
+
+        $("#Password").bind('blur', function () {
+            var password = $("#Password").val();
+
+            var patt = new RegExp("^(?=.{6,})(?=.*[a-z])(?=.*[0-9])(?=.*[A-Z])(?=.*[@@#$%^&+=]).*$");
+            var test = patt.test(password);
+
+            if (test == false) {
+                $('#Password-Error').html("There should be one uppercase, one lowercase, one special chracter('@@#$%^&+=') and one number in password");
+                $('#submit').prop('disabled', true);
+            } else {
+                $('#Password-Error').html('');
+                $('#submit').prop('disabled', false);
+            }
+
+        });
+
+        $("#CnfmPass").bind('blur', function () {
+            var cnfm = $("#CnfmPass").val();
+            var newpass = $("#Password").val();
+
+            if (cnfm != newpass) {
+                $('#CnfmPass-Error').html("New Password and Confirm Password does not match");
+                $('#submit').prop('disabled', true);
+            } else {
+                $('#submit').prop('disabled', false);
+                $('#CnfmPass-Error').html(" ");
+            }
+
+        });
+
+        $("#RollNo").bind('blur', function () {
+            var rollno = $("#RollNo").val();
+
+            $.ajax({
+                type: "POST",
+                url: "/AspnetStudents/IsRollNoExist",
+                data: { "RollNo": rollno },
+                success: function (data) {
+                    console.log(data);
+                    if (data == 0) {
+                        $('#submit').prop('disabled', false);
+                        $('#RollNoError').html("");
+                    }
+                    else {
+                        $('#RollNoError').html("Roll Already taken");
+                        $('#submit').prop('disabled', true);
+                    }
+
+                }
+            });
+
+        }); //end of roll no bind
+
+
+
+        $('#ApplicationYes').click(function () {
+
+            // alert("Clicked on Yes");
+
+            $("#AccountInformation").removeClass('hidden');
+
+            $("#Email").prop('required', true);
+            $("#RollNo").prop('required', true);
+            $("#Password").prop('required', true);
+            $("#CnfmPass").prop('required', true);
+
+            $("#Email").val("");
+            $("#RollNo").val("");
+            $("#Password").val("");
+            $("#CnfmPass").val("");
+
+
+            $("#Position").change();
+
+        });
+
+        $('#ApplicationNo').click(function () {
+
+            $("#AccountInformation").addClass('hidden');
+
+            $("#Email").prop('required', false);
+            $("#RollNo").prop('required', false);
+            $("#Password").prop('required', false);
+            $("#CnfmPass").prop('required', false);
+
+            $("#Email").val("");
+            $("#RollNo").val("");
+            $("#Password").val("");
+            $("#CnfmPass").val("");
+
+            //$('#submit').prop('disabled', false);
+            $("#Position").change();
+
+
+        });
+
+        $("#Position").change(function () {
+
+           
+            var Position = $(this).val();
+            $('#submit').prop('disabled', false);
+           // $('#ApplicationNo').click();
+            $("#PositionError").html("");
+            //alert(value);
+
+            if (Position != "") {
+
+                var PositionText = $("#Position option:selected").text();
+
+                //var CheckedValue = $("input[name='ApplicaionUser']:checked").val();
+
+                //if (CheckedValue == "Yes" && (PositionText == "Guard" || PositionText == "Sweeper" || PositionText == "Supervisor")) {
+
+                //    $("#PositionError").html(PositionText + " Cannot be application user");
+                //    $('#submit').prop('disabled', true);
+                //}
+
+                if (PositionText == "Guard" || PositionText == "Sweeper" || PositionText == "Supervisor") {
+
+                   // $('#ApplicationNo').click();
+                    //$("#ApplicationNo").prop("checked", true);
+
+                    $("input[name='ApplicaionUser'][value='No']").prop("checked", true);
+
+                    $("#AccountInformation").addClass('hidden');
+
+                    $("#Email").prop('required', false);
+                    $("#RollNo").prop('required', false);
+                    $("#Password").prop('required', false);
+                    $("#CnfmPass").prop('required', false);
+
+                    $("#Email").val("");
+                    $("#RollNo").val("");
+                    $("#Password").val("");
+                    $("#CnfmPass").val("");
+
+                }
+                else {
+                  //  alert("radio ");
+                   // $('#ApplicationYes').click();
+                    $("input[name='ApplicaionUser'][value='Yes']").prop("checked", true);
+
+                    $("#AccountInformation").removeClass('hidden');
+
+                    $("#Email").prop('required', true);
+                    $("#RollNo").prop('required', true);
+                    $("#Password").prop('required', true);
+                    $("#CnfmPass").prop('required', true);
+
+                    $("#Email").val("");
+                    $("#RollNo").val("");
+                    $("#Password").val("");
+                    $("#CnfmPass").val("");
+
+
+                }
+
+
+                // $('#ApplicationNo').click(
+            }
+
+        })
+
+
+
+
+    })//end of document ready
+</script>

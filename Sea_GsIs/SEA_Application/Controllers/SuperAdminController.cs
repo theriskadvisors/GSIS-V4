@@ -393,6 +393,36 @@ namespace SEA_Application.Controllers
             return Json(true, JsonRequestBehavior.AllowGet);
         }
 
+
+        public ActionResult SessionActivation(int  SessionId)
+        {
+            string status = "";
+            var Session  =  db.AspNetSessions.Where(x => x.Id == SessionId).FirstOrDefault();
+            if(Session != null)
+            {                
+                if (Session.StatusId == 2)
+                {
+                    status = "enable";
+                    Session.StatusId = 1;
+                    Session.IsActive = true;
+                    db.SaveChanges();
+
+                }
+                else
+                {
+                    Session.StatusId = 2;
+                    Session.IsActive = false;  
+                    status = "disable";
+                    db.SaveChanges();
+
+                }
+
+            
+            }
+
+
+            return Content(status);
+        }
         #endregion
 
         #region Terms

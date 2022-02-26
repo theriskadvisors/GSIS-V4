@@ -467,7 +467,7 @@ namespace SEA_Application.Controllers
             //{
             //    var nsg= ex.Message;
             //}
-            if (User.IsInRole("Accountant"))
+            if (User.IsInRole("Accountant") || User.IsInRole("Accounting_Head") || User.IsInRole("Admission"))
             {
                 //var studentList = (from stdnt in db.AspNetStudents
                 //                join usr in db.AspNetUsers on stdnt.UserId equals usr.Id
@@ -939,9 +939,11 @@ namespace SEA_Application.Controllers
 
             string IsStudentEntroll = "No";
             var ClassId = "";
+            int BranchClassId = 0;
+            int BranchClassSectionId = 0;
+            List<int> CourseIds = new List<int>();
             if (Student != null)
             {
-
                 //if(Student.ClassId != null)
                 //{
 
@@ -951,7 +953,8 @@ namespace SEA_Application.Controllers
 
                 var AllStudents = db.AspNetStudent_Enrollments.Where(x => x.StudentId == Student.Id).FirstOrDefault();
                 // var className = db.AspNetStudent_Enrollments.Where(x => x.StudentId == Student.Id).Select(x => x.AspNetClass_Courses.AspNetClass.Name).FirstOrDefault();
-
+                var AllCourses = db.AspNetStudent_Enrollments.Where(x => x.StudentId == Student.Id).Select(x => x.CourseId).ToList();
+                
                 var className = db.AspNetClasses.Where(x => x.Id == Student.ClassId).FirstOrDefault().Name;
                 ClassId = Student.ClassId.ToString();
 
@@ -960,10 +963,13 @@ namespace SEA_Application.Controllers
                 if (AllStudents != null)
                 {
                     IsStudentEntroll = BranchName + "-" + className + "-" + SectionName;
+                    BranchClassId = AllStudents.AspNetBranchClass_Sections.AspNetBranch_Class.Id;
+                    BranchClassSectionId = AllStudents.AspNetBranchClass_Sections.Id;
+                    CourseIds = AllCourses;
                 }
             }
 
-            return Json(new { IsStudentEntroll = IsStudentEntroll, ClassId = ClassId }, JsonRequestBehavior.AllowGet);
+            return Json(new { IsStudentEntroll = IsStudentEntroll, ClassId = ClassId, BranchClassId= BranchClassId, BranchClassSectionId= BranchClassSectionId , CourseIds = CourseIds }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetSections(int ClassId)
@@ -1002,7 +1008,6 @@ namespace SEA_Application.Controllers
         }
         public ActionResult GetCourses(int ClassId)
         {
-
             //var CoursesList = from course in db.AspNetCourses
             //                  join classCourses in db.AspNetClass_Courses on course.Id equals classCourses.CourseId
             //                  where classCourses.ClassId == ClassId && classCourses.IsMandatory == false && classCourses.IsActive == true
@@ -1013,11 +1018,9 @@ namespace SEA_Application.Controllers
 
             string status = Newtonsoft.Json.JsonConvert.SerializeObject(CoursesList);
 
-
             return Content(status);
 
         }
-
 
         [HttpGet]
         public ActionResult StudentEntrollment(int a)
@@ -1154,7 +1157,7 @@ namespace SEA_Application.Controllers
         }
 
         // GET: AspNetStudents/Create
-        [Authorize(Roles = "Teacher,Branch_Admin,Branch_Principal,Accountant")]
+        [Authorize(Roles = "Teacher,Branch_Admin,Branch_Principal,Accounting_Head")]
         public ActionResult Create()
         {
             ViewBag.Error = TempData["ErrorMessage"] as string;
@@ -1922,6 +1925,7 @@ namespace SEA_Application.Controllers
         }
 
         // GET: AspNetStudents/Edit/5
+        [Authorize(Roles = "Branch_Admin,Branch_Principal,Accounting_Head")]
         public ActionResult Edit(string userName)
         {
             if (userName == null)
@@ -2294,7 +2298,7 @@ namespace SEA_Application.Controllers
 
             //var AllStudentPasswords  =  db.ruffdatas.Where(x => x.UserName.Any(s => AllStudentsUserNames.Contains(s.ToString())));
 
-            var StudentPasswords = (from m in db.ruffdatas where AllStudentsUserNames.Contains(m.UserName) select m).ToList() ;
+            var StudentPasswords = (from m in db.ruffdatas where AllStudentsUserNames.Contains(m.UserName) select m).ToList();
 
 
             var TeacherUsersIds = db.AspNetTeacher_Enrollments.Where(x => x.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetBranch.Id == branchId).Distinct().Select(x => x.AspNetEmployee.UserId).ToList();
@@ -2314,7 +2318,7 @@ namespace SEA_Application.Controllers
 
             return View(AllStudentsAndTeachersPasswords);
         }
-       
+
 
         // GET: AspNetStudents/Delete/5
         public ActionResult Delete(int? id)

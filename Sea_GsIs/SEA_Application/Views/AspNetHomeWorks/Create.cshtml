@@ -10,8 +10,6 @@
         HomeworkDetail: ''
     }
 
-
-
     var Homework =
     {
         ClassId: '',
@@ -333,7 +331,7 @@
                 aspNetHomework.Date = $('#SelectDate').val();
                 aspNetHomework.TeacherComment = $('#TeacherComment').val();
                 aspNetHomework.subject_Homework = [];
-                 aspNetHomework.StudentsList = [];
+                aspNetHomework.StudentsList = [];
                 $('#HomeworkDetailTbody tr').each(function () {
 
                     aspNetSubject_Homework = Object.create(Subject_Homework);

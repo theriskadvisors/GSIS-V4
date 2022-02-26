@@ -1,7 +1,19 @@
 ﻿@model SEA_Application.Models.Class_Session
 @{
     ViewBag.Title = "Create";
-    Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+
+    if (User.IsInRole("Accountant"))
+    {
+        Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+    }
+    else if (User.IsInRole("Accounting_Head"))
+    {
+        Layout = "~/Views/Shared/_AccountHeadDashboardLayout.cshtml";
+    }
+    else
+    {
+        Layout = null;
+    }
 }
 
 <div class="row">

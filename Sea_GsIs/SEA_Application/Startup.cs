@@ -128,7 +128,68 @@ namespace SEA_Application
                 {
                     var result1 = UserManager.AddToRole(user1.Id, "Super_Admin");
                 }
-            }
+            }//end of super admin
+
+            if (!roleManager.RoleExists("Admission"))
+            {
+
+                // first we create Admin rool   
+                var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole()
+                {
+                    Name = "Admission"
+                };
+                roleManager.Create(role);
+
+                //Here we create a Admin super user who will maintain the website                  
+
+                var user = new ApplicationUser()
+                {
+                    UserName = "HinaKanwal",
+                    Email = "Hina.kanwal@gsis.edu.pk"
+                };
+                string userPWD = "Hina@2211";
+
+                var chkUser = UserManager.Create(user, userPWD);
+
+                //Add default User to Role Admin   
+                if (chkUser.Succeeded)
+                {
+                    var result1 = UserManager.AddToRole(user.Id, "Admission");
+                }
+
+               
+            }//end of Admission Role
+          
+
+            if (!roleManager.RoleExists("Accounting_Head"))
+            {
+
+                // first we create Admin rool   
+                var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole()
+                {
+                    Name = "Accounting_Head"
+                };
+                roleManager.Create(role);
+
+                //Here we create a Admin super user who will maintain the website                  
+
+                var user = new ApplicationUser()
+                {
+                    UserName = "MuhammadShiraz",
+                    Email = "Muhammad.sheraz@gsis.edu.pk"
+                };
+                string userPWD = "Shiraz@9080";
+
+                var chkUser = UserManager.Create(user, userPWD);
+
+                //Add default User to Role Admin   
+                if (chkUser.Succeeded)
+                {
+                    var result1 = UserManager.AddToRole(user.Id, "Accounting_Head");
+                }
+
+            }//end of Accounting_Head Role
+
 
             // creating Creating Manager role    
             if (!roleManager.RoleExists("Teacher"))

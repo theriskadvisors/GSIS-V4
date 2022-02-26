@@ -1,6 +1,17 @@
 ﻿@{
-   
+
+       if (User.IsInRole("Accountant"))
+    {
         Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+    }
+    else if (User.IsInRole("Accounting_Head"))
+    {
+        Layout = "~/Views/Shared/_AccountHeadDashboardLayout.cshtml";
+    }
+    else
+    {
+        Layout = null;
+    }
 }
 <style>
     .pagination {
@@ -40,7 +51,7 @@
 
             if ($(td).html() != "No data available in table");
 
-            
+
             window.location.href = "BillingMonth?userName=" + $(td[1]).html();
         });
 
@@ -107,7 +118,7 @@
                 { "mData": "Name" },
                 { "mData": "RollNo" },
                 { "mData": "CellNo" },
-              
+
                 { "mData": "ClassName" },
                 { "mData": "BranchName" },
 
@@ -118,7 +129,7 @@
 
 
 
-   
+
 
     function class_click(item) {
 
@@ -156,7 +167,7 @@
                             @*@Html.DropDownList("ClassID", null, htmlAttributes: new { @class = "form-control" })*@
                         </div>
                         <div class="table-responsive">
-              
+
                             <table class="table hover table-bordered" id="example">
                                 <thead>
                                     <tr>

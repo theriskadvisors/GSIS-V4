@@ -80,7 +80,7 @@ namespace SEA_Application.Controllers
         }
         public ActionResult AllSession()
         {
-            var Sessions = (from Session in db.AspNetSessions
+            var Sessions = (from Session in db.AspNetSessions.Where(x=>x.AspNetStatu.Id == 1)
 
                             select new
                             {
@@ -88,6 +88,7 @@ namespace SEA_Application.Controllers
                                 Session.Year,
 
                             });
+
 
             string status = Newtonsoft.Json.JsonConvert.SerializeObject(Sessions);
             return Content(status);

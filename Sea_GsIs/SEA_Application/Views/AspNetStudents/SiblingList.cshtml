@@ -1,9 +1,18 @@
 ﻿@model IEnumerable<SEA_Application.Models.AspnetSubjectTopic>
 
 @{
-    ViewBag.Title = "Index";
-    Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
-
+     if (User.IsInRole("Accountant"))
+    {
+        Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+    }
+    else if (User.IsInRole("Accounting_Head"))
+    {
+        Layout = "~/Views/Shared/_AccountHeadDashboardLayout.cshtml";
+    }
+    else
+    {
+        Layout = null;
+    }
 }
 
 <style>
