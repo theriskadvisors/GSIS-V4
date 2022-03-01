@@ -2141,8 +2141,6 @@ namespace SEA_Application.Controllers
 
                 var fileName = name + "_LI_" + Lesson.Id + ext;
 
-
-
                 AttachmentImage.SaveAs(Server.MapPath("~/Content/LessonImage/") + fileName);
 
                 Lesson.LessonIMG = fileName;
@@ -2213,7 +2211,7 @@ namespace SEA_Application.Controllers
             studentAssignment.AssignmentType = LessonViewModel.AssignmentType;
 
             string DueDate = Convert.ToString(LessonViewModel.AssignmentDueDate);
-
+            
             if (DueDate == "1/1/0001 12:00:00 AM")
             {
                 studentAssignment.DueDate = null;
@@ -3090,7 +3088,6 @@ namespace SEA_Application.Controllers
                 }
                 else
                 {
-
                 }
 
                 count++;

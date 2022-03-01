@@ -104,6 +104,8 @@
 
 <script>
 
+    var BranchClassSectionId = 0;
+    var CourseIds = [];
     $(document).ready(function () {
 
         $("#PageHeader").html("Student Courses");
@@ -111,12 +113,18 @@
         $("#BreadCrumbs").append(' <li> <a href="#"> Home </a> <span>&gt;</span></li>');
         $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Student Courses</a></li>');
 
+
         $("#StudentList").change(function () {
 
             var Student = $(this).val();
-            //    alert(Student);
-
             var StudentClassId = "";
+            $("#Courses").html("");
+
+            $("#Error").html("");
+            $('#ClassId option[value=""]').prop('selected', true);
+            CourseIds = [];
+
+            $("#SectionId").html("");
 
             if (Student != "") {
 
@@ -125,25 +133,33 @@
                     type: "POST",
                     url: "/AspNetStudents/CheckStudentClassAndCourses?StudentId=" + Student,
 
-                    //data: { "SubjectId": SubjectId },
                     success: function (data) {
-                        debugger
+                        
                         $("#Error").html("");
 
                         StudentClassId = data.ClassId;
 
                         if (data.IsStudentEntroll == "No") {
-                            //$("#Error").html("Selected Student is Already Enrolled");
+
                             $("#submit").prop('disabled', false);
+
+                            $("#Error").html("");
+
                         } else {
-                            //  $("#submit").prop('disabled', true);
+
                             $("#Error").html("Selected Student is Already Enrolled in " + data.IsStudentEntroll);
+                            $('#ClassId').val(data.BranchClassId);
+                            $("#ClassId").change();
+                          
+                            BranchClassSectionId = data.BranchClassSectionId;
+
+                            $.each(data.CourseIds, function (index, val) {
+                             
+                                CourseIds.push(val);
+                            });
+
                         }
-                        //$('#ClassId option[value="' + StudentClassId + '"]').prop('selected', true);
-                        // getSections(StudentClassId);
-
-                        // getCourses(StudentClassId);
-
+                      
                     }
                 })
 
@@ -151,9 +167,23 @@
 
         })
 
+        $("#SectionId").change(function () {
 
+
+            BranchClassSectionId = 0;
+
+            $("#Courses option").each(function () {
+
+                this.selected = false;
+
+            });
+        })
 
         $('#ClassId').change(function () {
+
+            
+            CourseIds = [];
+            BranchClassSectionId = 0;
 
             var StudentClassId = $(this).val();
             getSections(StudentClassId);
@@ -161,10 +191,7 @@
 
         });
 
-        //$("#ClassId").change(function () {
-
-        //})
-
+       
 
         //$("#saveBtn").click(function () {
 
@@ -198,19 +225,18 @@
             .on("select2:select", function (e) {
                 var selected_element = $(e.currentTarget);
                 var select_val = selected_element.val();
-                var id = $(this).children(".select2-hidden-accessible").context.id;
+              //  var id = $(this).children(".select2-hidden-accessible").context.id;
             });
 
-    })
+    })//end of  document ready
 
 
     function getSections(id) {
 
+        
+        var check = BranchClassSectionId;
+        CourseIds = [];
         var classId = id;
-
-
-        //console.log(subid);
-
         if (classId != "") {
 
             $.ajax({
@@ -220,11 +246,14 @@
                 processData: false,
                 contentType: false,
                 success: function (data) {
+
                     var sch = JSON.parse(data);
                     console.log(sch);
                     var $el = $("#SectionId");
                     $el.empty();
                     if (sch.length > 0) {
+                        
+
                         $el.append($("<option></option>")
                             .attr("value", "").text('Select Section'));
                         for (i = 0; i < sch.length; i++) {
@@ -237,7 +266,14 @@
                         $el.append($("<option></option>")
                             .attr("value", '').text('Select'));
                     }
-                }
+
+                    if (BranchClassSectionId != 0) {
+                
+                        $('#SectionId option[value="' + BranchClassSectionId + '"]').prop('selected', true);
+                   }
+
+
+                }//end of success method
             });
 
         }
@@ -251,6 +287,9 @@
 
     function getCourses(id) {
 
+        
+
+        var check = CourseIds;
         var ClassId = id;
 
 
@@ -264,6 +303,8 @@
                 contentType: false,
                 //data: { "SubjectId": SubjectId },
                 success: function (data) {
+
+                    
                     // $('#TopicId').html('');
                     //$('#QuestionID').html('');
                     var sch = JSON.parse(data);
@@ -289,7 +330,21 @@
                             .attr("value", '').text('Select Subjects'));
                     }
 
-                }
+                    if (CourseIds != "") {
+
+                        //$.each()
+
+                        $.each(CourseIds, function (index, val) {
+
+                            $("#Courses").find("option[value=" + val + "]").prop("selected", "selected");
+
+                        })
+
+
+                    }
+
+
+                }//end of success method
 
 
             })

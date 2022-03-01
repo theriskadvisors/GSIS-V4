@@ -89,6 +89,7 @@
                     <img class="transparent" alt="" src="~/Content/assets/img/sidebar.png">
                 </a>
             </div>
+
             <div class="sidebar-wrapper">
                 <ul id="layout_navbar_toogle" class="nav">
 
@@ -241,6 +242,14 @@
                     </li>
 
 
+                    <li id="ExamType" class="nav-item ">
+                        <a href="@Url.Action("ExamTypeIndex", "Exams")" class="nav-link ">
+                            <i class="fal fa-lightbulb-o"></i>
+                            <p>Exam Type</p>
+                        </a>
+                    </li>
+
+
                     <li class="nav-item" id="StudentPasswords">
                         <a href="@Url.Action("Passwords", "AspnetStudents")" class="nav-link ">
                             <i class="sea-dash">
@@ -255,8 +264,8 @@
                         <a href="@Url.Action("ResetPassword", "AspnetUsers")" class="nav-link ">
                             <i class="fa fa-key">
                                 @*<img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Vouchers.png" alt="">*@
-                          
-                            
+
+
                             </i>
                             <p>Reset Password</p>
                         </a>

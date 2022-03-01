@@ -172,6 +172,59 @@ namespace SEA_Application.Controllers
 
         }
 
+        public ActionResult StudentsBySection(int BranchId, int ClassId, int SectionId)
+        {
+
+            var Students = db.AspNetStudent_Enrollments.Where(x => x.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetBranch.Id == BranchId && x.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetClass.Id == ClassId && x.AspNetBranchClass_Sections.AspNetSection.Id == SectionId).Select(x => new { x.AspNetStudent.Id, x.AspNetStudent.Name }).Distinct().ToList();
+
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(Students);
+            return Json(status, JsonRequestBehavior.AllowGet);
+
+
+            
+        }
+
+        public ActionResult SubjectsByStudentBranchClassSection(int BranchId, int ClassId, int SectionId,int StudentId)
+        {
+            var ID = User.Identity.GetUserId();
+
+            List<CoursesList> list = new List<CoursesList>();
+
+            var StudentCourses= db.AspNetStudent_Enrollments.Where(x => x.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetBranch.Id == BranchId && x.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetClass.Id == ClassId && x.AspNetBranchClass_Sections.AspNetSection.Id == SectionId && x.AspNetStudent.Id ==StudentId).Select(x => new { x.AspNetClass_Courses.AspNetCours.Id, x.AspNetClass_Courses.AspNetCours.Name }).Distinct().ToList();
+
+            var TeacherCourses = db.AspNetTeacher_Enrollments.Where(x => x.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetBranch.Id == BranchId && x.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetClass.Id == ClassId && x.AspNetBranchClass_Sections.AspNetSection.Id == SectionId && x.AspNetEmployee.UserId == ID).Select(x => new { x.AspNetClass_Courses.AspNetCours.Id, x.AspNetClass_Courses.AspNetCours.Name }).Distinct().ToList();
+
+            foreach(var item in  TeacherCourses)
+            {
+
+                foreach (var item1 in StudentCourses)
+                {
+                  CoursesList obj = new CoursesList();
+
+                    if (item.Id == item1.Id)
+                    {
+                        obj.Id = item.Id;
+                        obj.Name = item.Name;
+                        list.Add(obj);
+
+                        break;
+
+                    }
+
+                }
+            }
+            
+
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(list);
+            return Json(status, JsonRequestBehavior.AllowGet);
+        }
+        public class CoursesList{
+
+            public int Id { get; set; }
+            public string Name { get; set; }
+
+        }
+
 
         public ActionResult SubjectsByClass(int BranchId, int ClassId, int SectionId)
         {

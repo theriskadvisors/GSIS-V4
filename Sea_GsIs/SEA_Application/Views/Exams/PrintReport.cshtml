@@ -1,0 +1,227 @@
+﻿@model SEA_Application.Controllers.ExamsController.ExamPrintForm
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Gsis</title>
+    <style type="text/css">
+
+
+        @@media print {
+            #print {
+                display: none;
+            }
+        }
+
+        @@media print {
+            .pagebreak {
+                clear: both;
+                page-break-before: always !important;
+            }
+        }
+
+
+
+        .container {
+            margin: auto;
+            width: 786px;
+            padding: 30px;
+        }
+
+        #DetailTable tr td {
+            width: 10%;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        table, tr, td, th {
+            border-collapse: collapse;
+        }
+
+        #MarksDetailsTable {
+            font-size: 18px;
+            border: 1px solid black;
+        }
+
+            #MarksDetailsTable th {
+                padding: 15px;
+                background: gray;
+            }
+
+            #MarksDetailsTable td {
+                padding-left: 10px;
+            }
+
+        .boldclass {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <input type="button" onclick="printDiv()" name="print" id="print" style="height:40px;cursor:pointer;width:70px;" value="Print" />
+
+
+
+    <div class="container">
+        <div class="wrapper">
+
+            <table width="100%" id="HeaderTable">
+
+                <tr>
+                    <td><img src="~/Content/Images/gsis_logo/logo_dp.jpg" width="100"></td>
+                    <td align="center" valign="top">
+
+                        <h1 id="heading" style="margin: 0;">Global System of Integrated Studies</h1>
+                        <h4 style="margin: 0;font-style: italic;">SCHOOL & COLLEGE</h4>
+                        <h3 style="margin:0;font-size:20px;">SCHOOL YEAR 2020 - 21</h3>
+                        <h3 style="margin:0;font-size:20px;text-decoration: underline;">@Model.ExamName</h3>
+
+                    </td>
+                </tr>
+
+
+
+            </table>
+
+            <br>
+            <br>
+            <br>
+            <br>
+            <table id="DetailTable" width="100%">
+
+                <tr>
+                    <td>Name: &nbsp; &nbsp;</td>
+                    <td>@Model.StudentName</td>
+
+                    <td width="60%"></td>
+                    <td>Roll:#</td>
+                    <td>@Model.RollNo</td>
+
+                </tr>
+
+                <tr>
+                    <td>Class: </td>
+                    <td>@Model.ClassName</td>
+                    <td width="60%"></td>
+
+                    <td>Section </td>
+                    <td>@Model.SectionName</td>
+                </tr>
+
+            </table>
+            <br>
+            <table border="1" id="MarksDetailsTable" width="100%">
+
+                <thead>
+
+                    <tr>
+                        <th>SR.#</th>
+                        <th>SUBJECT</th>
+                        <th>PERCENTAGE</th>
+                        @if (ViewBag.GradeExist == "Yes")
+                        {
+
+                            <th>GRADE</th>
+                        }
+
+                        <th>TEACHER'S NAME</th>
+
+                    </tr>
+                    @foreach (var item in Model.subjectMarksPercentage)
+                    {
+
+                        <tr>
+                            <td class="boldclass">@item.No </td>
+                            <td>
+                                @if (item.Comments == null)
+                                {
+                                    @item.SubjectName
+
+                                }
+                                else
+                                {
+                                    var Comments = @item.SubjectName + "(" + @item.Comments + ")";
+
+                                    <span>@Comments</span>
+                                  
+                                }
+
+
+
+                            </td>
+                            <td align="center">@item.MarksPercentage</td>
+                            @if (ViewBag.GradeExist == "Yes")
+                            {
+                                <td align="center">@item.Grade</td>
+                            }
+
+                            <td>@item.TeacherName</td>
+                        </tr>
+                    }
+
+
+
+                </thead>
+
+            </table>
+            <br>
+            <br>
+            <br>
+            <br>
+
+            <div style="width:140px;border-top:2px solid;font-size: 18px;float:right ">
+                <div style="margin:auto">
+                    <center>
+
+                        <b>
+                            Ms. Maria Tariq
+                            <br>
+                            Headmistress
+                            <br>
+                            O & A'Level
+                        </b>
+                    </center>
+
+
+                </div>
+
+
+            </div>
+
+
+        </div><!--end of wrapper -->
+
+
+
+    </div>
+
+
+
+
+
+</body>
+</html>
+
+<script>
+    function printDiv() {
+
+        //  var divToPrint = document.getElementById('container');
+        //
+        //  var newWin = window.open('', 'Print-Window');
+
+        // newWin.document.open();
+        //
+        // newWin.document.write('<html><head><style>  #container {  height: 1050px;   width: 750px; /*border: 1px solid;*/margin: auto;  padding: 30px;  }table {   width: 100%;  } table, tr, td {   border-collapse:collapse;  }  .headings { background: black;   color: white; } .margin-padding-zero { margin: 0; padding: 10px; }  .cnic_style { height: 20px; margin-left: 5px;  width: 20px;border: 1px solid;  display: inline-block;}</style></head><body onload="window.print()">' + divToPrint.innerHTML + '</body></html>');
+
+        // newWin.document.close();
+
+        //  setTimeout(function () { newWin.close(); }, 10);
+        window.print();
+    }
+</script>

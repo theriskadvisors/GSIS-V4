@@ -1,0 +1,802 @@
+﻿
+@{
+    Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
+}
+<style>
+
+    .checkbox {
+        width: 20px !important;
+        height: 20px !important;
+    }
+
+    .inputNumber {
+        width: 80px;
+    }
+
+    table tr th {
+        text-align: center;
+    }
+
+    .error {
+        color: red !important;
+    }
+
+    label {
+    }
+
+    .subjectgrade {
+        width: 80px;
+    }
+</style>
+
+<div class="tabsCon">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" id="myTabAttr" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="Topics-tab-attr" data-toggle="tab" href="#Topics-attr" role="tab" aria-controls="Topics-attr"
+               aria-selected="true">Create</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="Lessons-tab-attr" data-toggle="tab" href="#Lessons-attr" role="tab" aria-controls="Lessons-attr"
+               aria-selected="false">Create From Loader</a>
+        </li>
+    </ul>
+
+
+
+    <div class="card">
+        <div class="card-body p-5">
+
+            <div class="tab-content" style=padding: 10px 0px 0px 0px;">
+                <div class="tab-pane active show" id="Topics-attr" role="tabpanel" aria-labelledby="Topics-tab-attr">
+
+                    <div class="box box-primary">
+                        <div class="box-body">
+                            <div class="box-title"></div>
+                            <form action="" id="ExamForm" method="post">
+
+                                <div class="row">
+                                    <div class="col-md-6 pl-5 pr-5 ">
+
+
+
+                                        <div class="form-group  ">
+                                            <div class="">
+
+                                                <label for="" class="control-label">Select Exam Type*</label>
+
+                                                <select class="form-control" id="ExamTypeId" name="ExamTypeId" required></select>
+
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group  ">
+                                            <div class="">
+                                                <label for="" class="control-label">Select Branch*</label>
+
+                                                <select class="form-control" id="BranchId" name="BranchId" required></select>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group ">
+                                            <div class="">
+
+                                                <label for="" class="control-label">Select class *</label>
+
+                                                <select class="form-control" id="ClassId" name="ClassId" required></select>
+
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group  ">
+                                            <div class="">
+                                                <label for="" class="control-label">Select Section *</label>
+
+                                                <select class="form-control" id="SectionId" name="SectionId" required></select>
+
+                                            </div>
+                                        </div>
+
+
+
+                                        @*<input type="number" class="inputs" name="" onkeyup="usama()" value="1" />
+                                            <input type="number" class="inputs" name="" onkeyup="usama()" value="1" />*@
+
+
+                                    </div>
+
+                                    <div class="col-md-6">
+
+
+
+                                        <div class="form-group  ">
+                                            <div class="">
+                                                <label for="" class="control-label">Select Student *</label>
+
+                                                <select class="form-control" id="StudentId" name="StudentId" required></select>
+
+                                            </div>
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <div class="">
+                                                <label class="control-label">Total Marks</label>
+                                                <input class="form-control" type="number" name="TotalMarks" id="TotalMarks" value="0" required readonly />
+
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style="margin-top:18px;">
+                                            <div class="">
+                                                <label class="control-label">Obtained Marks</label>
+                                                <input class="form-control" type="number" name="ObtainedMarks" id="ObtainedMarks" value="0" required readonly />
+
+                                            </div>
+                                        </div>
+
+
+
+                                        @*<div class="form-group">
+                                                <div class="">
+                                                    <label class="control-label">Grade</label>
+                                                    <input class="form-control" type="text" name="Grade" id="Grade" value="" required />
+
+                                                </div>
+                                            </div>*@
+
+
+                                    </div>
+
+                                </div><!--end of column 6--><!--end of row-->
+                                <br>
+                                <br>
+                                <div class="row">
+                                    <div class="col-md-12 pl-5 pr-5  ">
+
+                                        <br />
+                                        <table border="1" class="table table-bordered" width="100%">
+
+                                            <thead id="subjectsHeader">
+                                            </thead>
+
+                                            <tbody id="subjectList">
+                                            </tbody>
+
+                                        </table>
+
+                                    </div><!--end of col 6-->
+                                </div><!--end of row-->
+
+                                <div class="row">
+
+                                    <div class="col-md-8 pl-5 pr-5 ">
+                                        <button type="submit" id="SaveButton" class="btn btn-primary rounded rounded-lg"> Save </button>
+
+
+                                        <button type="button" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                                            <i class="material-icons mr-2">cached</i>  Cancel
+                                        </button>
+
+                                    </div>
+
+                                </div><!--end of row-->
+
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane" id="Lessons-attr" role="tabpanel" aria-labelledby="Lessons-tab-attr">
+
+                    <div class="row">
+                        <div class="col-md-6 pl-5 pr-5 border-right border-color-sea ">
+
+                            <div class="box box-primary">
+
+                                <div class="form-three widget-shadow">
+                                    @using (Html.BeginForm("ExamsDetailFromFile", "Exams", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                                        <div class="form-group bmd-form-group">
+                                            <div class="col-md-12">
+                                                <label class="control-label"> Upload Excel Sheet</label>
+                                                <div class="file-field d-flex">
+                                                    <div class="btn btn-primary btn-md mb-0">
+                                                        <span style="color:white" onclick='event.stopPropagation(); document.getElementById("SubmitAssignment").click();'>Choose files</span>
+                                                        <input type="file" class="multiple" name="exams" id="SubmitAssignment" multiple />
+                                                    </div>
+
+                                                    <div class="file-path-wrapper d-flex align-items-end ml-3 w-100">
+                                                        <input id="FilePath" class="file-path validate form-control" type="text" readonly disabled placeholder="No file Chosen">
+                                                    </div>
+                                                </div>
+                                                <div style="color: #afbccc;font-size: 14px;font-weight: 500;" class="my-3">Max: 32 MB (Filename should be unique)</div>
+                                                <div style="color: #afbccc;font-size: 14px;font-weight: 500;" class="my-3" id="SelectedFiles"></div>
+                                            </div>
+                                        </div>
+
+                                        <br />
+                                        <br />
+                                        <div class="box-footer">
+                                            <div class="form-group">
+                                                <div class="col-md-12">
+                                                    <input type="submit" class="btn btn-primary" value="Submit" />
+                                                    <input type="button" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3" value="Cancel" />
+
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div><!--box-->
+
+                        </div>
+
+                        <div class="col-md-6 pl-5 pr-5 ">
+
+                            <div class="col-md-12">
+
+                                <div>
+
+                                    @foreach (var item in ViewBag.Error)
+                                    {
+                                        <span id="Error" style="color:red">@item</span><br>
+                                    }
+
+
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+
+
+                    </div><!--end of row-->
+
+
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+
+
+        $("#PageHeader").html("Student Exam Detail");
+
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "/Exams/GetExamTypes",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#ExamTypeId");
+                $el.empty();
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").text('Select Exam Type'));
+                    for (i = 0; i < sch.length; i++) {
+
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i].Id).text(sch[i].Name));
+                    }
+                }
+                else {
+                    $el.append($("<option></option>")
+                        .attr("value", '').text('Select Exam Type'));
+                }
+            }
+        });
+
+
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "/AspNetProject/AllBranches",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#BranchId");
+                $el.empty();
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").text('Select Branch'));
+                    for (i = 0; i < sch.length; i++) {
+
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i].Id).text(sch[i].Name));
+                    }
+                }
+                else {
+                    $el.append($("<option></option>")
+                        .attr("value", '').text('Select Branch'));
+                }
+            }
+        });
+
+
+
+
+        $('#BranchId').change(function () {
+
+            var BranchId = $(this).val();
+
+            if (BranchId != "") {
+
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/AspNetProject/ClassesByBranch?BranchId=" + BranchId,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#ClassId");
+                        $el.empty();
+                        var $e2 = $("#StudentId");
+                        $e2.empty();
+
+                        $("#subjectList").html("");
+                        $("#subjectsHeader").html("");
+                        var $e3 = $("#SectionId");
+                        $e3.empty();
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Class'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Class'));
+                        }
+                    }
+                });
+            }
+            else {
+                var $el = $("#ClassId");
+                $el.empty();
+                var $e2 = $("#StudentId");
+                $e2.empty();
+
+                var $e3 = $("#SectionId");
+                $e3.empty();
+
+                $("#subjectList").html("");
+                $("#subjectsHeader").html("");
+
+            }
+
+        });
+
+        $('#ClassId').change(function () {
+
+            var ClassId = $(this).val();
+            var BranchId = $("#BranchId").val();
+
+            if (ClassId != "") {
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    //url: '/AspNetProject/SectionByClasses',
+                    url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId + "&&BranchId=" + BranchId,
+
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#SectionId");
+                        $el.empty();
+                        var $e2 = $("#StudentId");
+                        $e2.empty();
+                        $("#subjectList").html("");
+                        $("#subjectsHeader").html("");
+                        debugger
+
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Section'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Section'));
+                        }
+                    }
+                });
+            }
+
+            else {
+
+                var $el = $("#SectionId");
+                $el.empty();
+                var $e2 = $("#StudentId");
+                $e2.empty();
+                $("#subjectList").html("");
+                $("#subjectsHeader").html("");
+
+            }
+
+        });
+
+        $("#SectionId").change(function () {
+
+
+
+            var ClassId = $("#ClassId").val();
+            var BranchId = $("#BranchId").val();
+            var SectionId = $(this).val();
+
+            if (SectionId != "") {
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    //url: '/AspNetProject/SectionByClasses',
+                    url: "/AspNetProject/StudentsBySection?BranchId=" + BranchId + "+&&ClassId=" + ClassId + "&&SectionId=" + SectionId,
+
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#StudentId");
+                        $el.empty();
+                        $("#subjectList").html("");
+                        $("#subjectsHeader").html("");
+
+                        debugger
+
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Student'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Student'));
+                        }
+                    }
+                });
+
+
+            }//end of if
+
+            else {
+
+
+                var $el = $("#StudentId");
+                $el.empty();
+                $("#subjectList").html("");
+                $("#subjectsHeader").html("");
+            }
+
+        })//end of section Id
+
+
+
+        $("#StudentId").change(function () {
+
+            $("#subjectList").html("");
+            $("#subjectsHeader").html("");
+
+            var ClassId = $("#ClassId").val();
+            var BranchId = $("#BranchId").val();
+            var SectionId = $("#SectionId").val();
+            var StudentId = $(this).val();
+
+            if (SectionId != "") {
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/AspNetProject/SubjectsByStudentBranchClassSection?BranchId=" + BranchId + "+&&ClassId=" + ClassId + "&&SectionId=" + SectionId + "&&StudentId=" + StudentId,
+
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+
+                        var sch = JSON.parse(data);
+
+                        if (sch.length > 0) {
+
+                            $("#subjectList").html("");
+                            $("#subjectsHeader").html("");
+
+                            $("#subjectsHeader").append(" <tr> <th>Subject</th> <th>Total</th><th>Obtained</th><th>Grade</th><th>Comments</th><th>Date</th><th>Is Attended</th> </tr>");
+
+                            for (i = 0; i < sch.length; i++) {
+
+                                $("#subjectList").append("<tr id=" + sch[i].Id + "><td>" + sch[i].Name + "</td><td align='center'><input type='number' id='SubjectTotal" + sch[i].Id + "' name='subjecttotal" + sch[i].Id + "' class='inputNumber subjecttotal'  onkeyup='SubjectsTotalMarks()' value = '0' min='5' required></td><td align='center'><input type='number' class='inputNumber obtainedtotal' onkeyup='SubjectsObtainedMarks()'  value='0' min='0' required></td><td align ='center'><input type='text' class='subjectgrade' ></td><td align ='center'><input type='text' class='comments' ></td><td align='center'><input type='date' id='SubjectDate" + sch[i].Id + "' name='examdate" + sch[i].Id + "'  class='examdate'  required></td><td align='center'><input checked onclick ='CheckBoxEvent(this)' name='isattended" + sch[i].Id + "'  class='checkbox isattended' type ='checkbox'></td></tr>");
+
+                            }
+
+                        }
+
+
+                    }
+                });
+
+
+            }//end of if
+
+            else {
+
+
+                $("#subjectList").html("");
+                $("#subjectsHeader").html("");
+
+                // var $el = $("#StudentId");
+                // $el.empty();
+            }
+
+        })//end of student id change
+
+        $(".isattended").change(function () {
+
+            alert("Is Attended");
+
+        })
+
+        $('#ExamForm').validate({
+
+            rules: {
+                ExamTypeId: {
+                    required: true,
+                },
+
+            },
+            submitHandler: function (form) {
+
+                debugger
+
+                var ExamDetail = {};
+
+                var ExamMarksDetail =
+                {
+                    CourseId: '',
+                    TotalMarks: '',
+                    ObtainedMarks: '',
+                    ExamDate: '',
+                    IsAttended: '',
+                    SubjectGrade: '',
+                    Comments :'',
+
+                };
+
+                ExamMarksDetail = [
+
+
+                ];
+
+                debugger
+
+                var ExamTypeId = $("#ExamTypeId").val();
+                var BranchId = $("#BranchId").val();
+                var ClassId = $("#ClassId").val();
+                var SectionId = $("#SectionId").val();
+                var StudentId = $("#StudentId").val();
+                var Total = $("#TotalMarks").val();
+                var Obtained = $("#ObtainedMarks").val();
+                var Grade = $("#Grade").val();
+
+                ExamDetail['ExamTypeId'] = ExamTypeId;
+                ExamDetail['BranchId'] = BranchId;
+                ExamDetail['ClassId'] = ClassId;
+                ExamDetail['SectionId'] = SectionId;
+                ExamDetail['StudentId'] = StudentId;
+                ExamDetail['Total'] = Total;
+                ExamDetail['Obtained'] = Obtained;
+                // ExamDetail['Grade'] = Grade;
+
+
+                $('#subjectList tr').each(function () {
+
+                    debugger
+                    // aspNetSubject_Homework = Object.create(Subject_Homework);
+                    var CourseId = $(this).attr('id');
+                    var TotalMarks = $(".subjecttotal", this).val();
+                    var ObtainedMarks = $(".obtainedtotal", this).val();
+                    var SubjectGrade = $(".subjectgrade", this).val();
+                    var Comments = $(".comments", this).val();
+
+                    var IsAttended = false;
+                    var ExamDate = $(".examdate", this).val();
+
+                    if (ExamDate == "") {
+                        ExamDate = null;
+                    }
+
+                    var examAttended = $(".isattended", this).is(":checked");
+
+                    if (examAttended == true) {
+                        IsAttended = true;
+                    }
+                    else {
+                        IsAttended = false;
+                        return true;
+                    }
+
+                    var Obj = {};
+
+                    Obj['CourseId'] = CourseId;
+                    Obj['TotalMarks'] = TotalMarks;
+                    Obj['ObtainedMarks'] = ObtainedMarks;
+                    Obj['ExamDate'] = ExamDate;
+                    Obj['IsAttended'] = IsAttended;
+                    Obj['SubjectGrade'] = SubjectGrade;
+                    Obj['Comments'] = Comments;
+
+                    ExamMarksDetail.push(Obj);
+                });
+
+
+
+                // alert(ExamMarksDetail);
+
+                $.ajax({
+                    type: "post",
+                    url: "/Exams/SaveStudentExamDetail",
+                    data: { 'ExamDetail': ExamDetail, 'ExamMarksDetail': ExamMarksDetail },
+                    datatype: "json",
+                    cache: false,
+                    success: function (data) {
+                        if (data.IsExamCreated == "Yes") {
+
+                            window.location.href = "/Exams/StudentExamDetailView";
+                        }
+
+                    }
+                })  //end of ajax
+
+
+
+
+            }
+
+        })
+
+        $('input[type="file"]').change(function (e) {
+            //var fileName = e.target.files[0].name;
+            //document.getElementById("FilePath").placeholder = fileName;
+
+            var fileName = e.target.files[0].name;
+            var fileUpload = $("#SubmitAssignment").get(0).files;
+
+            var fruits = [];
+            if (fileUpload.length > 0) {
+
+                for (var i = 0; i < fileUpload.length; i++) {
+                    fruits.push(fileUpload[i].name + " , ");
+                }
+            }
+
+            $("#SelectedFiles").html(fruits);
+            document.getElementById("FilePath").placeholder = "";
+        });
+
+    })//end of document ready
+
+    function SubjectsTotalMarks() {
+
+        var TotalMarks = 0;
+
+        $(".subjecttotal").each(function () {
+
+            var SubjectTotalMark = $(this).val();
+
+            if (SubjectTotalMark != "") {
+
+                TotalMarks = TotalMarks + parseFloat(SubjectTotalMark);
+            }
+
+        })
+
+
+        $("#TotalMarks").val(TotalMarks);
+
+    }
+
+    function SubjectsTotalMarks() {
+
+        var TotalMarks = 0;
+
+        $(".subjecttotal").each(function () {
+
+            var SubjectTotalMark = $(this).val();
+
+            if (SubjectTotalMark != "") {
+
+                TotalMarks = TotalMarks + parseFloat(SubjectTotalMark);
+            }
+
+        })
+
+
+        $("#TotalMarks").val(TotalMarks);
+
+    }
+    function SubjectsObtainedMarks() {
+
+        var ObtainedMarksTotal = 0;
+
+        $(".obtainedtotal").each(function () {
+
+            var SubjectObtainedMark = $(this).val();
+
+            if (SubjectObtainedMark != "") {
+
+                ObtainedMarksTotal = ObtainedMarksTotal + parseFloat(SubjectObtainedMark);
+            }
+
+        })
+        $("#ObtainedMarks").val(ObtainedMarksTotal);
+
+
+    }
+    function CheckBoxEvent(changedElement) {
+
+        var ChangeElementName = $(changedElement).attr('name');
+
+        let str = ChangeElementName;
+        const myArr = str.split("isattended");
+      //  alert(ChangeElementName);
+
+        var examAttended = $(changedElement).is(":checked");
+
+        if (examAttended == true) {
+
+            $("#SubjectDate" + myArr[1]).prop('required', true);
+
+            $("#SubjectTotal" + myArr[1]).prop('min', 5);
+        }
+        else {
+            $("#SubjectDate" + myArr[1]).prop('required', false);
+            $("#SubjectTotal" + myArr[1]).prop('min', 0);
+
+
+
+        }
+
+       // alert(examAttended);
+
+       // var value = $(".subjecttotal", changedElement).val();
+
+       
+    }
+
+
+</script>

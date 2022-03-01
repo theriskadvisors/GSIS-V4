@@ -1,0 +1,349 @@
+﻿
+@{
+    var UserRole = "";
+    if (User.IsInRole("Student"))
+    {
+        Layout = "~/Views/Shared/_StudentDashboardLayout.cshtml";
+        UserRole = "Student";
+    }
+    else if (User.IsInRole("Teacher"))
+    {
+        Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
+        UserRole = "Teacher";
+    }
+    else
+    {
+        Layout = null;
+
+
+    }
+}
+<style>
+    th {
+        text-align: center;
+    }
+</style>
+
+
+<div class="card">
+    <div class="card-body p-4">
+
+        <div class="row">
+            <div class="col-md-6 pl-5 pr-5">
+
+
+                <div class="form-group bmd-form-group my-3">
+                    <div class="col-md-12">
+                        <label class="control-label">Parents Remarks  <span class="red-mark">*</span> </label>
+                        <br>
+                        <label><input type="radio" name="remarks" id="Satisfied" value="Satisfied"> Satisfied</label>
+                        &nbsp;&nbsp;
+
+
+                        <label><input type="radio" name="remarks" id="PartiallySatisfied" value="PartiallySatisfied"> Partially Satisfied </label>
+
+                        &nbsp;&nbsp;
+
+                        <label><input type="radio" name="remarks" id="NotSatisfied" value="NotSatisfied"> Not Satisfied</label>
+
+
+                    </div>
+                </div>
+
+
+
+            </div><!--col md 6-->
+
+            <div class="col-md-6 pl-5 pr-5">
+
+                <div class="form-group bmd-form-group my-3">
+                    <div class="col-md-12">
+
+                        <input id="PrintBtn" class="pull-right btn btn-sm btn-primary" type="button" name="name" value="Print Report" />
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div><!--end of row -->
+
+
+        <div class="row">
+
+            <div class="col-md-6 pl-5 pr-5  ">
+
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Student Name</label>
+                        <input class="form-control" type="text" id="StudentName" value="" readonly />
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Total Marks </label>
+                        <input class="form-control" type="text" id="TotalMarks" value="" readonly />
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+            <div class="col-md-6 pl-5 pr-5  ">
+
+                <div class="form-group ">
+                    <div class="col-md-12">
+                        <div class="" style="">
+
+                            <label class="control-label">Exam Name</label>
+                            <input class="form-control " type="text" id="ExamName" value="" readonly />
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Obtained Marks </label>
+                        <input class="form-control" type="text" id="ObtainedMarks" value="" readonly />
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 pl-5 pr-5  ">
+                <div class="col-md-12">
+
+                    <br />
+                    <br />
+                    <table border="1" class="table table-bordered" width="100%">
+
+                        <thead id="subjectsHeader">
+                        </thead>
+
+                        <tbody id="subjectList">
+                        </tbody>
+
+                    </table>
+                </div>
+
+
+            </div><!--end of col 6-->
+        </div><!--end of row-->
+
+
+
+    </div>
+</div>
+
+
+<input type="hidden" name="name" id="ExamDetailId" value="@ViewBag.ExamDetailId" />
+
+
+<script>
+//const { WindowScrollController } = require("../../Content/assets/packages/core/main");
+
+    $(document).ready(function () {
+
+
+        $("#PageHeader").html(" Marks Details ");
+        var UserRole = '@UserRole';
+
+
+
+
+
+
+        var ExamDetailId = $("#ExamDetailId").val();
+
+        $.ajax({
+            type: "POST",
+            url: "/Exams/ExamDetails",
+            data: { "ExamDetailId": ExamDetailId },
+
+            success: function (data) {
+
+                $("#subjectList").html("");
+                $("#subjectsHeader").html("");
+
+                var ExamMarksDetails = data.ExamMarksDetails;
+                var Remarks = data.ParentsRemarks;
+
+
+
+                if (Remarks != null) {
+
+
+                    if (Remarks == "Satisfied") {
+
+                        $("input[name='remarks'][value='Satisfied']").prop("checked", true);
+                    }
+                    else if (Remarks == "PartiallySatisfied") {
+
+                        $("input[name='remarks'][value='PartiallySatisfied']").prop("checked", true);
+                    }
+                    else {
+
+                        $("input[name='remarks'][value='NotSatisfied']").prop("checked", true);
+
+                    }
+
+
+                }
+
+
+
+
+                $("#StudentName").val(data.StudentName);
+                $("#ExamName").val(data.ExamTypeName);
+                $("#TotalMarks").val(data.TotalMarks);
+                $("#ObtainedMarks").val(data.ObtainedMarks);
+
+                var SubjectGradeExist = "No";
+
+                $.each(ExamMarksDetails, function (index) {
+
+                    if (ExamMarksDetails[index].Grade != null) {
+
+                        SubjectGradeExist = "Yes";
+                    }
+                })
+
+
+                $.each(ExamMarksDetails, function (index) {
+
+                    var IsAttended = "No";
+                    if (ExamMarksDetails[index].IsAttended == true) {
+                        IsAttended = "Yes"
+
+                    }
+
+                    var dat = "";
+                    if (ExamMarksDetails[index].ExamDate != null) {
+
+
+                    var value = new Date(parseInt(ExamMarksDetails[index].ExamDate.replace(/(^.*\()|([+-].*$)/g, '')));
+                        dat = value.getMonth() +
+                        1 +
+                        "/" +
+                        value.getDate() +
+                        "/" +
+                        value.getFullYear();
+                    }
+
+                    if (SubjectGradeExist == "No") {
+
+                        $("#subjectList").append("<tr id=" + ExamMarksDetails[index].Id + "><td>" + ExamMarksDetails[index].Name + "</td><td align='center'>" + ExamMarksDetails[index].Total + "</td><td align='center'>" + ExamMarksDetails[index].Obtained + "</td><td align='center'>" + dat + " </td><td align='center'>" + IsAttended + "</td></tr>");
+
+                    }
+                    else {
+
+                        var Grade = "";
+                        if (ExamMarksDetails[index].Grade != null) {
+                            Grade = ExamMarksDetails[index].Grade;
+                        }
+
+                        $("#subjectList").append("<tr id=" + ExamMarksDetails[index].Id + "><td>" + ExamMarksDetails[index].Name + "</td><td align='center'>" + ExamMarksDetails[index].Total + "</td><td align='center'>" + ExamMarksDetails[index].Obtained + "</td><td align ='center'>" + Grade +"</td><td align='center'>" + dat + " </td><td align='center'>" + IsAttended + "</td></tr>");
+
+                    }
+
+                })//end of  each
+
+                if (SubjectGradeExist == "No") {
+
+                  
+                    $("#subjectsHeader").append(" <tr> <th style='text-align:left !important'>Subject</th> <th >Total</th><th >Obtained</th><th >Date</th><th >Is Attended</th> </tr>");
+                }
+                else {
+
+
+                    $("#subjectsHeader").append(" <tr> <th style='text-align:left !important'>Subject</th> <th >Total</th><th >Obtained</th><th>Grade</th><th >Date</th><th >Is Attended</th> </tr>");
+
+                }
+
+
+            }//end of success function
+
+
+        }) //end of ajax call
+
+        $("#Satisfied").click(function () {
+
+            if (UserRole == "Teacher") {
+                return false;
+            }
+            else {
+
+            ParentsRemarks();
+            }
+
+
+        })
+
+        $("#PartiallySatisfied").click(function () {
+
+
+            if (UserRole == "Teacher") {
+                return false;
+            }
+            else {
+
+                ParentsRemarks();
+            }
+        })
+
+        $("#NotSatisfied").click(function () {
+
+
+            if (UserRole == "Teacher") {
+                return false;
+            }
+            else {
+
+                ParentsRemarks();
+            }
+        })
+        $("#PrintBtn").click(function () {
+
+            var ExamDetailId = $("#ExamDetailId").val();
+
+            window.location.href = "/Exams/PrintReport?ExamDetailId=" + ExamDetailId;
+
+
+        })
+
+    })
+    function ParentsRemarks() {
+
+
+        var ParentsRemarks = $("input[name='remarks']:checked").val();
+        var ExamDetailId = $("#ExamDetailId").val();
+
+
+        $.ajax({
+
+            type: "POST",
+            url: "/Exams/UpdateParentsRemarks",
+            data: { "ExamDetailId": ExamDetailId, "ParentsRemarks": ParentsRemarks },
+            success: function (data) {
+            }
+
+        })
+
+    }
+
+</script>

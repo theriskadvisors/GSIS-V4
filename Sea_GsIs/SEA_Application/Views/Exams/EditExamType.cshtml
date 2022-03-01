@@ -1,0 +1,70 @@
+﻿@model SEA_Application.Models.ExamType
+@{
+    Layout = "~/Views/Shared/_BranchAdminDashboardLayout.cshtml";
+}
+
+<div class="card">
+    <div class="card-body p-5">
+
+        @using (Html.BeginForm("EditExamType", "Exams", FormMethod.Post))
+        {
+            <div class="row">
+                <div class="col-md-6 pl-5 pr-5 ">
+
+                    <input type="hidden" name="Id" value="@Model.Id" />
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Exam Name</label>
+                            <input class="form-control" type="text" name="name" id="name" value="@Model.Name" required />
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">From Date</label>
+                            <input class="form-control" type="date" name="fromdate" id="fromdate" value="@ViewBag.FromDate" required />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">To Date</label>
+                            <input class="form-control" type="date" name="todate" id="todate" value="@ViewBag.ToDate" required />
+
+                        </div>
+                    </div>
+
+                </div><!--col 6-->
+            </div><!--row-->
+            <br>
+            <div class="col-md-4 pl-5 pr-5">
+
+                <div class="form-group ">
+                    <button type="submit" id="SaveButton" class="btn btn-primary rounded rounded-lg"> Save </button>
+                    <button type="button" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                        <i class="material-icons mr-2">cached</i>  Cancel
+                    </button>
+                </div>
+
+            </div>
+
+
+        }
+
+    </div>
+</div>
+<script>
+
+    $(document).ready(function () {
+
+        $("#PageHeader").html("Edit Exam Type");
+
+
+
+    })
+
+</script>
+
+

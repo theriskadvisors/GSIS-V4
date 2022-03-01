@@ -120,6 +120,12 @@
                             <p>My Quizzes </p>
                         </a>
                     </li>
+                    <li class="nav-item" id="ExamDetails">
+                        <a href="@(Url.Action("StudentExamsList", "Exams"))" class="nav-link nav-toggle">
+                            <i class="fal fa-lightbulb-o"></i>
+                            <p>Exam Details </p>
+                        </a>
+                    </li>
 
                     <li class="nav-item hidden">
                         <a href="@Url.Action("Index", "AspnetStudentHomeWorks")" class="nav-link nav-toggle">
@@ -166,14 +172,14 @@
 
 
                         <li class="nav-item" id="">
-                            <a  href="javascript:document.getElementById('logoutForm1').submit()"  class="nav-link">
+                            <a href="javascript:document.getElementById('logoutForm1').submit()" class="nav-link">
                                 <i class="fa fa-sign-out"></i>
                                 <p>Log out</p>
                             </a>
                         </li>
                     }
 
-                    </ul>
+                </ul>
             </div>
         </div>
         <!--END SIDEBAR-->
