@@ -14,6 +14,14 @@
     }
 
 }
+<style>
+
+    .dataTables_filter {
+        display: block !important;
+    }
+
+</style>
+
 <div class="row">
     <div class="col-md-12">
         <div class="card">
@@ -49,6 +57,9 @@
 
                                                 <th>
                                                     Parents Remarks
+                                                </th>
+                                                <th>
+                                                    Status
                                                 </th>
                                                 <th>
                                                     Action
@@ -160,7 +171,7 @@
                     //    value1.getFullYear();
 
 
-                    table.fnAddData([data[index].StudentName + "<input  type=hidden value=" + data[index].Id + ">", data[index].ExamName, data[index].Total, data[index].Obtained, data[index].Grade, data[index].ParentsRemarks, "<input  class='btn btn-sm btn-primary buttoncolor' onclick='DetailPage(" + data[index].Id + ")'  type='button' id=" + data[index].Id + " Value ='View'>"]);
+                    table.fnAddData([data[index].StudentName + "<input  type=hidden value=" + data[index].Id + ">", data[index].ExamName, data[index].Total, data[index].Obtained, data[index].Grade, data[index].ParentsRemarks, data[index].Status, "<input  class='btn btn-sm btn-primary buttoncolor' onclick='DetailPage(" + data[index].Id + ")'  type='button' id=" + data[index].Id + " Value ='View'>"]);
 
 
                 })

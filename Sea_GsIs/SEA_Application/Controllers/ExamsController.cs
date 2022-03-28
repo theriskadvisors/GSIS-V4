@@ -43,14 +43,13 @@ namespace SEA_Application.Controllers
             if (UserRole == "Teacher")
             {
 
-
                 var TeacherCourses = db.AspNetTeacher_Enrollments.Where(x => x.AspNetEmployee.UserId == loggedInUserId).Select(x => new { BranchId = x.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetBranch.Id, ClassId = x.AspNetBranchClass_Sections.AspNetBranch_Class.AspNetClass.Id, SectionId = x.AspNetBranchClass_Sections.AspNetSection.Id }).ToList();
 
                 List<int> TeacherBranchIds = TeacherCourses.Select(x => x.BranchId).Distinct().ToList();
                 List<int> TeacherClassIds = TeacherCourses.Select(x => x.ClassId).Distinct().ToList();
                 List<int> TeacherSectionIds = TeacherCourses.Select(x => x.SectionId).Distinct().ToList();
 
-                var Exams = db.ExamDetails.Where(x => TeacherBranchIds.Contains(x.BranchId.Value) && TeacherClassIds.Contains(x.ClassId.Value) && TeacherSectionIds.Contains(x.SectionId.Value)).Select(x => new { x.Id, StudentName = x.AspNetStudent.Name, ExamName = x.ExamType.Name, Total = x.ExamMarksDetails.Sum(y => y.Total), Obtained = x.ExamMarksDetails.Sum(y => y.Obtained), x.Grade, x.ParentsRemarks }).ToList();
+                var Exams = db.ExamDetails.Where(x => TeacherBranchIds.Contains(x.BranchId.Value) && TeacherClassIds.Contains(x.ClassId.Value) && TeacherSectionIds.Contains(x.SectionId.Value)).Select(x => new { x.Id, StudentName = x.AspNetStudent.Name, ExamName = x.ExamType.Name, Total = x.ExamMarksDetails.Sum(y => y.Total), Obtained = x.ExamMarksDetails.Sum(y => y.Obtained), x.Grade, x.ParentsRemarks, x.Status }).ToList();
 
                 return Json(Exams, JsonRequestBehavior.AllowGet);
 
@@ -64,9 +63,19 @@ namespace SEA_Application.Controllers
                 List<int> StudentSectionIds = StudentCourses.Select(x => x.SectionId).Distinct().ToList();
 
                 var Student = db.AspNetStudents.Where(x => x.AspNetUser.Id == loggedInUserId).FirstOrDefault();
+                var Exams = db.ExamDetails.Where(x => x.Status == "Published" && StudentBranchIds.Contains(x.BranchId.Value) && StudentClassIds.Contains(x.ClassId.Value) && StudentSectionIds.Contains(x.SectionId.Value) && x.StudentId == Student.Id).Select(x => new { x.Id, StudentName = x.AspNetStudent.Name, ExamName = x.ExamType.Name, Total = x.ExamMarksDetails.Sum(y => y.Total), Obtained = x.ExamMarksDetails.Sum(y => y.Obtained), x.Grade, x.ParentsRemarks }).ToList();
+
+                return Json(Exams, JsonRequestBehavior.AllowGet);
+
+            }
+            else if (UserRole == "Branch_Admin")
+            {
+                var branchId = db.AspNetBranch_Admins
+               .Where(branchAdmin => branchAdmin.AdminId.Equals(loggedInUserId, StringComparison.OrdinalIgnoreCase))
+               .Select(branchAdmin => branchAdmin.BranchId).FirstOrDefault();
 
 
-                var Exams = db.ExamDetails.Where(x => StudentBranchIds.Contains(x.BranchId.Value) && StudentClassIds.Contains(x.ClassId.Value) && StudentSectionIds.Contains(x.SectionId.Value) && x.StudentId == Student.Id).Select(x => new { x.Id, StudentName = x.AspNetStudent.Name, ExamName = x.ExamType.Name, Total = x.ExamMarksDetails.Sum(y => y.Total), Obtained = x.ExamMarksDetails.Sum(y => y.Obtained), x.Grade, x.ParentsRemarks }).ToList();
+                var Exams = db.ExamDetails.Where(x => x.BranchId == branchId).Select(x => new { x.Id, StudentName = x.AspNetStudent.Name, ExamName = x.ExamType.Name, Total = x.ExamMarksDetails.Sum(y => y.Total), Obtained = x.ExamMarksDetails.Sum(y => y.Obtained), x.Grade, x.ParentsRemarks, x.Status }).ToList();
 
                 return Json(Exams, JsonRequestBehavior.AllowGet);
 
@@ -76,9 +85,15 @@ namespace SEA_Application.Controllers
                 return Json("", JsonRequestBehavior.AllowGet);
             }
 
-
-
         }
+
+        public ActionResult ExamDetailsAdminView()
+        {
+
+
+            return View();
+        }
+
 
         [HttpGet]
         public ActionResult CreateExamType()
@@ -234,7 +249,7 @@ namespace SEA_Application.Controllers
                     examDetailToAdd.ExamTypeId = examDetail.ExamTypeId;
                     examDetailToAdd.Total = examDetail.Total;
                     examDetailToAdd.Obtained = examDetail.Obtained;
-
+                    examDetailToAdd.Status = "Created";
                     //examDetailToAdd.Grade = examDetail.Grade;
                     // examDetailToAdd.
                     examDetailToAdd.CreationDate = GetLocalDateTime.GetLocalDateTimeFunction();
@@ -254,33 +269,33 @@ namespace SEA_Application.Controllers
 
                 foreach (var item in examMarksDetail)
                 {
-                   // var ExamMarkDetailExist = db.ExamMarksDetails.Where(x => x.CourseId == item.CourseId && x.ExamDetail.BranchId == examDetail.BranchId && x.ExamDetail.ClassId == examDetail.ClassId && x.ExamDetail.SectionId == examDetail.SectionId && x.ExamDetail.ExamTypeId == examDetail.ExamTypeId && x.ExamDetail.StudentId == examDetail.StudentId).FirstOrDefault();
+                    // var ExamMarkDetailExist = db.ExamMarksDetails.Where(x => x.CourseId == item.CourseId && x.ExamDetail.BranchId == examDetail.BranchId && x.ExamDetail.ClassId == examDetail.ClassId && x.ExamDetail.SectionId == examDetail.SectionId && x.ExamDetail.ExamTypeId == examDetail.ExamTypeId && x.ExamDetail.StudentId == examDetail.StudentId).FirstOrDefault();
 
                     //if (ExamMarkDetailExist == null)
                     //{
-                        ExamMarksDetail obj = new ExamMarksDetail();
+                    ExamMarksDetail obj = new ExamMarksDetail();
 
-                        obj.CourseId = item.CourseId;
-                        obj.Total = item.TotalMarks;
-                        obj.Obtained = item.ObtainedMarks;
-                        obj.Grade = item.SubjectGrade;
-                        
-                        if (item.ExamDate == null)
-                        {
-                            obj.ExamDate = null;
-                        }
-                        else
-                        {
-                            obj.ExamDate = Convert.ToDateTime(item.ExamDate);
+                    obj.CourseId = item.CourseId;
+                    obj.Total = item.TotalMarks;
+                    obj.Obtained = item.ObtainedMarks;
+                    obj.Grade = item.SubjectGrade;
 
-                        }
-                        obj.IsAttended = item.IsAttended;
-                        obj.CreationDate = GetLocalDateTime.GetLocalDateTimeFunction();
-                        obj.TeacherId = Teacher.Id;
-                        obj.Comments = item.Comments;
-                        obj.ExamDetail_Id = ExamDetailId;
+                    if (item.ExamDate == null)
+                    {
+                        obj.ExamDate = null;
+                    }
+                    else
+                    {
+                        obj.ExamDate = Convert.ToDateTime(item.ExamDate);
 
-                        ExamMarksDetailList.Add(obj);
+                    }
+                    obj.IsAttended = item.IsAttended;
+                    obj.CreationDate = GetLocalDateTime.GetLocalDateTimeFunction();
+                    obj.TeacherId = Teacher.Id;
+                    obj.Comments = item.Comments;
+                    obj.ExamDetail_Id = ExamDetailId;
+
+                    ExamMarksDetailList.Add(obj);
                     //}
 
                 }
@@ -677,14 +692,14 @@ namespace SEA_Application.Controllers
                             obj.Grade = Grade.ToString();
 
                         }
-                      
+
                         var Comments = workSheet.Cells[rowIterator, 8].Value;
                         if (Comments != null)
                         {
-                            
+
                             obj.Comments = Comments.ToString();
                         }
-                     
+
 
 
                         studentExamExcel.Add(obj);
@@ -767,26 +782,26 @@ namespace SEA_Application.Controllers
                             ExamMarksDetail marksDetail = new ExamMarksDetail();
 
 
-                          //  var ExamMarkDetailExist = db.ExamMarksDetails.Where(x => x.CourseId == item.SubjectId && x.ExamDetail.BranchId == BranchId && x.ExamDetail.ClassId == ClassId && x.ExamDetail.SectionId == SectionId && x.ExamDetail.ExamTypeId == ExamId && x.ExamDetail.StudentId == item.StudentId).FirstOrDefault();
+                            //  var ExamMarkDetailExist = db.ExamMarksDetails.Where(x => x.CourseId == item.SubjectId && x.ExamDetail.BranchId == BranchId && x.ExamDetail.ClassId == ClassId && x.ExamDetail.SectionId == SectionId && x.ExamDetail.ExamTypeId == ExamId && x.ExamDetail.StudentId == item.StudentId).FirstOrDefault();
 
                             //if (ExamMarkDetailExist == null)
-                           // {
-                                var ExamDetail = db.ExamDetails.Where(x => x.BranchId == BranchId && x.ClassId == ClassId && x.SectionId == SectionId && x.ExamTypeId == ExamId && x.StudentId == item.StudentId).FirstOrDefault();
+                            // {
+                            var ExamDetail = db.ExamDetails.Where(x => x.BranchId == BranchId && x.ClassId == ClassId && x.SectionId == SectionId && x.ExamTypeId == ExamId && x.StudentId == item.StudentId).FirstOrDefault();
 
-                                marksDetail.CourseId = item.SubjectId;
-                                marksDetail.Total = item.Total;
-                                marksDetail.Obtained = item.Obtained;
-                                marksDetail.ExamDate = item.ExamDate;
-                                marksDetail.IsAttended = item.IsAttended;
-                                marksDetail.TeacherId = item.TeacherId;
-                                marksDetail.Grade = item.Grade;
-                                marksDetail.Comments = item.Comments;
-                                marksDetail.CreationDate = GetLocalDateTime.GetLocalDateTimeFunction();
-                                marksDetail.ExamDetail_Id = ExamDetail.Id;
+                            marksDetail.CourseId = item.SubjectId;
+                            marksDetail.Total = item.Total;
+                            marksDetail.Obtained = item.Obtained;
+                            marksDetail.ExamDate = item.ExamDate;
+                            marksDetail.IsAttended = item.IsAttended;
+                            marksDetail.TeacherId = item.TeacherId;
+                            marksDetail.Grade = item.Grade;
+                            marksDetail.Comments = item.Comments;
+                            marksDetail.CreationDate = GetLocalDateTime.GetLocalDateTimeFunction();
+                            marksDetail.ExamDetail_Id = ExamDetail.Id;
 
-                                marksDetailList.Add(marksDetail);
+                            marksDetailList.Add(marksDetail);
 
-                           // }
+                            // }
 
                         }
 
@@ -840,10 +855,26 @@ namespace SEA_Application.Controllers
 
         public ActionResult StudentExamMarksDetails(int ExamDetailId)
         {
+            var loggedInUserId = User.Identity.GetUserId();
+            var UserRole = db.GetUserRoleById(loggedInUserId).FirstOrDefault().ToString();
+
+
+            if (UserRole == "Student")
+            {
+                var ExamDetailOfStudent = db.ExamDetails.Where(x => x.Id == ExamDetailId && x.Status == "Published" && x.AspNetStudent.AspNetUser.Id == loggedInUserId).FirstOrDefault();
+
+                if(ExamDetailOfStudent == null)
+                {
+                    return RedirectToAction("StudentExamsList");
+
+                }
+
+            }
+
             ViewBag.ExamDetailId = ExamDetailId;
 
-
-
+            var ExamDetails = db.ExamDetails.Where(x => x.Id == ExamDetailId).FirstOrDefault();
+            ViewBag.Status = ExamDetails.Status;
 
             return View();
         }
@@ -905,11 +936,11 @@ namespace SEA_Application.Controllers
                     markPercentage.TeacherName = item.AspNetEmployee.Name;
                     markPercentage.Grade = item.Grade;
                     markPercentage.Comments = item.Comments;
-                    
 
-                    if(item.Grade != null)
+
+                    if (item.Grade != null)
                     {
-                         GradeExist = "Yes";
+                        GradeExist = "Yes";
 
                     }
 
@@ -932,6 +963,21 @@ namespace SEA_Application.Controllers
 
             return View(examPrintForm);
         }
+        public ActionResult PublishExam(int ExamDetailId)
+        {
+            var ID = User.Identity.GetUserId();
+            var UserRole = db.GetUserRoleById(ID).FirstOrDefault();
+
+            if (UserRole == "Branch_Admin")
+            {
+                var ExamDetailToPublish = db.ExamDetails.Where(x => x.Id == ExamDetailId).FirstOrDefault();
+
+                ExamDetailToPublish.Status = "Published";
+                db.SaveChanges();
+            }
+
+            return RedirectToAction("ExamDetailsAdminView");
+        }
 
         public class ExamPrintForm
         {
@@ -952,7 +998,7 @@ namespace SEA_Application.Controllers
             public string Grade { get; set; }
             public string TeacherName { get; set; }
 
-            public string Comments { get; set;  }
+            public string Comments { get; set; }
         }
 
 
@@ -981,9 +1027,9 @@ namespace SEA_Application.Controllers
             public int ExamDetail_Id { get; set; }
             public int TeacherId { get; set; }
             public string ExamDate { get; set; }
-            public string Comments { get; set;  }
+            public string Comments { get; set; }
             public bool IsAttended { get; set; }
-            public string SubjectGrade { get; set;  }
+            public string SubjectGrade { get; set; }
         }
         public class StudentMarks
         {

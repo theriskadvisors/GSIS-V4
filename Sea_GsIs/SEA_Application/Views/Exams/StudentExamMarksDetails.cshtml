@@ -11,6 +11,12 @@
         Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
         UserRole = "Teacher";
     }
+    else if (User.IsInRole("Branch_Admin"))
+    {
+        Layout = "~/Views/Shared/_BranchAdminDashboardLayout.cshtml";
+
+        UserRole = "Branch_Admin";
+    }
     else
     {
         Layout = null;
@@ -144,7 +150,26 @@
 
             </div><!--end of col 6-->
         </div><!--end of row-->
+        <br />
+        @if (UserRole == "Branch_Admin" && ViewBag.Status == "Created")
+        {
 
+
+            <div class="row">
+                <div class="col-md-12 pl-5 pr-5   ">
+                    <div class="col-md-12 ">
+
+
+                        <button type="button" id="CancelButton" class="btn btn-primary pull-right rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                            <i class="material-icons mr-2">cached</i>  Cancel
+                        </button>
+                        <button type="submit" id="PublishButton" onclick="PublishExam()" class="btn btn-success pull-right rounded rounded-lg"> Publish </button>
+
+
+                    </div><!--end of column 12-->
+                </div><!--end of column 12-->
+            </div> <!--end of row-->
+        }
 
 
     </div>
@@ -265,7 +290,7 @@
 
                 if (SubjectGradeExist == "No") {
 
-                  
+
                     $("#subjectsHeader").append(" <tr> <th style='text-align:left !important'>Subject</th> <th >Total</th><th >Obtained</th><th >Date</th><th >Is Attended</th> </tr>");
                 }
                 else {
@@ -283,7 +308,7 @@
 
         $("#Satisfied").click(function () {
 
-            if (UserRole == "Teacher") {
+            if (UserRole == "Teacher" || UserRole == "Branch_Admin") {
                 return false;
             }
             else {
@@ -297,7 +322,7 @@
         $("#PartiallySatisfied").click(function () {
 
 
-            if (UserRole == "Teacher") {
+            if (UserRole == "Teacher" || UserRole == "Branch_Admin") {
                 return false;
             }
             else {
@@ -309,7 +334,7 @@
         $("#NotSatisfied").click(function () {
 
 
-            if (UserRole == "Teacher") {
+            if (UserRole == "Teacher" || UserRole == "Branch_Admin") {
                 return false;
             }
             else {
@@ -344,6 +369,17 @@
 
         })
 
+    }//parent remarks
+
+    function PublishExam() {
+
+        var ExamDetailId = $("#ExamDetailId").val();
+
+        window.location.href = "/Exams/PublishExam?ExamDetailId=" + ExamDetailId;
+
     }
 
+
 </script>
+
+

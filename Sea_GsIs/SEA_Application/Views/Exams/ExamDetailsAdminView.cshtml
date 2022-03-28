@@ -1,28 +1,13 @@
-﻿@{
-    if (User.IsInRole("Student"))
-    {
-        Layout = "~/Views/Shared/_StudentDashboardLayout.cshtml";
-    }
-    else if (User.IsInRole("Teacher"))
-    {
-        Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
-    }
-    else
-    {
-        Layout = null;
-    }
+﻿
+@{
+    Layout = "~/Views/Shared/_BranchAdminDashboardLayout.cshtml";
 }
 <style>
-
-    .buttoncolor {
-        color: white !important;
-    }
-    .dataTables_filter{
-        display:block !important;
+    .dataTables_filter {
+        display: block !important;
     }
 
 </style>
-
 
 <div class="row">
     <div class="col-md-12">
@@ -60,12 +45,14 @@
                                                 <th>
                                                     Parents Remarks
                                                 </th>
-
-
-
+                                                <th>
+                                                    Status
+                                                </th>
                                                 <th>
                                                     Action
                                                 </th>
+
+                                            </tr>
 
                                         </thead>
 
@@ -91,7 +78,7 @@
     $(document).ready(function () {
 
 
-        $("#PageHeader").html(" Exam Details  ");
+        $("#PageHeader").html(" Exam Detail  ");
 
         $("#BreadCrumbs").append(' <li> <a href="/BranchAdmin/Index"> Home </a> <span>&gt;</span></li>');
         $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Exam Type</a></li>');
@@ -153,8 +140,25 @@
                 $.each(data, function (index) {
 
 
+                    //var value = new Date(parseInt(data[index].FromDate.replace(/(^.*\()|([+-].*$)/g, '')));
+                    //var dat = value.getMonth() +
+                    //    1 +
+                    //    "/" +
+                    //    value.getDate() +
+                    //    "/" +
+                    //    value.getFullYear();
 
-                    table.fnAddData([data[index].StudentName + "<input  type=hidden value=" + data[index].Id + ">", data[index].ExamName, data[index].Total, data[index].Obtained, data[index].Grade, data[index].ParentsRemarks, "<input  class='btn btn-sm btn-primary buttoncolor' onclick='DetailPage(" + data[index].Id + ")'  type='button' id=" + data[index].Id + " Value ='View'>"]);
+
+                    //var value1 = new Date(parseInt(data[index].ToDate.replace(/(^.*\()|([+-].*$)/g, '')));
+                    //var dat1 = value1.getMonth() +
+                    //    1 +
+                    //    "/" +
+                    //    value1.getDate() +
+                    //    "/" +
+                    //    value1.getFullYear();
+
+
+                    table.fnAddData([data[index].StudentName + "<input  type=hidden value=" + data[index].Id + ">", data[index].ExamName, data[index].Total, data[index].Obtained, data[index].Grade, data[index].ParentsRemarks, data[index].Status, "<input  class='btn btn-sm btn-primary buttoncolor' onclick='DetailPage(" + data[index].Id + ")'  type='button' id=" + data[index].Id + " Value ='View'>"]);
 
 
                 })
@@ -175,3 +179,5 @@
 
     }
 </script>
+
+
