@@ -766,7 +766,7 @@ namespace SEA_Application.Controllers
                                 examDetail.Total = null;//mark.Total;//Total will be counted during result
                                 examDetail.Obtained = null;// mark.Obtained;//Total will be counted during result
                                 examDetail.CreationDate = GetLocalDateTime.GetLocalDateTimeFunction();
-
+                                examDetail.Status ="Created";
                                 examDetailList.Add(examDetail);
                             }
 
