@@ -125,6 +125,36 @@
 
                 <div class="col-md-6 pl-5 pr-5 ">
 
+
+                    <div class="form-group  ">
+                        <div class="">
+                            <label for="" class="control-label">Select Branch*</label>
+
+                            <select class="form-control" id="BranchId" name="BranchId" required></select>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group ">
+                        <div class="">
+
+                            <label for="" class="control-label">Select class *</label>
+
+                            <select class="form-control" id="ClassId" name="ClassId" required></select>
+
+                        </div>
+                    </div>
+
+
+                    <div class="form-group  ">
+                        <div class="">
+                            <label for="" class="control-label">Select Section *</label>
+
+                            <select class="form-control" id="SectionId" name="SectionId" required></select>
+
+                        </div>
+                    </div>
+
                     <h2 class="column-heading mb-4">Last School Attended</h2>
 
 
@@ -189,6 +219,14 @@
         $("#PageHeader").html("Registration Form");
 
 
+
+
+        $("#BreadCrumbs").append(' <li> <a href="/AdmissionDashboard/Dashboard"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class=""><a id="BreadCrumps1" href="/AdmissionDashboard/StudentRegistrationView">Student Registration</a><span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Create Registration</a></li>');
+
+
+
         $('input[type="file"]').change(function (e) {
             //var fileName = e.target.files[0].name;
             //document.getElementById("FilePath").placeholder = fileName;
@@ -208,6 +246,142 @@
             document.getElementById("FilePath").placeholder = "";
         });
 
+
+
+        $.ajax({
+            type: "POST",
+            cache: false,
+            url: "/AdmissionDashboard/AllBranches",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#BranchId");
+                $el.empty();
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").text('Select Branch'));
+                    for (i = 0; i < sch.length; i++) {
+
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i].Id).text(sch[i].Name));
+                    }
+                }
+                else {
+                    $el.append($("<option></option>")
+                        .attr("value", '').text('Select Branch'));
+                }
+            }
+        });
+
+
+
+
+        $('#BranchId').change(function () {
+
+            var BranchId = $(this).val();
+
+            if (BranchId != "") {
+
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/AdmissionDashboard/ClassesByBranch?BranchId=" + BranchId,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#ClassId");
+                        $el.empty();
+
+
+                     
+                        var $e3 = $("#SectionId");
+                        $e3.empty();
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Class'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Class'));
+                        }
+                    }
+                });
+            }
+            else {
+                var $el = $("#ClassId");
+                $el.empty();
+            
+
+                var $e3 = $("#SectionId");
+                $e3.empty();
+
+
+            }
+
+        });
+
+        $('#ClassId').change(function () {
+
+            var ClassId = $(this).val();
+            var BranchId = $("#BranchId").val();
+
+            if (ClassId != "") {
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    //url: '/AspNetProject/SectionByClasses',
+                    url: "/AdmissionDashboard/SectionByClasses?ClassId=" + ClassId + "&&BranchId=" + BranchId,
+
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#SectionId");
+                        $el.empty();
+                      
+                      
+                        debugger
+
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Section'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Section'));
+                        }
+                    }
+                });
+            }
+
+            else {
+
+                var $el = $("#SectionId");
+                $el.empty();
+              
+             
+            }
+
+        });
+
+     
 
 
     })

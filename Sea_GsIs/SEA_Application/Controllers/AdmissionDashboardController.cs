@@ -88,6 +88,10 @@ namespace SEA_Application.Controllers
                 obj.LastSchoolAttendedFromDate = studentRegistration.LastSchoolAttendedFromDate;
                 obj.LastSchoolAttendedToDate = studentRegistration.LastSchoolAttendedToDate;
                 obj.ReasonLeaving = studentRegistration.ReasonLeaving;
+                obj.BranchId = studentRegistration.BranchId;
+                obj.ClassId = studentRegistration.ClassId;
+                obj.SectionId = studentRegistration.SectionId;
+
                 db.StudentRegistrations.Add(obj);
                 db.SaveChanges();
 
@@ -118,7 +122,7 @@ namespace SEA_Application.Controllers
             }
 
             return View(studentRegistration);
-        }
+        } //Create Registration Form
         public ActionResult DownloadSubmittedDocument(string Name)
         {
             // AspnetStudentAssignmentSubmission studentAssignment = db.AspnetStudentAssignmentSubmissions.Find(id);
@@ -130,7 +134,10 @@ namespace SEA_Application.Controllers
         }
         public ActionResult RegisteredStudentsList()
         {
-            var StudentRegistrations = db.StudentRegistrations.Select(x => new { x.Id, x.StudentName, x.FatherName, x.Email, x.CellNo, x.Address, x.AspNetGender.Title, x.Documents }).ToList();
+            var StudentRegistrations = db.StudentRegistrations.Select(x => new { x.Id, x.StudentName, x.FatherName, x.Email, x.CellNo, x.Address, x.AspNetGender.Title, x.Documents,FeeStatus =x.RegistrationFees.FirstOrDefault().Status  }).ToList();
+
+            //  var StudentRegistrations = db.RegistrationFees.Select(x => new { x.StudentRegistration.Id, x.StudentRegistration.StudentName, x.StudentRegistration.FatherName, x.StudentRegistration.Email, x.StudentRegistration.CellNo, x.StudentRegistration.Address, x.StudentRegistration.AspNetGender.Title, x.StudentRegistration.Documents ,x.Status  }).GroupBy(x=>x.Id).ToList();
+
 
             return Json(StudentRegistrations, JsonRequestBehavior.AllowGet);
         }
@@ -140,15 +147,37 @@ namespace SEA_Application.Controllers
 
             var StudentRegistration = db.StudentRegistrations.Where(x => x.Id == id).FirstOrDefault();
 
+
+
             ViewBag.Error = TempData["ErrorMessage"] as string;
-            ViewBag.BranchId = new SelectList(db.AspNetBranches, "Id", "Name");
-            ViewBag.ClassId = new SelectList(db.AspNetClasses, "Id", "Name");
+            ViewBag.BranchId = new SelectList(db.AspNetBranches, "Id", "Name", StudentRegistration.BranchId);
+
+            var Classes = db.AspNetBranch_Class.Where(x => x.AspNetBranch.Id == StudentRegistration.BranchId).Select(x => new { x.AspNetClass.Id, x.AspNetClass.Name }).ToList();
+            var Sections = db.AspNetBranchClass_Sections.Where(x => x.AspNetBranch_Class.AspNetBranch.Id == StudentRegistration.BranchId && x.AspNetBranch_Class.AspNetClass.Id == StudentRegistration.ClassId).Select(x => new { x.AspNetSection.Id, x.AspNetSection.Name }).ToList();
+
+
+            ViewBag.ClassId = new SelectList(Classes, "Id", "Name", StudentRegistration.ClassId);
             ViewBag.GenderId = new SelectList(db.AspNetGenders, "Id", "Title", StudentRegistration.GenderId);
             ViewBag.NationalityId = new SelectList(db.AspNetNationalities, "Id", "Title", StudentRegistration.NationalityId);
             ViewBag.ParentId = new SelectList(db.AspNetParents, "Id", "UserId");
             ViewBag.ReligionId = new SelectList(db.AspNetReligions, "Id", "Title", StudentRegistration.ReligionId);
-            ViewBag.SectionId = new SelectList(db.AspNetSections, "Id", "Name");
+            ViewBag.SectionId = new SelectList(Sections, "Id", "Name", StudentRegistration.SectionId);
             ViewBag.PackageId = new SelectList(db.AspNetPackages, "Id", "Title");
+
+            var RegistrationFee = db.RegistrationFees.Where(x => x.StudentRegistrationId == StudentRegistration.Id).FirstOrDefault();
+
+            if (RegistrationFee != null)
+            {
+                ViewBag.FeeExist = true;
+                ViewBag.FeeStatus = RegistrationFee.Status;
+
+            }
+            else
+            {
+                ViewBag.FeeExist = false;
+            }
+
+
 
             string DateBirthString = "";
             string LastSchoolAttendedFromDateString = "";
@@ -212,6 +241,9 @@ namespace SEA_Application.Controllers
                 StudentRegistrationToUpdate.LastSchoolAttendedFromDate = studentRegistration.LastSchoolAttendedFromDate;
                 StudentRegistrationToUpdate.LastSchoolAttendedToDate = studentRegistration.LastSchoolAttendedToDate;
                 StudentRegistrationToUpdate.ReasonLeaving = studentRegistration.ReasonLeaving;
+                StudentRegistrationToUpdate.BranchId = studentRegistration.BranchId;
+                StudentRegistrationToUpdate.ClassId = studentRegistration.ClassId;
+                StudentRegistrationToUpdate.SectionId = studentRegistration.SectionId;
                 db.SaveChanges();
 
                 var AllFiles = "";
@@ -237,9 +269,224 @@ namespace SEA_Application.Controllers
 
             }
 
+            return View();
+        }
+
+        public ActionResult AllBranches()
+        {
+            var Branches = (from branch in db.AspNetBranches
+
+                            select new
+                            {
+                                branch.Id,
+                                branch.Name,
+                            }).Distinct();
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(Branches);
+            return Content(status);
+        }
+
+
+        public ActionResult ClassesByBranch(int BranchId)
+        {
+            var BranchClasses = db.AspNetBranch_Class.Where(x => x.BranchId == BranchId).ToList().Select(x => new { x.AspNetClass.Id, x.AspNetClass.Name });
+
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(BranchClasses);
+            return Content(status);
+        }
+
+        public ActionResult SectionByClasses(int ClassId, int BranchId)
+        {
+            var ID = User.Identity.GetUserId();
+
+            var Sections = db.AspNetBranchClass_Sections.Where(x => x.AspNetBranch_Class.AspNetBranch.Id == BranchId && x.AspNetBranch_Class.AspNetClass.Id == ClassId).Select(x => new { x.AspNetSection.Id, x.AspNetSection.Name });
+
+            string status = Newtonsoft.Json.JsonConvert.SerializeObject(Sections);
+            return Json(status, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult CreateRegistrationFee(int StudentRegistrationId)
+        {
+            var StudentRegistration = db.StudentRegistrations.Where(x => x.Id == StudentRegistrationId).FirstOrDefault();
+
+            if (StudentRegistration != null)
+            {
+                ViewBag.StudentName = StudentRegistration.StudentName;
+                ViewBag.FatherName = StudentRegistration.FatherName;
+                ViewBag.Email = StudentRegistration.Email;
+                ViewBag.StudentRegistrionId = StudentRegistrationId;
+            }
+            else
+            {
+                return RedirectToAction("StudentRegistrationView");
+            }
+
+
 
             return View();
         }
+        [HttpPost]
+        public ActionResult CreateRegistrationFee(RegistrationFee registrationFee)
+        {
+            try
+            {
+                RegistrationFee registration = new RegistrationFee();
+
+                registration.AdmissionFee = registrationFee.AdmissionFee;
+                registration.StudentRegistrationFee = registrationFee.StudentRegistrationFee;
+                registration.SecurityFee = registrationFee.SecurityFee;
+                registration.MonthlyTutionFee = registrationFee.MonthlyTutionFee;
+                registration.AnnualFund = registrationFee.AnnualFund;
+                registration.Stationary = registrationFee.Stationary;
+                registration.LabChargesPhysics = registrationFee.LabChargesPhysics;
+                registration.LabChargesBiology = registrationFee.LabChargesBiology;
+                registration.LabChargesChemistry = registrationFee.LabChargesChemistry;
+                registration.LabChargesComputer = registrationFee.LabChargesComputer;
+                registration.Notes = registrationFee.Notes;
+                registration.Total = registrationFee.Total;
+                registration.StudentRegistrationId = registrationFee.StudentRegistrationId;
+                registration.ExamCharges = registrationFee.ExamCharges;
+                registration.LeaderInMe = registrationFee.LeaderInMe;
+                registration.Deferred = registrationFee.Deferred;
+                registration.LessReceived = registrationFee.LessReceived;
+                registration.DueDate = registrationFee.DueDate;
+                registration.IssueDate = registrationFee.IssueDate;
+                registration.CreationDate = GetLocalDateTime.GetLocalDateTimeFunction();
+                registration.FineFirstFromDate = registrationFee.FineFirstFromDate;
+                registration.FineFirstToDate = registrationFee.FineFirstToDate;
+                registration.FineFirstAmount = registrationFee.FineFirstAmount;
+
+                registration.FineSecondFromDate = registrationFee.FineSecondFromDate;
+                registration.FineSecondToDate = registrationFee.FineSecondToDate;
+                registration.FineSecondAmount = registrationFee.FineSecondAmount;
+
+                registration.FineThirdFromDate = registrationFee.FineThirdFromDate;
+                registration.FineThirdToDate = registrationFee.FineThirdToDate;
+                registration.FineThirdAmount = registrationFee.FineThirdAmount;
+
+                registration.Status = "Pending";
+
+                db.RegistrationFees.Add(registration);
+                db.SaveChanges();
+
+                return RedirectToAction("EditRegistrationFee", new { RegistrationFeeId = registration.Id });
+            }
+            catch (Exception ex)
+            {
+                return View();
+
+            }
+
+        }
+        [HttpGet]
+        public ActionResult EditRegistrationFee(int RegistrationFeeId)
+        {
+            var RegistrationFee = db.RegistrationFees.Where(x => x.Id == RegistrationFeeId).FirstOrDefault();
+
+            ViewBag.StudentName = RegistrationFee.StudentRegistration.StudentName;
+            ViewBag.FatherName = RegistrationFee.StudentRegistration.FatherName;
+            ViewBag.Email = RegistrationFee.StudentRegistration.Email;
+            //ViewBag.StudentRegistrionId = RegistrationFee.StudentRegistrationId;
+
+            return View(RegistrationFee);
+        }
+        [HttpPost]
+        public ActionResult EditRegistrationFee(RegistrationFee registrationFee)
+        {
+
+          var registration = db.RegistrationFees.Where(x => x.Id == registrationFee.Id).FirstOrDefault();
+
+            registration.AdmissionFee = registrationFee.AdmissionFee;
+            registration.StudentRegistrationFee = registrationFee.StudentRegistrationFee;
+            registration.SecurityFee = registrationFee.SecurityFee;
+            registration.MonthlyTutionFee = registrationFee.MonthlyTutionFee;
+            registration.AnnualFund = registrationFee.AnnualFund;
+            registration.Stationary = registrationFee.Stationary;
+            registration.LabChargesPhysics = registrationFee.LabChargesPhysics;
+            registration.LabChargesBiology = registrationFee.LabChargesBiology;
+            registration.LabChargesChemistry = registrationFee.LabChargesChemistry;
+            registration.LabChargesComputer = registrationFee.LabChargesComputer;
+            registration.Notes = registrationFee.Notes;
+            registration.Total = registrationFee.Total;
+         
+            registration.ExamCharges = registrationFee.ExamCharges;
+            registration.LeaderInMe = registrationFee.LeaderInMe;
+            registration.Deferred = registrationFee.Deferred;
+            registration.LessReceived = registrationFee.LessReceived;
+            registration.DueDate = registrationFee.DueDate;
+            registration.IssueDate = registrationFee.IssueDate;
+            registration.FineFirstFromDate = registrationFee.FineFirstFromDate;
+            registration.FineFirstToDate = registrationFee.FineFirstToDate;
+            registration.FineFirstAmount = registrationFee.FineFirstAmount;
+
+            registration.FineSecondFromDate = registrationFee.FineSecondFromDate;
+            registration.FineSecondToDate = registrationFee.FineSecondToDate;
+            registration.FineSecondAmount = registrationFee.FineSecondAmount;
+
+            registration.FineThirdFromDate = registrationFee.FineThirdFromDate;
+            registration.FineThirdToDate = registrationFee.FineThirdToDate;
+            registration.FineThirdAmount = registrationFee.FineThirdAmount;
+
+            db.SaveChanges();
+
+            return RedirectToAction("StudentRegistrationView");
+        }
+        public ActionResult RegistrationChallan(int RegistrationFeeId)
+        {
+            var RegistrationFee = db.RegistrationFees.Where(x => x.Id == RegistrationFeeId).FirstOrDefault();
+
+            string monthName = CultureInfo.CurrentCulture.DateTimeFormat.GetAbbreviatedMonthName(RegistrationFee.DueDate.Value.Month);
+            int year = Convert.ToInt32(RegistrationFee.DueDate.Value.Year.ToString().Substring(2, 2));
+
+            ViewBag.FeePeriod = monthName + "-" + year;
+
+            string FirstFromDate = FormattedDay(RegistrationFee.FineFirstFromDate.Value.Day);
+            string FirstToDate = FormattedDay(RegistrationFee.FineFirstToDate.Value.Day);
+
+            string SecondFromDate = FormattedDay(RegistrationFee.FineSecondFromDate.Value.Day);
+            string SecondToDate = FormattedDay(RegistrationFee.FineSecondToDate.Value.Day);
+
+            string ThirdFromDate = FormattedDay(RegistrationFee.FineThirdFromDate.Value.Day);
+            string ThirdToDate = FormattedDay(RegistrationFee.FineThirdToDate.Value.Day);
+
+            ViewBag.FirstDate = FirstFromDate + " to " + FirstToDate;
+            ViewBag.SecondDate = SecondFromDate + " to " + SecondToDate;
+            ViewBag.ThirdDate = ThirdFromDate + " to " + ThirdToDate;
+
+
+
+
+
+            return View(RegistrationFee);
+        }
+
+        public string FormattedDay(int Day)
+        {
+            string FormattedDay = "";
+
+            if(Day == 1)
+            {
+                FormattedDay = Day.ToString() + "st";
+            }
+            else if(Day == 2)
+            {
+                FormattedDay = Day.ToString() + "nd";
+            }
+            else if (Day==3)
+            {
+                FormattedDay = Day.ToString() + "rd";
+            }
+            else
+            {
+                FormattedDay = Day.ToString() + "th";
+            }
+
+
+            return FormattedDay.ToString();
+        }
+
+
+
 
     }
 }

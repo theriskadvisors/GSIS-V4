@@ -1,0 +1,841 @@
+﻿@model SEA_Application.Models.RegistrationFee
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Challan</title>
+
+    <style type="text/css">
+
+
+        @@media print {
+            #print {
+                display: none;
+            }
+        }
+
+        @@media print {
+            .pagebreak {
+                clear: both;
+                page-break-before: always !important;
+            }
+        }
+
+
+        .container {
+            width: 900px;
+            margin: auto;
+        }
+
+        table, td, tr {
+            border-collapse: collapse;
+        }
+
+        .main_heading {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .font12 {
+            font-size: 12px;
+        }
+
+        * {
+            font-size: 12px;
+            font-family: arial;
+        }
+
+        .font14 {
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+
+    <input type="button" onclick="printDiv()" name="print" id="print" style="height:40px;cursor:pointer;width:70px;" value="Print" />
+
+
+    <div class="container">
+
+        <br>
+
+        <table border="1" width="100%">
+            <tr>
+
+                <td colspan="2" style="width:230px;">
+                    <span class="main_heading"> Global System of Integrated Studies</span><br>
+
+                    <div style="float:left">
+
+                        <span class="font12">GSIS Building, #86, St 3, H-8/1 Islamabad </span><br>
+                        <span class="font12">Ph: 051-4939261, 4939262<br>,</span>
+                    </div>
+                    <div style="float:right;padding-right:5px;">
+                        <img src="~/Content/Images/gsis_logo/logo_dp.jpg" width="35">
+                    </div>
+
+
+                </td>
+
+
+                <td colspan="4" style="width: 350px;">
+
+                    <div style="float:left">
+
+                        <span class="main_heading">DUBAI ISLAMIC BANK</span><br>
+                        <span style="font-size: 12px;">VIP Square, Plot No. 25, I-8 Markaz</span><br>
+                        <span style="font-size:12px;">IBD. Ph: 051-4861205, 051-4861397</span>
+
+                    </div>
+                    <div style="float:right;padding-right: 30px;">
+
+                        <div style="width:60px;">
+
+                            <img src="~/Content/Images/gsis_logo/logo_dp.jpg" width="50" height="40">
+
+
+                        </div>
+
+                    </div>
+
+                    <div style="float:left;padding-left: 10px;">
+
+                        <div style="border:2px solid;padding: 5px;width: 80px;font-size: 12px;border-radius: 25px; ">
+                            <center>
+                                <b>
+                                    DISPATCH
+                                    <br>
+                                    SCROLL
+                                </b>
+                            </center>
+                        </div>
+
+                    </div>
+
+
+
+                    <div style="clear: both;"></div>
+
+                    <center>
+                        <span style="font-size:12px;text-align: center;font-weight: bold;"><b>ACCEPTABLE IN ALL BRANCES IN RAWALPINDI & ISLAMABAD </b></span>
+                    </center>
+
+
+
+                </td>
+
+                <td align="center" colspan="2">
+
+                    <span><b>GSIS (Fee Collection)</b></span><br>
+                    <span><b>A/C #</b></span><br><br>
+                    <span><b>040-0150371003</b></span>
+
+                </td>
+
+            </tr>
+
+
+            <tr>
+
+                <td style="border: 0 !important;">Admission Fee</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.AdmissionFee</td>
+                <td colspan="1">Payment Date</td>
+                <td colspan="3"></td>
+                <td>Date</td>
+                <td align="center">@Model.IssueDate.Value.ToString("dd/MM/yyyy")	</td>
+            </tr>
+
+
+
+            <tr>
+
+                <td style="border: 0 !important;">Security (Refundable)</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.SecurityFee</td>
+                <td colspan="1">Cheque No</td>
+                <td colspan="3"></td>
+                <td colspan="2" align="center">Roll No. Not Yet Issued</td>
+
+            </tr>
+
+
+            <tr>
+
+                <td style="border: 0 !important;">Tuition Fee</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.MonthlyTutionFee</td>
+                <td colspan="1">Bank</td>
+                <td colspan="3"></td>
+                <td colspan="2" align="center" rowspan="3" style="background: black;color:white;font-size:14px;"><b>NEW ADMINMISSION</b><br> <b>HK738</b></td>
+            </tr>
+
+
+            <tr>
+                <td style="border: 0 !important;"> Lab Charges  Computer</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" colspan="1" align="center">@Model.LabChargesComputer</td>
+                <td colspan="1" align="right" style="text-decoration: underline;border-bottom: 0;padding-right:15px;"></td>
+                <td colspan="3" align="right" style="text-decoration: underline;border-bottom: 0;padding-right:15px;"></td>
+
+            </tr>
+            <tr>
+                <td style="border: 0 !important;">Lab Charges Biology</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" colspan="1" align="center">@Model.LabChargesBiology</td>
+                <td colspan="1" align="right" style="text-decoration: underline;border-bottom: 0;padding-right:15px;"></td>
+                <td colspan="3" align="right" style="text-decoration: underline;border-bottom: 0;padding-right:15px;"></td>
+
+            </tr>
+
+
+
+            <tr>
+                <td style="border: 0 !important;">Lab Charges Chemistry </td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.LabChargesChemistry</td>
+
+                <td colspan="1" style="border-top:0 !important;border-bottom:0 !important"> Name</td>
+                <td colspan="3" style="border-top:0 !important;border-bottom:0 !important"><b><span class="font14">@Model.StudentRegistration.StudentName</span></b> </td>
+
+
+            </tr>
+
+
+            <tr>
+
+                <td style="border: 0 !important;">Lab Charges Physics</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.LabChargesPhysics</td>
+                <td colspan="1" style="border-top:0 !important;border-bottom:0 !important">Class</td>
+                <td colspan="3" style="border-top:0 !important;border-bottom:0 !important"><b><span class="font14">@Model.StudentRegistration.AspNetClass.Name</span></b></td>
+                <td colspan="2" align="center"><b>Due Date</b></td>
+
+
+            </tr>
+
+
+
+            <tr>
+
+                <td style="border: 0 !important;">Annual Fund</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.AnnualFund</td>
+                <td colspan="1" style="border-top:0 !important;border-bottom:0 !important">Issue Date</td>
+                <td colspan="3" style="border-top:0 !important;border-bottom:0 !important"><b><span class="font14">@Model.IssueDate.Value.ToString("dd/MM/yyyy")</span></b></td>
+                <td colspan="2" rowspan="2" align="center"><b>@Model.DueDate.Value.ToString("dd/MM/yyyy")</b> </td>
+
+
+            </tr>
+
+
+            <tr>
+
+                <td style="border: 0 !important;">Annual Stationery Fund</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.Stationary</td>
+                <td colspan="1" style="border-top:0 !important;border-bottom:0 !important">Fee Period</td>
+                <td colspan="3" style="border-top:0 !important;border-bottom:0 !important"><b><span class="font14"> @ViewBag.FeePeriod</span></b></td>
+
+
+            </tr>
+
+
+            <tr>
+
+                <td style="border: 0 !important;">Exam Charges</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.ExamCharges</td>
+                <td colspan="4"></td>
+                <td colspan="2" align="center"><b>@Model.Total</b></td>
+
+
+
+            </tr>
+
+            <tr>
+
+                <td style="border: 0 !important;"><b>Registration Charges</b></td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center"><b>@Model.StudentRegistrationFee</b></td>
+                <td colspan="4"></td>
+                <td colspan="2" rowspan="4" align="center"></td>
+
+
+
+            </tr>
+            <tr>
+
+                <td style="border: 0 !important;">Leader in me</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.LeaderInMe</td>
+                <td colspan="1" align="center"><b>During</b></td>
+                <td colspan="1" align="center"><b>@ViewBag.FirstDate</b></td>
+                <td colspan="1" align="center"><b>@ViewBag.SecondDate</b></td>
+                <td colspan="1" align="center"><b>@ViewBag.ThirdDate</b></td>
+
+            </tr>
+
+            <tr>
+
+                <td style="color:red;border: 0 !important;"><b>DEFERRED</b></td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.Deferred</td>
+                <td colspan="1" rowspan="2" align="center"></td>
+                <td colspan="1" rowspan="2" align="center">Rs. @Model.FineFirstAmount</td>
+                <td colspan="1" rowspan="2" align="center">Rs. @Model.FineSecondAmount</td>
+                <td colspan="1" rowspan="2" align="center">Rs. @Model.FineThirdAmount</td>
+
+
+            </tr>
+
+            <tr>
+
+                <td style="color:red;border: 0 !important;"><b>Less: RECEIVED (IF ANY)</b></td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.LessReceived</td>
+
+
+
+            </tr>
+
+            <tr>
+
+                <td align="right">TOTAL</td>
+                <td align="center">@Model.Total</td>
+                <td colspan="4"></td>
+                <td colspan="2" align="center" style="background: silver;"><b>BANK COPY</b></td>
+
+
+
+            </tr>
+
+
+
+        </table>
+
+        <br>
+        <div style="border-style: dashed;border-bottom: 2px ;"></div>
+
+        <br>
+
+        <!--table 2-->
+        <table border="1" width="100%">
+            <tr>
+
+                <td colspan="2" style="width:230px;">
+                    <span class="main_heading"> Global System of Integrated Studies</span><br>
+
+                    <div style="float:left">
+
+                        <span class="font12">GSIS Building, #86, St 3, H-8/1 Islamabad </span><br>
+                        <span class="font12">Ph: 051-4939261, 4939262</span>
+                    </div>
+                    <div style="float:right;padding-right:5px;">
+                        <img src="~/Content/Images/gsis_logo/logo_dp.jpg" width="35" height="30">
+                    </div>
+                    <br>
+                    <br>
+                    <br>
+                    <span><b style="font-size:11px;">FOR ACCOUNTS: e-mail: gsis.accounts@yahoo.com</b></span>
+
+
+                </td>
+
+
+                <td colspan="4" style="width: 350px;">
+
+                    <div style="float:left">
+
+                        <span class="main_heading">DUBAI ISLAMIC BANK</span><br>
+                        <span style="font-size: 12px;">VIP Square, Plot No. 25, I-8 Markaz</span><br>
+                        <span style="font-size:12px;">IBD. Ph: 051-4861205, 051-4861397</span>
+
+                    </div>
+                    <div style="float:right;padding-right: 30px;">
+
+                        <div style="width:60px;">
+
+                            <img src="~/Content/Images/gsis_logo/logo_dp.jpg" width="50" height="40">
+
+
+                        </div>
+
+                    </div>
+
+                    <div style="float:left;padding-left: 10px;">
+
+                        <div style="border:2px solid;padding: 5px;width: 80px;font-size: 12px;border-radius: 25px; ">
+                            <center>
+                                <b>
+                                    DISPATCH
+                                    <br>
+                                    SCROLL
+                                </b>
+                            </center>
+                        </div>
+
+                    </div>
+
+
+
+                    <div style="clear: both;"></div>
+                    <br>
+                    <center>
+                        <span style="font-size:12px;text-align: center;font-weight: bold;"><b>ACCEPTABLE IN ALL BRANCES IN RAWALPINDI & ISLAMABAD </b></span>
+                    </center>
+
+
+
+                </td>
+
+                <td align="center" colspan="2">
+
+                    <span><b>GSIS (Fee Collection)</b></span><br>
+                    <span><b>A/C #</b></span><br><br>
+                    <span><b>040-0150371003</b></span>
+
+                </td>
+
+            </tr>
+
+
+            <tr>
+
+                <td style="border: 0 !important;">Admission Fee</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.AdmissionFee</td>
+                <td colspan="1">Payment Date</td>
+                <td colspan="3"></td>
+                <td>Date</td>
+                <td align="center">@Model.IssueDate.Value.ToString("dd/MM/yyyy")	</td>
+            </tr>
+
+
+
+            <tr>
+
+                <td style="border: 0 !important;">Security (Refundable)</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.SecurityFee</td>
+                <td colspan="1">Cheque No</td>
+                <td colspan="3"></td>
+                <td colspan="2" align="center">Roll No. Not Yet Issued</td>
+
+            </tr>
+
+
+            <tr>
+
+                <td style="border: 0 !important;">Tuition Fee</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.MonthlyTutionFee</td>
+                <td colspan="1">Bank</td>
+                <td colspan="3"></td>
+                <td colspan="2" align="center" rowspan="3" style="background: black;color:white;font-size:14px;"><b>NEW ADMINMISSION</b><br> <b>HK738</b></td>
+            </tr>
+
+
+
+            <tr>
+                <td style="border: 0 !important;"> Lab Charges  Computer</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" colspan="1" align="center">@Model.LabChargesComputer</td>
+                <td colspan="1" align="right" style="text-decoration: underline;border-bottom: 0;padding-right:15px;"></td>
+                <td colspan="3" align="right" style="text-decoration: underline;border-bottom: 0;padding-right:15px;"></td>
+
+            </tr>
+            <tr>
+                <td style="border: 0 !important;">Lab Charges Biology</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" colspan="1" align="center">@Model.LabChargesBiology</td>
+                <td colspan="1" align="right" style="text-decoration: underline;border-bottom: 0;padding-right:15px;"></td>
+                <td colspan="3" align="right" style="text-decoration: underline;border-bottom: 0;padding-right:15px;"></td>
+
+            </tr>
+
+
+
+            <tr>
+                <td style="border: 0 !important;">Lab Charges Chemistry </td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.LabChargesChemistry</td>
+
+                <td colspan="1" style="border-top:0 !important;border-bottom:0 !important"> Name</td>
+                <td colspan="3" style="border-top:0 !important;border-bottom:0 !important"><b><span class="font14">@Model.StudentRegistration.StudentName</span></b> </td>
+
+
+            </tr>
+
+
+            <tr>
+
+                <td style="border: 0 !important;">Lab Charges Physics</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.LabChargesPhysics</td>
+                <td colspan="1" style="border-top:0 !important;border-bottom:0 !important">Class</td>
+                <td colspan="3" style="border-top:0 !important;border-bottom:0 !important"><b><span class="font14">@Model.StudentRegistration.AspNetClass.Name</span></b></td>
+                <td colspan="2" align="center"><b>Due Date</b></td>
+
+
+            </tr>
+
+            <tr>
+
+                <td style="border: 0 !important;">Annual Fund</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.AnnualFund</td>
+                <td colspan="1" style="border-top:0 !important;border-bottom:0 !important">Issue Date</td>
+                <td colspan="3" style="border-top:0 !important;border-bottom:0 !important"><b><span class="font14">@Model.IssueDate.Value.ToString("dd/MM/yyyy")</span></b></td>
+                <td colspan="2" rowspan="2" align="center"><b>@Model.DueDate.Value.ToString("dd/MM/yyyy")</b> </td>
+
+            </tr>
+
+
+            <tr>
+
+                <td style="border: 0 !important;">Annual Stationery Fund</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.Stationary</td>
+                <td colspan="1" style="border-top:0 !important;border-bottom:0 !important">Fee Period</td>
+                <td colspan="3" style="border-top:0 !important;border-bottom:0 !important"><b><span class="font14">@ViewBag.FeePeriod</span></b></td>
+
+
+            </tr>
+
+
+            <tr>
+
+                <td style="border: 0 !important;">Exam Charges</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.ExamCharges</td>
+                <td align="right" colspan="4">Amount Payable within Due Date</td>
+                <td colspan="2" align="center"><b>@Model.Total</b></td>
+
+
+
+            </tr>
+
+            <tr>
+
+                <td style="border: 0 !important;">Registration Charges</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.StudentRegistrationFee</td>
+                <td colspan="4" style="font-weight: bold;">FINE after expiry of due date: (To be calculated by Bank)</td>
+                <td colspan="2" rowspan="4" align="center"></td>
+
+
+
+            </tr>
+            <tr>
+
+                <td style="border: 0 !important;">Leader in me</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.LeaderInMe</td>
+                <td colspan="1" align="center"><b>During</b></td>
+                <td colspan="1" align="center"><b>@ViewBag.FirstDate</b></td>
+                <td colspan="1" align="center"><b>@ViewBag.SecondDate</b></td>
+                <td colspan="1" align="center"><b>@ViewBag.ThirdDate</b></td>
+
+
+            </tr>
+
+            <tr>
+
+                <td style="border: 0 !important;"><b>DEFERRED</b></td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.Deferred</td>
+                <td colspan="1" rowspan="2" align="center"></td>
+                <td colspan="1" rowspan="2" align="center">Rs. @Model.FineFirstAmount</td>
+                <td colspan="1" rowspan="2" align="center">Rs. @Model.FineSecondAmount</td>
+                <td colspan="1" rowspan="2" align="center">Rs. @Model.FineThirdAmount</td>
+
+
+            </tr>
+
+            <tr>
+                <td style="border: 0 !important;"><b>Less: RECEIVED (IF ANY)</b></td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.LessReceived</td>
+            </tr>
+
+            <tr>
+
+                <td align="right">TOTAL</td>
+                <td align="center">@Model.Total</td>
+                <td colspan="4"></td>
+                <td colspan="2" align="center" style="background: silver;"><b>SCHOOL COPY</b></td>
+
+
+
+            </tr>
+
+
+
+        </table>
+
+        <br>
+        <div style="border-style: dashed;border-bottom: 2px ;"></div>
+
+        <br>
+
+        <!--table 3-->
+        <table border="1" width="100%">
+            <tr>
+
+                <td colspan="2" style="width:230px;">
+                    <span class="main_heading"> Global System of Integrated Studies</span><br>
+
+                    <div style="float:left">
+
+                        <span class="font12">GSIS Building, #86, St 3, H-8/1 Islamabad </span><br>
+                        <span class="font12">Ph: 051-4939261, 4939262</span>
+                    </div>
+                    <div style="float:right;padding-right:5px;">
+                        <img src="~/Content/Images/gsis_logo/logo_dp.jpg" width="35" height="30">
+                    </div>
+                    <br>
+                    <br>
+                    <br>
+                    <span><b style="font-size:11px;">FOR ACCOUNTS: e-mail: gsis.accounts@yahoo.com</b></span>
+
+
+                </td>
+
+
+                <td colspan="4" style="width: 350px;">
+
+                    <div style="float:left">
+
+                        <span class="main_heading">DUBAI ISLAMIC BANK</span><br>
+                        <span style="font-size: 12px;">VIP Square, Plot No. 25, I-8 Markaz</span><br>
+                        <span style="font-size:12px;">IBD. Ph: 051-4861205, 051-4861397</span>
+
+                    </div>
+                    <div style="float:right;padding-right: 30px;">
+
+                        <div style="width:60px;">
+
+                            <img src="~/Content/Images/gsis_logo/logo_dp.jpg" width="50" height="40">
+
+
+                        </div>
+
+                    </div>
+
+                    <div style="float:left;padding-left: 10px;">
+
+                        <div style="border:2px solid;padding: 5px;width: 80px;font-size: 12px;border-radius: 25px; ">
+                            <center>
+                                <b>
+                                    DISPATCH
+                                    <br>
+                                    SCROLL
+                                </b>
+                            </center>
+                        </div>
+
+                    </div>
+
+
+
+                    <div style="clear: both;"></div>
+                    <br>
+                    <center>
+                        <span style="font-size:12px;text-align: center;font-weight: bold;"><b>ACCEPTABLE IN ALL BRANCES IN RAWALPINDI & ISLAMABAD </b></span>
+                    </center>
+
+
+
+                </td>
+
+                <td align="center" colspan="2">
+
+                    <span><b>GSIS (Fee Collection)</b></span><br>
+                    <span><b>A/C #</b></span><br><br>
+                    <span><b>040-0150371003</b></span>
+
+                </td>
+
+            </tr>
+
+
+            <tr>
+
+                <td style="border: 0 !important;">Admission Fee</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.AdmissionFee</td>
+                <td colspan="1">Payment Date</td>
+                <td colspan="3"></td>
+                <td>Date</td>
+                <td align="center">@Model.IssueDate.Value.ToString("dd/MM/yyyy")	</td>
+            </tr>
+
+
+
+            <tr>
+
+                <td style="border: 0 !important;">Security (Refundable)</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.SecurityFee</td>
+                <td colspan="1">Cheque No</td>
+                <td colspan="3"></td>
+                <td colspan="2" align="center">Roll No. Not Yet Issued</td>
+
+            </tr>
+
+
+            <tr>
+
+                <td style="border: 0 !important;">Tuition Fee</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.MonthlyTutionFee</td>
+                <td colspan="1">Bank</td>
+                <td colspan="3"></td>
+                <td colspan="2" align="center" rowspan="3" style="background: black;color:white;font-size:14px;"><b>NEW ADMINMISSION</b><br> <b>HK738</b></td>
+            </tr>
+
+
+
+            <tr>
+                <td style="border: 0 !important;"> Lab Charges  Computer</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" colspan="1" align="center">@Model.LabChargesComputer</td>
+                <td colspan="1" align="right" style="text-decoration: underline;border-bottom: 0;padding-right:15px;"></td>
+                <td colspan="3" align="right" style="text-decoration: underline;border-bottom: 0;padding-right:15px;"></td>
+
+            </tr>
+            <tr>
+                <td style="border: 0 !important;">Lab Charges Biology</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" colspan="1" align="center">@Model.LabChargesBiology</td>
+                <td colspan="1" align="right" style="text-decoration: underline;border-bottom: 0;padding-right:15px;"></td>
+                <td colspan="3" align="right" style="text-decoration: underline;border-bottom: 0;padding-right:15px;"></td>
+
+            </tr>
+
+
+
+            <tr>
+                <td style="border: 0 !important;">Lab Charges Chemistry </td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.LabChargesChemistry</td>
+
+                <td colspan="1" style="border-top:0 !important;border-bottom:0 !important"> Name</td>
+                <td colspan="3" style="border-top:0 !important;border-bottom:0 !important"><b><span class="font14">@Model.StudentRegistration.StudentName</span></b> </td>
+
+
+            </tr>
+
+
+            <tr>
+
+                <td style="border: 0 !important;">Lab Charges Physics</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.LabChargesPhysics</td>
+                <td colspan="1" style="border-top:0 !important;border-bottom:0 !important">Class</td>
+                <td colspan="3" style="border-top:0 !important;border-bottom:0 !important"><b><span class="font14">@Model.StudentRegistration.AspNetClass.Name</span></b></td>
+                <td colspan="2" align="center"><b>Due Date</b></td>
+
+
+            </tr>
+
+
+            <tr>
+
+                <td style="border: 0 !important;">Annual Fund</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.AnnualFund</td>
+                <td colspan="1" style="border-top:0 !important;border-bottom:0 !important">Issue Date</td>
+                <td colspan="3" style="border-top:0 !important;border-bottom:0 !important"><b><span class="font14">@Model.IssueDate.Value.ToString("dd/MM/yyyy")</span></b></td>
+                <td colspan="2" rowspan="2" align="center"><b>@Model.DueDate.Value.ToString("dd/MM/yyyy")</b> </td>
+
+
+            </tr>
+
+
+            <tr>
+
+                <td style="border: 0 !important;">Annual Stationery Fund</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.Stationary</td>
+                <td colspan="1" style="border-top:0 !important;border-bottom:0 !important">Fee Period</td>
+                <td colspan="3" style="border-top:0 !important;border-bottom:0 !important"><b><span class="font14">@ViewBag.FeePeriod</span></b></td>
+
+
+            </tr>
+
+
+            <tr>
+
+                <td style="border: 0 !important;">Exam Charges</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.ExamCharges</td>
+                <td align="right" colspan="4">Amount Payable within Due Date</td>
+                <td colspan="2" align="center"><b>@Model.Total</b></td>
+
+
+
+            </tr>
+
+            <tr>
+
+                <td style="border: 0 !important;">Registration Charges</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.StudentRegistrationFee</td>
+                <td colspan="4" style="font-weight: bold;">FINE after expiry of due date: (To be calculated by Bank)</td>
+                <td colspan="2" rowspan="4" align="center"></td>
+
+
+
+            </tr>
+            <tr>
+
+                <td style="border: 0 !important;">Leader in me</td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.LeaderInMe</td>
+                <td colspan="1" align="center"><b>During</b></td>
+                <td colspan="1" align="center"><b>@ViewBag.FirstDate</b></td>
+                <td colspan="1" align="center"><b>@ViewBag.SecondDate</b></td>
+                <td colspan="1" align="center"><b>@ViewBag.ThirdDate</b></td>
+
+
+            </tr>
+
+            <tr>
+
+                <td style="border: 0 !important;"><b>DEFERRED</b></td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.Deferred</td>
+                <td colspan="1" rowspan="2" align="center"></td>
+                <td colspan="1" rowspan="2" align="center">Rs. @Model.FineFirstAmount</td>
+                <td colspan="1" rowspan="2" align="center">Rs. @Model.FineSecondAmount</td>
+                <td colspan="1" rowspan="2" align="center">Rs. @Model.FineThirdAmount</td>
+
+
+            </tr>
+
+            <tr>
+
+                <td style="border: 0 !important;"><b>Less: RECEIVED (IF ANY)</b></td>
+                <td style="border-top: 0 !important;border-bottom: 0 !important;border-right: 0 !important;" align="center">@Model.LessReceived</td>
+
+
+
+            </tr>
+
+            <tr>
+
+                <td align="right">TOTAL</td>
+                <td align="center">@Model.Total</td>
+                <td colspan="4"></td>
+                <td colspan="2" align="center" style="background: silver;"><b>STUDENT COPY</b></td>
+
+
+
+            </tr>
+
+            <tr>
+                <td colspan="12" style="padding-left: 20px;padding-top: 10px;padding-bottom: 10px;">
+
+                    <b>NOTE: All Charges except Security are Non Refundable</b>
+                </td>
+            </tr>
+
+
+
+        </table>
+
+
+    </div><!--container-->
+
+
+
+</body>
+
+
+
+</html>
+
+<script>
+    function printDiv() {
+
+        //  var divToPrint = document.getElementById('container');
+        //
+        //  var newWin = window.open('', 'Print-Window');
+
+        // newWin.document.open();
+        //
+        // newWin.document.write('<html><head><style>  #container {  height: 1050px;   width: 750px; /*border: 1px solid;*/margin: auto;  padding: 30px;  }table {   width: 100%;  } table, tr, td {   border-collapse:collapse;  }  .headings { background: black;   color: white; } .margin-padding-zero { margin: 0; padding: 10px; }  .cnic_style { height: 20px; margin-left: 5px;  width: 20px;border: 1px solid;  display: inline-block;}</style></head><body onload="window.print()">' + divToPrint.innerHTML + '</body></html>');
+
+        // newWin.document.close();
+
+        //  setTimeout(function () { newWin.close(); }, 10);
+        window.print();
+    }
+</script>

@@ -1,0 +1,469 @@
+﻿@model SEA_Application.Models.RegistrationFee
+@{
+    Layout = "~/Views/Shared/_AdmissionDashboardLayout.cshtml";
+}
+
+
+<div class="card">
+    <div class="card-body p-5">
+
+
+        @using (Html.BeginForm("EditRegistrationFee", "AdmissionDashboard", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <button class="btn btn-success GetChallan pull-right" type="button"> Get Challan</button>
+
+
+                </div>
+
+
+            </div>
+
+
+        <div class="row">
+
+
+          
+
+
+            <div class="col-md-6 pl-5 pr-5  border-color-sea border-color-sea border-right">
+            
+
+                <div class="col-md-12">
+
+                    <h2 class="column-heading mb-4">Registration Fee</h2>
+                </div>
+
+                <div class="form-group">
+
+
+                    <div class="col-md-12">
+                        <label class="control-label">Student Name</label>
+                        <input class="form-control" type="text" name="StudentName" id="studentname" value="@ViewBag.StudentName" required readonly />
+
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    @*<input type="hidden" name="Id" id="Id" value="@Model.Id" />*@
+                    <div class="col-md-12">
+                        <label class="control-label">Father Name </label>
+                        <input class="form-control" type="text" name="fathername" id="fathername" value="@ViewBag.FatherName" required readonly />
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @*<input type="hidden" name="Id" id="Id" value="@Model.Id" />*@
+                    <div class="col-md-12">
+                        <label class="control-label">Email </label>
+                        <input class="form-control" type="text" name="email" id="email" value="@ViewBag.Email" required readonly />
+
+                    </div>
+                </div>
+
+
+
+                <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+
+                @*<input type="hidden" name="StudentRegistrationId" value="@ViewBag.StudentRegistrionId" />*@
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label"> Issue Date</label>
+                        @*<input class="form-control" type="date" name="IssueDate" id="IssueDate" value="" required />*@
+
+                        @Html.TextBoxFor(model => model.IssueDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label"> Due Date</label>
+                        @*<input class="form-control" type="date" name="DueDate" id="DueDate" value="" required />*@
+                        @Html.TextBoxFor(model => model.DueDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Registration Fee </label>
+                        <input class="form-control" type="number" onkeyup="TotalFee()" name="StudentRegistrationFee" id="StudentRegistrationFee" value="@Model.StudentRegistrationFee" required />
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Admission Fee </label>
+                        <input class="form-control" type="number" onkeyup="TotalFee()" name="AdmissionFee" id="AdmissionFee" value="@Model.AdmissionFee" required />
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Security Fee </label>
+                        <input class="form-control" type="number" onkeyup="TotalFee()" name="SecurityFee" id="SecurityFee" value="@Model.SecurityFee" required />
+
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Monthly Tution Fee </label>
+                        <input class="form-control" type="number" onkeyup="TotalFee()" name="MonthlyTutionFee" id="MonthlyTutionFee" value="@Model.MonthlyTutionFee" required />
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Annual Fund </label>
+                        <input class="form-control" type="number" onkeyup="TotalFee()" name="AnnualFund" id="AnnualFund" value="@Model.AnnualFund" required />
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Stationary</label>
+                        <input class="form-control" type="number" onkeyup="TotalFee()" name="Stationary" id="Stationary" value="@Model.Stationary" required />
+
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Lab Charges Physics</label>
+                        <input class="form-control" type="number" onkeyup="TotalFee()" name="LabChargesPhysics" id="LabChargesPhysics" value="@Model.LabChargesPhysics" required />
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Lab Charges Biology</label>
+                        <input class="form-control" type="number" onkeyup="TotalFee()" name="LabChargesBiology" id="LabChargesBiology" value="@Model.LabChargesBiology" required />
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Lab Charges Chemistry</label>
+                        <input class="form-control" type="number" onkeyup="TotalFee()" name="LabChargesChemistry" id="LabChargesChemistry" value="@Model.LabChargesChemistry" required />
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Lab Charges Computer</label>
+                        <input class="form-control" type="number" onkeyup="TotalFee()" name="LabChargesComputer" id="LabChargesComputer" value="@Model.LabChargesComputer" required />
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Exam Charges</label>
+                        <input class="form-control" type="number" onkeyup="TotalFee()" name="ExamCharges" id="ExamCharges" value="@Model.ExamCharges" required />
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Leader In Me</label>
+                        <input class="form-control" type="number" onkeyup="TotalFee()" name="LeaderInMe" id="LeaderInMe" value="@Model.LeaderInMe" required />
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Deffered</label>
+                        <input class="form-control" type="number" onkeyup="TotalFee()" name="Deferred" id="Deferred" value="@Model.Deferred" required />
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Less Received (IF ANY) </label>
+                        <input class="form-control" type="number" onkeyup="TotalFee()" name="LessReceived" id="LessReceived" value="@Model.LessReceived" required />
+
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Total</label>
+                        <input class="form-control" type="number" name="Total" id="Total" value="@Model.Total" required readonly />
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label class="control-label">Notes</label>
+                        <textarea class="form-control" name="Notes" id="Notes" rows="5">@Model.Notes</textarea>
+
+
+                    </div>
+                </div>
+                <br />
+
+                <div class="form-group ">
+                    <div class="col-md-12">
+
+                        <button class="btn btn-success GetChallan" type="button">  Challan</button>
+                        <button type="submit" id="SaveButton" class="btn btn-primary rounded rounded-lg"> Update </button>
+                        <button type="button" onclick="window.location.href = '/AdmissionDashboard/Dashboard'" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                            <i class="material-icons mr-2">cached</i>  Cancel
+                        </button>
+                    </div>
+
+                </div>
+
+            </div> <!--end of column 6-->
+
+            <div class="col-md-6 pl-5 pr-5">
+
+
+                <h2 class="column-heading mb-4">First Period</h2>
+
+
+                <div class="row">
+
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">From Date</label>
+                            @*<input class="form-control" type="date" name="FineFirstFromDate" id="FineFirstFromDate" value="" required />*@
+
+                            @Html.TextBoxFor(model => model.FineFirstFromDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">To Date</label>
+                            @*<input class="form-control" type="date" name="FineFirstToDate" id="FineFirstToDate" value="" required />*@
+
+                            @Html.TextBoxFor(model => model.FineFirstToDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+
+                        </div>
+                    </div>
+
+                </div><!--row-->
+                <div class="form-group">
+                    <div>
+                        <label class="control-label"> Fine</label>
+                        <input class="form-control" type="number" name="FineFirstAmount" id="FineFirstAmount" value="@Model.FineFirstAmount" required />
+
+                    </div>
+                </div>
+                <br />
+
+                <h2 class="column-heading mb-4">Second Period</h2>
+
+
+                <div class="row">
+
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">From Date</label>
+                            @*<input class="form-control" type="date" name="FineSecondFromDate" id="FineSecondFromDate" value="" required />*@
+
+                            @Html.TextBoxFor(model => model.FineSecondFromDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">To Date</label>
+                            @*<input class="form-control" type="date" name="FineSecondToDate" id="FineSecondToDate" value="" required />*@
+                            @Html.TextBoxFor(model => model.FineSecondToDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+
+                        </div>
+                    </div>
+
+                </div><!--row-->
+                <div class="form-group">
+                    <div>
+                        <label class="control-label"> Fine</label>
+                        <input class="form-control" type="number" name="FineSecondAmount" id="FineSecondAmount" value="@Model.FineSecondAmount" required />
+
+                    </div>
+                </div>
+
+
+                <br />
+
+                <h2 class="column-heading mb-4">Third Period</h2>
+
+
+                <div class="row">
+
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">From Date</label>
+                            @*<input class="form-control" type="date" name="FineThirdFromDate" id="FineThirdFromDate" value="" required />*@
+                            @Html.TextBoxFor(model => model.FineThirdFromDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">To Date</label>
+                            @*<input class="form-control" type="date" name="FineThirdToDate" id="FineThirdToDate" value="" required />*@
+                            @Html.TextBoxFor(model => model.FineThirdToDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+
+                        </div>
+                    </div>
+
+                </div><!--row-->
+                <div class="form-group">
+                    <div>
+                        <label class="control-label"> Fine</label>
+                        <input class="form-control" type="number" name="FineThirdAmount" id="FineThirdAmount" value="@Model.FineThirdAmount" required />
+
+                    </div>
+                </div>
+
+
+
+
+
+            </div><!--end of column 6-->
+
+        </div><!--end of row-->
+        }
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        $("#PageHeader").html("Edit Registartion Fee");
+
+        $("#BreadCrumbs").append(' <li> <a href="/AdmissionDashboard/Dashboard"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class=""><a id="BreadCrumps1" href="/AdmissionDashboard/StudentRegistrationView">Student Registration</a><span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Edit Registration Fee</a></li>');
+
+
+    
+
+           $(".GetChallan").click(function () {
+
+            var RegistrationFeeId = $("#Id").val();
+
+            window.location.href = "/AdmissionDashboard/RegistrationChallan?RegistrationFeeId=" + RegistrationFeeId;
+
+        });
+
+
+    })
+
+    function TotalFee() {
+
+        var StudentRegistrationFee = $("#StudentRegistrationFee").val();
+        if (StudentRegistrationFee == "") {
+
+            StudentRegistrationFee = 0;
+        }
+
+        var AdmissionFee = $("#AdmissionFee").val();
+
+        if (AdmissionFee == "") {
+            AdmissionFee = 0;
+
+        }
+        var SecurityFee = $("#SecurityFee").val();
+
+        if (SecurityFee == "") {
+            SecurityFee = 0;
+
+        }
+        var MonthlyTutionFee = $("#MonthlyTutionFee").val();
+
+        if (MonthlyTutionFee == "") {
+            MonthlyTutionFee = 0;
+
+        }
+        var AnnualFund = $("#AnnualFund").val();
+
+        if (AnnualFund == "") {
+            AnnualFund = 0;
+
+        }
+        var Stationary = $("#Stationary").val();
+
+        if (Stationary == "") {
+            Stationary = 0;
+
+        }
+        var LabChargesPhysics = $("#LabChargesPhysics").val();
+
+        if (LabChargesPhysics == "") {
+            LabChargesPhysics = 0;
+
+        }
+        var LabChargesBiology = $("#LabChargesBiology").val();
+
+        if (LabChargesBiology == "") {
+            LabChargesBiology = 0;
+
+        }
+        var LabChargesChemistry = $("#LabChargesChemistry").val();
+
+        if (LabChargesChemistry == "") {
+            LabChargesChemistry = 0;
+
+        }
+        var LabChargesComputer = $("#LabChargesComputer").val();
+
+        if (LabChargesComputer == "") {
+            LabChargesComputer = 0;
+
+        }
+
+        var Deferred = $("#Deferred").val();
+
+        if (Deferred == "") {
+            Deferred = 0;
+        }
+
+        var LessReceived = $("#LessReceived").val();
+        if (LessReceived == "") {
+            LessReceived = 0;
+        }
+
+        var LeaderInMe = $("#LeaderInMe").val();
+        if (LeaderInMe == "") {
+            LeaderInMe = 0;
+        }
+        var ExamCharges = $("#ExamCharges").val();
+        if (ExamCharges == "") {
+            ExamCharges = 0;
+        }
+
+        var Total = parseFloat(StudentRegistrationFee) + parseFloat(AdmissionFee) + parseFloat(SecurityFee) + parseFloat(MonthlyTutionFee) + parseFloat(AnnualFund) + parseFloat(Stationary) + parseFloat(LabChargesPhysics) + parseFloat(LabChargesBiology) + parseFloat(LabChargesChemistry) + parseFloat(LabChargesComputer) + parseFloat(Deferred) + parseFloat(LessReceived) + parseFloat(LeaderInMe) + parseFloat(ExamCharges);
+        $("#Total").val(Total);
+    }
+</script>

@@ -46,6 +46,9 @@
                                                     Cell No
                                                 </th>
                                                 <th>
+                                                    Fee Status 
+                                                </th>
+                                                <th>
                                                     Address
                                                 </th>
 
@@ -180,7 +183,7 @@
                 $.each(data, function (index) {
 
 
-                    table.fnAddData([data[index].StudentName + "<input  type=hidden value=" + data[index].Id + ">", data[index].FatherName, data[index].Email, data[index].CellNo, data[index].Address]);
+                    table.fnAddData([data[index].StudentName + "<input  type=hidden value=" + data[index].Id + ">", data[index].FatherName, data[index].Email, data[index].CellNo, data[index].FeeStatus, data[index].Address]);
 
 
                 })

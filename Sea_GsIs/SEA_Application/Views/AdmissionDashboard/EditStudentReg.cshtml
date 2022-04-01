@@ -17,7 +17,7 @@
 
                     <h2 class="column-heading mb-4">User Information</h2>
                     <div class="form-group">
-                        <input type="hidden" name="Id" value="@Model.Id" />
+                        <input type="hidden" name="Id" id="Id" value="@Model.Id" />
                         <div class="col-md-12">
                             <label class="control-label">Student Name</label>
                             <input class="form-control" type="text" name="StudentName" id="studentname" value="@Model.StudentName" required />
@@ -138,6 +138,32 @@
 
 
                 <div class="col-md-6 pl-5 pr-5 ">
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Branch</label>
+                            @Html.DropDownList("BranchId", null, "Select One", htmlAttributes: new { @class = "form-control round-border", @required = "required" })
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Class</label>
+                            @Html.DropDownList("ClassId", null, "Select One", htmlAttributes: new { @class = "form-control round-border", @required = "required" })
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Section</label>
+                            @Html.DropDownList("SectionId", null, "Select One", htmlAttributes: new { @class = "form-control round-border", @required = "required" })
+
+                        </div>
+                    </div>
+
+
                     <h2 class="column-heading mb-4">Last School Attended</h2>
 
                     <div class="form-group">
@@ -177,14 +203,32 @@
 
             </div><!--end of row-->
 
-            <div class="col-md-4 pl-5 pr-5 pull-right">
+            <div class="col-md-10 pl-5 pr-5 pull-right">
 
 
                 <div class="form-group pull-right">
+                    @if (ViewBag.FeeExist == true)
+                    {
+                        if (ViewBag.FeeStatus == "Pending")
+                        {
+                        <button id="EditFee" type="button" class="btn btn-success rounded rounded-lg"> Edit Fee </button>
+                        <input type="hidden" id="RegistrationFeeId" value="@Model.RegistrationFees.FirstOrDefault().Id" />
+
+                        }
+
+                    }
+
+                    else
+                    {
+                        <button id="CreateFee" type="button" class="btn btn-success rounded rounded-lg">Create Fee</button>
+
+                    }
+
                     <button type="submit" id="SaveButton" class="btn btn-primary rounded rounded-lg"> Save </button>
                     <button type="button" onclick="window.location.href = '/AdmissionDashboard/Dashboard'" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
                         <i class="material-icons mr-2">cached</i>  Cancel
                     </button>
+
                 </div>
 
 
@@ -200,6 +244,10 @@
     $(document).ready(function () {
 
         $("#PageHeader").html("Edit Registration Form");
+
+        $("#BreadCrumbs").append(' <li> <a href="/AdmissionDashboard/Dashboard"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class=""><a id="BreadCrumps1" href="/AdmissionDashboard/StudentRegistrationView">Student Registration</a><span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Edit Registration</a></li>');
 
 
         $('input[type="file"]').change(function (e) {
@@ -223,7 +271,131 @@
 
 
 
-    })
+        $('#BranchId').change(function () {
+
+            var BranchId = $(this).val();
+
+            if (BranchId != "") {
+
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    url: "/AdmissionDashboard/ClassesByBranch?BranchId=" + BranchId,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#ClassId");
+                        $el.empty();
+
+
+
+                        var $e3 = $("#SectionId");
+                        $e3.empty();
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Class'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Class'));
+                        }
+                    }
+                });
+            }
+            else {
+                var $el = $("#ClassId");
+                $el.empty();
+
+
+                var $e3 = $("#SectionId");
+                $e3.empty();
+
+
+            }
+
+        });
+
+        $('#ClassId').change(function () {
+
+            var ClassId = $(this).val();
+            var BranchId = $("#BranchId").val();
+
+            if (ClassId != "") {
+
+                $.ajax({
+                    type: "POST",
+                    cache: false,
+                    //url: '/AspNetProject/SectionByClasses',
+                    url: "/AdmissionDashboard/SectionByClasses?ClassId=" + ClassId + "&&BranchId=" + BranchId,
+
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        var sch = JSON.parse(data);
+                        console.log(sch);
+                        var $el = $("#SectionId");
+                        $el.empty();
+
+
+                        debugger
+
+                        if (sch.length > 0) {
+                            $el.append($("<option></option>")
+                                .attr("value", "").text('Select Section'));
+                            for (i = 0; i < sch.length; i++) {
+
+                                $el.append($("<option></option>")
+                                    .attr("value", sch[i].Id).text(sch[i].Name));
+                            }
+                        }
+                        else {
+                            $el.append($("<option></option>")
+                                .attr("value", '').text('Select Section'));
+                        }
+                    }
+                });
+            }
+
+            else {
+
+                var $el = $("#SectionId");
+                $el.empty();
+
+
+            }
+
+        });
+
+        $("#CreateFee").click(function () {
+
+            var Id = $("#Id").val();
+
+            window.location.href = "/AdmissionDashboard/CreateRegistrationFee?StudentRegistrationId="+Id;
+
+            //alert(Id);
+
+        })
+
+        $("#EditFee").click(function () {
+
+            var RegistrationFeeId = $("#RegistrationFeeId").val();
+
+            window.location.href = "/AdmissionDashboard/EditRegistrationFee?RegistrationFeeId=" + RegistrationFeeId;
+        })
+
+
+
+    })//end of document ready
+
+
 </script>
 
 
