@@ -766,7 +766,7 @@ namespace SEA_Application.Controllers
                                 examDetail.Total = null;//mark.Total;//Total will be counted during result
                                 examDetail.Obtained = null;// mark.Obtained;//Total will be counted during result
                                 examDetail.CreationDate = GetLocalDateTime.GetLocalDateTimeFunction();
-                                examDetail.Status ="Created";
+                                examDetail.Status = "Created";
                                 examDetailList.Add(examDetail);
                             }
 
@@ -863,7 +863,7 @@ namespace SEA_Application.Controllers
             {
                 var ExamDetailOfStudent = db.ExamDetails.Where(x => x.Id == ExamDetailId && x.Status == "Published" && x.AspNetStudent.AspNetUser.Id == loggedInUserId).FirstOrDefault();
 
-                if(ExamDetailOfStudent == null)
+                if (ExamDetailOfStudent == null)
                 {
                     return RedirectToAction("StudentExamsList");
 
@@ -978,6 +978,185 @@ namespace SEA_Application.Controllers
 
             return RedirectToAction("ExamDetailsAdminView");
         }
+        public ActionResult DeleteStudentExamDetails(int ExamDetailId)
+        {
+            var dbTransaction = db.Database.BeginTransaction();
+
+            var loggedInUserId = User.Identity.GetUserId();
+            var UserRole = db.GetUserRoleById(loggedInUserId).FirstOrDefault().ToString();
+
+            try
+            {
+
+
+                if (UserRole == "Teacher" || UserRole == "Branch_Admin")
+                {
+
+
+                    var ExamDetailtoDelete = db.ExamDetails.Where(x => x.Id == ExamDetailId).FirstOrDefault();
+                    var StudentExamMarksDetailToDelete = db.ExamMarksDetails.Where(x => x.ExamDetail_Id == ExamDetailtoDelete.Id).ToList();
+                    db.ExamMarksDetails.RemoveRange(StudentExamMarksDetailToDelete);
+                    db.SaveChanges();
+
+                    db.ExamDetails.Remove(ExamDetailtoDelete);
+                    db.SaveChanges();
+                }
+
+                dbTransaction.Commit();
+                if (UserRole == "Teacher")
+                {
+                    return RedirectToAction("StudentExamDetailView");
+                }
+                if (UserRole == "Branch_Admin")
+                {
+                    return RedirectToAction("ExamDetailsAdminView");
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                var msg = ex.Message;
+
+                if (UserRole == "Teacher")
+                {
+                    return RedirectToAction("StudentExamDetailView");
+                }
+                if (UserRole == "Branch_Admin")
+                {
+                    return RedirectToAction("ExamDetailsAdminView");
+                }
+                dbTransaction.Dispose();
+            }
+
+
+            return RedirectToAction("");
+
+
+        }
+
+        public ActionResult EditStudentExamDetail(int id)
+        {
+            ViewBag.Error = "";
+
+            var examDetailToEdit = db.ExamDetails.Where(x => x.Id == id).First();
+            var examMarksDetailsToEdit = db.ExamMarksDetails.Where(x => x.ExamDetail_Id == examDetailToEdit.Id).Select(x => new { x.Id,x.TeacherId,x.CourseId, CourseName = x.AspNetCours.Name, x.Total, x.Obtained, x.ExamDate, x.ExamDetail_Id, x.IsAttended, x.Grade, x.Comments }).ToList();
+
+            List<ExamMarksDetailVM> examMarksDetailVM = new List<ExamMarksDetailVM>();
+
+            foreach (var item in examMarksDetailsToEdit)
+            {
+                ExamMarksDetailVM obj = new ExamMarksDetailVM();
+
+                obj.CourseName = item.CourseName;
+                obj.ExamDate = item.ExamDate.Value.ToString("yyyy-MM-dd");
+                obj.Comments = item.Comments;
+                obj.SubjectGrade = item.Grade;
+                obj.TotalMarks = item.Total.Value;
+                obj.ObtainedMarks = item.Obtained.Value;
+                obj.TeacherId = item.TeacherId.Value;
+                obj.CourseId = item.CourseId.Value;
+                obj.IsAttended = item.IsAttended.Value;
+
+                examMarksDetailVM.Add(obj);
+
+
+            }
+
+            ViewBag.ExamMarksDetailsToEdit = examMarksDetailVM;
+
+            return View(examDetailToEdit);
+        }
+        public ActionResult UpdateStudentExamDetail(int ExamDetailId,double Total,double Obtained, List<ExamMarksDetailVM> examMarksDetail)
+        {
+
+            var ID = User.Identity.GetUserId();
+
+            var Teacher = db.AspNetEmployees.Where(x => x.UserId == ID).FirstOrDefault();
+
+            var IsExamCreated = "No";
+            var UserId = "";
+            var dbTransaction = db.Database.BeginTransaction();
+
+            try
+            {
+
+               var ExamMarkDetailsToDelete =  db.ExamMarksDetails.Where(x => x.ExamDetail_Id == ExamDetailId).ToList();
+
+                db.ExamMarksDetails.RemoveRange(ExamMarkDetailsToDelete);
+                db.SaveChanges();
+
+
+                var ExamDetailToUpdate = db.ExamDetails.Where(x => x.Id == ExamDetailId).FirstOrDefault();
+                ExamDetailToUpdate.Total = Total;
+                ExamDetailToUpdate.Obtained = Obtained;
+                db.SaveChanges();
+
+
+                List<ExamMarksDetail> ExamMarksDetailList = new List<ExamMarksDetail>();
+
+                foreach (var item in examMarksDetail)
+                {
+                    // var ExamMarkDetailExist = db.ExamMarksDetails.Where(x => x.CourseId == item.CourseId && x.ExamDetail.BranchId == examDetail.BranchId && x.ExamDetail.ClassId == examDetail.ClassId && x.ExamDetail.SectionId == examDetail.SectionId && x.ExamDetail.ExamTypeId == examDetail.ExamTypeId && x.ExamDetail.StudentId == examDetail.StudentId).FirstOrDefault();
+
+                    //if (ExamMarkDetailExist == null)
+                    //{
+                    ExamMarksDetail obj = new ExamMarksDetail();
+
+                    obj.CourseId = item.CourseId;
+                    obj.Total = item.TotalMarks;
+                    obj.Obtained = item.ObtainedMarks;
+                    obj.Grade = item.SubjectGrade;
+
+                    if (item.ExamDate == null)
+                    {
+                        obj.ExamDate = null;
+                    }
+                    else
+                    {
+                        obj.ExamDate = Convert.ToDateTime(item.ExamDate);
+
+                    }
+                    obj.IsAttended = item.IsAttended;
+                    obj.CreationDate = GetLocalDateTime.GetLocalDateTimeFunction();
+                    obj.TeacherId = Teacher.Id;
+                    obj.Comments = item.Comments;
+                    obj.ExamDetail_Id = ExamDetailId;
+
+                    ExamMarksDetailList.Add(obj);
+                    //}
+
+                }
+
+                db.ExamMarksDetails.AddRange(ExamMarksDetailList);
+                db.SaveChanges();
+
+                IsExamCreated = "Yes";
+
+                //  string Error = "Student successfully saved.";
+
+                dbTransaction.Commit();
+
+
+              
+
+
+            }
+            catch (Exception ex)
+            {
+
+                IsExamCreated = "No";
+
+                dbTransaction.Dispose();
+            }
+
+
+            return Json(new { IsExamCreated = IsExamCreated }, JsonRequestBehavior.AllowGet);
+
+
+
+         
+        }
 
         public class ExamPrintForm
         {
@@ -1022,6 +1201,7 @@ namespace SEA_Application.Controllers
         public class ExamMarksDetailVM
         {
             public int CourseId { get; set; }
+            public string CourseName { get; set; }//later added 
             public double TotalMarks { get; set; }
             public double ObtainedMarks { get; set; }
             public int ExamDetail_Id { get; set; }

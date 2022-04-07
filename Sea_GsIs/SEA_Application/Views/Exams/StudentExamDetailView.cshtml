@@ -9,7 +9,7 @@
 
     }
     else if (User.IsInRole("Student"))
-    {
+    {   
         Layout = "~/Views/Shared/_StudentDashboardLayout.cshtml";
     }
 
@@ -134,12 +134,13 @@
 
         //        $("#datatable1_filter").hide();
 
-        $('#datatable').on('click', 'tbody tr', function () {
-            var td = $(this).children("td");
+        $('#datatable').on('click', 'tbody tr td:nth-child(1),td:nth-child(2),td:nth-child(3),td:nth-child(4),td:nth-child(5),td:nth-child(6),td:nth-child(7)', function () {
+            var td = $(this).parent().children("td");
             var userName = $(td[0]).children("input").val(); //EditStudentReg
 
-            // alert(userName);
-            // window.location.href = "/Exams/EditExamType?id=" + userName;
+                //alert(userName);
+
+             window.location.href = "/Exams/EditStudentExamDetail?id=" + userName;
         });
 
 

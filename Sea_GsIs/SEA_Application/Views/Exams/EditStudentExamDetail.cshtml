@@ -1,0 +1,830 @@
+﻿@model SEA_Application.Models.ExamDetail
+@{
+    var UserRole = "";
+  
+    if (User.IsInRole("Teacher"))
+    {
+        Layout = "~/Views/Shared/_TeacherDashboardLayout.cshtml";
+        UserRole = "Teacher";
+    }
+    else if (User.IsInRole("Branch_Admin"))
+    {
+        Layout = "~/Views/Shared/_BranchAdminDashboardLayout.cshtml";
+
+        UserRole = "Branch_Admin";
+    }
+    else
+    {
+        Layout = null;
+
+
+    }
+}
+<style>
+
+    .checkbox {
+        width: 20px !important;
+        height: 20px !important;
+    }
+
+    .inputNumber {
+        width: 80px;
+    }
+
+    table tr th {
+        text-align: center;
+    }
+
+    .error {
+        color: red !important;
+    }
+
+    label {
+    }
+
+    .subjectgrade {
+        width: 80px;
+    }
+</style>
+
+
+
+
+<div class="card">
+    <div class="card-body p-5">
+
+
+
+
+        <div class="box box-primary">
+            <div class="box-body">
+                <div class="box-title"></div>
+                <form action="" id="ExamForm" method="post">
+                    <input type="hidden" name="ExamDetailId" id="ExamDetailId" value="@Model.Id" />
+                    <input type="hidden" name="ExamTypeId" id="ExamTypeId" value="@Model.ExamTypeId" />
+                    <input type="hidden" name="BranchId" id="BranchId" value="@Model.BranchId" />
+                    <input type="hidden" name="ClassId" id="ClassId" value="@Model.ClassId" />
+                    <input type="hidden" name="SectionId" id="SectionId" value="@Model.SectionId" />
+                    <input type="hidden" name="StudentId" id="StudentId" value="@Model.StudentId" />
+
+
+                    <div class="row">
+                        <div class="col-md-6 pl-5 pr-5 ">
+
+
+
+                            <div class="form-group  ">
+                                <div class="">
+
+                                    <label for="" class="control-label">Select Exam Type*</label>
+
+                                    @*<select class="form-control" id="ExamTypeId" name="ExamTypeId" required ></select>*@
+
+                                    <input type="text" class="form-control" name="name" value="@Model.ExamType.Name" readonly />
+
+                                </div>
+                            </div>
+
+
+                            <div class="form-group  ">
+                                <div class="">
+                                    <label for="" class="control-label">Select Branch*</label>
+
+                                    @*<select class="form-control" id="BranchId" name="BranchId" required></select>*@
+
+                                    <input type="text" class="form-control" name="name" value="@Model.AspNetBranch.Name" readonly />
+
+                                </div>
+                            </div>
+
+                            <div class="form-group ">
+                                <div class="">
+
+                                    <label for="" class="control-label">Select class *</label>
+
+                                    @*<select class="form-control" id="ClassId" name="ClassId" required></select>*@
+
+                                    <input type="text" class="form-control" name="name" value="@Model.AspNetClass.Name" readonly />
+
+
+                                </div>
+                            </div>
+
+
+                            <div class="form-group  ">
+                                <div class="">
+                                    <label for="" class="control-label">Select Section *</label>
+
+                                    @*<select class="form-control" id="SectionId" name="SectionId" required></select>*@
+                                    <input type="text" class="form-control" name="name" value="@Model.AspNetSection.Name" readonly />
+
+                                </div>
+                            </div>
+
+
+
+                            @*<input type="number" class="inputs" name="" onkeyup="usama()" value="1" />
+                                <input type="number" class="inputs" name="" onkeyup="usama()" value="1" />*@
+
+
+                        </div>
+
+                        <div class="col-md-6">
+
+
+
+                            <div class="form-group  ">
+                                <div class="">
+                                    <label for="" class="control-label">Select Student *</label>
+
+                                    @*<select class="form-control" id="StudentId" name="StudentId" required></select>*@
+                                    <input type="text" class="form-control" name="name" value="@Model.AspNetStudent.Name" readonly />
+
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <div class="">
+                                    <label class="control-label">Total Marks</label>
+                                    <input class="form-control" type="number" name="TotalMarks" id="TotalMarks" value="@Model.Total" required readonly />
+
+                                </div>
+                            </div>
+                            <div class="form-group" style="margin-top:18px;">
+                                <div class="">
+                                    <label class="control-label">Obtained Marks</label>
+                                    <input class="form-control" type="number" name="ObtainedMarks" id="ObtainedMarks" value="@Model.Obtained" required readonly />
+
+                                </div>
+                            </div>
+
+
+
+                            @*<div class="form-group">
+                                    <div class="">
+                                        <label class="control-label">Grade</label>
+                                        <input class="form-control" type="text" name="Grade" id="Grade" value="" required />
+
+                                    </div>
+                                </div>*@
+
+
+                        </div>
+
+                    </div><!--end of column 6--><!--end of row-->
+                    <br>
+                    <br>
+                    <div class="row">
+                        <div class="col-md-12 pl-5 pr-5  ">
+
+                            <br />
+                            <table border="1" class="table table-bordered" width="100%">
+
+                                <thead id="subjectsHeader">
+
+                                    <tr> <th>Subject</th> <th>Total</th><th>Obtained</th><th>Grade</th><th>Comments</th><th>Date</th><th>Is Attended</th></tr>
+                                </thead>
+
+                                <tbody id="subjectList">
+
+                                    @foreach (var item in ViewBag.ExamMarksDetailsToEdit)
+                                    {
+
+
+                                        <tr id="@item.CourseId">
+                                            <td>@item.CourseName</td>
+                                            <td align='center'><input type='number' id=@("SubjectTotal"+item.CourseId) name=@("SubjectTotal"+item.CourseId) class='inputNumber subjecttotal' onkeyup='SubjectsTotalMarks()' value='@item.TotalMarks' min='5' required></td>
+                                            <td align='center'><input type='number' class='inputNumber obtainedtotal' onkeyup='SubjectsObtainedMarks()' value='@item.ObtainedMarks' min='0' required></td>
+                                            <td align='center'><input type='text' class='subjectgrade' value="@item.SubjectGrade"></td>
+                                            <td align='center'><input type='text' class='comments' value="@item.Comments"></td>
+                                            <td align='center'><input type='date' id=@("SubjectDate"+item.CourseId) name=@("examdate"+item.CourseId) class='examdate' value="@item.ExamDate" required></td>
+
+                                            @if (item.IsAttended == true)
+                                            {
+                                                <td align='center'><input checked onclick='CheckBoxEvent(this)' name=@("isattended"+item.CourseId) class='checkbox isattended' type='checkbox'></td>
+
+                                            }
+                                            else
+                                            {
+                                                <td align='center'><input onclick='CheckBoxEvent(this)' name=@("isattended"+item.CourseId) class='checkbox isattended' type='checkbox'></td>
+
+                                            }
+
+
+
+                                        </tr>
+
+
+
+                                    }
+
+
+
+
+                                </tbody>
+
+                            </table>
+
+                        </div><!--end of col 6-->
+                    </div><!--end of row-->
+                    <br>
+                    <div class="row">
+
+                        <div class="col-md-12 pl-5 pr-5 ">
+                            @*<button type="submit" id="SaveButton" class="btn btn-primary pull-right rounded rounded-lg"> Update </button>*@
+
+
+
+
+
+                            @if (Model.Status == "Created")
+                            {
+
+
+
+                                //if (UserRole == "Branch_Admin")
+                                //{
+
+                                <button type="submit" id="SaveButton" class="btn btn-primary pull-right rounded rounded-lg"> Update </button>
+
+                                //}
+                                <button class="btn btn-danger pull-right rounded rounded-lg" onclick="DeleteStudentExam()">Delete</button>
+
+
+                            }
+
+
+                            <button type="button" id="btnCancel" class="btn btn-primary  pull-right rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                                <i class="material-icons mr-2">cached</i>  Cancel
+                            </button>
+
+
+                        </div>
+
+                    </div><!--end of row-->
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+<script>
+    $(document).ready(function () {
+
+
+        $("#PageHeader").html("Edit Exam Detail");
+
+        var userRole = '@UserRole';
+
+     
+
+        //$.ajax({
+        //    type: "POST",
+        //    cache: false,
+        //    url: "/Exams/GetExamTypes",
+        //    processData: false,
+        //    contentType: false,
+        //    success: function (data) {
+        //        var sch = JSON.parse(data);
+        //        console.log(sch);
+        //        var $el = $("#ExamTypeId");
+        //        $el.empty();
+        //        if (sch.length > 0) {
+        //            $el.append($("<option></option>")
+        //                .attr("value", "").text('Select Exam Type'));
+        //            for (i = 0; i < sch.length; i++) {
+
+        //                $el.append($("<option></option>")
+        //                    .attr("value", sch[i].Id).text(sch[i].Name));
+        //            }
+        //        }
+        //        else {
+        //            $el.append($("<option></option>")
+        //                .attr("value", '').text('Select Exam Type'));
+        //        }
+        //    }
+        //});
+
+
+        //$.ajax({
+        //    type: "POST",
+        //    cache: false,
+        //    url: "/AspNetProject/AllBranches",
+        //    processData: false,
+        //    contentType: false,
+        //    success: function (data) {
+        //        var sch = JSON.parse(data);
+        //        console.log(sch);
+        //        var $el = $("#BranchId");
+        //        $el.empty();
+        //        if (sch.length > 0) {
+        //            $el.append($("<option></option>")
+        //                .attr("value", "").text('Select Branch'));
+        //            for (i = 0; i < sch.length; i++) {
+
+        //                $el.append($("<option></option>")
+        //                    .attr("value", sch[i].Id).text(sch[i].Name));
+        //            }
+        //        }
+        //        else {
+        //            $el.append($("<option></option>")
+        //                .attr("value", '').text('Select Branch'));
+        //        }
+        //    }
+        //});
+
+
+
+
+        //$('#BranchId').change(function () {
+
+        //    var BranchId = $(this).val();
+
+        //    if (BranchId != "") {
+
+
+        //        $.ajax({
+        //            type: "POST",
+        //            cache: false,
+        //            url: "/AspNetProject/ClassesByBranch?BranchId=" + BranchId,
+        //            processData: false,
+        //            contentType: false,
+        //            success: function (data) {
+        //                var sch = JSON.parse(data);
+        //                console.log(sch);
+        //                var $el = $("#ClassId");
+        //                $el.empty();
+        //                var $e2 = $("#StudentId");
+        //                $e2.empty();
+
+        //                $("#subjectList").html("");
+        //                $("#subjectsHeader").html("");
+        //                var $e3 = $("#SectionId");
+        //                $e3.empty();
+        //                if (sch.length > 0) {
+        //                    $el.append($("<option></option>")
+        //                        .attr("value", "").text('Select Class'));
+        //                    for (i = 0; i < sch.length; i++) {
+
+        //                        $el.append($("<option></option>")
+        //                            .attr("value", sch[i].Id).text(sch[i].Name));
+        //                    }
+        //                }
+        //                else {
+        //                    $el.append($("<option></option>")
+        //                        .attr("value", '').text('Select Class'));
+        //                }
+        //            }
+        //        });
+        //    }
+        //    else {
+        //        var $el = $("#ClassId");
+        //        $el.empty();
+        //        var $e2 = $("#StudentId");
+        //        $e2.empty();
+
+        //        var $e3 = $("#SectionId");
+        //        $e3.empty();
+
+        //        $("#subjectList").html("");
+        //        $("#subjectsHeader").html("");
+
+        //    }
+
+        //});
+
+        //$('#ClassId').change(function () {
+
+        //    var ClassId = $(this).val();
+        //    var BranchId = $("#BranchId").val();
+
+        //    if (ClassId != "") {
+
+        //        $.ajax({
+        //            type: "POST",
+        //            cache: false,
+        //            //url: '/AspNetProject/SectionByClasses',
+        //            url: "/AspNetProject/SectionByClasses?ClassId=" + ClassId + "&&BranchId=" + BranchId,
+
+        //            processData: false,
+        //            contentType: false,
+        //            success: function (data) {
+        //                var sch = JSON.parse(data);
+        //                console.log(sch);
+        //                var $el = $("#SectionId");
+        //                $el.empty();
+        //                var $e2 = $("#StudentId");
+        //                $e2.empty();
+        //                $("#subjectList").html("");
+        //                $("#subjectsHeader").html("");
+        //                debugger
+
+        //                if (sch.length > 0) {
+        //                    $el.append($("<option></option>")
+        //                        .attr("value", "").text('Select Section'));
+        //                    for (i = 0; i < sch.length; i++) {
+
+        //                        $el.append($("<option></option>")
+        //                            .attr("value", sch[i].Id).text(sch[i].Name));
+        //                    }
+        //                }
+        //                else {
+        //                    $el.append($("<option></option>")
+        //                        .attr("value", '').text('Select Section'));
+        //                }
+        //            }
+        //        });
+        //    }
+
+        //    else {
+
+        //        var $el = $("#SectionId");
+        //        $el.empty();
+        //        var $e2 = $("#StudentId");
+        //        $e2.empty();
+        //        $("#subjectList").html("");
+        //        $("#subjectsHeader").html("");
+
+        //    }
+
+        //});
+
+        //$("#SectionId").change(function () {
+
+
+
+        //    var ClassId = $("#ClassId").val();
+        //    var BranchId = $("#BranchId").val();
+        //    var SectionId = $(this).val();
+
+        //    if (SectionId != "") {
+
+        //        $.ajax({
+        //            type: "POST",
+        //            cache: false,
+        //            //url: '/AspNetProject/SectionByClasses',
+        //            url: "/AspNetProject/StudentsBySection?BranchId=" + BranchId + "+&&ClassId=" + ClassId + "&&SectionId=" + SectionId,
+
+        //            processData: false,
+        //            contentType: false,
+        //            success: function (data) {
+        //                var sch = JSON.parse(data);
+        //                console.log(sch);
+        //                var $el = $("#StudentId");
+        //                $el.empty();
+        //                $("#subjectList").html("");
+        //                $("#subjectsHeader").html("");
+
+        //                debugger
+
+        //                if (sch.length > 0) {
+        //                    $el.append($("<option></option>")
+        //                        .attr("value", "").text('Select Student'));
+        //                    for (i = 0; i < sch.length; i++) {
+
+        //                        $el.append($("<option></option>")
+        //                            .attr("value", sch[i].Id).text(sch[i].Name));
+        //                    }
+        //                }
+        //                else {
+        //                    $el.append($("<option></option>")
+        //                        .attr("value", '').text('Select Student'));
+        //                }
+        //            }
+        //        });
+
+
+        //    }//end of if
+
+        //    else {
+
+
+        //        var $el = $("#StudentId");
+        //        $el.empty();
+        //        $("#subjectList").html("");
+        //        $("#subjectsHeader").html("");
+        //    }
+
+        //})//end of section Id
+
+
+
+        //$("#StudentId").change(function () {
+
+        //    $("#subjectList").html("");
+        //    $("#subjectsHeader").html("");
+
+        //    var ClassId = $("#ClassId").val();
+        //    var BranchId = $("#BranchId").val();
+        //    var SectionId = $("#SectionId").val();
+        //    var StudentId = $(this).val();
+
+        //    if (SectionId != "") {
+
+        //        $.ajax({
+        //            type: "POST",
+        //            cache: false,
+        //            url: "/AspNetProject/SubjectsByStudentBranchClassSection?BranchId=" + BranchId + "+&&ClassId=" + ClassId + "&&SectionId=" + SectionId + "&&StudentId=" + StudentId,
+
+        //            processData: false,
+        //            contentType: false,
+        //            success: function (data) {
+
+        //                var sch = JSON.parse(data);
+
+        //                if (sch.length > 0) {
+
+        //                    $("#subjectList").html("");
+        //                    $("#subjectsHeader").html("");
+
+        //                    $("#subjectsHeader").append(" <tr> <th>Subject</th> <th>Total</th><th>Obtained</th><th>Grade</th><th>Comments</th><th>Date</th><th>Is Attended</th> </tr>");
+
+        //                    for (i = 0; i < sch.length; i++) {
+
+        //                        $("#subjectList").append("<tr id=" + sch[i].Id + "><td>" + sch[i].Name + "</td><td align='center'><input type='number' id='SubjectTotal" + sch[i].Id + "' name='subjecttotal" + sch[i].Id + "' class='inputNumber subjecttotal'  onkeyup='SubjectsTotalMarks()' value = '0' min='5' required></td><td align='center'><input type='number' class='inputNumber obtainedtotal' onkeyup='SubjectsObtainedMarks()'  value='0' min='0' required></td><td align ='center'><input type='text' class='subjectgrade' ></td><td align ='center'><input type='text' class='comments' ></td><td align='center'><input type='date' id='SubjectDate" + sch[i].Id + "' name='examdate" + sch[i].Id + "'  class='examdate'  required></td><td align='center'><input checked onclick ='CheckBoxEvent(this)' name='isattended" + sch[i].Id + "'  class='checkbox isattended' type ='checkbox'></td></tr>");
+
+        //                    }
+
+        //                }
+
+
+        //            }
+        //        });
+
+
+        //    }//end of if
+
+        //    else {
+
+
+        //        $("#subjectList").html("");
+        //        $("#subjectsHeader").html("");
+
+        //        // var $el = $("#StudentId");
+        //        // $el.empty();
+        //    }
+
+        //})//end of student id change
+
+        $(".isattended").change(function () {
+
+            //  alert("Is Attended");
+
+        })
+
+        $('#ExamForm').validate({
+
+            rules: {
+                ExamTypeId: {
+                    required: true,
+                },
+
+            },
+            submitHandler: function (form) {
+
+                debugger
+
+                var ExamDetail = {};
+
+                var ExamMarksDetail =
+                {
+                    CourseId: '',
+                    TotalMarks: '',
+                    ObtainedMarks: '',
+                    ExamDate: '',
+                    IsAttended: '',
+                    SubjectGrade: '',
+                    Comments: '',
+
+                };
+
+                ExamMarksDetail = [
+
+
+                ];
+
+                debugger
+
+                var ExamDetailId = $("#ExamDetailId").val();
+
+                var ExamTypeId = $("#ExamTypeId").val();
+                var BranchId = $("#BranchId").val();
+                var ClassId = $("#ClassId").val();
+                var SectionId = $("#SectionId").val();
+                var StudentId = $("#StudentId").val();
+                var Total = $("#TotalMarks").val();
+                var Obtained = $("#ObtainedMarks").val();
+                var Grade = $("#Grade").val();
+
+                ExamDetail['ExamTypeId'] = ExamTypeId;
+                ExamDetail['BranchId'] = BranchId;
+                ExamDetail['ClassId'] = ClassId;
+                ExamDetail['SectionId'] = SectionId;
+                ExamDetail['StudentId'] = StudentId;
+                ExamDetail['Total'] = Total;
+                ExamDetail['Obtained'] = Obtained;
+                // ExamDetail['Grade'] = Grade;
+
+
+                $('#subjectList tr').each(function () {
+
+                    debugger
+                    // aspNetSubject_Homework = Object.create(Subject_Homework);
+                    var CourseId = $(this).attr('id');
+                    var TotalMarks = $(".subjecttotal", this).val();
+                    var ObtainedMarks = $(".obtainedtotal", this).val();
+                    var SubjectGrade = $(".subjectgrade", this).val();
+                    var Comments = $(".comments", this).val();
+
+                    var IsAttended = false;
+                    var ExamDate = $(".examdate", this).val();
+
+                    if (ExamDate == "") {
+                        ExamDate = null;
+                    }
+
+                    var examAttended = $(".isattended", this).is(":checked");
+
+                    if (examAttended == true) {
+                        IsAttended = true;
+                    }
+                    else {
+                        IsAttended = false;
+                        return true;
+                    }
+
+                    var Obj = {};
+
+                    Obj['CourseId'] = CourseId;
+                    Obj['TotalMarks'] = TotalMarks;
+                    Obj['ObtainedMarks'] = ObtainedMarks;
+                    Obj['ExamDate'] = ExamDate;
+                    Obj['IsAttended'] = IsAttended;
+                    Obj['SubjectGrade'] = SubjectGrade;
+                    Obj['Comments'] = Comments;
+
+                    ExamMarksDetail.push(Obj);
+                });
+
+
+
+                // alert(ExamMarksDetail);
+
+                $.ajax({
+                    type: "post",
+                    url: "/Exams/UpdateStudentExamDetail",
+                    data: { 'ExamDetailId': ExamDetailId, 'Total': Total, 'Obtained': Obtained, 'ExamMarksDetail': ExamMarksDetail },
+                    datatype: "json",
+                    cache: false,
+                    success: function (data) {
+                        if (data.IsExamCreated == "Yes") {
+
+                            if (userRole == "Teacher") {
+                              
+                                window.location.href = "/Exams/StudentExamDetailView";
+                            }
+                            if (userRole == "Branch_Admin") {
+                                
+                                window.location.href = "/Exams/ExamDetailsAdminView";
+                            }
+                                
+
+
+
+                        }//outer if 
+
+                    }
+                })  //end of ajax
+
+
+
+
+            }
+
+        })
+
+        $('input[type="file"]').change(function (e) {
+            //var fileName = e.target.files[0].name;
+            //document.getElementById("FilePath").placeholder = fileName;
+
+            var fileName = e.target.files[0].name;
+            var fileUpload = $("#SubmitAssignment").get(0).files;
+
+            var fruits = [];
+            if (fileUpload.length > 0) {
+
+                for (var i = 0; i < fileUpload.length; i++) {
+                    fruits.push(fileUpload[i].name + " , ");
+                }
+            }
+
+            $("#SelectedFiles").html(fruits);
+            document.getElementById("FilePath").placeholder = "";
+        });
+
+    })//end of document ready
+
+    function SubjectsTotalMarks() {
+
+        var TotalMarks = 0;
+
+        $(".subjecttotal").each(function () {
+
+            var SubjectTotalMark = $(this).val();
+
+            if (SubjectTotalMark != "") {
+
+                TotalMarks = TotalMarks + parseFloat(SubjectTotalMark);
+            }
+
+        })
+
+
+        $("#TotalMarks").val(TotalMarks);
+
+    }
+
+    function SubjectsTotalMarks() {
+
+        var TotalMarks = 0;
+
+        $(".subjecttotal").each(function () {
+
+            var SubjectTotalMark = $(this).val();
+
+            if (SubjectTotalMark != "") {
+
+                TotalMarks = TotalMarks + parseFloat(SubjectTotalMark);
+            }
+
+        })
+
+
+        $("#TotalMarks").val(TotalMarks);
+
+    }
+    function SubjectsObtainedMarks() {
+
+        var ObtainedMarksTotal = 0;
+
+        $(".obtainedtotal").each(function () {
+
+            var SubjectObtainedMark = $(this).val();
+
+            if (SubjectObtainedMark != "") {
+
+                ObtainedMarksTotal = ObtainedMarksTotal + parseFloat(SubjectObtainedMark);
+            }
+
+        })
+        $("#ObtainedMarks").val(ObtainedMarksTotal);
+
+
+    }
+    function CheckBoxEvent(changedElement) {
+
+        var ChangeElementName = $(changedElement).attr('name');
+
+        let str = ChangeElementName;
+        const myArr = str.split("isattended");
+        //  alert(ChangeElementName);
+
+        var examAttended = $(changedElement).is(":checked");
+
+        if (examAttended == true) {
+
+            $("#SubjectDate" + myArr[1]).prop('required', true);
+
+            $("#SubjectTotal" + myArr[1]).prop('min', 5);
+        }
+        else {
+            $("#SubjectDate" + myArr[1]).prop('required', false);
+            $("#SubjectTotal" + myArr[1]).prop('min', 0);
+
+
+
+        }
+
+        // alert(examAttended);
+
+        // var value = $(".subjecttotal", changedElement).val();
+
+
+    }
+
+    function DeleteStudentExam() {
+
+        var ExamDetailId = $("#ExamDetailId").val();
+
+        window.location.href = "/Exams/DeleteStudentExamDetails?ExamDetailId=" + ExamDetailId;
+
+
+    }
+
+</script>

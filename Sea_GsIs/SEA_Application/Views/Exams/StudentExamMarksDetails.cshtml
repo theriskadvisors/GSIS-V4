@@ -151,25 +151,39 @@
             </div><!--end of col 6-->
         </div><!--end of row-->
         <br />
-        @if (UserRole == "Branch_Admin" && ViewBag.Status == "Created")
-        {
+
+        <div class="row">
+            <div class="col-md-12 pl-5 pr-5   ">
+                <div class="col-md-12 ">
+
+                    @if (ViewBag.Status == "Created")
+                    {
 
 
-            <div class="row">
-                <div class="col-md-12 pl-5 pr-5   ">
-                    <div class="col-md-12 ">
 
+                        if (UserRole == "Branch_Admin")
+                        {
+                            <button type="submit" id="PublishButton" onclick="PublishExam()" class="btn btn-success pull-right rounded rounded-lg"> Publish </button>
+
+                        }
+                        <button class="btn btn-danger pull-right rounded rounded-lg" onclick="DeleteStudentExam()">Delete</button>
 
                         <button type="button" id="CancelButton" class="btn btn-primary pull-right rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
                             <i class="material-icons mr-2">cached</i>  Cancel
                         </button>
-                        <button type="submit" id="PublishButton" onclick="PublishExam()" class="btn btn-success pull-right rounded rounded-lg"> Publish </button>
+
+                    }
 
 
-                    </div><!--end of column 12-->
+
+
+
                 </div><!--end of column 12-->
-            </div> <!--end of row-->
-        }
+            </div><!--end of column 12-->
+        </div> <!--end of row-->
+
+
+
 
 
     </div>
@@ -376,6 +390,14 @@
         var ExamDetailId = $("#ExamDetailId").val();
 
         window.location.href = "/Exams/PublishExam?ExamDetailId=" + ExamDetailId;
+
+    }
+    function DeleteStudentExam() {
+
+        var ExamDetailId = $("#ExamDetailId").val();
+
+        window.location.href = "/Exams/DeleteStudentExamDetails?ExamDetailId=" + ExamDetailId;
+
 
     }
 
