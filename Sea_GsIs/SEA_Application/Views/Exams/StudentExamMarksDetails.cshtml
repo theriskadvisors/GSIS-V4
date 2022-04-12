@@ -166,7 +166,10 @@
                             <button type="submit" id="PublishButton" onclick="PublishExam()" class="btn btn-success pull-right rounded rounded-lg"> Publish </button>
 
                         }
+                     
                         <button class="btn btn-danger pull-right rounded rounded-lg" onclick="DeleteStudentExam()">Delete</button>
+                        <button id="EditButton" class="btn btn-primary pull-right rounded rounded-lg"> Edit </button>
+
 
                         <button type="button" id="CancelButton" class="btn btn-primary pull-right rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
                             <i class="material-icons mr-2">cached</i>  Cancel
@@ -343,6 +346,13 @@
 
                 ParentsRemarks();
             }
+        })
+        $("#EditButton").click(function () {
+
+           var Id =   $("#ExamDetailId").val();
+
+            window.location.href = "/Exams/EditStudentExamDetail?id=" + Id;
+
         })
 
         $("#NotSatisfied").click(function () {
