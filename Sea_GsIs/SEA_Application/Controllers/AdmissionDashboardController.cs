@@ -274,7 +274,7 @@ namespace SEA_Application.Controllers
 
         public ActionResult AllBranches()
         {
-            var Branches = (from branch in db.AspNetBranches
+            var Branches = (from branch in db.AspNetBranches.Where(X=>X.IsAdministrativeBranch == true)
 
                             select new
                             {

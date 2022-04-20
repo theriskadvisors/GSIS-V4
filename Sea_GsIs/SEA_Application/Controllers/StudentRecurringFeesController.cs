@@ -68,7 +68,7 @@ namespace SEA_Application.Controllers
 
         public ActionResult AllBranches()
         {
-            var Branches = (from branch in db.AspNetBranches
+            var Branches = (from branch in db.AspNetBranches.Where(x=>x.IsAdministrativeBranch == true)
                             select new
                             {
                                 branch.Id,

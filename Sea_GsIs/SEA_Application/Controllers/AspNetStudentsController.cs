@@ -1157,7 +1157,8 @@ namespace SEA_Application.Controllers
         }
 
         // GET: AspNetStudents/Create
-        [Authorize(Roles = "Teacher,Branch_Admin,Branch_Principal,Accounting_Head")]
+        // [Authorize(Roles = "Teacher,Branch_Admin,Branch_Principal,Accounting_Head,Accountant")]
+         [Authorize(Roles = "Accounting_Head,Accountant")]
         public ActionResult Create()
         {
             ViewBag.Error = TempData["ErrorMessage"] as string;
@@ -1925,7 +1926,8 @@ namespace SEA_Application.Controllers
         }
 
         // GET: AspNetStudents/Edit/5
-        [Authorize(Roles = "Branch_Admin,Branch_Principal,Accounting_Head")]
+        //   [Authorize(Roles = "Branch_Admin,Branch_Principal,Accounting_Head")]
+         [Authorize(Roles = "Accountant,Accounting_Head")]
         public ActionResult Edit(string userName)
         {
             if (userName == null)

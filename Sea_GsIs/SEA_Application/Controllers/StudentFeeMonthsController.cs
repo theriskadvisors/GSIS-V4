@@ -431,6 +431,7 @@ namespace SEA_Application.Controllers
                                          studentFeeDetails.Id,
                                          BranchName = student.AspNetBranch.Name,
                                          ClassName = student.AspNetClass.Name,
+                                         PayableAmount = studentFeeDetails.PaidAmount,
 
                                      }).ToList();
             return Json(DefaulterStudents, JsonRequestBehavior.AllowGet);

@@ -49,14 +49,19 @@
 
 <script>
 
-         var UserRole ='@UserRole';
+    var UserRole = '@UserRole';
+
+   
 
         var CreateButton = "";
 
-        if (UserRole != "Admission") {
+    if (UserRole == "Admission") {
 
-            CreateButton = "/AspnetStudents/Create";
-        }
+        CreateButton = "";
+    }
+    else {
+        CreateButton = "/AspnetStudents/Create";
+    }
     $(document).ready(function () {
 
 
