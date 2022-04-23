@@ -1,91 +1,38 @@
-﻿@model SEA_Application.Models.RegistrationFee
-@{
+﻿@{
     Layout = "~/Views/Shared/_AdmissionDashboardLayout.cshtml";
-
 }
+
 
 <div class="card">
     <div class="card-body p-5">
 
         <div class="row">
-            <div class="col-md-6 pl-5 pr-5  border-color-sea ">
+            <div class="col-md-6 pl-5 pr-5 ">
 
+                @using (Html.BeginForm("CreateClassFee", "AdmissionDashboard", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
 
-
-            </div> <!--end of column 6-->
-        </div><!--end of row-->
-
-
-        @using (Html.BeginForm("CreateRegistrationFee", "AdmissionDashboard", FormMethod.Post))
-        {
-            @Html.AntiForgeryToken()
-
-            <input type="hidden" value="@ViewBag.ClassId" id="ClassIdHidden" />
-            <div class="row">
-
-                <div class="col-md-6 pl-5 pr-5  border-color-sea border-right">
-
-                    <div class="col-md-12">
-
-                        <h2 class="column-heading mb-4">Registration Fee</h2>
-                    </div>
-
-                    <div class="form-group">
-
+                    <div class="form-group ">
                         <div class="col-md-12">
-                            <label class="control-label">Student Name</label>
-                            <input class="form-control" type="text" name="" id="studentname" value="@ViewBag.StudentName" required readonly />
+
+                            <label for="" class="control-label">Select class *</label>
+                            <select class="form-control" id="ClassId" name="ClassId" required></select>
 
                         </div>
                     </div>
 
 
-                    <div class="form-group">
-                        @*<input type="hidden" name="Id" id="Id" value="@Model.Id" />*@
+                    <div class="form-group  ">
                         <div class="col-md-12">
-                            <label class="control-label">Father Name </label>
-                            <input class="form-control" type="text" name="" id="fathername" value="@ViewBag.FatherName" required readonly />
+                            <label for="" class="control-label">Select Session *</label>
 
+                            <select class="form-control" id="SessionId" name="SessionId" required></select>
+                            <br>
+                            <span id="Error" style="color:red"></span>
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        @*<input type="hidden" name="Id" id="Id" value="@Model.Id" />*@
-                        <div class="col-md-12">
-                            <label class="control-label">Email </label>
-                            <input class="form-control" type="text" name="" id="email" value="@ViewBag.Email" required readonly />
-
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-
-                        <div class="col-md-12">
-                            <label class="control-label">Class Name </label>
-                            <input class="form-control" type="text" name="classname" id="classname" value="@ViewBag.ClassName" readonly />
-
-                        </div>
-                    </div>
-
-                    <input type="hidden" name="StudentRegistrationId" value="@ViewBag.StudentRegistrionId" />
-
-
-
-                    <div class="form-group">
-                        <div class="col-md-12">
-                            <label class="control-label"> Issue Date</label>
-                            <input class="form-control" type="date" name="IssueDate" id="IssueDate" value="" required />
-
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <div class="col-md-12">
-                            <label class="control-label"> Due Date</label>
-                            <input class="form-control" type="date" name="DueDate" id="DueDate" value="" required />
-
-                        </div>
-                    </div>
                     <div class="form-group">
                         <div class="col-md-12">
                             <label class="control-label">Registration Fee </label>
@@ -110,7 +57,6 @@
                         </div>
                     </div>
 
-
                     <div class="form-group">
                         <div class="col-md-12">
                             <label class="control-label">Monthly Tution Fee </label>
@@ -134,7 +80,6 @@
 
                         </div>
                     </div>
-
 
                     <div class="form-group">
                         <div class="col-md-12">
@@ -209,13 +154,8 @@
 
                         </div>
                     </div>
-                    <div class="form-group">
-                        <div class="col-md-12">
-                            <label class="control-label">Notes</label>
-                            <textarea class="form-control" name="Notes" id="Notes" rows="5"></textarea>
-                        </div>
-                    </div>
-                    <br />
+
+
 
                     <div class="form-group ">
                         <div class="col-md-12">
@@ -228,177 +168,104 @@
                         </div>
 
                     </div>
-
-                </div><!--end of column 6-->
-
-
-                <div class="col-md-6 pl-5 pr-5">
-
-
-                    <h2 class="column-heading mb-4">First Period</h2>
-
-
-                    <div class="row">
-
-
-                        <div class="form-group">
-                            <div class="col-md-12">
-                                <label class="control-label">From Date</label>
-                                <input class="form-control" type="date" name="FineFirstFromDate" id="FineFirstFromDate" value="" />
-
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-12">
-                                <label class="control-label">To Date</label>
-                                <input class="form-control" type="date" name="FineFirstToDate" id="FineFirstToDate" value="" />
-
-                            </div>
-                        </div>
-
-                    </div><!--row-->
-                    <div class="form-group">
-                        <div>
-                            <label class="control-label"> Fine</label>
-                            <input class="form-control" type="number" name="FineFirstAmount" id="FineFirstAmount" value="0" />
-
-                        </div>
-                    </div>
-                    <br />
-
-                    <h2 class="column-heading mb-4">Second Period</h2>
-
-
-                    <div class="row">
-
-
-                        <div class="form-group">
-                            <div class="col-md-12">
-                                <label class="control-label">From Date</label>
-                                <input class="form-control" type="date" name="FineSecondFromDate" id="FineSecondFromDate" value="" />
-
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-12">
-                                <label class="control-label">To Date</label>
-                                <input class="form-control" type="date" name="FineSecondToDate" id="FineSecondToDate" value="" />
-
-                            </div>
-                        </div>
-
-                    </div><!--row-->
-                    <div class="form-group">
-                        <div>
-                            <label class="control-label"> Fine</label>
-                            <input class="form-control" type="number" name="FineSecondAmount" id="FineSecondAmount" value="0" />
-
-                        </div>
-                    </div>
-
-
-                    <br />
-
-                    <h2 class="column-heading mb-4">Third Period</h2>
-
-
-                    <div class="row">
-
-
-                        <div class="form-group">
-                            <div class="col-md-12">
-                                <label class="control-label">From Date</label>
-                                <input class="form-control" type="date" name="FineThirdFromDate" id="FineThirdFromDate" value="" />
-
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="col-md-12">
-                                <label class="control-label">To Date</label>
-                                <input class="form-control" type="date" name="FineThirdToDate" id="FineThirdToDate" value="" />
-
-                            </div>
-                        </div>
-
-                    </div><!--row-->
-                    <div class="form-group">
-                        <div>
-                            <label class="control-label"> Fine</label>
-                            <input class="form-control" type="number" name="FineThirdAmount" id="FineThirdAmount" value="0" />
-
-                        </div>
-                    </div>
+                }
 
 
 
 
 
-                </div><!--end of column 6-->
-
-
-
-            </div><!--end of row-->
-
-        }
-
-
-
-
-
+                </div>
+        </div>
 
     </div>
 </div>
-
 <script>
+
     $(document).ready(function () {
 
-        $("#PageHeader").html("Create Registartion Fee");
+        $("#PageHeader").html("Create Class Fee");
+
+
+
 
         $("#BreadCrumbs").append(' <li> <a href="/AdmissionDashboard/Dashboard"> Home </a> <span>&gt;</span></li>');
-        $("#BreadCrumbs").append(' <li class=""><a id="BreadCrumps1" href="/AdmissionDashboard/StudentRegistrationView">Student Registration</a><span>&gt;</span></li>');
-        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Create Registration Fee</a></li>');
+        $("#BreadCrumbs").append(' <li class=""><a id="BreadCrumps1" href="/AdmissionDashboard/ClassFeeView">Class Fee</a><span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Create Class Fee</a></li>');
 
-        var ClassIdHidden = $("#ClassIdHidden").val();
 
-        //alert(ClassIdHidden);
+
+          $.ajax({
+
+            type: "POST",
+            cache: false,
+            url: "/AdmissionDashboard/AllClasses",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#ClassId");
+                $el.empty();
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").text('Select Class'));
+                    for (i = 0; i < sch.length; i++) {
+
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i].Id).text(sch[i].Name));
+                    }
+                }
+
+                else {
+                    $el.append($("<option></option>")
+                        .attr("value", '').text('Select Class'));
+                }
+            }
+        });
+
+
+
+
 
         $.ajax({
 
             type: "POST",
-            url: "/AdmissionDashboard/GetRegistrationClassFee",
-            data: { "ClassId": ClassIdHidden },
-            success: function (response) {
-
-                debugger;
-
-                alert(response);
-
-                $("#StudentRegistrationFee").val(response.StudentRegistrationFee);
-                $("#AdmissionFee").val(response.AdmissionFee);
-                $("#SecurityFee").val(response.SecurityFee);
-                $("#MonthlyTutionFee").val(response.MonthlyTutionFee);
-                $("#AnnualFund").val(response.AnnualFund);
-                $("#Stationary").val(response.Stationary);
-                $("#LabChargesPhysics").val(response.LabChargesPhysics);
-                $("#LabChargesBiology").val(response.LabChargesBiology);
-                $("#LabChargesChemistry").val(response.LabChargesChemistry);
-                $("#LabChargesComputer").val(response.LabChargesComputer);
-                $("#ExamCharges").val(response.ExamCharges);
-                $("#LeaderInMe").val(response.LeaderInMe);
-                $("#Deferred").val(response.Deferred);
-                $("#LessReceived").val(response.LessReceived);
-                $("#Total").val(response.Total);
+            cache: false,
+            url: "/AdmissionDashboard/AllSession",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#SessionId");
 
 
-               
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").text('Select Session'));
+                    for (i = 0; i < sch.length; i++) {
 
-            }//end of success function 
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i].Id).text(sch[i].Year));
+                    }
+                }
 
+                else {
+
+                }
+            }
+        });
+
+
+        $("#ClassId").change(function () {
+
+            CheckClassFeeExist();
         })
+        $("#SessionId").change(function () {
 
+            CheckClassFeeExist();
+        })
+       
 
 
     })//end of document ready
@@ -418,7 +285,7 @@
 
         }
         var SecurityFee = $("#SecurityFee").val();
-        
+
         if (SecurityFee == "") {
             SecurityFee = 0;
 
@@ -489,4 +356,43 @@
         var Total = parseFloat(StudentRegistrationFee) + parseFloat(AdmissionFee) + parseFloat(SecurityFee) + parseFloat(MonthlyTutionFee) + parseFloat(AnnualFund) + parseFloat(Stationary) + parseFloat(LabChargesPhysics) + parseFloat(LabChargesBiology) + parseFloat(LabChargesChemistry) + parseFloat(LabChargesComputer) + parseFloat(Deferred) + parseFloat(LessReceived) + parseFloat(LeaderInMe) + parseFloat(ExamCharges);
         $("#Total").val(Total);
     }
+
+    function CheckClassFeeExist() {
+
+        var ClassId = $("#ClassId").val();
+        var SessionId = $("#SessionId").val();
+
+
+        if (SessionId != "" && ClassId != "") {
+
+            $.ajax({
+                type: "POST",
+                url: "/AdmissionDashboard/ClassFeeExist",
+                data: { "ClassId": ClassId, "SessionId": SessionId },
+                success: function (data) {
+
+                    if (data == "") {
+                        $("#SaveButton").prop('disabled', false);
+                        $("#Error").html("");
+                    }
+                    else {
+
+
+                        $("#SaveButton").prop('disabled', true);
+                        $("#Error").html(data);
+
+                    }
+
+
+
+                }
+
+
+            })//end of ajax
+
+
+        }
+    }
+
+
 </script>

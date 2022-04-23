@@ -1,0 +1,361 @@
+﻿@model SEA_Application.Models.PreRegistrationClassFee
+@{
+    Layout = "~/Views/Shared/_AdmissionDashboardLayout.cshtml";
+}
+
+
+<div class="card">
+    <div class="card-body p-5">
+
+        <div class="row">
+            <div class="col-md-6 pl-5 pr-5 ">
+
+                @using (Html.BeginForm("EditClassFee", "AdmissionDashboard", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <input type="hidden"  id="ClassIdHidden" name="ClassIdHidden" value="@Model.ClassId" />
+                    <input type="hidden"  id="SessionIdHidden" name="SessionIdHidden" value="@Model.SessionId" />
+                    <input type="hidden" id="Id" name="Id" value="@Model.Id" />
+
+                    <div class="form-group ">
+                        <div class="col-md-12">
+
+                            <label for="" class="control-label">Select class *</label>
+                            <select class="form-control" id="ClassId" name="ClassId" required></select>
+
+                        </div>
+                    </div>
+
+
+                    <div class="form-group  ">
+                        <div class="col-md-12">
+                            <label for="" class="control-label">Select Session *</label>
+
+                            <select class="form-control" id="SessionId" name="SessionId" required></select>
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Registration Fee </label>
+                            <input class="form-control" type="number" onkeyup="TotalFee()" name="StudentRegistrationFee" id="StudentRegistrationFee" value="@Model.StudentRegistrationFee" required />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Admission Fee </label>
+                            <input class="form-control" type="number" onkeyup="TotalFee()" name="AdmissionFee" id="AdmissionFee" value="@Model.AdmissionFee" required />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Security Fee </label>
+                            <input class="form-control" type="number" onkeyup="TotalFee()" name="SecurityFee" id="SecurityFee" value="@Model.SecurityFee" required />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Monthly Tution Fee </label>
+                            <input class="form-control" type="number" onkeyup="TotalFee()" name="MonthlyTutionFee" id="MonthlyTutionFee" value="@Model.MonthlyTutionFee" required />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Annual Fund </label>
+                            <input class="form-control" type="number" onkeyup="TotalFee()" name="AnnualFund" id="AnnualFund" value="@Model.AnnualFund" required />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Stationary</label>
+                            <input class="form-control" type="number" onkeyup="TotalFee()" name="Stationary" id="Stationary" value="@Model.Stationary" required />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Lab Charges Physics</label>
+                            <input class="form-control" type="number" onkeyup="TotalFee()" name="LabChargesPhysics" id="LabChargesPhysics" value="@Model.LabChargesPhysics" required />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Lab Charges Biology</label>
+                            <input class="form-control" type="number" onkeyup="TotalFee()" name="LabChargesBiology" id="LabChargesBiology" value="@Model.LabChargesBiology" required />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Lab Charges Chemistry</label>
+                            <input class="form-control" type="number" onkeyup="TotalFee()" name="LabChargesChemistry" id="LabChargesChemistry" value="@Model.LabChargesChemistry" required />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Lab Charges Computer</label>
+                            <input class="form-control" type="number" onkeyup="TotalFee()" name="LabChargesComputer" id="LabChargesComputer" value="@Model.LabChargesComputer" required />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Exam Charges</label>
+                            <input class="form-control" type="number" onkeyup="TotalFee()" name="ExamCharges" id="ExamCharges" value="@Model.ExamCharges" required />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Leader In Me</label>
+                            <input class="form-control" type="number" onkeyup="TotalFee()" name="LeaderInMe" id="LeaderInMe" value="@Model.LeaderInMe" required />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Deffered</label>
+                            <input class="form-control" type="number" onkeyup="TotalFee()" name="Deferred" id="Deferred" value="@Model.Deferred" required />
+
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Less Received (IF ANY) </label>
+                            <input class="form-control" type="number" onkeyup="TotalFee()" name="LessReceived" id="LessReceived" value="@Model.LessReceived" required />
+
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label class="control-label">Total</label>
+                            <input class="form-control" type="number" name="Total" id="Total" value="@Model.Total" required readonly />
+
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group ">
+                        <div class="col-md-12">
+
+
+                            <button type="submit" id="SaveButton" class="btn btn-primary rounded rounded-lg"> Save </button>
+                            <button type="button" onclick="window.location.href = '/AdmissionDashboard/Dashboard'" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                                <i class="material-icons mr-2">cached</i>  Cancel
+                            </button>
+                        </div>
+
+                    </div>
+                }
+
+
+
+
+
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+
+    $(document).ready(function () {
+
+        $("#PageHeader").html("Edit Class Fee");
+
+
+        $("#BreadCrumbs").append(' <li> <a href="/AdmissionDashboard/Dashboard"> Home </a> <span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class=""><a id="BreadCrumps1" href="/AdmissionDashboard/ClassFeeView">Class Fee</a><span>&gt;</span></li>');
+        $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Edit Class Fee</a></li>');
+
+
+
+        var ClassIdHidden = $("#ClassIdHidden").val();
+        var SessionIdHidden = $("#SessionIdHidden").val();
+
+
+          $.ajax({
+
+            type: "POST",
+            cache: false,
+            url: "/AdmissionDashboard/AllClasses",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#ClassId");
+                $el.empty();
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").text('Select Class'));
+                    for (i = 0; i < sch.length; i++) {
+
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i].Id).text(sch[i].Name));
+                    }
+
+                    $('#ClassId option[value="' + ClassIdHidden + '"]').prop('selected', true);
+
+                }
+
+                else {
+                    $el.append($("<option></option>")
+                        .attr("value", '').text('Select Class'));
+                }
+            }
+        });
+
+
+
+
+
+        $.ajax({
+
+            type: "POST",
+            cache: false,
+            url: "/AdmissionDashboard/AllSession",
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                var sch = JSON.parse(data);
+                console.log(sch);
+                var $el = $("#SessionId");
+
+
+                if (sch.length > 0) {
+                    $el.append($("<option></option>")
+                        .attr("value", "").text('Select Session'));
+                    for (i = 0; i < sch.length; i++) {
+
+                        $el.append($("<option></option>")
+                            .attr("value", sch[i].Id).text(sch[i].Year));
+                    }
+                    $('#SessionId option[value="' + SessionIdHidden + '"]').prop('selected', true);
+
+                }
+
+                else {
+
+                }
+            }
+        });
+
+
+
+    })
+
+    function TotalFee() {
+
+        var StudentRegistrationFee = $("#StudentRegistrationFee").val();
+        if (StudentRegistrationFee == "") {
+
+            StudentRegistrationFee = 0;
+        }
+
+        var AdmissionFee = $("#AdmissionFee").val();
+
+        if (AdmissionFee == "") {
+            AdmissionFee = 0;
+
+        }
+        var SecurityFee = $("#SecurityFee").val();
+
+        if (SecurityFee == "") {
+            SecurityFee = 0;
+
+        }
+        var MonthlyTutionFee = $("#MonthlyTutionFee").val();
+
+        if (MonthlyTutionFee == "") {
+            MonthlyTutionFee = 0;
+
+        }
+        var AnnualFund = $("#AnnualFund").val();
+
+        if (AnnualFund == "") {
+            AnnualFund = 0;
+
+        }
+        var Stationary = $("#Stationary").val();
+
+        if (Stationary == "") {
+            Stationary = 0;
+
+        }
+        var LabChargesPhysics = $("#LabChargesPhysics").val();
+
+        if (LabChargesPhysics == "") {
+            LabChargesPhysics = 0;
+
+        }
+        var LabChargesBiology = $("#LabChargesBiology").val();
+
+        if (LabChargesBiology == "") {
+            LabChargesBiology = 0;
+
+        }
+        var LabChargesChemistry = $("#LabChargesChemistry").val();
+
+        if (LabChargesChemistry == "") {
+            LabChargesChemistry = 0;
+
+        }
+        var LabChargesComputer = $("#LabChargesComputer").val();
+
+        if (LabChargesComputer == "") {
+            LabChargesComputer = 0;
+
+        }
+
+        var Deferred = $("#Deferred").val();
+
+        if (Deferred == "") {
+            Deferred = 0;
+        }
+
+        var LessReceived = $("#LessReceived").val();
+        if (LessReceived == "") {
+            LessReceived = 0;
+        }
+
+        var LeaderInMe = $("#LeaderInMe").val();
+        if (LeaderInMe == "") {
+            LeaderInMe = 0;
+        }
+        var ExamCharges = $("#ExamCharges").val();
+        if (ExamCharges == "") {
+            ExamCharges = 0;
+        }
+
+        var Total = parseFloat(StudentRegistrationFee) + parseFloat(AdmissionFee) + parseFloat(SecurityFee) + parseFloat(MonthlyTutionFee) + parseFloat(AnnualFund) + parseFloat(Stationary) + parseFloat(LabChargesPhysics) + parseFloat(LabChargesBiology) + parseFloat(LabChargesChemistry) + parseFloat(LabChargesComputer) + parseFloat(Deferred) + parseFloat(LessReceived) + parseFloat(LeaderInMe) + parseFloat(ExamCharges);
+        $("#Total").val(Total);
+    }
+
+</script>

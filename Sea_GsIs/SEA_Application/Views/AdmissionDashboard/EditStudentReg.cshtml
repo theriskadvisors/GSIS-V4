@@ -91,6 +91,8 @@
                         </div>
                     </div>
 
+
+
                     <div class="form-group">
                         <div class="col-md-12">
                             <label class="control-label">Address</label>
@@ -142,15 +144,16 @@
                     <div class="form-group">
                         <div class="col-md-12">
                             <label class="control-label">Branch</label>
-                            @Html.DropDownList("BranchId", null, "Select One", htmlAttributes: new { @class = "form-control round-border", @required = "required" })
-
+                            @Html.DropDownList("BranchIdDisabled", null, "Select One", htmlAttributes: new { @class = "form-control round-border", @required = "required", @disabled = "disabled" })
+                            <input type="hidden" value="@Model.BranchId" name="BranchId" id="BranchId" />
                         </div>
                     </div>
 
                     <div class="form-group">
                         <div class="col-md-12">
                             <label class="control-label">Class</label>
-                            @Html.DropDownList("ClassId", null, "Select One", htmlAttributes: new { @class = "form-control round-border", @required = "required" })
+                            @Html.DropDownList("ClassIdDisabled", null, "Select One", htmlAttributes: new { @class = "form-control round-border", @required = "required", @disabled = "disabled" })
+                            <input type="hidden" value="@Model.ClassId" name="ClassId" id="ClassId" />
 
                         </div>
                     </div>
@@ -158,8 +161,8 @@
                     <div class="form-group">
                         <div class="col-md-12">
                             <label class="control-label">Section</label>
-                            @Html.DropDownList("SectionId", null, "Select One", htmlAttributes: new { @class = "form-control round-border", @required = "required" })
-
+                            @Html.DropDownList("SectionIdDisabled", null, "Select One", htmlAttributes: new { @class = "form-control round-border", @required = "required", @disabled = "disabled" })
+                            <input type="hidden" value="@Model.SectionId" name="SectionId" id="SectionId" />
                         </div>
                     </div>
 
@@ -211,17 +214,17 @@
                     {
                         if (ViewBag.FeeStatus == "Pending")
                         {
-                        <button id="EditFee" type="button" class="btn btn-success rounded rounded-lg"> Edit Fee </button>
-                        <input type="hidden" id="RegistrationFeeId" value="@Model.RegistrationFees.FirstOrDefault().Id" />
-
+                            <button id="DeleteButton" type="button" class="btn  btn-danger">Delete</button>
+                            <button id="EditFee" type="button" class="btn btn-success rounded rounded-lg"> Edit Fee </button>
+                            <input type="hidden" id="RegistrationFeeId" value="@Model.RegistrationFees.FirstOrDefault().Id" />
                         }
 
                     }
 
                     else
                     {
+                        <button id="DeleteButton" type="button" class="btn  btn-danger">Delete</button>
                         <button id="CreateFee" type="button" class="btn btn-success rounded rounded-lg">Create Fee</button>
-
                     }
 
                     <button type="submit" id="SaveButton" class="btn btn-primary rounded rounded-lg"> Save </button>
@@ -378,7 +381,7 @@
 
             var Id = $("#Id").val();
 
-            window.location.href = "/AdmissionDashboard/CreateRegistrationFee?StudentRegistrationId="+Id;
+            window.location.href = "/AdmissionDashboard/CreateRegistrationFee?StudentRegistrationId=" + Id;
 
             //alert(Id);
 
@@ -390,7 +393,12 @@
 
             window.location.href = "/AdmissionDashboard/EditRegistrationFee?RegistrationFeeId=" + RegistrationFeeId;
         })
+        $("#DeleteButton").click(function () {
 
+            var Id = $("#Id").val();
+
+            window.location.href = '/AdmissionDashboard/DeleteStudentRegistration?StudentRegistrationId=' + Id;
+        })
 
 
     })//end of document ready
