@@ -412,7 +412,7 @@ namespace SEA_Application.Controllers
         {
             var PreRegistrationClassFee = db.PreRegistrationClassFees.Where(x => x.ClassId == ClassId && x.AspNetSession.IsActive == true).Select(x => new { x.AdmissionFee, x.SecurityFee, x.MonthlyTutionFee, x.AnnualFund, x.Stationary, x.LabChargesPhysics, x.LabChargesChemistry, x.LabChargesComputer, x.LabChargesBiology, x.LeaderInMe, x.ExamCharges, x.Deferred, x.LessReceived, x.Total, x.StudentRegistrationFee }).FirstOrDefault();
 
-            return Json(PreRegistrationClassFee, JsonRequestBehavior.AllowGet);
+            return Json(new { PreRegistrationClassFee =  PreRegistrationClassFee}, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

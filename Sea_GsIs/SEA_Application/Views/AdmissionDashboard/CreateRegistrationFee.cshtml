@@ -373,24 +373,25 @@
             success: function (response) {
 
                 debugger;
+                var fee = response.PreRegistrationClassFee;
 
-                alert(response);
+                alert(fee);
 
-                $("#StudentRegistrationFee").val(response.StudentRegistrationFee);
-                $("#AdmissionFee").val(response.AdmissionFee);
-                $("#SecurityFee").val(response.SecurityFee);
-                $("#MonthlyTutionFee").val(response.MonthlyTutionFee);
-                $("#AnnualFund").val(response.AnnualFund);
-                $("#Stationary").val(response.Stationary);
-                $("#LabChargesPhysics").val(response.LabChargesPhysics);
-                $("#LabChargesBiology").val(response.LabChargesBiology);
-                $("#LabChargesChemistry").val(response.LabChargesChemistry);
-                $("#LabChargesComputer").val(response.LabChargesComputer);
-                $("#ExamCharges").val(response.ExamCharges);
-                $("#LeaderInMe").val(response.LeaderInMe);
-                $("#Deferred").val(response.Deferred);
-                $("#LessReceived").val(response.LessReceived);
-                $("#Total").val(response.Total);
+                $("#StudentRegistrationFee").val(fee.StudentRegistrationFee);
+                $("#AdmissionFee").val(fee.AdmissionFee);
+                $("#SecurityFee").val(fee.SecurityFee);
+                $("#MonthlyTutionFee").val(fee.MonthlyTutionFee);
+                $("#AnnualFund").val(fee.AnnualFund);
+                $("#Stationary").val(fee.Stationary);
+                $("#LabChargesPhysics").val(fee.LabChargesPhysics);
+                $("#LabChargesBiology").val(fee.LabChargesBiology);
+                $("#LabChargesChemistry").val(fee.LabChargesChemistry);
+                $("#LabChargesComputer").val(fee.LabChargesComputer);
+                $("#ExamCharges").val(fee.ExamCharges);
+                $("#LeaderInMe").val(fee.LeaderInMe);
+                $("#Deferred").val(fee.Deferred);
+                $("#LessReceived").val(fee.LessReceived);
+                $("#Total").val(fee.Total);
 
 
                
