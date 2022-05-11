@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<SEA_Application.Models.AspnetSubjectTopic>
 
- @{
+    @{
 
     if (User.IsInRole("Accountant"))
     {
@@ -10,12 +10,16 @@
     {
     Layout = "~/Views/Shared/_AccountHeadDashboardLayout.cshtml";
     }
+    else if (User.IsInRole("Admission"))
+    {
+    Layout = "~/Views/Shared/_AdmissionDashboardLayout.cshtml";
+    }
     else
     {
     Layout = null;
     }
 
- }
+    }
 
     <style>
         .pageHeading h1 {
@@ -131,7 +135,7 @@
 
                         var MonthName = Months[MonthNum];
 
-                        table.fnAddData([data[index].Id, data[index].Name, data[index].UserName, data[index].PayableAmount,challanDueDate, MonthName, data[index].Multiplier, data[index].BranchName, data[index].ClassName]);
+                        table.fnAddData([data[index].Id, data[index].Name, data[index].UserName, data[index].PayableAmount, challanDueDate, MonthName, data[index].Multiplier, data[index].BranchName, data[index].ClassName]);
 
                     })
                     table.fnDraw();
