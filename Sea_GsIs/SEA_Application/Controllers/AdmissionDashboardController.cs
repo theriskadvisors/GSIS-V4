@@ -46,7 +46,7 @@ namespace SEA_Application.Controllers
         {
             return View();
         }
-
+        [Authorize(Roles = "Admission")]
 
         [HttpGet]
         public ActionResult CreateRegistrationForm()
@@ -64,7 +64,7 @@ namespace SEA_Application.Controllers
 
             return View();
         }
-
+        [Authorize(Roles = "Admission")]
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -297,7 +297,7 @@ namespace SEA_Application.Controllers
 
             return View(StudentRegistration);
         }
-
+        [Authorize(Roles = "Admission")]
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -384,7 +384,7 @@ namespace SEA_Application.Controllers
             string status = Newtonsoft.Json.JsonConvert.SerializeObject(Sections);
             return Json(status, JsonRequestBehavior.AllowGet);
         }
-
+        [Authorize(Roles = "Admission")]
         [HttpGet]
         public ActionResult CreateRegistrationFee(int StudentRegistrationId)
         {
@@ -415,11 +415,24 @@ namespace SEA_Application.Controllers
             return Json(new { PreRegistrationClassFee =  PreRegistrationClassFee}, JsonRequestBehavior.AllowGet);
         }
 
+
+
         [HttpPost]
         public ActionResult CreateRegistrationFee(RegistrationFee registrationFee)
         {
             try
             {
+                //int? MaxId = 1000;
+
+
+                //int? SerialNo = db.RegistrationFees.Select(x => x.SerialNo).Max();
+
+
+                //if (SerialNo != null)
+                //{
+                //    MaxId = SerialNo + 1;
+                //}
+
                 RegistrationFee registration = new RegistrationFee();
 
                 registration.AdmissionFee = registrationFee.AdmissionFee;
@@ -454,6 +467,10 @@ namespace SEA_Application.Controllers
                 registration.FineThirdToDate = registrationFee.FineThirdToDate;
                 registration.FineThirdAmount = registrationFee.FineThirdAmount;
 
+                //registration.SerialNo = MaxId;
+
+
+
                 registration.Status = "Pending";
 
                 db.RegistrationFees.Add(registration);
@@ -480,6 +497,8 @@ namespace SEA_Application.Controllers
 
             return View(RegistrationFee);
         }
+
+        [Authorize(Roles = "Admission")]
         [HttpPost]
         public ActionResult EditRegistrationFee(RegistrationFee registrationFee)
         {

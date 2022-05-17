@@ -149,7 +149,7 @@
      var UserRole ='@UserRole';
 
 
-        $("#PageHeader").html("Student Fee Months");
+        $("#PageHeader").html("Fee History");
 
         $("#BreadCrumbs").append(' <li> <a href="/Account/Dashboard"> Home </a> <span>&gt;</span></li>');
         $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Student Fee Months</a></li>');
@@ -292,25 +292,28 @@
                     });
                 });
             },
-            buttons: [
-                {
-                    text: '<button onclick="PrintChallan()" value="Get Challan" class="btn btn-default" id="challan-date" ><i class="fa fa-calendar"> </i> Get Challan</button>'
-                },
-                {
-                   
+            buttons: [{
+                extend: 'excel',
+                footer: true,
+                text: 'Save in EXCEL',
+                filename: 'td900',
+                customize: function (xlsx) {
+                    var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                    // $('c[r=A1] t', sheet).text( 'Custom text' );
 
-                    text: '<span class="datatableButtonsEdit"> <img src="/Content/assets/assets/icons/Icon-edit.png" alt=""> Create</span>',
-                    action: function (e, dt, button, config) {
-                        window.location.href = CreateButton;
-                     }
-                   
+                    // Loop over the cells in column `F`
+                    $('row c[r^="G"] ', sheet).each(function () {
+                        // Get the value and strip the non numeric characters
 
+                        if ($(this).text() !== "needed Adjustment") {
+                            $(this).attr('s', '20');
+                        }
 
-                },
-                {
-                    text: '<button onclick="ChangeStatusChallan()" value="Paid" class="btn btn-default"><i class="fa fa-calendar"> </i> Paid</button>'
+                    });
                 }
-            ],
+
+
+            }],
             "language": {
                 "lengthMenu": "<div class=\"d-flex showEntriesCon\">\n" +
                     "  <div class=\"p-2\">Show </div> <div class=\"showEntries\"> _MENU_\n" +
@@ -633,7 +636,7 @@
 
             </div>
             <div class="modal-body" id="ModelBody">
-              
+
 
                 Paid Date <input type="date" name="PaidDate" id="PaidDate" value="" /><br>
 
@@ -679,10 +682,10 @@
                                     Roll No
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.ChallanIssueDate)
+                                   Challan Issue Date
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.ChallanDueDate)
+                                  Paid Date
                                 </th>
                                 <th>
                                     Month
@@ -696,20 +699,12 @@
                                 <th>
                                     @Html.DisplayNameFor(model => model.Multiplier)
                                 </th>
-                                @if (!User.IsInRole("Admission"))
-                                {
-                                    <th>
-                                        Action
-                                    </th>
-                                    <th>
-                                        Action
-                                    </th>
-                                }
+                            
                             </tr>
                         </thead>
 
                         <tbody>
-                            @foreach (var item in Model)
+                            @foreach (var item in Model.Where(x=>x.Status =="Paid"))
                             {
 
                                 <tr>
@@ -739,7 +734,7 @@
                                         @*@Html.DisplayFor(modelItem => item.ChallanDueDate.Value.ToShortDateString())*@
                                         @*@Html.DisplayFor(modelItem => item.ChallanDueDate)*@
 
-                                        @string.Format("{0:MM/dd/yyyy}", item.ChallanDueDate)
+                                        @string.Format("{0:MM/dd/yyyy}", item.PaidDate)
 
                                     </td>
                                     <td>
@@ -828,27 +823,7 @@
                                     <td>
                                         @Html.DisplayFor(modelItem => item.Multiplier)
                                     </td>
-                                    @if (!User.IsInRole("Admission"))
-                                    {
-
-                                        <td>
-                                            <input type="checkbox" value=@item.Id class="check_class" name="@item.Status" id="test'@item.Id'" /><label for="test'@item.Id'"></label>
-                                        </td>
-
-                                        <td>
-                                            @if (item.Status == "Paid")
-                                            {
-                                                <input disabled type="button" style="color:white !important" value="Delete" onclick="DeleteChallan(@item.Id)" class="btn btn-sm btn-danger" name="" />
-                                            }
-                                            else
-                                            {
-                                                <input type="button" style="color:white !important" value="Delete" onclick="DeleteChallan(@item.Id)" class="btn btn-sm btn-danger" name="" />
-                                            }
-
-                                        </td>
-                                    }
-
-
+                                 
                                 </tr>
                             }
                         </tbody>
@@ -870,7 +845,7 @@
                                     @Html.DisplayNameFor(model => model.ChallanIssueDate)
                                 </th>
                                 <th>
-                                    @Html.DisplayNameFor(model => model.ChallanDueDate)
+                                    @Html.DisplayNameFor(model => model.PaidDate)
                                 </th>
                                 <th>
                                     Month
@@ -884,18 +859,7 @@
                                 <th>
                                     @Html.DisplayNameFor(model => model.Multiplier)
                                 </th>
-
-                                @if (!User.IsInRole("Admission"))
-                                {
-
-                                    <th>
-                                        Action
-                                    </th>
-                                    <th>
-                                        Action
-                                    </th>
-                                }
-                                </tr>
+                            </tr>
                         </tfoot>
 
 

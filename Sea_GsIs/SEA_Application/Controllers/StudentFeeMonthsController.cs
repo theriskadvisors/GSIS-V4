@@ -28,6 +28,13 @@ namespace SEA_Application.Controllers
 
             return View(studentfeeDetails.ToList());
         }
+        public ActionResult FeeHistory()
+        {
+            var studentfeeDetails = db.StudentFeeDetails.Include(x => x.StudentFee.AspNetStudent);
+
+
+            return View(studentfeeDetails.ToList());
+        }
 
         // GET: StudentFeeMonths/Details/5
         public ActionResult Details(int? id)
@@ -405,12 +412,17 @@ namespace SEA_Application.Controllers
 
         public ActionResult DefaulterStudent()
         {
-      
+
+            var AllBranches  =  db.AspNetBranches.Where(x=>x.Name != "Test Branch").Select(x => new { x.Id, x.Name }).ToList();
+
+            ViewBag.BranchId = new SelectList(AllBranches, "Id", "Name");
+
 
             return View();
         }
 
         public ActionResult DefaulterStudentsList()
+        
         {
             TimeZone time2 = TimeZone.CurrentTimeZone;
             DateTime test = time2.ToUniversalTime(DateTime.Now);
@@ -434,6 +446,11 @@ namespace SEA_Application.Controllers
                                          PayableAmount = studentFeeDetails.PaidAmount,
 
                                      }).ToList();
+
+
+            
+            var sum = DefaulterStudents.Sum(x => x.PayableAmount);
+
             return Json(DefaulterStudents, JsonRequestBehavior.AllowGet);
         }
 

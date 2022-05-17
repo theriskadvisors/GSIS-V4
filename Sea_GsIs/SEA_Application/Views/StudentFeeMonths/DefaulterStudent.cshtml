@@ -43,8 +43,22 @@
         }
     </style>
     <script>
+        var GlobalVar = 0;
+        var table;
         $(document).ready(function () {
 
+            jQuery.fn.dataTable.Api.register('sum()', function () {
+                return this.flatten().reduce(function (a, b) {
+                    if (typeof a === 'string') {
+                        a = a.replace(/[^\d.-]/g, '') * 1;
+                    }
+                    if (typeof b === 'string') {
+                        b = b.replace(/[^\d.-]/g, '') * 1;
+                    }
+
+                    return a + b;
+                }, 0);
+            });
 
             $("#PageHeader").html("Defaulter Students");
 
@@ -56,7 +70,7 @@
                 $(this).html('<input type="text" class="round-border" style="border-color:#00b8ec; border-radius:5px;width:100%" placeholder="Search" />');
             });
 
-            var table = $('#datatable').dataTable({
+             table = $('#datatable').dataTable({
 
                 initComplete: function () {
                     // Apply the search
@@ -71,19 +85,81 @@
                             //}
                             if (that.search() !== this.value) {
                                 that.search(this.value).draw();
+                               // alert($('#datatable').DataTable().column(3).data().sum());
                             }
                         });
                     });
                 },
-                buttons: [
-                    {
-                    },
-                    {
+                 buttons: [{
+                     extend: 'excel',
+                     footer: true,
+                     text: 'Save in EXCEL',
+                     filename: 'td900',
+                     customize: function (xlsx) {
+                         var sheet = xlsx.xl.worksheets['sheet1.xml'];
+                         // $('c[r=A1] t', sheet).text( 'Custom text' );
 
-                    },
-                    {
-                    }
-                ],
+                         // Loop over the cells in column `F`
+                         $('row c[r^="G"] ', sheet).each(function () {
+                             // Get the value and strip the non numeric characters
+
+                             if ($(this).text() !== "needed Adjustment") {
+                                 $(this).attr('s', '20');
+                             }
+
+                         });
+                     }
+
+
+                 }],
+                "footerCallback": function (row, data, start, end, display) {
+                    var api = this.api(), data;
+
+                    // Remove the formatting to get integer data for summation
+                    var intVal = function (i) {
+                        return typeof i === 'string' ?
+                            i.replace(/[\$,]/g, '') * 1 :
+                            typeof i === 'number' ?
+                                i : 0;
+                    };
+
+                    // Total over all pages
+                    total = api
+                        .column(3)
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+
+                    // Total over this page
+                    pageTotal = api
+                        .column(3, { page: 'current' })
+                        .data()
+                        .reduce(function (a, b) {
+                            return intVal(a) + intVal(b);
+                        }, 0);
+
+
+                    // Total filtered rows on the selected column (code part added)
+                    var sumCol4Filtered = display.map(el => data[el][3]).reduce((a, b) => intVal(a) + intVal(b), 0);
+
+                    // Update footer
+                    $(api.column(3).footer()).html(
+                       // '$' + pageTotal + ' ( $' + total + ' total) ($' + sumCol4Filtered + ' filtered)'
+                        '<span class="" style="font-weight:bold !important;text-align:right"> Total :  ' + sumCol4Filtered + '</span>'
+
+                    );
+                    sum(sumCol4Filtered);
+
+                   //alert(sumCol4Filtered);
+                 
+                  
+                },
+             
+            
+            
+               
+
                 "language": {
                     "lengthMenu": "<div class=\"d-flex showEntriesCon\">\n" +
                         "  <div class=\"p-2\">Show </div> <div class=\"showEntries\"> _MENU_\n" +
@@ -104,6 +180,8 @@
                     "<'row mt-4'<'col-sm-12 col-md-4 col-lg-6 infoCon'i><'col-sm-12 col-md-8 col-lg-6 pagCon'p>>",
             });
 
+ 
+        
             //$('#datatable').on('click', 'tbody tr', function () {
             //    var td = $(this).children("td");
             //    var StudentId = $(td[0]).children("input").val();
@@ -135,14 +213,35 @@
 
                         var MonthName = Months[MonthNum];
 
+
+
                         table.fnAddData([data[index].Id, data[index].Name, data[index].UserName, data[index].PayableAmount, challanDueDate, MonthName, data[index].Multiplier, data[index].BranchName, data[index].ClassName]);
 
                     })
+
+                 //   table.fnAddData(["", "", "", "", "", "", "", "Total","<span id='total'>"+ GlobalVar+"</span>"]);
+
+                  
+
+
                     table.fnDraw();
+
+
+                    //table.fnAddData([
+                    //    "", "", "", "", "", "", "", "Total", "<span id='total'>" + GlobalVar + "</span>",
+                      
+                      
+                    //]).draw();
+
+
+                   // alert( GlobalVar);
+
+                  //  alert($('#datatable').DataTable().column(3).data().sum());
+                   // sumcolumn();
+                  
                 }
             })
-
-
+       
 
 
             $("#datatable_filter").hide();
@@ -152,7 +251,24 @@
 
     <div class="card">
         <div class="card-body p-4">
+
+            @*<div class="col-md-3">*@
+
+                @*<div class="form-row mt-4">
+                    <div class="form-group col-md-12 bmd-form-group">
+
+                        <label for="" class="control-label">Select Branch*</label>
+
+                        @Html.DropDownList("BranchId", null,"Select Branch", htmlAttributes: new { @class = "form-control", @required = true })
+
+                    </div>
+                </div>
+            </div>*@
+
             <div class="tab-content" style="padding: 10px 0px 0px 0px;">
+
+
+
 
                 <div class="tab-pane active show" id="Topics-attr" role="tabpanel" aria-labelledby="Topics-tab-attr">
                     <div class="box box-primary">
@@ -174,7 +290,7 @@
                                                 Roll No
                                             </th>
 
-                                            <th>
+                                            <th >
                                                 Payable Fee
                                             </th>
                                             <th>
@@ -214,7 +330,7 @@
                                             <th>
                                                 Roll No
                                             </th>
-                                            <th>
+                                            <th style="text-align:right">
                                                 Payable Fee
                                             </th>
                                             <th>
@@ -247,3 +363,47 @@
         </div>
 
     </div>
+    <script src="http://cdn.datatables.net/plug-ins/1.12.0/api/sum().js"></script>
+
+    <script>
+
+      
+
+        $(document).ready(function () {
+
+          
+            //$(".buttons-excel").on('click', function () {
+
+            //  table.fnAddData([
+            //            "", "", "", "", "", "", "", "Total", "<span id='total'>" + GlobalVar + "</span>",
+
+
+            //        ]).draw();
+
+
+            //    //Do some operations here.
+            //});
+            
+
+        })
+
+        function sum(a) {
+          //  alert(a);
+
+            GlobalVar = a;
+           // $("table").append("<tr><td></td><td></td><td>" + GlobalVar + "</td></tr>");
+
+
+        }
+        function sumcolumn() {
+
+
+            var Total5 = $('#datatable').DataTable().column(4, { search: 'applied' })
+                .data()
+                .reduce(function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0);
+            //alert(Total5);
+           // $("table.display tfoot th:nth-child(4)").html(sum);
+        }
+    </script>

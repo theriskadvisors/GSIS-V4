@@ -312,15 +312,6 @@
                             <p>Fee Multiplier</p>
                         </a>
                     </li>
-                    <li class="nav-item hidden">
-                        <a href="@Url.Action("Index", "StudentFeeMonths")" class="nav-link nav-toggle">
-
-                            <i class="sea-dash">
-                                <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
-                            </i>
-                            <p>Monthly Fee</p>
-                        </a>
-                    </li>
 
                     <li class="nav-item">
                         <a href="@Url.Action("DefaulterStudent", "StudentFeeMonths")" class="nav-link nav-toggle">
@@ -331,6 +322,27 @@
                             <p>Defaulter Students </p>
                         </a>
                     </li>
+
+                    <li class="nav-item" id="StudentRegistration">
+                        <a href="@Url.Action("StudentRegistrationView", "AdmissionDashboard")" class="nav-link nav-toggle">
+
+                            <i class="sea-dash">
+                                <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
+                            </i>
+                            <p>Student Registration </p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item ">
+                        <a href="@Url.Action("FeeHistory", "StudentFeeMonths")" class="nav-link nav-toggle">
+
+                            <i class="sea-dash">
+                                <img style="width: 18px;line-height: 30px;font-size: 24px;vertical-align: -1px;" src="~/Content/assets/assets/icons/Icon-Students.png" alt="">
+                            </i>
+                            <p>Fee History</p>
+                        </a>
+                    </li>
+
 
                     <li class="nav-item hidden">
                         <a href="@Url.Action("StudentFeeMonths", "StudentFeeMonths")" class="nav-link nav-toggle">

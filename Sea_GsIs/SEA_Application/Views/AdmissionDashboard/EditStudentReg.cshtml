@@ -1,8 +1,28 @@
 ﻿@model SEA_Application.Models.StudentRegistration
-@{
-    ViewBag.Title = "EditStudentReg";
-    Layout = "~/Views/Shared/_AdmissionDashboardLayout.cshtml";
+
+@{ 
+    string UserRole = "";
+    if (User.IsInRole("Admission"))
+    {
+        Layout = "~/Views/Shared/_AdmissionDashboardLayout.cshtml";
+
+        UserRole = "Admission";
+    }
+    else if (User.IsInRole("Accountant"))
+    {
+        Layout = "~/Views/Shared/_AccountantDashboardLayout.cshtml";
+        UserRole = "Accountant";
+    }
+
+    else
+    {
+        Layout = null;
+
+    }
+
+
 }
+
 
 
 <div class="card">
@@ -210,27 +230,51 @@
 
 
                 <div class="form-group pull-right">
-                    @if (ViewBag.FeeExist == true)
+
+                    @if (User.IsInRole("Admission"))
                     {
-                        if (ViewBag.FeeStatus == "Pending")
+
+                        if (ViewBag.FeeExist == true)
                         {
-                            <button id="DeleteButton" type="button" class="btn  btn-danger">Delete</button>
-                            <button id="EditFee" type="button" class="btn btn-success rounded rounded-lg"> Edit Fee </button>
-                            <input type="hidden" id="RegistrationFeeId" value="@Model.RegistrationFees.FirstOrDefault().Id" />
+                            if (ViewBag.FeeStatus == "Pending")
+                            {
+                                @*<button id="DeleteButton" type="button" class="btn  btn-danger">Delete</button>*@
+                                <button id="EditFee" type="button" class="btn btn-success rounded rounded-lg"> Edit Fee </button>
+                                <input type="hidden" id="RegistrationFeeId" value="@Model.RegistrationFees.FirstOrDefault().Id" />
+                            }
+
                         }
+
+                        else
+                        {
+                            @*<button id="DeleteButton" type="button" class="btn  btn-danger">Delete</button>*@
+                            <button id="CreateFee" type="button" class="btn btn-success rounded rounded-lg">Create Fee</button>
+                        }
+
+                        <button type="submit" id="SaveButton" class="btn btn-primary rounded rounded-lg"> Save </button>
+                        <button type="button" onclick="window.location.href = '/AdmissionDashboard/Dashboard'" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
+                            <i class="material-icons mr-2">cached</i>  Cancel
+                        </button>
 
                     }
 
                     else
                     {
-                        <button id="DeleteButton" type="button" class="btn  btn-danger">Delete</button>
-                        <button id="CreateFee" type="button" class="btn btn-success rounded rounded-lg">Create Fee</button>
-                    }
 
-                    <button type="submit" id="SaveButton" class="btn btn-primary rounded rounded-lg"> Save </button>
-                    <button type="button" onclick="window.location.href = '/AdmissionDashboard/Dashboard'" id="btnCancel" class="btn btn-primary rounded rounded-lg bg-transparent text-muted shadow-none mr-3">
-                        <i class="material-icons mr-2">cached</i>  Cancel
-                    </button>
+
+                        if (ViewBag.FeeExist == true)
+                        {
+                            if (ViewBag.FeeStatus == "Pending")
+                            {
+                                @*<button id="DeleteButton" type="button" class="btn  btn-danger">Delete</button>*@
+                                <button id="EditFee" type="button" class="btn btn-success rounded rounded-lg">  Fee Details</button>
+                                <input type="hidden" id="RegistrationFeeId" value="@Model.RegistrationFees.FirstOrDefault().Id" />
+                            }
+
+                        }
+
+
+                    }
 
                 </div>
 
@@ -252,6 +296,14 @@
         $("#BreadCrumbs").append(' <li class=""><a id="BreadCrumps1" href="/AdmissionDashboard/StudentRegistrationView">Student Registration</a><span>&gt;</span></li>');
         $("#BreadCrumbs").append(' <li class="active"><a id="BreadCrumps1" href="#">Edit Registration</a></li>');
 
+         var UserRole = "@UserRole";
+
+
+        if (UserRole == "Accountant") {
+
+            $(':input').attr('readonly', 'readonly');
+        }
+        
 
         $('input[type="file"]').change(function (e) {
 
