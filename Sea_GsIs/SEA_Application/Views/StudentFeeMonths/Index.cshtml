@@ -254,10 +254,16 @@
           var UserRole ='@UserRole';
 
         var CreateButton = "";
-        if (UserRole != "Admission" && UserRole != "Accountant") {
+        var GetChallanButton = "";
+        var PaidButton = "";
+        if (UserRole != "Admission" ) {
 
             CreateButton = "/StudentChallan/GetChallan";
+            GetChallanButton = '<button onclick="PrintChallan()" value="Get Challan" class="btn btn-default" id="challan-date" ><i class="fa fa-calendar"> </i> Get Challan</button>';
+            PaidButton = '<button onclick="ChangeStatusChallan()" value="Paid" class="btn btn-default"><i class="fa fa-calendar"> </i> Paid</button>';
         }
+
+      
 
         GetAllBankCashLedger();
 
@@ -294,7 +300,7 @@
             },
             buttons: [
                 {
-                    text: '<button onclick="PrintChallan()" value="Get Challan" class="btn btn-default" id="challan-date" ><i class="fa fa-calendar"> </i> Get Challan</button>'
+                    text: GetChallanButton,
                 },
                 {
                    
@@ -308,7 +314,7 @@
 
                 },
                 {
-                    text: '<button onclick="ChangeStatusChallan()" value="Paid" class="btn btn-default"><i class="fa fa-calendar"> </i> Paid</button>'
+                    text: PaidButton,
                 }
             ],
             "language": {
@@ -378,9 +384,10 @@
             }
             if (isPaid == "Paid") {
 
-                var type = 'danger';
-                var msg = "Paid Challan Cannot be Printed";
-                showNotification('top', 'center', msg, type);
+                //var type = 'danger';
+                //var msg = "Paid Challan Cannot be Printed";
+                //showNotification('top', 'center', msg, type);
+                window.location.href = "/StudentFeeMonths/ChallanFormView?idlist=" + StdId;
 
             }
             else {
